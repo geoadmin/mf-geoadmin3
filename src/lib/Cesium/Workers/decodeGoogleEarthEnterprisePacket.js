@@ -406,8 +406,6 @@ define('Core/decodeGoogleEarthEnterpriseData',[
             return data;
         }
 
-                Check.typeOf.object('key', key);
-        Check.typeOf.object('data', data);
         
         var keyLength = key.byteLength;
         if (keyLength === 0 || (keyLength % 4) !== 0) {
@@ -4544,7 +4542,6 @@ define('Core/defaultValue',[
     /**
      * A frozen empty object that can be used as the default value for options passed as
      * an object literal.
-     * @type {Object}
      */
     defaultValue.EMPTY_OBJECT = freezeObject({});
 

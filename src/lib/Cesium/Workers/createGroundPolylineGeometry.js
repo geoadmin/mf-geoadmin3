@@ -454,7 +454,6 @@ define('Core/defaultValue',[
     /**
      * A frozen empty object that can be used as the default value for options passed as
      * an object literal.
-     * @type {Object}
      */
     defaultValue.EMPTY_OBJECT = freezeObject({});
 
@@ -495,9 +494,6 @@ define('Core/getAbsoluteUri',[
     }
 
     getAbsoluteUri._implementation = function(relative, base, documentObject) {
-                if (!defined(relative)) {
-            throw new DeveloperError('relative uri is required.');
-        }
         
         if (!defined(base)) {
             if (typeof documentObject === 'undefined') {
@@ -1653,9 +1649,6 @@ define('Core/oneTimeWarning',[
      * @private
      */
     function oneTimeWarning(identifier, message) {
-                if (!defined(identifier)) {
-            throw new DeveloperError('identifier is required.');
-        }
         
         if (!defined(warnings[identifier])) {
             warnings[identifier] = true;
@@ -1720,9 +1713,6 @@ define('Core/deprecationWarning',[
      * @private
      */
     function deprecationWarning(identifier, message) {
-                if (!defined(identifier) || !defined(message)) {
-            throw new DeveloperError('identifier and message are required.');
-        }
         
         oneTimeWarning(identifier, message);
     }
@@ -2298,9 +2288,6 @@ define('Core/getBaseUri',[
      * var basePath = Cesium.getBaseUri('/Gallery/simple.czml?value=true&example=false', true);
      */
     function getBaseUri(uri, includeQuery) {
-                if (!defined(uri)) {
-            throw new DeveloperError('uri is required.');
-        }
         
         var basePath = '';
         var i = uri.lastIndexOf('/');
@@ -2348,9 +2335,6 @@ define('Core/getExtensionFromUri',[
      * var extension = Cesium.getExtensionFromUri('/Gallery/simple.czml?value=true&example=false');
      */
     function getExtensionFromUri(uri) {
-                if (!defined(uri)) {
-            throw new DeveloperError('uri is required.');
-        }
         
         var uriObject = new Uri(uri);
         uriObject.normalize();
@@ -2390,7 +2374,6 @@ define('Core/isBlobUri',[
      * @private
      */
     function isBlobUri(uri) {
-                Check.typeOf.string('uri', uri);
         
         return blobUriRegex.test(uri);
     }
@@ -2425,8 +2408,7 @@ define('Core/isCrossOriginUrl',[
         var protocol = a.protocol;
 
         a.href = url;
-        // IE only absolutizes href on get, not set
-        a.href = a.href; // eslint-disable-line no-self-assign
+        a.href = a.href; // IE only absolutizes href on get, not set
 
         return protocol !== a.protocol || host !== a.host;
     }
@@ -2453,7 +2435,6 @@ define('Core/isDataUri',[
      * @private
      */
     function isDataUri(uri) {
-                Check.typeOf.string('uri', uri);
         
         return dataUriRegex.test(uri);
     }
@@ -2516,9 +2497,6 @@ define('Core/objectToQuery',[
      * // 'key1=some%20value&key2=a%2Fb&key3=x&key3=y'
      */
     function objectToQuery(obj) {
-                if (!defined(obj)) {
-            throw new DeveloperError('obj is required.');
-        }
         
         var result = '';
         for ( var propName in obj) {
@@ -2581,9 +2559,6 @@ define('Core/queryToObject',[
      * @see objectToQuery
      */
     function queryToObject(queryString) {
-                if (!defined(queryString)) {
-            throw new DeveloperError('queryString is required.');
-        }
         
         var result = {};
         if (queryString === '') {
@@ -3105,7 +3080,6 @@ define('Core/Event',[
      * @see Event#removeEventListener
      */
     Event.prototype.addEventListener = function(listener, scope) {
-                Check.typeOf.func('listener', listener);
         
         this._listeners.push(listener);
         this._scopes.push(scope);
@@ -3127,7 +3101,6 @@ define('Core/Event',[
      * @see Event#raiseEvent
      */
     Event.prototype.removeEventListener = function(listener, scope) {
-                Check.typeOf.func('listener', listener);
         
         var listeners = this._listeners;
         var scopes = this._scopes;
@@ -3232,8 +3205,6 @@ define('Core/Heap',[
      * @param {Heap~ComparatorCallback} options.comparator The comparator to use for the heap. If comparator(a, b) is less than 0, sort a to a lower index than b, otherwise sort to a higher index.
      */
     function Heap(options) {
-                Check.typeOf.object('options', options);
-        Check.defined('options.comparator', options.comparator);
         
         this._comparator = options.comparator;
         this._array = [];
@@ -3374,7 +3345,6 @@ define('Core/Heap',[
      * @return {*} The element that was removed from the heap if the heap is at full capacity.
      */
     Heap.prototype.insert = function(element) {
-                Check.defined('element', element);
         
         var array = this._array;
         var comparator = this._comparator;
@@ -3418,7 +3388,6 @@ define('Core/Heap',[
         if (this._length === 0) {
             return undefined;
         }
-                Check.typeOf.number.lessThan('index', index, this._length);
         
         var array = this._array;
         var root = array[index];
@@ -3735,7 +3704,6 @@ define('Core/RequestScheduler',[
      * @returns {String} The server key.
      */
     RequestScheduler.getServerKey = function(url) {
-                Check.typeOf.string('url', url);
         
         var uri = new Uri(url).resolve(pageUri);
         uri.normalize();
@@ -3762,9 +3730,6 @@ define('Core/RequestScheduler',[
      * @returns {Promise|undefined} A Promise for the requested data, or undefined if this request does not have high enough priority to be issued.
      */
     RequestScheduler.request = function(request) {
-                Check.typeOf.object('request', request);
-        Check.typeOf.string('request.url', request.url);
-        Check.typeOf.func('request.requestFunction', request.requestFunction);
         
         if (isDataUri(request.url) || isBlobUri(request.url)) {
             requestCompletedEvent.raiseEvent();
@@ -3988,12 +3953,6 @@ define('Core/TrustedServers',[
      * TrustedServers.add('my.server.com', 80);
      */
     TrustedServers.add = function(host, port) {
-                if (!defined(host)) {
-            throw new DeveloperError('host is required.');
-        }
-        if (!defined(port) || port <= 0) {
-            throw new DeveloperError('port is required to be greater than 0.');
-        }
         
         var authority = host.toLowerCase() + ':' + port;
         if (!defined(_servers[authority])) {
@@ -4012,12 +3971,6 @@ define('Core/TrustedServers',[
      * TrustedServers.remove('my.server.com', 80);
      */
     TrustedServers.remove = function(host, port) {
-                if (!defined(host)) {
-            throw new DeveloperError('host is required.');
-        }
-        if (!defined(port) || port <= 0) {
-            throw new DeveloperError('port is required to be greater than 0.');
-        }
         
         var authority = host.toLowerCase() + ':' + port;
         if (defined(_servers[authority])) {
@@ -4079,9 +4032,6 @@ define('Core/TrustedServers',[
      * }
      */
     TrustedServers.contains = function(url) {
-                if (!defined(url)) {
-            throw new DeveloperError('url is required.');
-        }
                 var authority = getAuthority(url);
         if (defined(authority) && defined(_servers[authority])) {
             return true;
@@ -4398,7 +4348,6 @@ define('Core/Resource',[
             };
         }
 
-                Check.typeOf.string('options.url', options.url);
         
         this._url = undefined;
         this._templateValues = defaultClone(options.templateValues, {});
@@ -5435,8 +5384,7 @@ define('Core/Resource',[
             case 'json':
                 return JSON.parse(decodeDataUriText(isBase64, data));
             default:
-                                throw new DeveloperError('Unhandled responseType: ' + responseType);
-                    }
+                        }
     }
 
     /**
@@ -6123,9 +6071,7 @@ define('Core/buildModuleUrl',[
             a = document.createElement('a');
         }
         a.href = url;
-
-        // IE only absolutizes href on get, not set
-        a.href = a.href; // eslint-disable-line no-self-assign
+        a.href = a.href; // IE only absolutizes href on get, not set
         return a.href;
     }
 
@@ -6144,9 +6090,6 @@ define('Core/buildModuleUrl',[
             baseUrlString = getBaseUrlFromCesiumScript();
         }
 
-                if (!defined(baseUrlString)) {
-            throw new DeveloperError('Unable to determine Cesium base URL automatically, try defining a global variable called CESIUM_BASE_URL.');
-        }
         
         baseResource = new Resource({
             url: tryMakeAbsolute(baseUrlString)
@@ -6583,8 +6526,7 @@ define('Core/Math',[
     CesiumMath.EPSILON20 = 0.00000000000000000001;
 
     /**
-     * The gravitational parameter of the Earth in meters cubed
-     * per second squared as defined by the WGS84 model: 3.986004418e14
+     * 3.986004418e14
      * @type {Number}
      * @constant
      */
@@ -6837,9 +6779,6 @@ define('Core/Math',[
      * @returns {Number} The corresponding angle in radians.
      */
     CesiumMath.toRadians = function(degrees) {
-                if (!defined(degrees)) {
-            throw new DeveloperError('degrees is required.');
-        }
                 return degrees * CesiumMath.RADIANS_PER_DEGREE;
     };
 
@@ -6849,9 +6788,6 @@ define('Core/Math',[
      * @returns {Number} The corresponding angle in degrees.
      */
     CesiumMath.toDegrees = function(radians) {
-                if (!defined(radians)) {
-            throw new DeveloperError('radians is required.');
-        }
                 return radians * CesiumMath.DEGREES_PER_RADIAN;
     };
 
@@ -6866,9 +6802,6 @@ define('Core/Math',[
      * var longitude = Cesium.Math.convertLongitudeRange(Cesium.Math.toRadians(270.0));
      */
     CesiumMath.convertLongitudeRange = function(angle) {
-                if (!defined(angle)) {
-            throw new DeveloperError('angle is required.');
-        }
                 var twoPi = CesiumMath.TWO_PI;
 
         var simplified = angle - Math.floor(angle / twoPi) * twoPi;
@@ -6895,9 +6828,6 @@ define('Core/Math',[
      * var latitude = Cesium.Math.clampToLatitudeRange(Cesium.Math.toRadians(108.0));
      */
     CesiumMath.clampToLatitudeRange = function(angle) {
-                if (!defined(angle)) {
-            throw new DeveloperError('angle is required.');
-        }
         
         return CesiumMath.clamp(angle, -1*CesiumMath.PI_OVER_TWO, CesiumMath.PI_OVER_TWO);
     };
@@ -6909,9 +6839,6 @@ define('Core/Math',[
      * @returns {Number} The angle in the range [<code>-CesiumMath.PI</code>, <code>CesiumMath.PI</code>].
      */
     CesiumMath.negativePiToPi = function(angle) {
-                if (!defined(angle)) {
-            throw new DeveloperError('angle is required.');
-        }
                 return CesiumMath.zeroToTwoPi(angle + CesiumMath.PI) - CesiumMath.PI;
     };
 
@@ -6922,9 +6849,6 @@ define('Core/Math',[
      * @returns {Number} The angle in the range [0, <code>CesiumMath.TWO_PI</code>].
      */
     CesiumMath.zeroToTwoPi = function(angle) {
-                if (!defined(angle)) {
-            throw new DeveloperError('angle is required.');
-        }
                 var mod = CesiumMath.mod(angle, CesiumMath.TWO_PI);
         if (Math.abs(mod) < CesiumMath.EPSILON14 && Math.abs(angle) > CesiumMath.EPSILON14) {
             return CesiumMath.TWO_PI;
@@ -6940,12 +6864,6 @@ define('Core/Math',[
      * @returns {Number} The remainder.
      */
     CesiumMath.mod = function(m, n) {
-                if (!defined(m)) {
-            throw new DeveloperError('m is required.');
-        }
-        if (!defined(n)) {
-            throw new DeveloperError('n is required.');
-        }
                 return ((m % n) + n) % n;
     };
 
@@ -6968,15 +6886,6 @@ define('Core/Math',[
      * var d = Cesium.Math.equalsEpsilon(3699175.1634344, 3699175.2, Cesium.Math.EPSILON9); // false
      */
     CesiumMath.equalsEpsilon = function(left, right, relativeEpsilon, absoluteEpsilon) {
-                if (!defined(left)) {
-            throw new DeveloperError('left is required.');
-        }
-        if (!defined(right)) {
-            throw new DeveloperError('right is required.');
-        }
-        if (!defined(relativeEpsilon)) {
-            throw new DeveloperError('relativeEpsilon is required.');
-        }
                 absoluteEpsilon = defaultValue(absoluteEpsilon, relativeEpsilon);
         var absDiff = Math.abs(left - right);
         return absDiff <= absoluteEpsilon || absDiff <= relativeEpsilon * Math.max(Math.abs(left), Math.abs(right));
@@ -7000,9 +6909,6 @@ define('Core/Math',[
      * @see {@link http://en.wikipedia.org/wiki/Factorial|Factorial on Wikipedia}
      */
     CesiumMath.factorial = function(n) {
-                if (typeof n !== 'number' || n < 0) {
-            throw new DeveloperError('A number greater than or equal to 0 is required.');
-        }
         
         var length = factorials.length;
         if (n >= length) {
@@ -7031,12 +6937,6 @@ define('Core/Math',[
     CesiumMath.incrementWrap = function(n, maximumValue, minimumValue) {
         minimumValue = defaultValue(minimumValue, 0.0);
 
-                if (!defined(n)) {
-            throw new DeveloperError('n is required.');
-        }
-        if (maximumValue <= minimumValue) {
-            throw new DeveloperError('maximumValue must be greater than minimumValue.');
-        }
         
         ++n;
         if (n > maximumValue) {
@@ -7058,9 +6958,6 @@ define('Core/Math',[
      * var f = Cesium.Math.isPowerOfTwo(20); // false
      */
     CesiumMath.isPowerOfTwo = function(n) {
-                if (typeof n !== 'number' || n < 0) {
-            throw new DeveloperError('A number greater than or equal to 0 is required.');
-        }
         
         return (n !== 0) && ((n & (n - 1)) === 0);
     };
@@ -7078,9 +6975,6 @@ define('Core/Math',[
      * var m = Cesium.Math.nextPowerOfTwo(32); // 32
      */
     CesiumMath.nextPowerOfTwo = function(n) {
-                if (typeof n !== 'number' || n < 0) {
-            throw new DeveloperError('A number greater than or equal to 0 is required.');
-        }
         
         // From http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
         --n;
@@ -7103,15 +6997,6 @@ define('Core/Math',[
      * @returns {Number} The value clamped so that min <= value <= max.
      */
     CesiumMath.clamp = function(value, min, max) {
-                if (!defined(value)) {
-            throw new DeveloperError('value is required');
-        }
-        if (!defined(min)) {
-            throw new DeveloperError('min is required.');
-        }
-        if (!defined(max)) {
-            throw new DeveloperError('max is required.');
-        }
                 return value < min ? min : value > max ? max : value;
     };
 
@@ -7124,9 +7009,6 @@ define('Core/Math',[
      * @param {Number} seed An integer used as the seed.
      */
     CesiumMath.setRandomNumberSeed = function(seed) {
-                if (!defined(seed)) {
-            throw new DeveloperError('seed is required.');
-        }
         
         randomNumberGenerator = new MersenneTwister(seed);
     };
@@ -7164,9 +7046,6 @@ define('Core/Math',[
      *          whichever is closer, if the value is outside the range.
      */
     CesiumMath.acosClamped = function(value) {
-                if (!defined(value)) {
-            throw new DeveloperError('value is required.');
-        }
                 return Math.acos(CesiumMath.clamp(value, -1.0, 1.0));
     };
 
@@ -7179,9 +7058,6 @@ define('Core/Math',[
      *          whichever is closer, if the value is outside the range.
      */
     CesiumMath.asinClamped = function(value) {
-                if (!defined(value)) {
-            throw new DeveloperError('value is required.');
-        }
                 return Math.asin(CesiumMath.clamp(value, -1.0, 1.0));
     };
 
@@ -7193,12 +7069,6 @@ define('Core/Math',[
      * @returns {Number} The chord length.
      */
     CesiumMath.chordLength = function(angle, radius) {
-                if (!defined(angle)) {
-            throw new DeveloperError('angle is required.');
-        }
-        if (!defined(radius)) {
-            throw new DeveloperError('radius is required.');
-        }
                 return 2.0 * radius * Math.sin(angle * 0.5);
     };
 
@@ -7210,12 +7080,6 @@ define('Core/Math',[
      * @returns {Number} The result.
      */
     CesiumMath.logBase = function(number, base) {
-                if (!defined(number)) {
-            throw new DeveloperError('number is required.');
-        }
-        if (!defined(base)) {
-            throw new DeveloperError('base is required.');
-        }
                 return Math.log(number) / Math.log(base);
     };
 
@@ -7263,7 +7127,6 @@ define('Core/Math',[
      * @returns {Number} An approximation of atan(x)
      */
     CesiumMath.fastApproximateAtan = function(x) {
-                Check.typeOf.number('x', x);
         
         return x * (-0.1784 * Math.abs(x) - 0.0663 * x * x + 1.0301);
     };
@@ -7278,8 +7141,6 @@ define('Core/Math',[
      * @returns {Number} An approximation of atan2(x, y)
      */
     CesiumMath.fastApproximateAtan2 = function(x, y) {
-                Check.typeOf.number('x', x);
-        Check.typeOf.number('y', y);
         
         // atan approximations are usually only reliable over [-1, 1]
         // So reduce the range by flipping whether x or y is on top based on which is bigger.
@@ -7291,9 +7152,6 @@ define('Core/Math',[
         opposite = Math.min(t, opposite);
 
         var oppositeOverAdjacent = opposite / adjacent;
-                if (isNaN(oppositeOverAdjacent)) {
-            throw new DeveloperError('either x or y must be nonzero');
-        }
                 t = CesiumMath.fastApproximateAtan(oppositeOverAdjacent);
 
         // Undo range reduction
@@ -7366,7 +7224,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if one was not provided.
      */
     Cartesian3.fromSpherical = function(spherical, result) {
-                Check.typeOf.object('spherical', spherical);
         
         if (!defined(result)) {
             result = new Cartesian3();
@@ -7450,8 +7307,6 @@ define('Core/Cartesian3',[
      * @returns {Number[]} The array that was packed into
      */
     Cartesian3.pack = function(value, array, startingIndex) {
-                Check.typeOf.object('value', value);
-        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -7471,7 +7326,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if one was not provided.
      */
     Cartesian3.unpack = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -7492,7 +7346,6 @@ define('Core/Cartesian3',[
      * @returns {Number[]} The packed array.
      */
     Cartesian3.packArray = function(array, result) {
-                Check.defined('array', array);
         
         var length = array.length;
         if (!defined(result)) {
@@ -7515,11 +7368,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3[]} The unpacked array.
      */
     Cartesian3.unpackArray = function(array, result) {
-                Check.defined('array', array);
-        Check.typeOf.number.greaterThanOrEquals('array.length', array.length, 3);
-        if (array.length % 3 !== 0) {
-            throw new DeveloperError('array length must be a multiple of 3.');
-        }
         
         var length = array.length;
         if (!defined(result)) {
@@ -7562,7 +7410,6 @@ define('Core/Cartesian3',[
      * @returns {Number} The value of the maximum component.
      */
     Cartesian3.maximumComponent = function(cartesian) {
-                Check.typeOf.object('cartesian', cartesian);
         
         return Math.max(cartesian.x, cartesian.y, cartesian.z);
     };
@@ -7574,7 +7421,6 @@ define('Core/Cartesian3',[
      * @returns {Number} The value of the minimum component.
      */
     Cartesian3.minimumComponent = function(cartesian) {
-                Check.typeOf.object('cartesian', cartesian);
         
         return Math.min(cartesian.x, cartesian.y, cartesian.z);
     };
@@ -7588,9 +7434,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} A cartesian with the minimum components.
      */
     Cartesian3.minimumByComponent = function(first, second, result) {
-                Check.typeOf.object('first', first);
-        Check.typeOf.object('second', second);
-        Check.typeOf.object('result', result);
         
         result.x = Math.min(first.x, second.x);
         result.y = Math.min(first.y, second.y);
@@ -7608,9 +7451,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} A cartesian with the maximum components.
      */
     Cartesian3.maximumByComponent = function(first, second, result) {
-                Check.typeOf.object('first', first);
-        Check.typeOf.object('second', second);
-        Check.typeOf.object('result', result);
         
         result.x = Math.max(first.x, second.x);
         result.y = Math.max(first.y, second.y);
@@ -7625,7 +7465,6 @@ define('Core/Cartesian3',[
      * @returns {Number} The squared magnitude.
      */
     Cartesian3.magnitudeSquared = function(cartesian) {
-                Check.typeOf.object('cartesian', cartesian);
         
         return cartesian.x * cartesian.x + cartesian.y * cartesian.y + cartesian.z * cartesian.z;
     };
@@ -7654,8 +7493,6 @@ define('Core/Cartesian3',[
      * var d = Cesium.Cartesian3.distance(new Cesium.Cartesian3(1.0, 0.0, 0.0), new Cesium.Cartesian3(2.0, 0.0, 0.0));
      */
     Cartesian3.distance = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         Cartesian3.subtract(left, right, distanceScratch);
         return Cartesian3.magnitude(distanceScratch);
@@ -7674,8 +7511,6 @@ define('Core/Cartesian3',[
      * var d = Cesium.Cartesian3.distanceSquared(new Cesium.Cartesian3(1.0, 0.0, 0.0), new Cesium.Cartesian3(3.0, 0.0, 0.0));
      */
     Cartesian3.distanceSquared = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         Cartesian3.subtract(left, right, distanceScratch);
         return Cartesian3.magnitudeSquared(distanceScratch);
@@ -7689,8 +7524,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.normalize = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         var magnitude = Cartesian3.magnitude(cartesian);
 
@@ -7698,9 +7531,6 @@ define('Core/Cartesian3',[
         result.y = cartesian.y / magnitude;
         result.z = cartesian.z / magnitude;
 
-                if (isNaN(result.x) || isNaN(result.y) || isNaN(result.z)) {
-            throw new DeveloperError('normalized result is not a number');
-        }
         
         return result;
     };
@@ -7713,8 +7543,6 @@ define('Core/Cartesian3',[
      * @returns {Number} The dot product.
      */
     Cartesian3.dot = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         return left.x * right.x + left.y * right.y + left.z * right.z;
     };
@@ -7728,9 +7556,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.multiplyComponents = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x * right.x;
         result.y = left.y * right.y;
@@ -7747,9 +7572,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.divideComponents = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x / right.x;
         result.y = left.y / right.y;
@@ -7766,9 +7588,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.add = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x + right.x;
         result.y = left.y + right.y;
@@ -7785,9 +7604,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.subtract = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x - right.x;
         result.y = left.y - right.y;
@@ -7804,9 +7620,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.multiplyByScalar = function(cartesian, scalar, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.number('scalar', scalar);
-        Check.typeOf.object('result', result);
         
         result.x = cartesian.x * scalar;
         result.y = cartesian.y * scalar;
@@ -7823,9 +7636,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.divideByScalar = function(cartesian, scalar, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.number('scalar', scalar);
-        Check.typeOf.object('result', result);
         
         result.x = cartesian.x / scalar;
         result.y = cartesian.y / scalar;
@@ -7841,8 +7651,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.negate = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         result.x = -cartesian.x;
         result.y = -cartesian.y;
@@ -7858,8 +7666,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.abs = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         result.x = Math.abs(cartesian.x);
         result.y = Math.abs(cartesian.y);
@@ -7878,10 +7684,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.lerp = function(start, end, t, result) {
-                Check.typeOf.object('start', start);
-        Check.typeOf.object('end', end);
-        Check.typeOf.number('t', t);
-        Check.typeOf.object('result', result);
         
         Cartesian3.multiplyByScalar(end, t, lerpScratch);
         result = Cartesian3.multiplyByScalar(start, 1.0 - t, result);
@@ -7898,8 +7700,6 @@ define('Core/Cartesian3',[
      * @returns {Number} The angle between the Cartesians.
      */
     Cartesian3.angleBetween = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         Cartesian3.normalize(left, angleBetweenScratch);
         Cartesian3.normalize(right, angleBetweenScratch2);
@@ -7917,8 +7717,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The most orthogonal axis.
      */
     Cartesian3.mostOrthogonalAxis = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         var f = Cartesian3.normalize(cartesian, mostOrthogonalAxisScratch);
         Cartesian3.abs(f, f);
@@ -7946,9 +7744,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter
      */
     Cartesian3.projectVector = function(a, b, result) {
-                Check.defined('a', a);
-        Check.defined('b', b);
-        Check.defined('result', result);
         
         var scalar = Cartesian3.dot(a, b) / Cartesian3.dot(b, b);
         return Cartesian3.multiplyByScalar(b, scalar, result);
@@ -8009,9 +7804,6 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The cross product.
      */
     Cartesian3.cross = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         var leftX = left.x;
         var leftY = left.y;
@@ -8031,25 +7823,6 @@ define('Core/Cartesian3',[
     };
 
     /**
-     * Computes the midpoint between the right and left Cartesian.
-     * @param {Cartesian3} left The first Cartesian.
-     * @param {Cartesian3} right The second Cartesian.
-     * @param {Cartesian3} result The object onto which to store the result.
-     * @returns {Cartesian3} The midpoint.
-     */
-    Cartesian3.midpoint = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
-        
-        result.x = (left.x + right.x) * 0.5;
-        result.y = (left.y + right.y) * 0.5;
-        result.z = (left.z + right.z) * 0.5;
-
-        return result;
-    };
-
-    /**
      * Returns a Cartesian3 position from longitude and latitude values given in degrees.
      *
      * @param {Number} longitude The longitude, in degrees
@@ -8063,8 +7836,6 @@ define('Core/Cartesian3',[
      * var position = Cesium.Cartesian3.fromDegrees(-115.0, 37.0);
      */
     Cartesian3.fromDegrees = function(longitude, latitude, height, ellipsoid, result) {
-                Check.typeOf.number('longitude', longitude);
-        Check.typeOf.number('latitude', latitude);
         
         longitude = CesiumMath.toRadians(longitude);
         latitude = CesiumMath.toRadians(latitude);
@@ -8089,8 +7860,6 @@ define('Core/Cartesian3',[
      * var position = Cesium.Cartesian3.fromRadians(-2.007, 0.645);
      */
     Cartesian3.fromRadians = function(longitude, latitude, height, ellipsoid, result) {
-                Check.typeOf.number('longitude', longitude);
-        Check.typeOf.number('latitude', latitude);
         
         height = defaultValue(height, 0.0);
         var radiiSquared = defined(ellipsoid) ? ellipsoid.radiiSquared : wgs84RadiiSquared;
@@ -8124,10 +7893,6 @@ define('Core/Cartesian3',[
      * var positions = Cesium.Cartesian3.fromDegreesArray([-115.0, 37.0, -107.0, 33.0]);
      */
     Cartesian3.fromDegreesArray = function(coordinates, ellipsoid, result) {
-                Check.defined('coordinates', coordinates);
-        if (coordinates.length < 2 || coordinates.length % 2 !== 0) {
-            throw new DeveloperError('the number of coordinates must be a multiple of 2 and at least 2');
-        }
         
         var length = coordinates.length;
         if (!defined(result)) {
@@ -8158,10 +7923,6 @@ define('Core/Cartesian3',[
      * var positions = Cesium.Cartesian3.fromRadiansArray([-2.007, 0.645, -1.867, .575]);
      */
     Cartesian3.fromRadiansArray = function(coordinates, ellipsoid, result) {
-                Check.defined('coordinates', coordinates);
-        if (coordinates.length < 2 || coordinates.length % 2 !== 0) {
-            throw new DeveloperError('the number of coordinates must be a multiple of 2 and at least 2');
-        }
         
         var length = coordinates.length;
         if (!defined(result)) {
@@ -8192,10 +7953,6 @@ define('Core/Cartesian3',[
      * var positions = Cesium.Cartesian3.fromDegreesArrayHeights([-115.0, 37.0, 100000.0, -107.0, 33.0, 150000.0]);
      */
     Cartesian3.fromDegreesArrayHeights = function(coordinates, ellipsoid, result) {
-                Check.defined('coordinates', coordinates);
-        if (coordinates.length < 3 || coordinates.length % 3 !== 0) {
-            throw new DeveloperError('the number of coordinates must be a multiple of 3 and at least 3');
-        }
         
         var length = coordinates.length;
         if (!defined(result)) {
@@ -8227,10 +7984,6 @@ define('Core/Cartesian3',[
      * var positions = Cesium.Cartesian3.fromRadiansArrayHeights([-2.007, 0.645, 100000.0, -1.867, .575, 150000.0]);
      */
     Cartesian3.fromRadiansArrayHeights = function(coordinates, ellipsoid, result) {
-                Check.defined('coordinates', coordinates);
-        if (coordinates.length < 3 || coordinates.length % 3 !== 0) {
-            throw new DeveloperError('the number of coordinates must be a multiple of 3 and at least 3');
-        }
         
         var length = coordinates.length;
         if (!defined(result)) {
@@ -8361,18 +8114,6 @@ define('Core/scaleToGeodeticSurface',[
      * @private
      */
     function scaleToGeodeticSurface(cartesian, oneOverRadii, oneOverRadiiSquared, centerToleranceSquared, result) {
-                if (!defined(cartesian)) {
-            throw new DeveloperError('cartesian is required.');
-        }
-        if (!defined(oneOverRadii)) {
-            throw new DeveloperError('oneOverRadii is required.');
-        }
-        if (!defined(oneOverRadiiSquared)) {
-            throw new DeveloperError('oneOverRadiiSquared is required.');
-        }
-        if (!defined(centerToleranceSquared)) {
-            throw new DeveloperError('centerToleranceSquared is required.');
-        }
         
         var positionX = cartesian.x;
         var positionY = cartesian.y;
@@ -8526,8 +8267,6 @@ define('Core/Cartographic',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if one was not provided.
      */
     Cartographic.fromRadians = function(longitude, latitude, height, result) {
-                Check.typeOf.number('longitude', longitude);
-        Check.typeOf.number('latitude', latitude);
         
         height = defaultValue(height, 0.0);
 
@@ -8553,8 +8292,6 @@ define('Core/Cartographic',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if one was not provided.
      */
     Cartographic.fromDegrees = function(longitude, latitude, height, result) {
-                Check.typeOf.number('longitude', longitude);
-        Check.typeOf.number('latitude', latitude);
                 longitude = CesiumMath.toRadians(longitude);
         latitude = CesiumMath.toRadians(latitude);
 
@@ -8617,7 +8354,6 @@ define('Core/Cartographic',[
      * @returns {Cartesian3} The position
      */
     Cartographic.toCartesian = function(cartographic, ellipsoid, result) {
-                Check.defined('cartographic', cartographic);
         
         return Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, cartographic.height, ellipsoid, result);
     };
@@ -8670,7 +8406,6 @@ define('Core/Cartographic',[
      * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
      */
     Cartographic.equalsEpsilon = function(left, right, epsilon) {
-                Check.typeOf.number('epsilon', epsilon);
         
         return (left === right) ||
                ((defined(left)) &&
@@ -8763,9 +8498,6 @@ define('Core/Ellipsoid',[
         y = defaultValue(y, 0.0);
         z = defaultValue(z, 0.0);
 
-                Check.typeOf.number.greaterThanOrEquals('x', x, 0.0);
-        Check.typeOf.number.greaterThanOrEquals('y', y, 0.0);
-        Check.typeOf.number.greaterThanOrEquals('z', z, 0.0);
         
         ellipsoid._radii = new Cartesian3(x, y, z);
 
@@ -9017,8 +8749,6 @@ define('Core/Ellipsoid',[
      * @returns {Number[]} The array that was packed into
      */
     Ellipsoid.pack = function(value, array, startingIndex) {
-                Check.typeOf.object('value', value);
-        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -9036,7 +8766,6 @@ define('Core/Ellipsoid',[
      * @returns {Ellipsoid} The modified result parameter or a new Ellipsoid instance if one was not provided.
      */
     Ellipsoid.unpack = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -9062,7 +8791,6 @@ define('Core/Ellipsoid',[
      * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if none was provided.
      */
     Ellipsoid.prototype.geodeticSurfaceNormalCartographic = function(cartographic, result) {
-                Check.typeOf.object('cartographic', cartographic);
         
         var longitude = cartographic.longitude;
         var latitude = cartographic.latitude;
@@ -9142,7 +8870,6 @@ define('Core/Ellipsoid',[
      * var cartesianPositions = Cesium.Ellipsoid.WGS84.cartographicArrayToCartesianArray(positions);
      */
     Ellipsoid.prototype.cartographicArrayToCartesianArray = function(cartographics, result) {
-                Check.defined('cartographics', cartographics);
         
         var length = cartographics.length;
         if (!defined(result)) {
@@ -9212,7 +8939,6 @@ define('Core/Ellipsoid',[
      * var cartographicPositions = Cesium.Ellipsoid.WGS84.cartesianArrayToCartographicArray(positions);
      */
     Ellipsoid.prototype.cartesianArrayToCartographicArray = function(cartesians, result) {
-                Check.defined('cartesians', cartesians);
         
         var length = cartesians.length;
         if (!defined(result)) {
@@ -9248,7 +8974,6 @@ define('Core/Ellipsoid',[
      * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if none was provided.
      */
     Ellipsoid.prototype.scaleToGeocentricSurface = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
         
         if (!defined(result)) {
             result = new Cartesian3();
@@ -9341,13 +9066,6 @@ define('Core/Ellipsoid',[
      * @exception {DeveloperError} Ellipsoid.radii.z must be greater than 0.
      */
     Ellipsoid.prototype.getSurfaceNormalIntersectionWithZAxis = function(position, buffer, result) {
-                Check.typeOf.object('position', position);
-
-        if (!CesiumMath.equalsEpsilon(this._radii.x, this._radii.y, CesiumMath.EPSILON15)) {
-            throw new DeveloperError('Ellipsoid must be an ellipsoid of revolution (radii.x == radii.y)');
-        }
-
-        Check.typeOf.number.greaterThan('Ellipsoid.radii.z', this._radii.z, 0);
         
         buffer = defaultValue(buffer, 0.0);
 
@@ -9466,9 +9184,6 @@ define('Core/GeographicProjection',[
      *          created and returned.
      */
     GeographicProjection.prototype.unproject = function(cartesian, result) {
-                if (!defined(cartesian)) {
-            throw new DeveloperError('cartesian is required');
-        }
         
         var oneOverEarthSemimajorAxis = this._oneOverSemimajorAxis;
         var longitude = cartesian.x * oneOverEarthSemimajorAxis;
@@ -9637,8 +9352,6 @@ define('Core/Matrix3',[
      * @returns {Number[]} The array that was packed into
      */
     Matrix3.pack = function(value, array, startingIndex) {
-                Check.typeOf.object('value', value);
-        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -9664,7 +9377,6 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter or a new Matrix3 instance if one was not provided.
      */
     Matrix3.unpack = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -9734,7 +9446,6 @@ define('Core/Matrix3',[
      * var m2 = Cesium.Matrix3.fromArray(v2, 2);
      */
     Matrix3.fromArray = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -9762,7 +9473,6 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter, or a new Matrix3 instance if one was not provided.
      */
     Matrix3.fromColumnMajorArray = function(values, result) {
-                Check.defined('values', values);
         
         return Matrix3.clone(values, result);
     };
@@ -9776,7 +9486,6 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter, or a new Matrix3 instance if one was not provided.
      */
     Matrix3.fromRowMajorArray = function(values, result) {
-                Check.defined('values', values);
         
         if (!defined(result)) {
             return new Matrix3(values[0], values[1], values[2],
@@ -9803,7 +9512,6 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The 3x3 rotation matrix from this quaternion.
      */
     Matrix3.fromQuaternion = function(quaternion, result) {
-                Check.typeOf.object('quaternion', quaternion);
         
         var x2 = quaternion.x * quaternion.x;
         var xy = quaternion.x * quaternion.y;
@@ -9853,7 +9561,6 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The 3x3 rotation matrix from this headingPitchRoll.
      */
     Matrix3.fromHeadingPitchRoll = function(headingPitchRoll, result) {
-                Check.typeOf.object('headingPitchRoll', headingPitchRoll);
         
         var cosTheta = Math.cos(-headingPitchRoll.pitch);
         var cosPsi = Math.cos(-headingPitchRoll.heading);
@@ -9906,7 +9613,6 @@ define('Core/Matrix3',[
      * var m = Cesium.Matrix3.fromScale(new Cesium.Cartesian3(7.0, 8.0, 9.0));
      */
     Matrix3.fromScale = function(scale, result) {
-                Check.typeOf.object('scale', scale);
         
         if (!defined(result)) {
             return new Matrix3(
@@ -9942,7 +9648,6 @@ define('Core/Matrix3',[
      * var m = Cesium.Matrix3.fromUniformScale(2.0);
      */
     Matrix3.fromUniformScale = function(scale, result) {
-                Check.typeOf.number('scale', scale);
         
         if (!defined(result)) {
             return new Matrix3(
@@ -9978,7 +9683,6 @@ define('Core/Matrix3',[
      * var m = Cesium.Matrix3.fromCrossProduct(new Cesium.Cartesian3(7.0, 8.0, 9.0));
      */
     Matrix3.fromCrossProduct = function(vector, result) {
-                Check.typeOf.object('vector', vector);
         
         if (!defined(result)) {
             return new Matrix3(
@@ -10013,7 +9717,6 @@ define('Core/Matrix3',[
      * var rotated = Cesium.Matrix3.multiplyByVector(m, p, new Cesium.Cartesian3());
      */
     Matrix3.fromRotationX = function(angle, result) {
-                Check.typeOf.number('angle', angle);
         
         var cosAngle = Math.cos(angle);
         var sinAngle = Math.sin(angle);
@@ -10052,7 +9755,6 @@ define('Core/Matrix3',[
      * var rotated = Cesium.Matrix3.multiplyByVector(m, p, new Cesium.Cartesian3());
      */
     Matrix3.fromRotationY = function(angle, result) {
-                Check.typeOf.number('angle', angle);
         
         var cosAngle = Math.cos(angle);
         var sinAngle = Math.sin(angle);
@@ -10091,7 +9793,6 @@ define('Core/Matrix3',[
      * var rotated = Cesium.Matrix3.multiplyByVector(m, p, new Cesium.Cartesian3());
      */
     Matrix3.fromRotationZ = function(angle, result) {
-                Check.typeOf.number('angle', angle);
         
         var cosAngle = Math.cos(angle);
         var sinAngle = Math.sin(angle);
@@ -10125,7 +9826,6 @@ define('Core/Matrix3',[
      * @returns {Number[]} The modified Array parameter or a new Array instance if one was not provided.
      */
     Matrix3.toArray = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
         
         if (!defined(result)) {
             return [matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8]];
@@ -10159,10 +9859,6 @@ define('Core/Matrix3',[
      * myMatrix[column1Row0Index] = 10.0;
      */
     Matrix3.getElementIndex = function(column, row) {
-                Check.typeOf.number.greaterThanOrEquals('row', row, 0);
-        Check.typeOf.number.lessThanOrEquals('row', row, 2);
-        Check.typeOf.number.greaterThanOrEquals('column', column, 0);
-        Check.typeOf.number.lessThanOrEquals('column', column, 2);
         
         return column * 3 + row;
     };
@@ -10178,10 +9874,6 @@ define('Core/Matrix3',[
      * @exception {DeveloperError} index must be 0, 1, or 2.
      */
     Matrix3.getColumn = function(matrix, index, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
-        Check.typeOf.number.lessThanOrEquals('index', index, 2);
-        Check.typeOf.object('result', result);
         
         var startIndex = index * 3;
         var x = matrix[startIndex];
@@ -10206,11 +9898,6 @@ define('Core/Matrix3',[
      * @exception {DeveloperError} index must be 0, 1, or 2.
      */
     Matrix3.setColumn = function(matrix, index, cartesian, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
-        Check.typeOf.number.lessThanOrEquals('index', index, 2);
-        Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         result = Matrix3.clone(matrix, result);
         var startIndex = index * 3;
@@ -10231,10 +9918,6 @@ define('Core/Matrix3',[
      * @exception {DeveloperError} index must be 0, 1, or 2.
      */
     Matrix3.getRow = function(matrix, index, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
-        Check.typeOf.number.lessThanOrEquals('index', index, 2);
-        Check.typeOf.object('result', result);
         
         var x = matrix[index];
         var y = matrix[index + 3];
@@ -10258,11 +9941,6 @@ define('Core/Matrix3',[
      * @exception {DeveloperError} index must be 0, 1, or 2.
      */
     Matrix3.setRow = function(matrix, index, cartesian, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
-        Check.typeOf.number.lessThanOrEquals('index', index, 2);
-        Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         result = Matrix3.clone(matrix, result);
         result[index] = cartesian.x;
@@ -10281,8 +9959,6 @@ define('Core/Matrix3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Matrix3.getScale = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         result.x = Cartesian3.magnitude(Cartesian3.fromElements(matrix[0], matrix[1], matrix[2], scratchColumn));
         result.y = Cartesian3.magnitude(Cartesian3.fromElements(matrix[3], matrix[4], matrix[5], scratchColumn));
@@ -10313,9 +9989,6 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.multiply = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         var column0Row0 = left[0] * right[0] + left[3] * right[1] + left[6] * right[2];
         var column0Row1 = left[1] * right[0] + left[4] * right[1] + left[7] * right[2];
@@ -10350,9 +10023,6 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.add = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result[0] = left[0] + right[0];
         result[1] = left[1] + right[1];
@@ -10375,9 +10045,6 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.subtract = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result[0] = left[0] - right[0];
         result[1] = left[1] - right[1];
@@ -10400,9 +10067,6 @@ define('Core/Matrix3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Matrix3.multiplyByVector = function(matrix, cartesian, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         var vX = cartesian.x;
         var vY = cartesian.y;
@@ -10427,9 +10091,6 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.multiplyByScalar = function(matrix, scalar, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.number('scalar', scalar);
-        Check.typeOf.object('result', result);
         
         result[0] = matrix[0] * scalar;
         result[1] = matrix[1] * scalar;
@@ -10460,9 +10121,6 @@ define('Core/Matrix3',[
      * @see Matrix3.multiplyByUniformScale
      */
     Matrix3.multiplyByScale = function(matrix, scale, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('scale', scale);
-        Check.typeOf.object('result', result);
         
         result[0] = matrix[0] * scale.x;
         result[1] = matrix[1] * scale.x;
@@ -10484,8 +10142,6 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.negate = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         result[0] = -matrix[0];
         result[1] = -matrix[1];
@@ -10507,8 +10163,6 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.transpose = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         var column0Row0 = matrix[0];
         var column0Row1 = matrix[3];
@@ -10648,7 +10302,6 @@ define('Core/Matrix3',[
      * var c = Cesium.Cartesian3.multiplyByScalar(v, lambda, new Cesium.Cartesian3());        // equal to Cesium.Matrix3.multiplyByVector(a, v)
      */
     Matrix3.computeEigenDecomposition = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
         
         // This routine was created based upon Matrix Computations, 3rd ed., by Golub and Van Loan,
         // section 8.4.3 The Classical Jacobi Algorithm
@@ -10692,8 +10345,6 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.abs = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         result[0] = Math.abs(matrix[0]);
         result[1] = Math.abs(matrix[1]);
@@ -10715,7 +10366,6 @@ define('Core/Matrix3',[
      * @returns {Number} The value of the determinant of the matrix.
      */
     Matrix3.determinant = function(matrix) {
-                Check.typeOf.object('matrix', matrix);
         
         var m11 = matrix[0];
         var m21 = matrix[3];
@@ -10740,8 +10390,6 @@ define('Core/Matrix3',[
      * @exception {DeveloperError} matrix is not invertible.
      */
     Matrix3.inverse = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         var m11 = matrix[0];
         var m21 = matrix[1];
@@ -10755,9 +10403,6 @@ define('Core/Matrix3',[
 
         var determinant = Matrix3.determinant(matrix);
 
-                if (Math.abs(determinant) <= CesiumMath.EPSILON15) {
-            throw new DeveloperError('matrix is not invertible');
-        }
         
         result[0] = m22 * m33 - m23 * m32;
         result[1] = m23 * m31 - m21 * m33;
@@ -10807,7 +10452,6 @@ define('Core/Matrix3',[
      * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
      */
     Matrix3.equalsEpsilon = function(left, right, epsilon) {
-                Check.typeOf.number('epsilon', epsilon);
         
         return (left === right) ||
                 (defined(left) &&
@@ -11084,7 +10728,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter or a new Cartesian4 instance if one was not provided.
      */
     Cartesian4.fromColor = function(color, result) {
-                Check.typeOf.object('color', color);
                 if (!defined(result)) {
             return new Cartesian4(color.red, color.green, color.blue, color.alpha);
         }
@@ -11135,8 +10778,6 @@ define('Core/Cartesian4',[
      * @returns {Number[]} The array that was packed into
      */
     Cartesian4.pack = function(value, array, startingIndex) {
-                Check.typeOf.object('value', value);
-        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -11157,7 +10798,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4}  The modified result parameter or a new Cartesian4 instance if one was not provided.
      */
     Cartesian4.unpack = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -11179,7 +10819,6 @@ define('Core/Cartesian4',[
      * @returns {Number[]} The packed array.
      */
     Cartesian4.packArray = function(array, result) {
-                Check.defined('array', array);
         
         var length = array.length;
         if (!defined(result)) {
@@ -11202,7 +10841,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4[]} The unpacked array.
      */
     Cartesian4.unpackArray = function(array, result) {
-                Check.defined('array', array);
         
         var length = array.length;
         if (!defined(result)) {
@@ -11245,7 +10883,6 @@ define('Core/Cartesian4',[
      * @returns {Number} The value of the maximum component.
      */
     Cartesian4.maximumComponent = function(cartesian) {
-                Check.typeOf.object('cartesian', cartesian);
         
         return Math.max(cartesian.x, cartesian.y, cartesian.z, cartesian.w);
     };
@@ -11257,7 +10894,6 @@ define('Core/Cartesian4',[
      * @returns {Number} The value of the minimum component.
      */
     Cartesian4.minimumComponent = function(cartesian) {
-                Check.typeOf.object('cartesian', cartesian);
         
         return Math.min(cartesian.x, cartesian.y, cartesian.z, cartesian.w);
     };
@@ -11271,9 +10907,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} A cartesian with the minimum components.
      */
     Cartesian4.minimumByComponent = function(first, second, result) {
-                Check.typeOf.object('first', first);
-        Check.typeOf.object('second', second);
-        Check.typeOf.object('result', result);
         
         result.x = Math.min(first.x, second.x);
         result.y = Math.min(first.y, second.y);
@@ -11292,9 +10925,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} A cartesian with the maximum components.
      */
     Cartesian4.maximumByComponent = function(first, second, result) {
-                Check.typeOf.object('first', first);
-        Check.typeOf.object('second', second);
-        Check.typeOf.object('result', result);
         
         result.x = Math.max(first.x, second.x);
         result.y = Math.max(first.y, second.y);
@@ -11311,7 +10941,6 @@ define('Core/Cartesian4',[
      * @returns {Number} The squared magnitude.
      */
     Cartesian4.magnitudeSquared = function(cartesian) {
-                Check.typeOf.object('cartesian', cartesian);
         
         return cartesian.x * cartesian.x + cartesian.y * cartesian.y + cartesian.z * cartesian.z + cartesian.w * cartesian.w;
     };
@@ -11342,8 +10971,6 @@ define('Core/Cartesian4',[
      *   new Cesium.Cartesian4(2.0, 0.0, 0.0, 0.0));
      */
     Cartesian4.distance = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         Cartesian4.subtract(left, right, distanceScratch);
         return Cartesian4.magnitude(distanceScratch);
@@ -11364,8 +10991,6 @@ define('Core/Cartesian4',[
      *   new Cesium.Cartesian4(3.0, 0.0, 0.0, 0.0));
      */
     Cartesian4.distanceSquared = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         Cartesian4.subtract(left, right, distanceScratch);
         return Cartesian4.magnitudeSquared(distanceScratch);
@@ -11379,8 +11004,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.normalize = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         var magnitude = Cartesian4.magnitude(cartesian);
 
@@ -11389,9 +11012,6 @@ define('Core/Cartesian4',[
         result.z = cartesian.z / magnitude;
         result.w = cartesian.w / magnitude;
 
-                if (isNaN(result.x) || isNaN(result.y) || isNaN(result.z) || isNaN(result.w)) {
-            throw new DeveloperError('normalized result is not a number');
-        }
         
         return result;
     };
@@ -11404,8 +11024,6 @@ define('Core/Cartesian4',[
      * @returns {Number} The dot product.
      */
     Cartesian4.dot = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
     };
@@ -11419,9 +11037,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.multiplyComponents = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x * right.x;
         result.y = left.y * right.y;
@@ -11439,9 +11054,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.divideComponents = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x / right.x;
         result.y = left.y / right.y;
@@ -11459,9 +11071,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.add = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x + right.x;
         result.y = left.y + right.y;
@@ -11479,9 +11088,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.subtract = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x - right.x;
         result.y = left.y - right.y;
@@ -11499,9 +11105,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.multiplyByScalar = function(cartesian, scalar, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.number('scalar', scalar);
-        Check.typeOf.object('result', result);
         
         result.x = cartesian.x * scalar;
         result.y = cartesian.y * scalar;
@@ -11519,9 +11122,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.divideByScalar = function(cartesian, scalar, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.number('scalar', scalar);
-        Check.typeOf.object('result', result);
         
         result.x = cartesian.x / scalar;
         result.y = cartesian.y / scalar;
@@ -11538,8 +11138,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.negate = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         result.x = -cartesian.x;
         result.y = -cartesian.y;
@@ -11556,8 +11154,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.abs = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         result.x = Math.abs(cartesian.x);
         result.y = Math.abs(cartesian.y);
@@ -11577,10 +11173,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.lerp = function(start, end, t, result) {
-                Check.typeOf.object('start', start);
-        Check.typeOf.object('end', end);
-        Check.typeOf.number('t', t);
-        Check.typeOf.object('result', result);
         
         Cartesian4.multiplyByScalar(end, t, lerpScratch);
         result = Cartesian4.multiplyByScalar(start, 1.0 - t, result);
@@ -11596,8 +11188,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The most orthogonal axis.
      */
     Cartesian4.mostOrthogonalAxis = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         var f = Cartesian4.normalize(cartesian, mostOrthogonalAxisScratch);
         Cartesian4.abs(f, f);
@@ -11781,7 +11371,6 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} A Cartesian4 representing the float packed to values in x, y, z, and w.
      */
     Cartesian4.packFloat = function(value, result) {
-                Check.typeOf.number('value', value);
         
         if (!defined(result)) {
             result = new Cartesian4();
@@ -11826,7 +11415,6 @@ define('Core/Cartesian4',[
      * @private
      */
     Cartesian4.unpackFloat = function(packedFloat) {
-                Check.typeOf.object('packedFloat', packedFloat);
         
         var temp = packedFloat.w / 2.0;
         var exponent = Math.floor(temp);
@@ -11954,8 +11542,6 @@ define('Core/Matrix4',[
      * @returns {Number[]} The array that was packed into
      */
     Matrix4.pack = function(value, array, startingIndex) {
-                Check.typeOf.object('value', value);
-        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -11988,7 +11574,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
      */
     Matrix4.unpack = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -12084,7 +11669,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter, or a new Matrix4 instance if one was not provided.
      */
     Matrix4.fromColumnMajorArray = function(values, result) {
-                Check.defined('values', values);
         
         return Matrix4.clone(values, result);
     };
@@ -12098,7 +11682,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter, or a new Matrix4 instance if one was not provided.
      */
     Matrix4.fromRowMajorArray = function(values, result) {
-                Check.defined('values', values);
         
         if (!defined(result)) {
             return new Matrix4(values[0], values[1], values[2], values[3],
@@ -12135,7 +11718,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter, or a new Matrix4 instance if one was not provided.
      */
     Matrix4.fromRotationTranslation = function(rotation, translation, result) {
-                Check.typeOf.object('rotation', rotation);
         
         translation = defaultValue(translation, Cartesian3.ZERO);
 
@@ -12183,9 +11765,6 @@ define('Core/Matrix4',[
      *   result);
      */
     Matrix4.fromTranslationQuaternionRotationScale = function(translation, rotation, scale, result) {
-                Check.typeOf.object('translation', translation);
-        Check.typeOf.object('rotation', rotation);
-        Check.typeOf.object('scale', scale);
         
         if (!defined(result)) {
             result = new Matrix4();
@@ -12246,7 +11825,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter, or a new Matrix4 instance if one was not provided.
      */
     Matrix4.fromTranslationRotationScale = function(translationRotationScale, result) {
-                Check.typeOf.object('translationRotationScale', translationRotationScale);
         
         return Matrix4.fromTranslationQuaternionRotationScale(translationRotationScale.translation, translationRotationScale.rotation, translationRotationScale.scale, result);
     };
@@ -12261,7 +11839,6 @@ define('Core/Matrix4',[
      * @see Matrix4.multiplyByTranslation
      */
     Matrix4.fromTranslation = function(translation, result) {
-                Check.typeOf.object('translation', translation);
         
         return Matrix4.fromRotationTranslation(Matrix3.IDENTITY, translation, result);
     };
@@ -12282,7 +11859,6 @@ define('Core/Matrix4',[
      * var m = Cesium.Matrix4.fromScale(new Cesium.Cartesian3(7.0, 8.0, 9.0));
      */
     Matrix4.fromScale = function(scale, result) {
-                Check.typeOf.object('scale', scale);
         
         if (!defined(result)) {
             return new Matrix4(
@@ -12327,7 +11903,6 @@ define('Core/Matrix4',[
      * var m = Cesium.Matrix4.fromUniformScale(2.0);
      */
     Matrix4.fromUniformScale = function(scale, result) {
-                Check.typeOf.number('scale', scale);
         
         if (!defined(result)) {
             return new Matrix4(scale, 0.0,   0.0,   0.0,
@@ -12367,15 +11942,11 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter, or a new Matrix4 instance if one was not provided.
      */
     Matrix4.fromCamera = function(camera, result) {
-                Check.typeOf.object('camera', camera);
         
         var position = camera.position;
         var direction = camera.direction;
         var up = camera.up;
 
-                Check.typeOf.object('camera.position', position);
-        Check.typeOf.object('camera.direction', direction);
-        Check.typeOf.object('camera.up', up);
         
         Cartesian3.normalize(direction, fromCameraF);
         Cartesian3.normalize(Cartesian3.cross(fromCameraF, up, fromCameraR), fromCameraR);
@@ -12454,11 +12025,6 @@ define('Core/Matrix4',[
       * @exception {DeveloperError} far must be greater than zero.
       */
     Matrix4.computePerspectiveFieldOfView = function(fovY, aspectRatio, near, far, result) {
-                Check.typeOf.number.greaterThan('fovY', fovY, 0.0);
-        Check.typeOf.number.lessThan('fovY', fovY, Math.PI);
-        Check.typeOf.number.greaterThan('near', near, 0.0);
-        Check.typeOf.number.greaterThan('far', far, 0.0);
-        Check.typeOf.object('result', result);
         
         var bottom = Math.tan(fovY * 0.5);
 
@@ -12499,13 +12065,6 @@ define('Core/Matrix4',[
     * @returns {Matrix4} The modified result parameter.
     */
     Matrix4.computeOrthographicOffCenter = function(left, right, bottom, top, near, far, result) {
-                Check.typeOf.number('left', left);
-        Check.typeOf.number('right', right);
-        Check.typeOf.number('bottom', bottom);
-        Check.typeOf.number('top', top);
-        Check.typeOf.number('near', near);
-        Check.typeOf.number('far', far);
-        Check.typeOf.object('result', result);
         
         var a = 1.0 / (right - left);
         var b = 1.0 / (top - bottom);
@@ -12550,13 +12109,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.computePerspectiveOffCenter = function(left, right, bottom, top, near, far, result) {
-                Check.typeOf.number('left', left);
-        Check.typeOf.number('right', right);
-        Check.typeOf.number('bottom', bottom);
-        Check.typeOf.number('top', top);
-        Check.typeOf.number('near', near);
-        Check.typeOf.number('far', far);
-        Check.typeOf.object('result', result);
         
         var column0Row0 = 2.0 * near / (right - left);
         var column1Row1 = 2.0 * near / (top - bottom);
@@ -12597,12 +12149,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.computeInfinitePerspectiveOffCenter = function(left, right, bottom, top, near, result) {
-                Check.typeOf.number('left', left);
-        Check.typeOf.number('right', right);
-        Check.typeOf.number('bottom', bottom);
-        Check.typeOf.number('top', top);
-        Check.typeOf.number('near', near);
-        Check.typeOf.object('result', result);
         
         var column0Row0 = 2.0 * near / (right - left);
         var column1Row1 = 2.0 * near / (top - bottom);
@@ -12650,7 +12196,6 @@ define('Core/Matrix4',[
      * }, 0.0, 1.0, new Cesium.Matrix4());
      */
     Matrix4.computeViewportTransformation = function(viewport, nearDepthRange, farDepthRange, result) {
-                Check.typeOf.object('result', result);
         
         viewport = defaultValue(viewport, defaultValue.EMPTY_OBJECT);
         var x = defaultValue(viewport.x, 0.0);
@@ -12702,11 +12247,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.computeView = function(position, direction, up, right, result) {
-                Check.typeOf.object('position', position);
-        Check.typeOf.object('direction', direction);
-        Check.typeOf.object('up', up);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result[0] = right.x;
         result[1] = up.x;
@@ -12747,7 +12287,6 @@ define('Core/Matrix4',[
      * //creates a = [10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0]
      */
     Matrix4.toArray = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
         
         if (!defined(result)) {
             return [matrix[0], matrix[1], matrix[2], matrix[3],
@@ -12791,11 +12330,6 @@ define('Core/Matrix4',[
      * myMatrix[column1Row0Index] = 10.0;
      */
     Matrix4.getElementIndex = function(column, row) {
-                Check.typeOf.number.greaterThanOrEquals('row', row, 0);
-        Check.typeOf.number.lessThanOrEquals('row', row, 3);
-
-        Check.typeOf.number.greaterThanOrEquals('column', column, 0);
-        Check.typeOf.number.lessThanOrEquals('column', column, 3);
         
         return column * 4 + row;
     };
@@ -12828,12 +12362,6 @@ define('Core/Matrix4',[
      * // a.x = 12.0; a.y = 16.0; a.z = 20.0; a.w = 24.0;
      */
     Matrix4.getColumn = function(matrix, index, result) {
-                Check.typeOf.object('matrix', matrix);
-
-        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
-        Check.typeOf.number.lessThanOrEquals('index', index, 3);
-
-        Check.typeOf.object('result', result);
         
         var startIndex = index * 4;
         var x = matrix[startIndex];
@@ -12875,13 +12403,6 @@ define('Core/Matrix4',[
      * //     [22.0, 23.0, 96.0, 25.0]
      */
     Matrix4.setColumn = function(matrix, index, cartesian, result) {
-                Check.typeOf.object('matrix', matrix);
-
-        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
-        Check.typeOf.number.lessThanOrEquals('index', index, 3);
-
-        Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         result = Matrix4.clone(matrix, result);
         var startIndex = index * 4;
@@ -12902,9 +12423,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.setTranslation = function(matrix, translation, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('translation', translation);
-        Check.typeOf.object('result', result);
         
         result[0] = matrix[0];
         result[1] = matrix[1];
@@ -12957,12 +12475,6 @@ define('Core/Matrix4',[
      * // a.x = 18.0; a.y = 19.0; a.z = 20.0; a.w = 21.0;
      */
     Matrix4.getRow = function(matrix, index, result) {
-                Check.typeOf.object('matrix', matrix);
-
-        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
-        Check.typeOf.number.lessThanOrEquals('index', index, 3);
-
-        Check.typeOf.object('result', result);
         
         var x = matrix[index];
         var y = matrix[index + 4];
@@ -13003,13 +12515,6 @@ define('Core/Matrix4',[
      * //     [22.0, 23.0, 24.0, 25.0]
      */
     Matrix4.setRow = function(matrix, index, cartesian, result) {
-                Check.typeOf.object('matrix', matrix);
-
-        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
-        Check.typeOf.number.lessThanOrEquals('index', index, 3);
-
-        Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         result = Matrix4.clone(matrix, result);
         result[index] = cartesian.x;
@@ -13029,8 +12534,6 @@ define('Core/Matrix4',[
      * @returns {Cartesian3} The modified result parameter
      */
     Matrix4.getScale = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         result.x = Cartesian3.magnitude(Cartesian3.fromElements(matrix[0], matrix[1], matrix[2], scratchColumn));
         result.y = Cartesian3.magnitude(Cartesian3.fromElements(matrix[4], matrix[5], matrix[6], scratchColumn));
@@ -13062,9 +12565,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.multiply = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         var left0 = left[0];
         var left1 = left[1];
@@ -13148,9 +12648,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.add = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result[0] = left[0] + right[0];
         result[1] = left[1] + right[1];
@@ -13180,9 +12677,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.subtract = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result[0] = left[0] - right[0];
         result[1] = left[1] - right[1];
@@ -13223,9 +12717,6 @@ define('Core/Matrix4',[
      * var m3 = Cesium.Matrix4.multiplyTransformation(m1, m2, new Cesium.Matrix4());
      */
     Matrix4.multiplyTransformation = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         var left0 = left[0];
         var left1 = left[1];
@@ -13303,9 +12794,6 @@ define('Core/Matrix4',[
      * Cesium.Matrix4.multiplyByMatrix3(m, rotation, m);
      */
     Matrix4.multiplyByMatrix3 = function(matrix, rotation, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('rotation', rotation);
-        Check.typeOf.object('result', result);
         
         var left0 = matrix[0];
         var left1 = matrix[1];
@@ -13373,9 +12861,6 @@ define('Core/Matrix4',[
      * Cesium.Matrix4.multiplyByTranslation(m, position, m);
      */
     Matrix4.multiplyByTranslation = function(matrix, translation, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('translation', translation);
-        Check.typeOf.object('result', result);
         
         var x = translation.x;
         var y = translation.y;
@@ -13427,9 +12912,6 @@ define('Core/Matrix4',[
      * @see Matrix4.multiplyByScale
      */
     Matrix4.multiplyByUniformScale = function(matrix, scale, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.number('scale', scale);
-        Check.typeOf.object('result', result);
         
         uniformScaleScratch.x = scale;
         uniformScaleScratch.y = scale;
@@ -13458,9 +12940,6 @@ define('Core/Matrix4',[
      * @see Matrix4.multiplyByUniformScale
      */
     Matrix4.multiplyByScale = function(matrix, scale, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('scale', scale);
-        Check.typeOf.object('result', result);
         
         var scaleX = scale.x;
         var scaleY = scale.y;
@@ -13499,9 +12978,6 @@ define('Core/Matrix4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Matrix4.multiplyByVector = function(matrix, cartesian, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         var vX = cartesian.x;
         var vY = cartesian.y;
@@ -13537,9 +13013,6 @@ define('Core/Matrix4',[
      * //   Cesium.Matrix4.multiplyByVector(matrix, new Cesium.Cartesian4(p.x, p.y, p.z, 0.0), result);
      */
     Matrix4.multiplyByPointAsVector = function(matrix, cartesian, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         var vX = cartesian.x;
         var vY = cartesian.y;
@@ -13569,9 +13042,6 @@ define('Core/Matrix4',[
      * var result = Cesium.Matrix4.multiplyByPoint(matrix, p, new Cesium.Cartesian3());
      */
     Matrix4.multiplyByPoint = function(matrix, cartesian, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         var vX = cartesian.x;
         var vY = cartesian.y;
@@ -13611,9 +13081,6 @@ define('Core/Matrix4',[
      * //     [-44.0, -46.0, -48.0, -50.0]
      */
     Matrix4.multiplyByScalar = function(matrix, scalar, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.number('scalar', scalar);
-        Check.typeOf.object('result', result);
         
         result[0] = matrix[0] * scalar;
         result[1] = matrix[1] * scalar;
@@ -13657,8 +13124,6 @@ define('Core/Matrix4',[
      * //     [-22.0, -23.0, -24.0, -25.0]
      */
     Matrix4.negate = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         result[0] = -matrix[0];
         result[1] = -matrix[1];
@@ -13702,8 +13167,6 @@ define('Core/Matrix4',[
      * //     [13.0, 17.0, 21.0, 25.0]
      */
     Matrix4.transpose = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         var matrix1 = matrix[1];
         var matrix2 = matrix[2];
@@ -13739,8 +13202,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.abs = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         result[0] = Math.abs(matrix[0]);
         result[1] = Math.abs(matrix[1]);
@@ -13854,7 +13315,6 @@ define('Core/Matrix4',[
      * //Prints "Difference between both the matrices is not less than 0.1" on the console
      */
     Matrix4.equalsEpsilon = function(left, right, epsilon) {
-                Check.typeOf.number('epsilon', epsilon);
         
         return (left === right) ||
                 (defined(left) &&
@@ -13885,8 +13345,6 @@ define('Core/Matrix4',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Matrix4.getTranslation = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         result.x = matrix[12];
         result.y = matrix[13];
@@ -13917,8 +13375,6 @@ define('Core/Matrix4',[
      * //     [12.0, 16.0, 20.0]
      */
     Matrix4.getRotation = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         result[0] = matrix[0];
         result[1] = matrix[1];
@@ -13950,8 +13406,6 @@ define('Core/Matrix4',[
       * @exception {RuntimeError} matrix is not invertible because its determinate is zero.
       */
     Matrix4.inverse = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         // Special case for a zero scale matrix that can occur, for example,
         // when a model's node has a [0, 0, 0] scale.
@@ -14089,8 +13543,6 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.inverseTransformation = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         //This function is an optimized version of the below 4 lines.
         //var rT = Matrix3.transpose(Matrix4.getRotation(matrix));
@@ -14478,8 +13930,6 @@ define('Core/Rectangle',[
      * @returns {Number[]} The array that was packed into
      */
     Rectangle.pack = function(value, array, startingIndex) {
-                Check.typeOf.object('value', value);
-        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -14500,7 +13950,6 @@ define('Core/Rectangle',[
      * @returns {Rectangle} The modified result parameter or a new Rectangle instance if one was not provided.
      */
     Rectangle.unpack = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -14521,7 +13970,6 @@ define('Core/Rectangle',[
      * @returns {Number} The width.
      */
     Rectangle.computeWidth = function(rectangle) {
-                Check.typeOf.object('rectangle', rectangle);
                 var east = rectangle.east;
         var west = rectangle.west;
         if (east < west) {
@@ -14536,7 +13984,6 @@ define('Core/Rectangle',[
      * @returns {Number} The height.
      */
     Rectangle.computeHeight = function(rectangle) {
-                Check.typeOf.object('rectangle', rectangle);
                 return rectangle.north - rectangle.south;
     };
 
@@ -14605,7 +14052,6 @@ define('Core/Rectangle',[
      * @returns {Rectangle} The modified result parameter or a new Rectangle instance if none was provided.
      */
     Rectangle.fromCartographicArray = function(cartographics, result) {
-                Check.defined('cartographics', cartographics);
         
         var west = Number.MAX_VALUE;
         var east = -Number.MAX_VALUE;
@@ -14658,7 +14104,6 @@ define('Core/Rectangle',[
      * @returns {Rectangle} The modified result parameter or a new Rectangle instance if none was provided.
      */
     Rectangle.fromCartesianArray = function(cartesians, ellipsoid, result) {
-                Check.defined('cartesians', cartesians);
                 ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
 
         var west = Number.MAX_VALUE;
@@ -14737,7 +14182,6 @@ define('Core/Rectangle',[
      * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
      */
     Rectangle.equalsEpsilon = function(left, right, absoluteEpsilon) {
-                Check.typeOf.number('absoluteEpsilon', absoluteEpsilon);
         
         return (left === right) ||
                (defined(left) &&
@@ -14797,7 +14241,6 @@ define('Core/Rectangle',[
      * @returns {Boolean} <code>true</code> if the Rectangles are within the provided epsilon, <code>false</code> otherwise.
      */
     Rectangle.prototype.equalsEpsilon = function(other, epsilon) {
-                Check.typeOf.number('epsilon', epsilon);
         
         return Rectangle.equalsEpsilon(this, other, epsilon);
     };
@@ -14813,23 +14256,6 @@ define('Core/Rectangle',[
      * @exception {DeveloperError} <code>west</code> must be in the interval [<code>-Pi</code>, <code>Pi</code>].
      */
     Rectangle.validate = function(rectangle) {
-                Check.typeOf.object('rectangle', rectangle);
-
-        var north = rectangle.north;
-        Check.typeOf.number.greaterThanOrEquals('north', north, -CesiumMath.PI_OVER_TWO);
-        Check.typeOf.number.lessThanOrEquals('north', north, CesiumMath.PI_OVER_TWO);
-
-        var south = rectangle.south;
-        Check.typeOf.number.greaterThanOrEquals('south', south, -CesiumMath.PI_OVER_TWO);
-        Check.typeOf.number.lessThanOrEquals('south', south, CesiumMath.PI_OVER_TWO);
-
-        var west = rectangle.west;
-        Check.typeOf.number.greaterThanOrEquals('west', west, -Math.PI);
-        Check.typeOf.number.lessThanOrEquals('west', west, Math.PI);
-
-        var east = rectangle.east;
-        Check.typeOf.number.greaterThanOrEquals('east', east, -Math.PI);
-        Check.typeOf.number.lessThanOrEquals('east', east, Math.PI);
             };
 
     /**
@@ -14840,7 +14266,6 @@ define('Core/Rectangle',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
      */
     Rectangle.southwest = function(rectangle, result) {
-                Check.typeOf.object('rectangle', rectangle);
         
         if (!defined(result)) {
             return new Cartographic(rectangle.west, rectangle.south);
@@ -14859,7 +14284,6 @@ define('Core/Rectangle',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
      */
     Rectangle.northwest = function(rectangle, result) {
-                Check.typeOf.object('rectangle', rectangle);
         
         if (!defined(result)) {
             return new Cartographic(rectangle.west, rectangle.north);
@@ -14878,7 +14302,6 @@ define('Core/Rectangle',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
      */
     Rectangle.northeast = function(rectangle, result) {
-                Check.typeOf.object('rectangle', rectangle);
         
         if (!defined(result)) {
             return new Cartographic(rectangle.east, rectangle.north);
@@ -14897,7 +14320,6 @@ define('Core/Rectangle',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
      */
     Rectangle.southeast = function(rectangle, result) {
-                Check.typeOf.object('rectangle', rectangle);
         
         if (!defined(result)) {
             return new Cartographic(rectangle.east, rectangle.south);
@@ -14916,7 +14338,6 @@ define('Core/Rectangle',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
      */
     Rectangle.center = function(rectangle, result) {
-                Check.typeOf.object('rectangle', rectangle);
         
         var east = rectangle.east;
         var west = rectangle.west;
@@ -14951,8 +14372,6 @@ define('Core/Rectangle',[
      * @returns {Rectangle|undefined} The modified result parameter, a new Rectangle instance if none was provided or undefined if there is no intersection.
      */
     Rectangle.intersection = function(rectangle, otherRectangle, result) {
-                Check.typeOf.object('rectangle', rectangle);
-        Check.typeOf.object('otherRectangle', otherRectangle);
         
         var rectangleEast = rectangle.east;
         var rectangleWest = rectangle.west;
@@ -15008,8 +14427,6 @@ define('Core/Rectangle',[
      * @returns {Rectangle|undefined} The modified result parameter, a new Rectangle instance if none was provided or undefined if there is no intersection.
      */
     Rectangle.simpleIntersection = function(rectangle, otherRectangle, result) {
-                Check.typeOf.object('rectangle', rectangle);
-        Check.typeOf.object('otherRectangle', otherRectangle);
         
         var west = Math.max(rectangle.west, otherRectangle.west);
         var south = Math.max(rectangle.south, otherRectangle.south);
@@ -15040,8 +14457,6 @@ define('Core/Rectangle',[
      * @returns {Rectangle} The modified result parameter or a new Rectangle instance if none was provided.
      */
     Rectangle.union = function(rectangle, otherRectangle, result) {
-                Check.typeOf.object('rectangle', rectangle);
-        Check.typeOf.object('otherRectangle', otherRectangle);
         
         if (!defined(result)) {
             result = new Rectangle();
@@ -15085,8 +14500,6 @@ define('Core/Rectangle',[
      * @returns {Rectangle} The modified result parameter or a new Rectangle instance if one was not provided.
      */
     Rectangle.expand = function(rectangle, cartographic, result) {
-                Check.typeOf.object('rectangle', rectangle);
-        Check.typeOf.object('cartographic', cartographic);
         
         if (!defined(result)) {
             result = new Rectangle();
@@ -15108,8 +14521,6 @@ define('Core/Rectangle',[
      * @returns {Boolean} true if the provided cartographic is inside the rectangle, false otherwise.
      */
     Rectangle.contains = function(rectangle, cartographic) {
-                Check.typeOf.object('rectangle', rectangle);
-        Check.typeOf.object('cartographic', cartographic);
         
         var longitude = cartographic.longitude;
         var latitude = cartographic.latitude;
@@ -15142,7 +14553,6 @@ define('Core/Rectangle',[
      * @returns {Cartesian3[]} The modified result parameter or a new Array of Cartesians instances if none was provided.
      */
     Rectangle.subsample = function(rectangle, ellipsoid, surfaceHeight, result) {
-                Check.typeOf.object('rectangle', rectangle);
         
         ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
         surfaceHeight = defaultValue(surfaceHeight, 0.0);
@@ -15396,7 +14806,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -15574,7 +14984,6 @@ define('Core/BoundingSphere',[
 
         stride = defaultValue(stride, 3);
 
-                Check.typeOf.number.greaterThanOrEquals('stride', stride, 3);
         
         var currentPos = fromPointsCurrentPos;
         currentPos.x = positions[0] + center.x;
@@ -15667,7 +15076,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -15825,7 +15234,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -15880,14 +15289,14 @@ define('Core/BoundingSphere',[
      * var sphere = Cesium.BoundingSphere.fromCornerPoints(new Cesium.Cartesian3(-0.5, -0.5, -0.5), new Cesium.Cartesian3(0.5, 0.5, 0.5));
      */
     BoundingSphere.fromCornerPoints = function(corner, oppositeCorner, result) {
-                Check.typeOf.object('corner', corner);
-        Check.typeOf.object('oppositeCorner', oppositeCorner);
         
         if (!defined(result)) {
             result = new BoundingSphere();
         }
 
-        var center = Cartesian3.midpoint(corner, oppositeCorner, result.center);
+        var center = result.center;
+        Cartesian3.add(corner, oppositeCorner, center);
+        Cartesian3.multiplyByScalar(center, 0.5, center);
         result.radius = Cartesian3.distance(center, oppositeCorner);
         return result;
     };
@@ -15903,7 +15312,6 @@ define('Core/BoundingSphere',[
      * var boundingSphere = Cesium.BoundingSphere.fromEllipsoid(ellipsoid);
      */
     BoundingSphere.fromEllipsoid = function(ellipsoid, result) {
-                Check.typeOf.object('ellipsoid', ellipsoid);
         
         if (!defined(result)) {
             result = new BoundingSphere();
@@ -15974,7 +15382,6 @@ define('Core/BoundingSphere',[
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
      */
     BoundingSphere.fromOrientedBoundingBox = function(orientedBoundingBox, result) {
-                Check.defined('orientedBoundingBox', orientedBoundingBox);
         
         if (!defined(result)) {
             result = new BoundingSphere();
@@ -16031,8 +15438,6 @@ define('Core/BoundingSphere',[
      * @returns {Number[]} The array that was packed into
      */
     BoundingSphere.pack = function(value, array, startingIndex) {
-                Check.typeOf.object('value', value);
-        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -16054,7 +15459,6 @@ define('Core/BoundingSphere',[
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if one was not provided.
      */
     BoundingSphere.unpack = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -16081,8 +15485,6 @@ define('Core/BoundingSphere',[
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
      */
     BoundingSphere.union = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         if (!defined(result)) {
             result = new BoundingSphere();
@@ -16131,8 +15533,6 @@ define('Core/BoundingSphere',[
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
      */
     BoundingSphere.expand = function(sphere, point, result) {
-                Check.typeOf.object('sphere', sphere);
-        Check.typeOf.object('point', point);
         
         result = BoundingSphere.clone(sphere, result);
 
@@ -16155,8 +15555,6 @@ define('Core/BoundingSphere',[
      *                      intersects the plane.
      */
     BoundingSphere.intersectPlane = function(sphere, plane) {
-                Check.typeOf.object('sphere', sphere);
-        Check.typeOf.object('plane', plane);
         
         var center = sphere.center;
         var radius = sphere.radius;
@@ -16182,8 +15580,6 @@ define('Core/BoundingSphere',[
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
      */
     BoundingSphere.transform = function(sphere, transform, result) {
-                Check.typeOf.object('sphere', sphere);
-        Check.typeOf.object('transform', transform);
         
         if (!defined(result)) {
             result = new BoundingSphere();
@@ -16211,8 +15607,6 @@ define('Core/BoundingSphere',[
      * });
      */
     BoundingSphere.distanceSquaredTo = function(sphere, cartesian) {
-                Check.typeOf.object('sphere', sphere);
-        Check.typeOf.object('cartesian', cartesian);
         
         var diff = Cartesian3.subtract(sphere.center, cartesian, distanceSquaredToScratch);
         return Cartesian3.magnitudeSquared(diff) - sphere.radius * sphere.radius;
@@ -16234,8 +15628,6 @@ define('Core/BoundingSphere',[
      * var newBoundingSphere = Cesium.BoundingSphere.transformWithoutScale(boundingSphere, modelMatrix);
      */
     BoundingSphere.transformWithoutScale = function(sphere, transform, result) {
-                Check.typeOf.object('sphere', sphere);
-        Check.typeOf.object('transform', transform);
         
         if (!defined(result)) {
             result = new BoundingSphere();
@@ -16262,9 +15654,6 @@ define('Core/BoundingSphere',[
      * @returns {Interval} The nearest and farthest distances on the bounding sphere from position in direction.
      */
     BoundingSphere.computePlaneDistances = function(sphere, position, direction, result) {
-                Check.typeOf.object('sphere', sphere);
-        Check.typeOf.object('position', position);
-        Check.typeOf.object('direction', direction);
         
         if (!defined(result)) {
             result = new Interval();
@@ -16299,7 +15688,6 @@ define('Core/BoundingSphere',[
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
      */
     BoundingSphere.projectTo2D = function(sphere, projection, result) {
-                Check.typeOf.object('sphere', sphere);
         
         projection = defaultValue(projection, projectTo2DProjection);
 
@@ -16394,8 +15782,6 @@ define('Core/BoundingSphere',[
      * @returns {Boolean} <code>true</code> if the sphere is not visible; otherwise <code>false</code>.
      */
     BoundingSphere.isOccluded = function(sphere, occluder) {
-                Check.typeOf.object('sphere', sphere);
-        Check.typeOf.object('occluder', occluder);
                 return !occluder.isBoundingSphereVisible(sphere);
     };
 
@@ -16623,8 +16009,6 @@ define('Core/Cartesian2',[
      * @returns {Number[]} The array that was packed into
      */
     Cartesian2.pack = function(value, array, startingIndex) {
-                Check.typeOf.object('value', value);
-        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -16643,7 +16027,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
      */
     Cartesian2.unpack = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -16663,7 +16046,6 @@ define('Core/Cartesian2',[
      * @returns {Number[]} The packed array.
      */
     Cartesian2.packArray = function(array, result) {
-                Check.defined('array', array);
         
         var length = array.length;
         if (!defined(result)) {
@@ -16686,7 +16068,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2[]} The unpacked array.
      */
     Cartesian2.unpackArray = function(array, result) {
-                Check.defined('array', array);
         
         var length = array.length;
         if (!defined(result)) {
@@ -16729,7 +16110,6 @@ define('Core/Cartesian2',[
      * @returns {Number} The value of the maximum component.
      */
     Cartesian2.maximumComponent = function(cartesian) {
-                Check.typeOf.object('cartesian', cartesian);
         
         return Math.max(cartesian.x, cartesian.y);
     };
@@ -16741,7 +16121,6 @@ define('Core/Cartesian2',[
      * @returns {Number} The value of the minimum component.
      */
     Cartesian2.minimumComponent = function(cartesian) {
-                Check.typeOf.object('cartesian', cartesian);
         
         return Math.min(cartesian.x, cartesian.y);
     };
@@ -16755,9 +16134,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} A cartesian with the minimum components.
      */
     Cartesian2.minimumByComponent = function(first, second, result) {
-                Check.typeOf.object('first', first);
-        Check.typeOf.object('second', second);
-        Check.typeOf.object('result', result);
         
         result.x = Math.min(first.x, second.x);
         result.y = Math.min(first.y, second.y);
@@ -16774,9 +16150,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} A cartesian with the maximum components.
      */
     Cartesian2.maximumByComponent = function(first, second, result) {
-                Check.typeOf.object('first', first);
-        Check.typeOf.object('second', second);
-        Check.typeOf.object('result', result);
         
         result.x = Math.max(first.x, second.x);
         result.y = Math.max(first.y, second.y);
@@ -16790,7 +16163,6 @@ define('Core/Cartesian2',[
      * @returns {Number} The squared magnitude.
      */
     Cartesian2.magnitudeSquared = function(cartesian) {
-                Check.typeOf.object('cartesian', cartesian);
         
         return cartesian.x * cartesian.x + cartesian.y * cartesian.y;
     };
@@ -16819,8 +16191,6 @@ define('Core/Cartesian2',[
      * var d = Cesium.Cartesian2.distance(new Cesium.Cartesian2(1.0, 0.0), new Cesium.Cartesian2(2.0, 0.0));
      */
     Cartesian2.distance = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         Cartesian2.subtract(left, right, distanceScratch);
         return Cartesian2.magnitude(distanceScratch);
@@ -16839,8 +16209,6 @@ define('Core/Cartesian2',[
      * var d = Cesium.Cartesian2.distance(new Cesium.Cartesian2(1.0, 0.0), new Cesium.Cartesian2(3.0, 0.0));
      */
     Cartesian2.distanceSquared = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         Cartesian2.subtract(left, right, distanceScratch);
         return Cartesian2.magnitudeSquared(distanceScratch);
@@ -16854,17 +16222,12 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.normalize = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         var magnitude = Cartesian2.magnitude(cartesian);
 
         result.x = cartesian.x / magnitude;
         result.y = cartesian.y / magnitude;
 
-                if (isNaN(result.x) || isNaN(result.y)) {
-            throw new DeveloperError('normalized result is not a number');
-        }
         
         return result;
     };
@@ -16877,8 +16240,6 @@ define('Core/Cartesian2',[
      * @returns {Number} The dot product.
      */
     Cartesian2.dot = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         return left.x * right.x + left.y * right.y;
     };
@@ -16892,9 +16253,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.multiplyComponents = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x * right.x;
         result.y = left.y * right.y;
@@ -16910,9 +16268,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.divideComponents = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x / right.x;
         result.y = left.y / right.y;
@@ -16928,9 +16283,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.add = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x + right.x;
         result.y = left.y + right.y;
@@ -16946,9 +16298,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.subtract = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x - right.x;
         result.y = left.y - right.y;
@@ -16964,9 +16313,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.multiplyByScalar = function(cartesian, scalar, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.number('scalar', scalar);
-        Check.typeOf.object('result', result);
         
         result.x = cartesian.x * scalar;
         result.y = cartesian.y * scalar;
@@ -16982,9 +16328,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.divideByScalar = function(cartesian, scalar, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.number('scalar', scalar);
-        Check.typeOf.object('result', result);
         
         result.x = cartesian.x / scalar;
         result.y = cartesian.y / scalar;
@@ -16999,8 +16342,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.negate = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         result.x = -cartesian.x;
         result.y = -cartesian.y;
@@ -17015,8 +16356,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.abs = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         result.x = Math.abs(cartesian.x);
         result.y = Math.abs(cartesian.y);
@@ -17034,10 +16373,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.lerp = function(start, end, t, result) {
-                Check.typeOf.object('start', start);
-        Check.typeOf.object('end', end);
-        Check.typeOf.number('t', t);
-        Check.typeOf.object('result', result);
         
         Cartesian2.multiplyByScalar(end, t, lerpScratch);
         result = Cartesian2.multiplyByScalar(start, 1.0 - t, result);
@@ -17054,8 +16389,6 @@ define('Core/Cartesian2',[
      * @returns {Number} The angle between the Cartesians.
      */
     Cartesian2.angleBetween = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         Cartesian2.normalize(left, angleBetweenScratch);
         Cartesian2.normalize(right, angleBetweenScratch2);
@@ -17071,8 +16404,6 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The most orthogonal axis.
      */
     Cartesian2.mostOrthogonalAxis = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         var f = Cartesian2.normalize(cartesian, mostOrthogonalAxisScratch);
         Cartesian2.abs(f, f);
@@ -17315,7 +16646,6 @@ define('Core/GeographicTilingScheme',[
      *          is undefined.
      */
     GeographicTilingScheme.prototype.rectangleToNativeRectangle = function(rectangle, result) {
-                Check.defined('rectangle', rectangle);
         
         var west = CesiumMath.toDegrees(rectangle.west);
         var south = CesiumMath.toDegrees(rectangle.south);
@@ -17514,10 +16844,6 @@ define('Core/ApproximateTerrainHeights',[
      * @return {{minimumTerrainHeight: Number, maximumTerrainHeight: Number}}
      */
     ApproximateTerrainHeights.getApproximateTerrainHeights = function(rectangle, ellipsoid) {
-                Check.defined('rectangle', rectangle);
-        if (!defined(ApproximateTerrainHeights._terrainHeights)) {
-            throw new DeveloperError('You must call ApproximateTerrainHeights.initialize and wait for the promise to resolve before using this function');
-        }
                 ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
 
         var xyLevel = getTileXYLevel(rectangle);
@@ -17539,7 +16865,9 @@ define('Core/ApproximateTerrainHeights',[
             ellipsoid.cartographicToCartesian(Rectangle.southwest(rectangle, scratchDiagonalCartographic),
                 scratchDiagonalCartesianSW);
 
-            Cartesian3.midpoint(scratchDiagonalCartesianSW, scratchDiagonalCartesianNE, scratchCenterCartesian);
+            Cartesian3.subtract(scratchDiagonalCartesianSW, scratchDiagonalCartesianNE, scratchCenterCartesian);
+            Cartesian3.add(scratchDiagonalCartesianNE,
+                Cartesian3.multiplyByScalar(scratchCenterCartesian, 0.5, scratchCenterCartesian), scratchCenterCartesian);
             var surfacePosition = ellipsoid.scaleToGeodeticSurface(scratchCenterCartesian, scratchSurfaceCartesian);
             if (defined(surfacePosition)) {
                 var distance = Cartesian3.distance(scratchCenterCartesian, surfacePosition);
@@ -17564,10 +16892,6 @@ define('Core/ApproximateTerrainHeights',[
      * @return {BoundingSphere} The result bounding sphere
      */
     ApproximateTerrainHeights.getInstanceBoundingSphere = function(rectangle, ellipsoid) {
-                Check.defined('rectangle', rectangle);
-        if (!defined(ApproximateTerrainHeights._terrainHeights)) {
-            throw new DeveloperError('You must call ApproximateTerrainHeights.initialize and wait for the promise to resolve before using this function');
-        }
                 ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
 
         var xyLevel = getTileXYLevel(rectangle);
@@ -17686,7 +17010,6 @@ define('Core/arrayRemoveDuplicates',[
      * @private
      */
     function arrayRemoveDuplicates(values, equalsEpsilon, wrapAround) {
-                Check.defined('equalsEpsilon', equalsEpsilon);
         
         if (!defined(values)) {
             return undefined;
@@ -18478,9 +17801,6 @@ define('Core/ComponentDatatype',[
      * var size = Cesium.ComponentDatatype.getSizeInBytes(Cesium.ComponentDatatype.BYTE);
      */
     ComponentDatatype.getSizeInBytes = function(componentDatatype){
-                if (!defined(componentDatatype)) {
-            throw new DeveloperError('value is required.');
-        }
         
         switch (componentDatatype) {
         case ComponentDatatype.BYTE:
@@ -18499,8 +17819,6 @@ define('Core/ComponentDatatype',[
             return Float32Array.BYTES_PER_ELEMENT;
         case ComponentDatatype.DOUBLE:
             return Float64Array.BYTES_PER_ELEMENT;
-                default:
-            throw new DeveloperError('componentDatatype is not a valid value.');
                 }
     };
 
@@ -18574,12 +17892,6 @@ define('Core/ComponentDatatype',[
      * var typedArray = Cesium.ComponentDatatype.createTypedArray(Cesium.ComponentDatatype.FLOAT, 100);
      */
     ComponentDatatype.createTypedArray = function(componentDatatype, valuesOrLength) {
-                if (!defined(componentDatatype)) {
-            throw new DeveloperError('componentDatatype is required.');
-        }
-        if (!defined(valuesOrLength)) {
-            throw new DeveloperError('valuesOrLength is required.');
-        }
         
         switch (componentDatatype) {
         case ComponentDatatype.BYTE:
@@ -18598,8 +17910,6 @@ define('Core/ComponentDatatype',[
             return new Float32Array(valuesOrLength);
         case ComponentDatatype.DOUBLE:
             return new Float64Array(valuesOrLength);
-                default:
-            throw new DeveloperError('componentDatatype is not a valid value.');
                 }
     };
 
@@ -18615,12 +17925,6 @@ define('Core/ComponentDatatype',[
      * @exception {DeveloperError} componentDatatype is not a valid value.
      */
     ComponentDatatype.createArrayBufferView = function(componentDatatype, buffer, byteOffset, length) {
-                if (!defined(componentDatatype)) {
-            throw new DeveloperError('componentDatatype is required.');
-        }
-        if (!defined(buffer)) {
-            throw new DeveloperError('buffer is required.');
-        }
         
         byteOffset = defaultValue(byteOffset, 0);
         length = defaultValue(length, (buffer.byteLength - byteOffset) / ComponentDatatype.getSizeInBytes(componentDatatype));
@@ -18642,8 +17946,6 @@ define('Core/ComponentDatatype',[
             return new Float32Array(buffer, byteOffset, length);
         case ComponentDatatype.DOUBLE:
             return new Float64Array(buffer, byteOffset, length);
-                default:
-            throw new DeveloperError('componentDatatype is not a valid value.');
                 }
     };
 
@@ -18673,8 +17975,6 @@ define('Core/ComponentDatatype',[
                 return ComponentDatatype.FLOAT;
             case 'DOUBLE':
                 return ComponentDatatype.DOUBLE;
-                        default:
-                throw new DeveloperError('name is not a valid value.');
                     }
     };
 
@@ -18860,7 +18160,6 @@ define('Core/EllipsoidGeodesic',[
         var firstCartesian = Cartesian3.normalize(ellipsoid.cartographicToCartesian(start, scratchCart2), scratchCart1);
         var lastCartesian = Cartesian3.normalize(ellipsoid.cartographicToCartesian(end, scratchCart2), scratchCart2);
 
-                Check.typeOf.number.greaterThanOrEquals('value', Math.abs(Math.abs(Cartesian3.angleBetween(firstCartesian, lastCartesian)) - Math.PI), 0.0125);
         
         vincentyInverseFormula(ellipsoidGeodesic, ellipsoid.maximumRadius, ellipsoid.minimumRadius,
                                start.longitude, start.latitude, end.longitude, end.latitude);
@@ -18921,7 +18220,6 @@ define('Core/EllipsoidGeodesic',[
          */
         surfaceDistance : {
             get : function() {
-                                Check.defined('distance', this._distance);
                 
                 return this._distance;
             }
@@ -18959,7 +18257,6 @@ define('Core/EllipsoidGeodesic',[
          */
         startHeading : {
             get : function() {
-                                Check.defined('distance', this._distance);
                 
                 return this._startHeading;
             }
@@ -18973,7 +18270,6 @@ define('Core/EllipsoidGeodesic',[
          */
         endHeading : {
             get : function() {
-                                Check.defined('distance', this._distance);
                 
                 return this._endHeading;
             }
@@ -18987,8 +18283,6 @@ define('Core/EllipsoidGeodesic',[
      * @param {Cartographic} end The final planetodetic point on the path.
      */
     EllipsoidGeodesic.prototype.setEndPoints = function(start, end) {
-                Check.defined('start', start);
-        Check.defined('end', end);
         
         computeProperties(this, start, end, this._ellipsoid);
     };
@@ -19014,7 +18308,6 @@ define('Core/EllipsoidGeodesic',[
      * @exception {DeveloperError} start and end must be set before calling function interpolateUsingSurfaceDistance
      */
     EllipsoidGeodesic.prototype.interpolateUsingSurfaceDistance = function(distance, result) {
-                Check.defined('distance', this._distance);
         
         var constants = this._constants;
 
@@ -19136,7 +18429,6 @@ define('Core/EncodedCartesian3',[
      * var splitValue = Cesium.EncodedCartesian3.encode(value);
      */
     EncodedCartesian3.encode = function(value, result) {
-                Check.typeOf.number('value', value);
         
         if (!defined(result)) {
             result = {
@@ -19180,7 +18472,6 @@ define('Core/EncodedCartesian3',[
      * var encoded = Cesium.EncodedCartesian3.fromCartesian(cart);
      */
     EncodedCartesian3.fromCartesian = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
         
         if (!defined(result)) {
             result = new EncodedCartesian3();
@@ -19232,9 +18523,6 @@ define('Core/EncodedCartesian3',[
      * }
      */
     EncodedCartesian3.writeElements = function(cartesian, cartesianArray, index) {
-                Check.defined('cartesianArray', cartesianArray);
-        Check.typeOf.number('index', index);
-        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
         
         EncodedCartesian3.fromCartesian(cartesian, encodedP);
         var high = encodedP.high;
@@ -19346,8 +18634,6 @@ define('Core/Matrix2',[
      * @returns {Number[]} The array that was packed into
      */
     Matrix2.pack = function(value, array, startingIndex) {
-                Check.typeOf.object('value', value);
-        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -19368,7 +18654,6 @@ define('Core/Matrix2',[
      * @returns {Matrix2} The modified result parameter or a new Matrix2 instance if one was not provided.
      */
     Matrix2.unpack = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -19426,7 +18711,6 @@ define('Core/Matrix2',[
      * var m2 = Cesium.Matrix2.fromArray(v2, 2);
      */
     Matrix2.fromArray = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -19449,7 +18733,6 @@ define('Core/Matrix2',[
      * @returns {Matrix2} The modified result parameter, or a new Matrix2 instance if one was not provided.
      */
     Matrix2.fromColumnMajorArray = function(values, result) {
-                Check.defined('values', values);
         
         return Matrix2.clone(values, result);
     };
@@ -19463,7 +18746,6 @@ define('Core/Matrix2',[
      * @returns {Matrix2} The modified result parameter, or a new Matrix2 instance if one was not provided.
      */
     Matrix2.fromRowMajorArray = function(values, result) {
-                Check.defined('values', values);
         
         if (!defined(result)) {
             return new Matrix2(values[0], values[1],
@@ -19490,7 +18772,6 @@ define('Core/Matrix2',[
      * var m = Cesium.Matrix2.fromScale(new Cesium.Cartesian2(7.0, 8.0));
      */
     Matrix2.fromScale = function(scale, result) {
-                Check.typeOf.object('scale', scale);
         
         if (!defined(result)) {
             return new Matrix2(
@@ -19519,7 +18800,6 @@ define('Core/Matrix2',[
      * var m = Cesium.Matrix2.fromUniformScale(2.0);
      */
     Matrix2.fromUniformScale = function(scale, result) {
-                Check.typeOf.number('scale', scale);
         
         if (!defined(result)) {
             return new Matrix2(
@@ -19548,7 +18828,6 @@ define('Core/Matrix2',[
      * var rotated = Cesium.Matrix2.multiplyByVector(m, p, new Cesium.Cartesian2());
      */
     Matrix2.fromRotation = function(angle, result) {
-                Check.typeOf.number('angle', angle);
         
         var cosAngle = Math.cos(angle);
         var sinAngle = Math.sin(angle);
@@ -19574,7 +18853,6 @@ define('Core/Matrix2',[
      * @returns {Number[]} The modified Array parameter or a new Array instance if one was not provided.
      */
     Matrix2.toArray = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
         
         if (!defined(result)) {
             return [matrix[0], matrix[1], matrix[2], matrix[3]];
@@ -19603,11 +18881,6 @@ define('Core/Matrix2',[
      * myMatrix[column1Row0Index] = 10.0;
      */
     Matrix2.getElementIndex = function(column, row) {
-                Check.typeOf.number.greaterThanOrEquals('row', row, 0);
-        Check.typeOf.number.lessThanOrEquals('row', row, 1);
-
-        Check.typeOf.number.greaterThanOrEquals('column', column, 0);
-        Check.typeOf.number.lessThanOrEquals('column', column, 1);
         
         return column * 2 + row;
     };
@@ -19623,12 +18896,6 @@ define('Core/Matrix2',[
      * @exception {DeveloperError} index must be 0 or 1.
      */
     Matrix2.getColumn = function(matrix, index, result) {
-                Check.typeOf.object('matrix', matrix);
-
-        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
-        Check.typeOf.number.lessThanOrEquals('index', index, 1);
-
-        Check.typeOf.object('result', result);
         
         var startIndex = index * 2;
         var x = matrix[startIndex];
@@ -19651,13 +18918,6 @@ define('Core/Matrix2',[
      * @exception {DeveloperError} index must be 0 or 1.
      */
     Matrix2.setColumn = function(matrix, index, cartesian, result) {
-                Check.typeOf.object('matrix', matrix);
-
-        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
-        Check.typeOf.number.lessThanOrEquals('index', index, 1);
-
-        Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         result = Matrix2.clone(matrix, result);
         var startIndex = index * 2;
@@ -19677,12 +18937,6 @@ define('Core/Matrix2',[
      * @exception {DeveloperError} index must be 0 or 1.
      */
     Matrix2.getRow = function(matrix, index, result) {
-                Check.typeOf.object('matrix', matrix);
-
-        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
-        Check.typeOf.number.lessThanOrEquals('index', index, 1);
-
-        Check.typeOf.object('result', result);
         
         var x = matrix[index];
         var y = matrix[index + 2];
@@ -19704,13 +18958,6 @@ define('Core/Matrix2',[
      * @exception {DeveloperError} index must be 0 or 1.
      */
     Matrix2.setRow = function(matrix, index, cartesian, result) {
-                Check.typeOf.object('matrix', matrix);
-
-        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
-        Check.typeOf.number.lessThanOrEquals('index', index, 1);
-
-        Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         result = Matrix2.clone(matrix, result);
         result[index] = cartesian.x;
@@ -19728,8 +18975,6 @@ define('Core/Matrix2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Matrix2.getScale = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         result.x = Cartesian2.magnitude(Cartesian2.fromElements(matrix[0], matrix[1], scratchColumn));
         result.y = Cartesian2.magnitude(Cartesian2.fromElements(matrix[2], matrix[3], scratchColumn));
@@ -19759,9 +19004,6 @@ define('Core/Matrix2',[
      * @returns {Matrix2} The modified result parameter.
      */
     Matrix2.multiply = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         var column0Row0 = left[0] * right[0] + left[2] * right[1];
         var column1Row0 = left[0] * right[2] + left[2] * right[3];
@@ -19784,9 +19026,6 @@ define('Core/Matrix2',[
      * @returns {Matrix2} The modified result parameter.
      */
     Matrix2.add = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result[0] = left[0] + right[0];
         result[1] = left[1] + right[1];
@@ -19804,9 +19043,6 @@ define('Core/Matrix2',[
      * @returns {Matrix2} The modified result parameter.
      */
     Matrix2.subtract = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result[0] = left[0] - right[0];
         result[1] = left[1] - right[1];
@@ -19824,9 +19060,6 @@ define('Core/Matrix2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Matrix2.multiplyByVector = function(matrix, cartesian, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         var x = matrix[0] * cartesian.x + matrix[2] * cartesian.y;
         var y = matrix[1] * cartesian.x + matrix[3] * cartesian.y;
@@ -19845,9 +19078,6 @@ define('Core/Matrix2',[
      * @returns {Matrix2} The modified result parameter.
      */
     Matrix2.multiplyByScalar = function(matrix, scalar, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.number('scalar', scalar);
-        Check.typeOf.object('result', result);
         
         result[0] = matrix[0] * scalar;
         result[1] = matrix[1] * scalar;
@@ -19873,9 +19103,6 @@ define('Core/Matrix2',[
      * @see Matrix2.multiplyByUniformScale
      */
     Matrix2.multiplyByScale = function(matrix, scale, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('scale', scale);
-        Check.typeOf.object('result', result);
         
         result[0] = matrix[0] * scale.x;
         result[1] = matrix[1] * scale.x;
@@ -19892,8 +19119,6 @@ define('Core/Matrix2',[
      * @returns {Matrix2} The modified result parameter.
      */
     Matrix2.negate = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         result[0] = -matrix[0];
         result[1] = -matrix[1];
@@ -19910,8 +19135,6 @@ define('Core/Matrix2',[
      * @returns {Matrix2} The modified result parameter.
      */
     Matrix2.transpose = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         var column0Row0 = matrix[0];
         var column0Row1 = matrix[2];
@@ -19933,8 +19156,6 @@ define('Core/Matrix2',[
      * @returns {Matrix2} The modified result parameter.
      */
     Matrix2.abs = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
-        Check.typeOf.object('result', result);
         
         result[0] = Math.abs(matrix[0]);
         result[1] = Math.abs(matrix[1]);
@@ -19983,7 +19204,6 @@ define('Core/Matrix2',[
      * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
      */
     Matrix2.equalsEpsilon = function(left, right, epsilon) {
-                Check.typeOf.number('epsilon', epsilon);
         
         return (left === right) ||
                 (defined(left) &&
@@ -20286,8 +19506,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter or a new Quaternion instance if one was not provided.
      */
     Quaternion.fromAxisAngle = function(axis, angle, result) {
-                Check.typeOf.object('axis', axis);
-        Check.typeOf.number('angle', angle);
         
         var halfAngle = angle / 2.0;
         var s = Math.sin(halfAngle);
@@ -20319,7 +19537,6 @@ define('Core/Quaternion',[
      * @see Matrix3.fromQuaternion
      */
     Quaternion.fromRotationMatrix = function(matrix, result) {
-                Check.typeOf.object('matrix', matrix);
         
         var root;
         var x;
@@ -20394,7 +19611,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter or a new Quaternion instance if none was provided.
      */
     Quaternion.fromHeadingPitchRoll = function(headingPitchRoll, result) {
-                Check.typeOf.object('headingPitchRoll', headingPitchRoll);
         
         scratchRollQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, headingPitchRoll.roll, scratchHPRQuaternion);
         scratchPitchQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, -headingPitchRoll.pitch, result);
@@ -20425,8 +19641,6 @@ define('Core/Quaternion',[
      * @returns {Number[]} The array that was packed into
      */
     Quaternion.pack = function(value, array, startingIndex) {
-                Check.typeOf.object('value', value);
-        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -20447,7 +19661,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter or a new Quaternion instance if one was not provided.
      */
     Quaternion.unpack = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -20556,8 +19769,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.conjugate = function(quaternion, result) {
-                Check.typeOf.object('quaternion', quaternion);
-        Check.typeOf.object('result', result);
         
         result.x = -quaternion.x;
         result.y = -quaternion.y;
@@ -20573,7 +19784,6 @@ define('Core/Quaternion',[
      * @returns {Number} The magnitude squared.
      */
     Quaternion.magnitudeSquared = function(quaternion) {
-                Check.typeOf.object('quaternion', quaternion);
         
         return quaternion.x * quaternion.x + quaternion.y * quaternion.y + quaternion.z * quaternion.z + quaternion.w * quaternion.w;
     };
@@ -20596,7 +19806,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.normalize = function(quaternion, result) {
-                Check.typeOf.object('result', result);
         
         var inverseMagnitude = 1.0 / Quaternion.magnitude(quaternion);
         var x = quaternion.x * inverseMagnitude;
@@ -20619,7 +19828,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.inverse = function(quaternion, result) {
-                Check.typeOf.object('result', result);
         
         var magnitudeSquared = Quaternion.magnitudeSquared(quaternion);
         result = Quaternion.conjugate(quaternion, result);
@@ -20635,9 +19843,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.add = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x + right.x;
         result.y = left.y + right.y;
@@ -20655,9 +19860,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.subtract = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.x = left.x - right.x;
         result.y = left.y - right.y;
@@ -20674,8 +19876,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.negate = function(quaternion, result) {
-                Check.typeOf.object('quaternion', quaternion);
-        Check.typeOf.object('result', result);
         
         result.x = -quaternion.x;
         result.y = -quaternion.y;
@@ -20692,8 +19892,6 @@ define('Core/Quaternion',[
      * @returns {Number} The dot product.
      */
     Quaternion.dot = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
     };
@@ -20707,9 +19905,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.multiply = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         var leftX = left.x;
         var leftY = left.y;
@@ -20742,9 +19937,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.multiplyByScalar = function(quaternion, scalar, result) {
-                Check.typeOf.object('quaternion', quaternion);
-        Check.typeOf.number('scalar', scalar);
-        Check.typeOf.object('result', result);
         
         result.x = quaternion.x * scalar;
         result.y = quaternion.y * scalar;
@@ -20762,9 +19954,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.divideByScalar = function(quaternion, scalar, result) {
-                Check.typeOf.object('quaternion', quaternion);
-        Check.typeOf.number('scalar', scalar);
-        Check.typeOf.object('result', result);
         
         result.x = quaternion.x / scalar;
         result.y = quaternion.y / scalar;
@@ -20781,8 +19970,6 @@ define('Core/Quaternion',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Quaternion.computeAxis = function(quaternion, result) {
-                Check.typeOf.object('quaternion', quaternion);
-        Check.typeOf.object('result', result);
         
         var w = quaternion.w;
         if (Math.abs(w - 1.0) < CesiumMath.EPSILON6) {
@@ -20805,7 +19992,6 @@ define('Core/Quaternion',[
      * @returns {Number} The angle of rotation.
      */
     Quaternion.computeAngle = function(quaternion) {
-                Check.typeOf.object('quaternion', quaternion);
         
         if (Math.abs(quaternion.w - 1.0) < CesiumMath.EPSILON6) {
             return 0.0;
@@ -20824,10 +20010,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.lerp = function(start, end, t, result) {
-                Check.typeOf.object('start', start);
-        Check.typeOf.object('end', end);
-        Check.typeOf.number('t', t);
-        Check.typeOf.object('result', result);
         
         lerpScratch = Quaternion.multiplyByScalar(end, t, lerpScratch);
         result = Quaternion.multiplyByScalar(start, 1.0 - t, result);
@@ -20849,10 +20031,6 @@ define('Core/Quaternion',[
      * @see Quaternion#fastSlerp
      */
     Quaternion.slerp = function(start, end, t, result) {
-                Check.typeOf.object('start', start);
-        Check.typeOf.object('end', end);
-        Check.typeOf.number('t', t);
-        Check.typeOf.object('result', result);
         
         var dot = Quaternion.dot(start, end);
 
@@ -20885,8 +20063,6 @@ define('Core/Quaternion',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Quaternion.log = function(quaternion, result) {
-                Check.typeOf.object('quaternion', quaternion);
-        Check.typeOf.object('result', result);
         
         var theta = CesiumMath.acosClamped(quaternion.w);
         var thetaOverSinTheta = 0.0;
@@ -20906,8 +20082,6 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.exp = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
-        Check.typeOf.object('result', result);
         
         var theta = Cartesian3.magnitude(cartesian);
         var sinThetaOverTheta = 0.0;
@@ -20942,10 +20116,6 @@ define('Core/Quaternion',[
      * @see Quaternion#squad
      */
     Quaternion.computeInnerQuadrangle = function(q0, q1, q2, result) {
-                Check.typeOf.object('q0', q0);
-        Check.typeOf.object('q1', q1);
-        Check.typeOf.object('q2', q2);
-        Check.typeOf.object('result', result);
         
         var qInv = Quaternion.conjugate(q1, squadScratchQuaternion0);
         Quaternion.multiply(qInv, q2, squadScratchQuaternion1);
@@ -20987,12 +20157,6 @@ define('Core/Quaternion',[
      * @see Quaternion#computeInnerQuadrangle
      */
     Quaternion.squad = function(q0, q1, s0, s1, t, result) {
-                Check.typeOf.object('q0', q0);
-        Check.typeOf.object('q1', q1);
-        Check.typeOf.object('s0', s0);
-        Check.typeOf.object('s1', s1);
-        Check.typeOf.number('t', t);
-        Check.typeOf.object('result', result);
         
         var slerp0 = Quaternion.slerp(q0, q1, t, squadScratchQuaternion0);
         var slerp1 = Quaternion.slerp(s0, s1, t, squadScratchQuaternion1);
@@ -21029,10 +20193,6 @@ define('Core/Quaternion',[
      * @see Quaternion#slerp
      */
     Quaternion.fastSlerp = function(start, end, t, result) {
-                Check.typeOf.object('start', start);
-        Check.typeOf.object('end', end);
-        Check.typeOf.number('t', t);
-        Check.typeOf.object('result', result);
         
         var x = Quaternion.dot(start, end);
 
@@ -21081,12 +20241,6 @@ define('Core/Quaternion',[
      * @see Quaternion#squad
      */
     Quaternion.fastSquad = function(q0, q1, s0, s1, t, result) {
-                Check.typeOf.object('q0', q0);
-        Check.typeOf.object('q1', q1);
-        Check.typeOf.object('s0', s0);
-        Check.typeOf.object('s1', s1);
-        Check.typeOf.number('t', t);
-        Check.typeOf.object('result', result);
         
         var slerp0 = Quaternion.fastSlerp(q0, q1, t, squadScratchQuaternion0);
         var slerp1 = Quaternion.fastSlerp(s0, s1, t, squadScratchQuaternion1);
@@ -21122,7 +20276,6 @@ define('Core/Quaternion',[
      * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
      */
     Quaternion.equalsEpsilon = function(left, right, epsilon) {
-                Check.typeOf.number('epsilon', epsilon);
         
         return (left === right) ||
                ((defined(left)) &&
@@ -21224,9 +20377,6 @@ define('Core/binarySearch',[
      * var index = Cesium.binarySearch(numbers, 6, comparator); // 3
      */
     function binarySearch(array, itemToFind, comparator) {
-                Check.defined('array', array);
-        Check.defined('itemToFind', itemToFind);
-        Check.defined('comparator', comparator);
         
         var low = 0;
         var high = array.length - 1;
@@ -21715,9 +20865,6 @@ define('Core/isLeapYear',[
      * var leapYear = Cesium.isLeapYear(2000); // true
      */
     function isLeapYear(year) {
-                if (year === null || isNaN(year)) {
-            throw new DeveloperError('year is required and must be a number.');
-        }
         
         return ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0);
     }
@@ -22099,9 +21246,6 @@ define('Core/JulianDate',[
      * @exception {DeveloperError} date must be a valid GregorianDate.
      */
     JulianDate.fromGregorianDate = function(date, result) {
-                if (!(date instanceof GregorianDate)) {
-            throw new DeveloperError('date must be a valid GregorianDate.');
-        }
         
         var components = computeJulianDateComponents(date.year, date.month, date.day, date.hour, date.minute, date.second, date.millisecond);
         if (!defined(result)) {
@@ -22122,9 +21266,6 @@ define('Core/JulianDate',[
      * @exception {DeveloperError} date must be a valid JavaScript Date.
      */
     JulianDate.fromDate = function(date, result) {
-                if (!(date instanceof Date) || isNaN(date.getTime())) {
-            throw new DeveloperError('date must be a valid JavaScript Date.');
-        }
         
         var components = computeJulianDateComponents(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds(), date.getUTCMilliseconds());
         if (!defined(result)) {
@@ -22147,9 +21288,6 @@ define('Core/JulianDate',[
      * @exception {DeveloperError} Invalid ISO 8601 date.
      */
     JulianDate.fromIso8601 = function(iso8601String, result) {
-                if (typeof iso8601String !== 'string') {
-            throw new DeveloperError(iso8601ErrorMessage);
-        }
         
         //Comma and decimal point both indicate a fractional number according to ISO 8601,
         //start out by blanket replacing , with . which is the only valid such symbol in JS.
@@ -22170,19 +21308,10 @@ define('Core/JulianDate',[
         var time = tokens[1];
         var tmp;
         var inLeapYear;
-                if (!defined(date)) {
-            throw new DeveloperError(iso8601ErrorMessage);
-        }
-
-        var dashCount;
         
         //First match the date against possible regular expressions.
         tokens = date.match(matchCalendarDate);
         if (tokens !== null) {
-                        dashCount = date.split('-').length - 1;
-            if (dashCount > 0 && dashCount !== 2) {
-                throw new DeveloperError(iso8601ErrorMessage);
-            }
                         year = +tokens[1];
             month = +tokens[2];
             day = +tokens[3];
@@ -22206,9 +21335,6 @@ define('Core/JulianDate',[
                         inLeapYear = isLeapYear(year);
 
                         //This validation is only applicable for this format.
-                                                if (dayOfYear < 1 || (inLeapYear && dayOfYear > 366) || (!inLeapYear && dayOfYear > 365)) {
-                            throw new DeveloperError(iso8601ErrorMessage);
-                        }
                                             } else {
                         tokens = date.match(matchWeekDate);
                         if (tokens !== null) {
@@ -22218,18 +21344,11 @@ define('Core/JulianDate',[
                             var weekNumber = +tokens[2];
                             var dayOfWeek = +tokens[3] || 0;
 
-                                                        dashCount = date.split('-').length - 1;
-                            if (dashCount > 0 &&
-                               ((!defined(tokens[3]) && dashCount !== 1) ||
-                               (defined(tokens[3]) && dashCount !== 2))) {
-                                throw new DeveloperError(iso8601ErrorMessage);
-                            }
                             
                             var january4 = new Date(Date.UTC(year, 0, 4));
                             dayOfYear = (weekNumber * 7) + dayOfWeek - january4.getUTCDay() - 3;
                         } else {
                             //None of our regular expressions succeeded in parsing the date properly.
-                                                        throw new DeveloperError(iso8601ErrorMessage);
                                                     }
                     }
                     //Split an ordinal date into month/day.
@@ -22243,9 +21362,6 @@ define('Core/JulianDate',[
 
         //Now that we have all of the date components, validate them to make sure nothing is out of range.
         inLeapYear = isLeapYear(year);
-                if (month < 1 || month > 12 || day < 1 || ((month !== 2 || !inLeapYear) && day > daysInMonth[month - 1]) || (inLeapYear && month === 2 && day > daysInLeapFeburary)) {
-            throw new DeveloperError(iso8601ErrorMessage);
-        }
         
         //Now move onto the time string, which is much simpler.
         //If no time is specified, it is considered the beginning of the day, UTC to match Javascript's implementation.
@@ -22253,10 +21369,6 @@ define('Core/JulianDate',[
         if (defined(time)) {
             tokens = time.match(matchHoursMinutesSeconds);
             if (tokens !== null) {
-                                dashCount = time.split(':').length - 1;
-                if (dashCount > 0 && dashCount !== 2 && dashCount !== 3) {
-                    throw new DeveloperError(iso8601ErrorMessage);
-                }
                 
                 hour = +tokens[1];
                 minute = +tokens[2];
@@ -22266,10 +21378,6 @@ define('Core/JulianDate',[
             } else {
                 tokens = time.match(matchHoursMinutes);
                 if (tokens !== null) {
-                                        dashCount = time.split(':').length - 1;
-                    if (dashCount > 2) {
-                        throw new DeveloperError(iso8601ErrorMessage);
-                    }
                     
                     hour = +tokens[1];
                     minute = +tokens[2];
@@ -22282,15 +21390,11 @@ define('Core/JulianDate',[
                         minute = +(tokens[2] || 0) * 60.0;
                         offsetIndex = 3;
                     } else {
-                                                throw new DeveloperError(iso8601ErrorMessage);
                                             }
                 }
             }
 
             //Validate that all values are in proper range.  Minutes and hours have special cases at 60 and 24.
-                        if (minute >= 60 || second >= 61 || hour > 24 || (hour === 24 && (minute > 0 || second > 0 || millisecond > 0))) {
-                throw new DeveloperError(iso8601ErrorMessage);
-            }
             
             //Check the UTC offset value, if no value exists, use local time
             //a Z indicates UTC, + or - are offsets.
@@ -22410,9 +21514,6 @@ define('Core/JulianDate',[
      * @returns {GregorianDate} The modified result parameter or a new instance if none was provided.
      */
     JulianDate.toGregorianDate = function(julianDate, result) {
-                if (!defined(julianDate)) {
-            throw new DeveloperError('julianDate is required.');
-        }
         
         var isLeapSecond = false;
         var thisUtc = convertTaiToUtc(julianDate, toGregorianDateScratch);
@@ -22488,9 +21589,6 @@ define('Core/JulianDate',[
      * @returns {Date} A new instance representing the provided date.
      */
     JulianDate.toDate = function(julianDate) {
-                if (!defined(julianDate)) {
-            throw new DeveloperError('julianDate is required.');
-        }
         
         var gDate = JulianDate.toGregorianDate(julianDate, gregorianDateScratch);
         var second = gDate.second;
@@ -22508,9 +21606,6 @@ define('Core/JulianDate',[
      * @returns {String} The ISO8601 representation of the provided date.
      */
     JulianDate.toIso8601 = function(julianDate, precision) {
-                if (!defined(julianDate)) {
-            throw new DeveloperError('julianDate is required.');
-        }
         
         var gDate = JulianDate.toGregorianDate(julianDate, gregorianDateScratch);
         var year = gDate.year;
@@ -22575,12 +21670,6 @@ define('Core/JulianDate',[
      * @returns {Number} A negative value if left is less than right, a positive value if left is greater than right, or zero if left and right are equal.
      */
     JulianDate.compare = function(left, right) {
-                if (!defined(left)) {
-            throw new DeveloperError('left is required.');
-        }
-        if (!defined(right)) {
-            throw new DeveloperError('right is required.');
-        }
         
         var julianDayNumberDifference = left.dayNumber - right.dayNumber;
         if (julianDayNumberDifference !== 0) {
@@ -22616,9 +21705,6 @@ define('Core/JulianDate',[
      * @returns {Boolean} <code>true</code> if the two dates are within <code>epsilon</code> seconds of each other; otherwise <code>false</code>.
      */
     JulianDate.equalsEpsilon = function(left, right, epsilon) {
-                if (!defined(epsilon)) {
-            throw new DeveloperError('epsilon is required.');
-        }
         
         return (left === right) ||
                (defined(left) &&
@@ -22633,9 +21719,6 @@ define('Core/JulianDate',[
      * @returns {Number} The Julian date as single floating point number.
      */
     JulianDate.totalDays = function(julianDate) {
-                if (!defined(julianDate)) {
-            throw new DeveloperError('julianDate is required.');
-        }
                 return julianDate.dayNumber + (julianDate.secondsOfDay / TimeConstants.SECONDS_PER_DAY);
     };
 
@@ -22647,12 +21730,6 @@ define('Core/JulianDate',[
      * @returns {Number} The difference, in seconds, when subtracting <code>right</code> from <code>left</code>.
      */
     JulianDate.secondsDifference = function(left, right) {
-                if (!defined(left)) {
-            throw new DeveloperError('left is required.');
-        }
-        if (!defined(right)) {
-            throw new DeveloperError('right is required.');
-        }
         
         var dayDifference = (left.dayNumber - right.dayNumber) * TimeConstants.SECONDS_PER_DAY;
         return (dayDifference + (left.secondsOfDay - right.secondsOfDay));
@@ -22666,12 +21743,6 @@ define('Core/JulianDate',[
      * @returns {Number} The difference, in days, when subtracting <code>right</code> from <code>left</code>.
      */
     JulianDate.daysDifference = function(left, right) {
-                if (!defined(left)) {
-            throw new DeveloperError('left is required.');
-        }
-        if (!defined(right)) {
-            throw new DeveloperError('right is required.');
-        }
         
         var dayDifference = (left.dayNumber - right.dayNumber);
         var secondDifference = (left.secondsOfDay - right.secondsOfDay) / TimeConstants.SECONDS_PER_DAY;
@@ -22707,15 +21778,6 @@ define('Core/JulianDate',[
      * @returns {JulianDate} The modified result parameter.
      */
     JulianDate.addSeconds = function(julianDate, seconds, result) {
-                if (!defined(julianDate)) {
-            throw new DeveloperError('julianDate is required.');
-        }
-        if (!defined(seconds)) {
-            throw new DeveloperError('seconds is required.');
-        }
-        if (!defined(result)) {
-            throw new DeveloperError('result is required.');
-        }
         
         return setComponents(julianDate.dayNumber, julianDate.secondsOfDay + seconds, result);
     };
@@ -22729,15 +21791,6 @@ define('Core/JulianDate',[
      * @returns {JulianDate} The modified result parameter.
      */
     JulianDate.addMinutes = function(julianDate, minutes, result) {
-                if (!defined(julianDate)) {
-            throw new DeveloperError('julianDate is required.');
-        }
-        if (!defined(minutes)) {
-            throw new DeveloperError('minutes is required.');
-        }
-        if (!defined(result)) {
-            throw new DeveloperError('result is required.');
-        }
         
         var newSecondsOfDay = julianDate.secondsOfDay + (minutes * TimeConstants.SECONDS_PER_MINUTE);
         return setComponents(julianDate.dayNumber, newSecondsOfDay, result);
@@ -22752,15 +21805,6 @@ define('Core/JulianDate',[
      * @returns {JulianDate} The modified result parameter.
      */
     JulianDate.addHours = function(julianDate, hours, result) {
-                if (!defined(julianDate)) {
-            throw new DeveloperError('julianDate is required.');
-        }
-        if (!defined(hours)) {
-            throw new DeveloperError('hours is required.');
-        }
-        if (!defined(result)) {
-            throw new DeveloperError('result is required.');
-        }
         
         var newSecondsOfDay = julianDate.secondsOfDay + (hours * TimeConstants.SECONDS_PER_HOUR);
         return setComponents(julianDate.dayNumber, newSecondsOfDay, result);
@@ -22775,15 +21819,6 @@ define('Core/JulianDate',[
      * @returns {JulianDate} The modified result parameter.
      */
     JulianDate.addDays = function(julianDate, days, result) {
-                if (!defined(julianDate)) {
-            throw new DeveloperError('julianDate is required.');
-        }
-        if (!defined(days)) {
-            throw new DeveloperError('days is required.');
-        }
-        if (!defined(result)) {
-            throw new DeveloperError('result is required.');
-        }
         
         var newJulianDayNumber = julianDate.dayNumber + days;
         return setComponents(newJulianDayNumber, julianDate.secondsOfDay, result);
@@ -23752,9 +22787,6 @@ define('Core/Transforms',[
           resultat = localFrameToFixedFrameCache[hashAxis];
       } else {
           resultat = function(origin, ellipsoid, result) {
-                            if (!defined(origin)) {
-                  throw new DeveloperError('origin is required.');
-              }
                             if (!defined(result)) {
                   result = new Matrix4();
               }
@@ -23939,7 +22971,6 @@ define('Core/Transforms',[
      * var transform = Cesium.Transforms.headingPitchRollToFixedFrame(center, hpr);
      */
     Transforms.headingPitchRollToFixedFrame = function(origin, headingPitchRoll, ellipsoid, fixedFrameTransform, result) {
-                Check.typeOf.object( 'HeadingPitchRoll', headingPitchRoll);
         
         fixedFrameTransform = defaultValue(fixedFrameTransform, Transforms.eastNorthUpToFixedFrame);
         var hprQuaternion = Quaternion.fromHeadingPitchRoll(headingPitchRoll, scratchHPRQuaternion);
@@ -23975,7 +23006,6 @@ define('Core/Transforms',[
      * var quaternion = Cesium.Transforms.headingPitchRollQuaternion(center, hpr);
      */
     Transforms.headingPitchRollQuaternion = function(origin, headingPitchRoll, ellipsoid, fixedFrameTransform, result) {
-                Check.typeOf.object( 'HeadingPitchRoll', headingPitchRoll);
         
         var transform = Transforms.headingPitchRollToFixedFrame(origin, headingPitchRoll, ellipsoid, fixedFrameTransform, scratchENUMatrix4);
         var rotation = Matrix4.getRotation(transform, scratchHPRMatrix3);
@@ -24011,9 +23041,6 @@ define('Core/Transforms',[
      * });
      */
     Transforms.computeTemeToPseudoFixedMatrix = function (date, result) {
-                if (!defined(date)) {
-            throw new DeveloperError('date is required.');
-        }
         
         // GMST is actually computed using UT1.  We're using UTC as an approximation of UT1.
         // We do not want to use the function like convertTaiToUtc in JulianDate because
@@ -24145,9 +23172,6 @@ define('Core/Transforms',[
      * @see Transforms.preloadIcrfFixed
      */
     Transforms.computeIcrfToFixedMatrix = function(date, result) {
-                if (!defined(date)) {
-            throw new DeveloperError('date is required.');
-        }
                 if (!defined(result)) {
             result = new Matrix3();
         }
@@ -24191,9 +23215,6 @@ define('Core/Transforms',[
      * @see Transforms.preloadIcrfFixed
      */
     Transforms.computeFixedToIcrfMatrix = function(date, result) {
-                if (!defined(date)) {
-            throw new DeveloperError('date is required.');
-        }
         
         if (!defined(result)) {
             result = new Matrix3();
@@ -24313,17 +23334,6 @@ define('Core/Transforms',[
      * @private
      */
     Transforms.pointToGLWindowCoordinates = function(modelViewProjectionMatrix, viewportTransformation, point, result) {
-                if (!defined(modelViewProjectionMatrix)) {
-            throw new DeveloperError('modelViewProjectionMatrix is required.');
-        }
-
-        if (!defined(viewportTransformation)) {
-            throw new DeveloperError('viewportTransformation is required.');
-        }
-
-        if (!defined(point)) {
-            throw new DeveloperError('point is required.');
-        }
         
         if (!defined(result)) {
             result = new Cartesian2();
@@ -24345,13 +23355,6 @@ define('Core/Transforms',[
      * @private
      */
     Transforms.rotationMatrixFromPositionVelocity = function(position, velocity, ellipsoid, result) {
-                if (!defined(position)) {
-            throw new DeveloperError('position is required.');
-        }
-
-        if (!defined(velocity)) {
-            throw new DeveloperError('velocity is required.');
-        }
         
         var normal = defaultValue(ellipsoid, Ellipsoid.WGS84).geodeticSurfaceNormal(position, normalScratch);
         var right = Cartesian3.cross(velocity, normal, rightScratch);
@@ -24398,15 +23401,6 @@ define('Core/Transforms',[
      * @private
      */
     Transforms.basisTo2D = function(projection, matrix, result) {
-                if (!defined(projection)) {
-            throw new DeveloperError('projection is required.');
-        }
-        if (!defined(matrix)) {
-            throw new DeveloperError('matrix is required.');
-        }
-        if (!defined(result)) {
-            throw new DeveloperError('result is required.');
-        }
         
         var rtcCenter = Matrix4.getTranslation(matrix, scratchCenter);
         var ellipsoid = projection.ellipsoid;
@@ -24431,15 +23425,6 @@ define('Core/Transforms',[
      * @private
      */
     Transforms.wgs84To2DModelMatrix = function(projection, center, result) {
-                if (!defined(projection)) {
-            throw new DeveloperError('projection is required.');
-        }
-        if (!defined(center)) {
-            throw new DeveloperError('center is required.');
-        }
-        if (!defined(result)) {
-            throw new DeveloperError('result is required.');
-        }
         
         var ellipsoid = projection.ellipsoid;
 
@@ -24549,7 +23534,6 @@ define('Core/Geometry',[
     function Geometry(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                Check.typeOf.object('options.attributes', options.attributes);
         
         /**
          * Attributes, which make up the geometry's vertices.  Each property in this object corresponds to a
@@ -24657,7 +23641,6 @@ define('Core/Geometry',[
      * var numVertices = Cesium.Geometry.computeNumberOfVertices(geometry);
      */
     Geometry.computeNumberOfVertices = function(geometry) {
-                Check.typeOf.object('geometry', geometry);
         
         var numberOfVertices = -1;
         for ( var property in geometry.attributes) {
@@ -24667,9 +23650,6 @@ define('Core/Geometry',[
 
                 var attribute = geometry.attributes[property];
                 var num = attribute.values.length / attribute.componentsPerAttribute;
-                                if ((numberOfVertices !== num) && (numberOfVertices !== -1)) {
-                    throw new DeveloperError('All attribute lists must have the same number of attributes.');
-                }
                                 numberOfVertices = num;
             }
         }
@@ -24854,18 +23834,6 @@ define('Core/GeometryAttribute',[
     function GeometryAttribute(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                if (!defined(options.componentDatatype)) {
-            throw new DeveloperError('options.componentDatatype is required.');
-        }
-        if (!defined(options.componentsPerAttribute)) {
-            throw new DeveloperError('options.componentsPerAttribute is required.');
-        }
-        if (options.componentsPerAttribute < 1 || options.componentsPerAttribute > 4) {
-            throw new DeveloperError('options.componentsPerAttribute must be between 1 and 4.');
-        }
-        if (!defined(options.values)) {
-            throw new DeveloperError('options.values is required.');
-        }
         
         /**
          * The datatype of each component in the attribute, e.g., individual elements in
@@ -24970,15 +23938,6 @@ define('Core/QuadraticRealPolynomial',[
      * @returns {Number} The value of the discriminant.
      */
     QuadraticRealPolynomial.computeDiscriminant = function(a, b, c) {
-                if (typeof a !== 'number') {
-            throw new DeveloperError('a is a required number.');
-        }
-        if (typeof b !== 'number') {
-            throw new DeveloperError('b is a required number.');
-        }
-        if (typeof c !== 'number') {
-            throw new DeveloperError('c is a required number.');
-        }
         
         var discriminant = b * b - 4.0 * a * c;
         return discriminant;
@@ -25003,15 +23962,6 @@ define('Core/QuadraticRealPolynomial',[
      * @returns {Number[]} The real valued roots.
      */
     QuadraticRealPolynomial.computeRealRoots = function(a, b, c) {
-                if (typeof a !== 'number') {
-            throw new DeveloperError('a is a required number.');
-        }
-        if (typeof b !== 'number') {
-            throw new DeveloperError('b is a required number.');
-        }
-        if (typeof c !== 'number') {
-            throw new DeveloperError('c is a required number.');
-        }
         
         var ratio;
         if (a === 0.0) {
@@ -25106,18 +24056,6 @@ define('Core/CubicRealPolynomial',[
      * @returns {Number} The value of the discriminant.
      */
     CubicRealPolynomial.computeDiscriminant = function(a, b, c, d) {
-                if (typeof a !== 'number') {
-            throw new DeveloperError('a is a required number.');
-        }
-        if (typeof b !== 'number') {
-            throw new DeveloperError('b is a required number.');
-        }
-        if (typeof c !== 'number') {
-            throw new DeveloperError('c is a required number.');
-        }
-        if (typeof d !== 'number') {
-            throw new DeveloperError('d is a required number.');
-        }
         
         var a2 = a * a;
         var b2 = b * b;
@@ -25243,18 +24181,6 @@ define('Core/CubicRealPolynomial',[
      * @returns {Number[]} The real valued roots.
      */
     CubicRealPolynomial.computeRealRoots = function(a, b, c, d) {
-                if (typeof a !== 'number') {
-            throw new DeveloperError('a is a required number.');
-        }
-        if (typeof b !== 'number') {
-            throw new DeveloperError('b is a required number.');
-        }
-        if (typeof c !== 'number') {
-            throw new DeveloperError('c is a required number.');
-        }
-        if (typeof d !== 'number') {
-            throw new DeveloperError('d is a required number.');
-        }
         
         var roots;
         var ratio;
@@ -25347,21 +24273,6 @@ define('Core/QuarticRealPolynomial',[
      * @returns {Number} The value of the discriminant.
      */
     QuarticRealPolynomial.computeDiscriminant = function(a, b, c, d, e) {
-                if (typeof a !== 'number') {
-            throw new DeveloperError('a is a required number.');
-        }
-        if (typeof b !== 'number') {
-            throw new DeveloperError('b is a required number.');
-        }
-        if (typeof c !== 'number') {
-            throw new DeveloperError('c is a required number.');
-        }
-        if (typeof d !== 'number') {
-            throw new DeveloperError('d is a required number.');
-        }
-        if (typeof e !== 'number') {
-            throw new DeveloperError('e is a required number.');
-        }
         
         var a2 = a * a;
         var a3 = a2 * a;
@@ -25570,21 +24481,6 @@ define('Core/QuarticRealPolynomial',[
      * @returns {Number[]} The real valued roots.
      */
     QuarticRealPolynomial.computeRealRoots = function(a, b, c, d, e) {
-                if (typeof a !== 'number') {
-            throw new DeveloperError('a is a required number.');
-        }
-        if (typeof b !== 'number') {
-            throw new DeveloperError('b is a required number.');
-        }
-        if (typeof c !== 'number') {
-            throw new DeveloperError('c is a required number.');
-        }
-        if (typeof d !== 'number') {
-            throw new DeveloperError('d is a required number.');
-        }
-        if (typeof e !== 'number') {
-            throw new DeveloperError('e is a required number.');
-        }
         
         if (Math.abs(a) < CesiumMath.EPSILON15) {
             return CubicRealPolynomial.computeRealRoots(b, c, d, e);
@@ -25695,12 +24591,6 @@ define('Core/Ray',[
      * var point = Cesium.Ray.getPoint(ray, intersection.start);
      */
     Ray.getPoint = function(ray, t, result) {
-                if (!defined(ray)){
-            throw new DeveloperError('ray is requred');
-        }
-        if (typeof t !== 'number') {
-            throw new DeveloperError('t is a required number');
-        }
         
         if (!defined(result)) {
             result = new Cartesian3();
@@ -25755,12 +24645,6 @@ define('Core/IntersectionTests',[
      * @returns {Cartesian3} The intersection point or undefined if there is no intersections.
      */
     IntersectionTests.rayPlane = function(ray, plane, result) {
-                if (!defined(ray)) {
-            throw new DeveloperError('ray is required.');
-        }
-        if (!defined(plane)) {
-            throw new DeveloperError('plane is required.');
-        }
         
         if (!defined(result)) {
             result = new Cartesian3();
@@ -25809,18 +24693,6 @@ define('Core/IntersectionTests',[
      * @returns {Number} The intersection as a parametric distance along the ray, or undefined if there is no intersection.
      */
     IntersectionTests.rayTriangleParametric  = function(ray, p0, p1, p2, cullBackFaces) {
-                if (!defined(ray)) {
-            throw new DeveloperError('ray is required.');
-        }
-        if (!defined(p0)) {
-            throw new DeveloperError('p0 is required.');
-        }
-        if (!defined(p1)) {
-            throw new DeveloperError('p1 is required.');
-        }
-        if (!defined(p2)) {
-            throw new DeveloperError('p2 is required.');
-        }
         
         cullBackFaces = defaultValue(cullBackFaces, false);
 
@@ -25932,21 +24804,6 @@ define('Core/IntersectionTests',[
      * @returns {Cartesian3} The intersection point or undefined if there is no intersections.
      */
     IntersectionTests.lineSegmentTriangle = function(v0, v1, p0, p1, p2, cullBackFaces, result) {
-                if (!defined(v0)) {
-            throw new DeveloperError('v0 is required.');
-        }
-        if (!defined(v1)) {
-            throw new DeveloperError('v1 is required.');
-        }
-        if (!defined(p0)) {
-            throw new DeveloperError('p0 is required.');
-        }
-        if (!defined(p1)) {
-            throw new DeveloperError('p1 is required.');
-        }
-        if (!defined(p2)) {
-            throw new DeveloperError('p2 is required.');
-        }
         
         var ray = scratchLineSegmentTriangleRay;
         Cartesian3.clone(v0, ray.origin);
@@ -26038,12 +24895,6 @@ define('Core/IntersectionTests',[
      * @returns {Interval} The interval containing scalar points along the ray or undefined if there are no intersections.
      */
     IntersectionTests.raySphere = function(ray, sphere, result) {
-                if (!defined(ray)) {
-            throw new DeveloperError('ray is required.');
-        }
-        if (!defined(sphere)) {
-            throw new DeveloperError('sphere is required.');
-        }
         
         result = raySphere(ray, sphere, result);
         if (!defined(result) || result.stop < 0.0) {
@@ -26067,15 +24918,6 @@ define('Core/IntersectionTests',[
      * @returns {Interval} The interval containing scalar points along the ray or undefined if there are no intersections.
      */
     IntersectionTests.lineSegmentSphere = function(p0, p1, sphere, result) {
-                if (!defined(p0)) {
-            throw new DeveloperError('p0 is required.');
-        }
-        if (!defined(p1)) {
-            throw new DeveloperError('p1 is required.');
-        }
-        if (!defined(sphere)) {
-            throw new DeveloperError('sphere is required.');
-        }
         
         var ray = scratchLineSegmentRay;
         Cartesian3.clone(p0, ray.origin);
@@ -26105,12 +24947,6 @@ define('Core/IntersectionTests',[
      * @returns {Interval} The interval containing scalar points along the ray or undefined if there are no intersections.
      */
     IntersectionTests.rayEllipsoid = function(ray, ellipsoid) {
-                if (!defined(ray)) {
-            throw new DeveloperError('ray is required.');
-        }
-        if (!defined(ellipsoid)) {
-            throw new DeveloperError('ellipsoid is required.');
-        }
         
         var inverseRadii = ellipsoid.oneOverRadii;
         var q = Cartesian3.multiplyComponents(inverseRadii, ray.origin, scratchQ);
@@ -26300,12 +25136,6 @@ define('Core/IntersectionTests',[
      * @returns {Cartesian3} The nearest planetodetic point on the ray.
      */
     IntersectionTests.grazingAltitudeLocation = function(ray, ellipsoid) {
-                if (!defined(ray)) {
-            throw new DeveloperError('ray is required.');
-        }
-        if (!defined(ellipsoid)) {
-            throw new DeveloperError('ellipsoid is required.');
-        }
         
         var position = ray.origin;
         var direction = ray.direction;
@@ -26414,15 +25244,6 @@ define('Core/IntersectionTests',[
      * var intersection = Cesium.IntersectionTests.lineSegmentPlane(p0, p1, plane);
      */
     IntersectionTests.lineSegmentPlane = function(endPoint0, endPoint1, plane, result) {
-                if (!defined(endPoint0)) {
-            throw new DeveloperError('endPoint0 is required.');
-        }
-        if (!defined(endPoint1)) {
-            throw new DeveloperError('endPoint1 is required.');
-        }
-        if (!defined(plane)) {
-            throw new DeveloperError('plane is required.');
-        }
         
         if (!defined(result)) {
             result = new Cartesian3();
@@ -26473,12 +25294,6 @@ define('Core/IntersectionTests',[
      * var triangles = Cesium.IntersectionTests.trianglePlaneIntersection(p0, p1, p2, plane);
      */
     IntersectionTests.trianglePlaneIntersection = function(p0, p1, p2, plane) {
-                if ((!defined(p0)) ||
-            (!defined(p1)) ||
-            (!defined(p2)) ||
-            (!defined(plane))) {
-            throw new DeveloperError('p0, p1, p2, and plane are required.');
-        }
         
         var planeNormal = plane.normal;
         var planeD = plane.distance;
@@ -26647,11 +25462,6 @@ define('Core/Plane',[
      * @exception {DeveloperError} Normal must be normalized
      */
     function Plane(normal, distance) {
-                Check.typeOf.object('normal', normal);
-        if (!CesiumMath.equalsEpsilon(Cartesian3.magnitude(normal), 1.0, CesiumMath.EPSILON6)) {
-            throw new DeveloperError('normal must be normalized.');
-        }
-        Check.typeOf.number('distance', distance);
         
         /**
          * The plane's normal.
@@ -26688,11 +25498,6 @@ define('Core/Plane',[
      * @exception {DeveloperError} Normal must be normalized
      */
     Plane.fromPointNormal = function(point, normal, result) {
-                Check.typeOf.object('point', point);
-        Check.typeOf.object('normal', normal);
-        if (!CesiumMath.equalsEpsilon(Cartesian3.magnitude(normal), 1.0, CesiumMath.EPSILON6)) {
-            throw new DeveloperError('normal must be normalized.');
-        }
         
         var distance = -Cartesian3.dot(normal, point);
 
@@ -26716,14 +25521,10 @@ define('Core/Plane',[
      * @exception {DeveloperError} Normal must be normalized
      */
     Plane.fromCartesian4 = function(coefficients, result) {
-                Check.typeOf.object('coefficients', coefficients);
         
         var normal = Cartesian3.fromCartesian4(coefficients, scratchNormal);
         var distance = coefficients.w;
 
-                if (!CesiumMath.equalsEpsilon(Cartesian3.magnitude(normal), 1.0, CesiumMath.EPSILON6)) {
-            throw new DeveloperError('normal must be normalized.');
-        }
         
         if (!defined(result)) {
             return new Plane(normal, distance);
@@ -26745,8 +25546,6 @@ define('Core/Plane',[
      * @returns {Number} The signed shortest distance of the point to the plane.
      */
     Plane.getPointDistance = function(plane, point) {
-                Check.typeOf.object('plane', plane);
-        Check.typeOf.object('point', point);
         
         return Cartesian3.dot(plane.normal, point) + plane.distance;
     };
@@ -26760,8 +25559,6 @@ define('Core/Plane',[
      * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if one was not provided.
      */
     Plane.projectPointOntoPlane = function(plane, point, result) {
-                Check.typeOf.object('plane', plane);
-        Check.typeOf.object('point', point);
         
         if (!defined(result)) {
             result = new Cartesian3();
@@ -26784,8 +25581,6 @@ define('Core/Plane',[
      * @returns {Plane} The plane transformed by the given transformation matrix.
      */
     Plane.transform = function(plane, transform, result) {
-                Check.typeOf.object('plane', plane);
-        Check.typeOf.object('transform', transform);
         
         Matrix4.multiplyByPointAsVector(transform, plane.normal, scratchNormal);
         Cartesian3.normalize(scratchNormal, scratchNormal);
@@ -26804,7 +25599,6 @@ define('Core/Plane',[
      * @returns {Plane} The modified result parameter or a new Plane instance if one was not provided.
      */
     Plane.clone = function(plane, result) {
-                Check.typeOf.object('plane', plane);
         
         if (!defined(result)) {
             return new Plane(plane.normal, plane.distance);
@@ -26825,8 +25619,6 @@ define('Core/Plane',[
      * @returns {Boolean} <code>true</code> if left and right are equal, <code>false</code> otherwise.
      */
     Plane.equals = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         return (left.distance === right.distance) && Cartesian3.equals(left.normal, right.normal);
     };
@@ -26994,9 +25786,6 @@ define('Core/WebMercatorProjection',[
      * @returns {Cartographic} The equivalent cartographic coordinates.
      */
     WebMercatorProjection.prototype.unproject = function(cartesian, result) {
-                if (!defined(cartesian)) {
-            throw new DeveloperError('cartesian is required');
-        }
         
         var oneOverEarthSemimajorAxis = this._oneOverSemimajorAxis;
         var longitude = cartesian.x * oneOverEarthSemimajorAxis;
@@ -27118,9 +25907,6 @@ define('Core/GroundPolylineGeometry',[
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
         var positions = options.positions;
 
-                if ((!defined(positions)) || (positions.length < 2)) {
-            throw new DeveloperError('At least two positions are required.');
-        }
         
         /**
          * The screen space width in pixels.
@@ -27262,8 +26048,6 @@ define('Core/GroundPolylineGeometry',[
      * @returns {Number[]} The array that was packed into
      */
     GroundPolylineGeometry.pack = function(value, array, startingIndex) {
-                Check.typeOf.object('value', value);
-        Check.defined('array', array);
         
         var index = defaultValue(startingIndex, 0);
 
@@ -27298,7 +26082,6 @@ define('Core/GroundPolylineGeometry',[
      * @param {PolygonGeometry} [result] The object into which to store the result.
      */
     GroundPolylineGeometry.unpack = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         var index = defaultValue(startingIndex, 0);
         var positionsLength = array[index++];
@@ -27323,9 +26106,9 @@ define('Core/GroundPolylineGeometry',[
                 positions : positions,
                 granularity : granularity,
                 loop : loop,
-                ellipsoid : ellipsoid
+                ellipsoid : ellipsoid,
+                projection : new PROJECTIONS[projectionIndex](ellipsoid)
             });
-            geometry._projectionIndex = projectionIndex;
             geometry._scene3DOnly = scene3DOnly;
             return geometry;
         }
@@ -28182,7 +26965,6 @@ define('Core/destroyObject',[
         message = defaultValue(message, 'This object was destroyed, i.e., destroy() was called.');
 
         function throwOnDestroyed() {
-                        throw new DeveloperError(message);
                     }
 
         for ( var key in object) {
@@ -28259,9 +27041,6 @@ define('Core/GeometryInstance',[
     function GeometryInstance(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                if (!defined(options.geometry)) {
-            throw new DeveloperError('options.geometry is required.');
-        }
         
         /**
          * The geometry being instanced.
@@ -28376,18 +27155,6 @@ define('Core/GeometryInstanceAttribute',[
     function GeometryInstanceAttribute(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                if (!defined(options.componentDatatype)) {
-            throw new DeveloperError('options.componentDatatype is required.');
-        }
-        if (!defined(options.componentsPerAttribute)) {
-            throw new DeveloperError('options.componentsPerAttribute is required.');
-        }
-        if (options.componentsPerAttribute < 1 || options.componentsPerAttribute > 4) {
-            throw new DeveloperError('options.componentsPerAttribute must be between 1 and 4.');
-        }
-        if (!defined(options.value)) {
-            throw new DeveloperError('options.value is required.');
-        }
         
         /**
          * The datatype of each component in the attribute, e.g., individual elements in
@@ -28471,6 +27238,10 @@ define('Shaders/PolylineShadowVolumeVS',[],function() {
     'use strict';
     return "attribute vec3 position3DHigh;\n\
 attribute vec3 position3DLow;\n\
+\n\
+// In 2D and in 3D, texture coordinate normalization component signs encodes:\n\
+// * X sign - sidedness relative to right plane\n\
+// * Y sign - is negative OR magnitude is greater than 1.0 if vertex is on bottom of volume\n\
 #ifndef COLUMBUS_VIEW_2D\n\
 attribute vec4 startHiAndForwardOffsetX;\n\
 attribute vec4 startLoAndForwardOffsetY;\n\
@@ -28483,94 +27254,154 @@ attribute vec4 offsetAndRight2D;\n\
 attribute vec4 startEndNormals2D;\n\
 attribute vec2 texcoordNormalization2D;\n\
 #endif\n\
+\n\
 attribute float batchId;\n\
+\n\
 varying vec4 v_startPlaneNormalEcAndHalfWidth;\n\
 varying vec4 v_endPlaneNormalEcAndBatchId;\n\
 varying vec4 v_rightPlaneEC;\n\
 varying vec4 v_endEcAndStartEcX;\n\
 varying vec4 v_texcoordNormalizationAndStartEcYZ;\n\
+\n\
+// For materials\n\
 #ifdef WIDTH_VARYING\n\
 varying float v_width;\n\
 #endif\n\
 #ifdef ANGLE_VARYING\n\
 varying float v_polylineAngle;\n\
 #endif\n\
+\n\
 #ifdef PER_INSTANCE_COLOR\n\
 varying vec4 v_color;\n\
 #endif\n\
+\n\
 void main()\n\
 {\n\
 #ifdef COLUMBUS_VIEW_2D\n\
-vec3 ecStart = (czm_modelViewRelativeToEye * czm_translateRelativeToEye(vec3(0.0, startHiLo2D.xy), vec3(0.0, startHiLo2D.zw))).xyz;\n\
-vec3 forwardDirectionEC = czm_normal * vec3(0.0, offsetAndRight2D.xy);\n\
-vec3 ecEnd = forwardDirectionEC + ecStart;\n\
-forwardDirectionEC = normalize(forwardDirectionEC);\n\
-v_rightPlaneEC.xyz = czm_normal * vec3(0.0, offsetAndRight2D.zw);\n\
-v_rightPlaneEC.w = -dot(v_rightPlaneEC.xyz, ecStart);\n\
-vec4 startPlaneEC;\n\
-startPlaneEC.xyz =  czm_normal * vec3(0.0, startEndNormals2D.xy);\n\
-startPlaneEC.w = -dot(startPlaneEC.xyz, ecStart);\n\
-vec4 endPlaneEC;\n\
-endPlaneEC.xyz =  czm_normal * vec3(0.0, startEndNormals2D.zw);\n\
-endPlaneEC.w = -dot(endPlaneEC.xyz, ecEnd);\n\
-v_texcoordNormalizationAndStartEcYZ.x = abs(texcoordNormalization2D.x);\n\
-v_texcoordNormalizationAndStartEcYZ.y = texcoordNormalization2D.y;\n\
+    vec3 ecStart = (czm_modelViewRelativeToEye * czm_translateRelativeToEye(vec3(0.0, startHiLo2D.xy), vec3(0.0, startHiLo2D.zw))).xyz;\n\
+\n\
+    vec3 forwardDirectionEC = czm_normal * vec3(0.0, offsetAndRight2D.xy);\n\
+    vec3 ecEnd = forwardDirectionEC + ecStart;\n\
+    forwardDirectionEC = normalize(forwardDirectionEC);\n\
+\n\
+    // Right plane\n\
+    v_rightPlaneEC.xyz = czm_normal * vec3(0.0, offsetAndRight2D.zw);\n\
+    v_rightPlaneEC.w = -dot(v_rightPlaneEC.xyz, ecStart);\n\
+\n\
+    // start plane\n\
+    vec4 startPlaneEC;\n\
+    startPlaneEC.xyz =  czm_normal * vec3(0.0, startEndNormals2D.xy);\n\
+    startPlaneEC.w = -dot(startPlaneEC.xyz, ecStart);\n\
+\n\
+    // end plane\n\
+    vec4 endPlaneEC;\n\
+    endPlaneEC.xyz =  czm_normal * vec3(0.0, startEndNormals2D.zw);\n\
+    endPlaneEC.w = -dot(endPlaneEC.xyz, ecEnd);\n\
+\n\
+    v_texcoordNormalizationAndStartEcYZ.x = abs(texcoordNormalization2D.x);\n\
+    v_texcoordNormalizationAndStartEcYZ.y = texcoordNormalization2D.y;\n\
+\n\
 #else // COLUMBUS_VIEW_2D\n\
-vec3 ecStart = (czm_modelViewRelativeToEye * czm_translateRelativeToEye(startHiAndForwardOffsetX.xyz, startLoAndForwardOffsetY.xyz)).xyz;\n\
-vec3 offset = czm_normal * vec3(startHiAndForwardOffsetX.w, startLoAndForwardOffsetY.w, startNormalAndForwardOffsetZ.w);\n\
-vec3 ecEnd = ecStart + offset;\n\
-vec3 forwardDirectionEC = normalize(offset);\n\
-vec4 startPlaneEC;\n\
-startPlaneEC.xyz = czm_normal * startNormalAndForwardOffsetZ.xyz;\n\
-startPlaneEC.w = -dot(startPlaneEC.xyz, ecStart);\n\
-vec4 endPlaneEC;\n\
-endPlaneEC.xyz = czm_normal * endNormalAndTextureCoordinateNormalizationX.xyz;\n\
-endPlaneEC.w = -dot(endPlaneEC.xyz, ecEnd);\n\
-v_rightPlaneEC.xyz = czm_normal * rightNormalAndTextureCoordinateNormalizationY.xyz;\n\
-v_rightPlaneEC.w = -dot(v_rightPlaneEC.xyz, ecStart);\n\
-v_texcoordNormalizationAndStartEcYZ.x = abs(endNormalAndTextureCoordinateNormalizationX.w);\n\
-v_texcoordNormalizationAndStartEcYZ.y = rightNormalAndTextureCoordinateNormalizationY.w;\n\
+    vec3 ecStart = (czm_modelViewRelativeToEye * czm_translateRelativeToEye(startHiAndForwardOffsetX.xyz, startLoAndForwardOffsetY.xyz)).xyz;\n\
+    vec3 offset = czm_normal * vec3(startHiAndForwardOffsetX.w, startLoAndForwardOffsetY.w, startNormalAndForwardOffsetZ.w);\n\
+    vec3 ecEnd = ecStart + offset;\n\
+\n\
+    vec3 forwardDirectionEC = normalize(offset);\n\
+\n\
+    // start plane\n\
+    vec4 startPlaneEC;\n\
+    startPlaneEC.xyz = czm_normal * startNormalAndForwardOffsetZ.xyz;\n\
+    startPlaneEC.w = -dot(startPlaneEC.xyz, ecStart);\n\
+\n\
+    // end plane\n\
+    vec4 endPlaneEC;\n\
+    endPlaneEC.xyz = czm_normal * endNormalAndTextureCoordinateNormalizationX.xyz;\n\
+    endPlaneEC.w = -dot(endPlaneEC.xyz, ecEnd);\n\
+\n\
+    // Right plane\n\
+    v_rightPlaneEC.xyz = czm_normal * rightNormalAndTextureCoordinateNormalizationY.xyz;\n\
+    v_rightPlaneEC.w = -dot(v_rightPlaneEC.xyz, ecStart);\n\
+\n\
+    v_texcoordNormalizationAndStartEcYZ.x = abs(endNormalAndTextureCoordinateNormalizationX.w);\n\
+    v_texcoordNormalizationAndStartEcYZ.y = rightNormalAndTextureCoordinateNormalizationY.w;\n\
+\n\
 #endif // COLUMBUS_VIEW_2D\n\
-v_endEcAndStartEcX.xyz = ecEnd;\n\
-v_endEcAndStartEcX.w = ecStart.x;\n\
-v_texcoordNormalizationAndStartEcYZ.zw = ecStart.yz;\n\
+\n\
+    v_endEcAndStartEcX.xyz = ecEnd;\n\
+    v_endEcAndStartEcX.w = ecStart.x;\n\
+    v_texcoordNormalizationAndStartEcYZ.zw = ecStart.yz;\n\
+\n\
 #ifdef PER_INSTANCE_COLOR\n\
-v_color = czm_batchTable_color(batchId);\n\
+    v_color = czm_batchTable_color(batchId);\n\
 #endif // PER_INSTANCE_COLOR\n\
-vec4 positionRelativeToEye = czm_computePosition();\n\
-vec4 positionEC = czm_modelViewRelativeToEye * positionRelativeToEye;\n\
-float absStartPlaneDistance = abs(czm_planeDistance(startPlaneEC, positionEC.xyz));\n\
-float absEndPlaneDistance = abs(czm_planeDistance(endPlaneEC, positionEC.xyz));\n\
-vec3 planeDirection = czm_branchFreeTernary(absStartPlaneDistance < absEndPlaneDistance, startPlaneEC.xyz, endPlaneEC.xyz);\n\
-vec3 upOrDown = normalize(cross(v_rightPlaneEC.xyz, planeDirection));\n\
-vec3 normalEC = normalize(cross(planeDirection, upOrDown));\n\
-upOrDown = cross(forwardDirectionEC, normalEC);\n\
-upOrDown = float(czm_sceneMode == czm_sceneMode3D) * upOrDown;\n\
-upOrDown = float(v_texcoordNormalizationAndStartEcYZ.y > 1.0 || v_texcoordNormalizationAndStartEcYZ.y < 0.0) * upOrDown;\n\
-upOrDown = min(GLOBE_MINIMUM_ALTITUDE, czm_geometricToleranceOverMeter * length(positionRelativeToEye.xyz)) * upOrDown;\n\
-positionEC.xyz += upOrDown;\n\
-v_texcoordNormalizationAndStartEcYZ.y = czm_branchFreeTernary(v_texcoordNormalizationAndStartEcYZ.y > 1.0, 0.0, abs(v_texcoordNormalizationAndStartEcYZ.y));\n\
-float width = czm_batchTable_width(batchId);\n\
+\n\
+    // Compute a normal along which to \"push\" the position out, extending the miter depending on view distance.\n\
+    // Position has already been \"pushed\" by unit length along miter normal, and miter normals are encoded in the planes.\n\
+    // Decode the normal to use at this specific vertex, push the position back, and then push to where it needs to be.\n\
+    vec4 positionRelativeToEye = czm_computePosition();\n\
+\n\
+    // Check distance to the end plane and start plane, pick the plane that is closer\n\
+    vec4 positionEC = czm_modelViewRelativeToEye * positionRelativeToEye; // w = 1.0, see czm_computePosition\n\
+    float absStartPlaneDistance = abs(czm_planeDistance(startPlaneEC, positionEC.xyz));\n\
+    float absEndPlaneDistance = abs(czm_planeDistance(endPlaneEC, positionEC.xyz));\n\
+    vec3 planeDirection = czm_branchFreeTernary(absStartPlaneDistance < absEndPlaneDistance, startPlaneEC.xyz, endPlaneEC.xyz);\n\
+    vec3 upOrDown = normalize(cross(v_rightPlaneEC.xyz, planeDirection)); // Points \"up\" for start plane, \"down\" at end plane.\n\
+    vec3 normalEC = normalize(cross(planeDirection, upOrDown));           // In practice, the opposite seems to work too.\n\
+\n\
+    // Extrude bottom vertices downward for far view distances, like for GroundPrimitives\n\
+    upOrDown = cross(forwardDirectionEC, normalEC);\n\
+    upOrDown = float(czm_sceneMode == czm_sceneMode3D) * upOrDown;\n\
+    upOrDown = float(v_texcoordNormalizationAndStartEcYZ.y > 1.0 || v_texcoordNormalizationAndStartEcYZ.y < 0.0) * upOrDown;\n\
+    upOrDown = min(GLOBE_MINIMUM_ALTITUDE, czm_geometricToleranceOverMeter * length(positionRelativeToEye.xyz)) * upOrDown;\n\
+    positionEC.xyz += upOrDown;\n\
+\n\
+    v_texcoordNormalizationAndStartEcYZ.y = czm_branchFreeTernary(v_texcoordNormalizationAndStartEcYZ.y > 1.0, 0.0, abs(v_texcoordNormalizationAndStartEcYZ.y));\n\
+\n\
+    // Determine distance along normalEC to push for a volume of appropriate width.\n\
+    // Make volumes about double pixel width for a conservative fit - in practice the\n\
+    // extra cost here is minimal compared to the loose volume heights.\n\
+    //\n\
+    // N = normalEC (guaranteed \"right-facing\")\n\
+    // R = rightEC\n\
+    // p = angle between N and R\n\
+    // w = distance to push along R if R == N\n\
+    // d = distance to push along N\n\
+    //\n\
+    //   N   R\n\
+    //  { \ p| }      * cos(p) = dot(N, R) = w / d\n\
+    //  d\ \ |  |w    * d = w / dot(N, R)\n\
+    //    { \| }\n\
+    //       o---------- polyline segment ---->\n\
+    //\n\
+    float width = czm_batchTable_width(batchId);\n\
 #ifdef WIDTH_VARYING\n\
-v_width = width;\n\
+    v_width = width;\n\
 #endif\n\
-v_startPlaneNormalEcAndHalfWidth.xyz = startPlaneEC.xyz;\n\
-v_startPlaneNormalEcAndHalfWidth.w = width * 0.5;\n\
-v_endPlaneNormalEcAndBatchId.xyz = endPlaneEC.xyz;\n\
-v_endPlaneNormalEcAndBatchId.w = batchId;\n\
-width = width * max(0.0, czm_metersPerPixel(positionEC));\n\
-width = width / dot(normalEC, v_rightPlaneEC.xyz);\n\
+\n\
+    v_startPlaneNormalEcAndHalfWidth.xyz = startPlaneEC.xyz;\n\
+    v_startPlaneNormalEcAndHalfWidth.w = width * 0.5;\n\
+\n\
+    v_endPlaneNormalEcAndBatchId.xyz = endPlaneEC.xyz;\n\
+    v_endPlaneNormalEcAndBatchId.w = batchId;\n\
+\n\
+    width = width * max(0.0, czm_metersPerPixel(positionEC)); // width = distance to push along R\n\
+    width = width / dot(normalEC, v_rightPlaneEC.xyz); // width = distance to push along N\n\
+\n\
+    // Determine if this vertex is on the \"left\" or \"right\"\n\
 #ifdef COLUMBUS_VIEW_2D\n\
-normalEC *= sign(texcoordNormalization2D.x);\n\
+        normalEC *= sign(texcoordNormalization2D.x);\n\
 #else\n\
-normalEC *= sign(endNormalAndTextureCoordinateNormalizationX.w);\n\
+        normalEC *= sign(endNormalAndTextureCoordinateNormalizationX.w);\n\
 #endif\n\
-positionEC.xyz += width * normalEC;\n\
-gl_Position = czm_depthClampFarPlane(czm_projection * positionEC);\n\
+\n\
+    positionEC.xyz += width * normalEC;\n\
+    gl_Position = czm_depthClampFarPlane(czm_projection * positionEC);\n\
+\n\
 #ifdef ANGLE_VARYING\n\
-vec2 approxLineDirection = normalize(vec2(forwardDirectionEC.x, -forwardDirectionEC.y));\n\
-approxLineDirection.y = czm_branchFreeTernary(approxLineDirection.x == 0.0 && approxLineDirection.y == 0.0, -1.0, approxLineDirection.y);\n\
-v_polylineAngle = czm_fastApproximateAtan(approxLineDirection.x, approxLineDirection.y);\n\
+    // Approximate relative screen space direction of the line.\n\
+    vec2 approxLineDirection = normalize(vec2(forwardDirectionEC.x, -forwardDirectionEC.y));\n\
+    approxLineDirection.y = czm_branchFreeTernary(approxLineDirection.x == 0.0 && approxLineDirection.y == 0.0, -1.0, approxLineDirection.y);\n\
+    v_polylineAngle = czm_fastApproximateAtan(approxLineDirection.x, approxLineDirection.y);\n\
 #endif\n\
 }\n\
 ";
@@ -28581,61 +27412,89 @@ define('Shaders/PolylineShadowVolumeFS',[],function() {
     return "#ifdef GL_EXT_frag_depth\n\
 #extension GL_EXT_frag_depth : enable\n\
 #endif\n\
+\n\
 varying vec4 v_startPlaneNormalEcAndHalfWidth;\n\
 varying vec4 v_endPlaneNormalEcAndBatchId;\n\
-varying vec4 v_rightPlaneEC;\n\
+varying vec4 v_rightPlaneEC; // Technically can compute distance for this here\n\
 varying vec4 v_endEcAndStartEcX;\n\
 varying vec4 v_texcoordNormalizationAndStartEcYZ;\n\
+\n\
 #ifdef PER_INSTANCE_COLOR\n\
 varying vec4 v_color;\n\
 #endif\n\
+\n\
 void main(void)\n\
 {\n\
-float logDepthOrDepth = czm_branchFreeTernary(czm_sceneMode == czm_sceneMode2D, gl_FragCoord.z, czm_unpackDepth(texture2D(czm_globeDepthTexture, gl_FragCoord.xy / czm_viewport.zw)));\n\
-vec3 ecStart = vec3(v_endEcAndStartEcX.w, v_texcoordNormalizationAndStartEcYZ.zw);\n\
-if (logDepthOrDepth == 0.0) {\n\
+    float logDepthOrDepth = czm_branchFreeTernary(czm_sceneMode == czm_sceneMode2D, gl_FragCoord.z, czm_unpackDepth(texture2D(czm_globeDepthTexture, gl_FragCoord.xy / czm_viewport.zw)));\n\
+    vec3 ecStart = vec3(v_endEcAndStartEcX.w, v_texcoordNormalizationAndStartEcYZ.zw);\n\
+\n\
+    // Discard for sky\n\
+    if (logDepthOrDepth == 0.0) {\n\
 #ifdef DEBUG_SHOW_VOLUME\n\
-gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5);\n\
-return;\n\
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5);\n\
+        return;\n\
 #else // DEBUG_SHOW_VOLUME\n\
-discard;\n\
+        discard;\n\
 #endif // DEBUG_SHOW_VOLUME\n\
-}\n\
-vec4 eyeCoordinate = czm_windowToEyeCoordinates(gl_FragCoord.xy, logDepthOrDepth);\n\
-eyeCoordinate /= eyeCoordinate.w;\n\
-float halfMaxWidth = v_startPlaneNormalEcAndHalfWidth.w * czm_metersPerPixel(eyeCoordinate);\n\
-float widthwiseDistance = czm_planeDistance(v_rightPlaneEC, eyeCoordinate.xyz);\n\
-float distanceFromStart = czm_planeDistance(v_startPlaneNormalEcAndHalfWidth.xyz, -dot(ecStart, v_startPlaneNormalEcAndHalfWidth.xyz), eyeCoordinate.xyz);\n\
-float distanceFromEnd = czm_planeDistance(v_endPlaneNormalEcAndBatchId.xyz, -dot(v_endEcAndStartEcX.xyz, v_endPlaneNormalEcAndBatchId.xyz), eyeCoordinate.xyz);\n\
-if (abs(widthwiseDistance) > halfMaxWidth || distanceFromStart < 0.0 || distanceFromEnd < 0.0) {\n\
+    }\n\
+\n\
+    vec4 eyeCoordinate = czm_windowToEyeCoordinates(gl_FragCoord.xy, logDepthOrDepth);\n\
+    eyeCoordinate /= eyeCoordinate.w;\n\
+\n\
+    float halfMaxWidth = v_startPlaneNormalEcAndHalfWidth.w * czm_metersPerPixel(eyeCoordinate);\n\
+    // Check distance of the eye coordinate against the right-facing plane\n\
+    float widthwiseDistance = czm_planeDistance(v_rightPlaneEC, eyeCoordinate.xyz);\n\
+\n\
+    // Check eye coordinate against the mitering planes\n\
+    float distanceFromStart = czm_planeDistance(v_startPlaneNormalEcAndHalfWidth.xyz, -dot(ecStart, v_startPlaneNormalEcAndHalfWidth.xyz), eyeCoordinate.xyz);\n\
+    float distanceFromEnd = czm_planeDistance(v_endPlaneNormalEcAndBatchId.xyz, -dot(v_endEcAndStartEcX.xyz, v_endPlaneNormalEcAndBatchId.xyz), eyeCoordinate.xyz);\n\
+\n\
+    if (abs(widthwiseDistance) > halfMaxWidth || distanceFromStart < 0.0 || distanceFromEnd < 0.0) {\n\
 #ifdef DEBUG_SHOW_VOLUME\n\
-gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5);\n\
-return;\n\
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5);\n\
+        return;\n\
 #else // DEBUG_SHOW_VOLUME\n\
-discard;\n\
+        discard;\n\
 #endif // DEBUG_SHOW_VOLUME\n\
-}\n\
-vec3 alignedPlaneNormal;\n\
-alignedPlaneNormal = cross(v_rightPlaneEC.xyz, v_startPlaneNormalEcAndHalfWidth.xyz);\n\
-alignedPlaneNormal = normalize(cross(alignedPlaneNormal, v_rightPlaneEC.xyz));\n\
-distanceFromStart = czm_planeDistance(alignedPlaneNormal, -dot(alignedPlaneNormal, ecStart), eyeCoordinate.xyz);\n\
-alignedPlaneNormal = cross(v_rightPlaneEC.xyz, v_endPlaneNormalEcAndBatchId.xyz);\n\
-alignedPlaneNormal = normalize(cross(alignedPlaneNormal, v_rightPlaneEC.xyz));\n\
-distanceFromEnd = czm_planeDistance(alignedPlaneNormal, -dot(alignedPlaneNormal, v_endEcAndStartEcX.xyz), eyeCoordinate.xyz);\n\
+    }\n\
+\n\
+    // Check distance of the eye coordinate against start and end planes with normals in the right plane.\n\
+    // For computing unskewed lengthwise texture coordinate.\n\
+    // Can also be used for clipping extremely pointy miters, but in practice unnecessary because of miter breaking.\n\
+\n\
+    // aligned plane: cross the right plane normal with miter plane normal, then cross the result with right again to point it more \"forward\"\n\
+    vec3 alignedPlaneNormal;\n\
+\n\
+    // start aligned plane\n\
+    alignedPlaneNormal = cross(v_rightPlaneEC.xyz, v_startPlaneNormalEcAndHalfWidth.xyz);\n\
+    alignedPlaneNormal = normalize(cross(alignedPlaneNormal, v_rightPlaneEC.xyz));\n\
+    distanceFromStart = czm_planeDistance(alignedPlaneNormal, -dot(alignedPlaneNormal, ecStart), eyeCoordinate.xyz);\n\
+\n\
+    // end aligned plane\n\
+    alignedPlaneNormal = cross(v_rightPlaneEC.xyz, v_endPlaneNormalEcAndBatchId.xyz);\n\
+    alignedPlaneNormal = normalize(cross(alignedPlaneNormal, v_rightPlaneEC.xyz));\n\
+    distanceFromEnd = czm_planeDistance(alignedPlaneNormal, -dot(alignedPlaneNormal, v_endEcAndStartEcX.xyz), eyeCoordinate.xyz);\n\
+\n\
 #ifdef PER_INSTANCE_COLOR\n\
-gl_FragColor = v_color;\n\
+    gl_FragColor = v_color;\n\
 #else // PER_INSTANCE_COLOR\n\
-float s = clamp(distanceFromStart / (distanceFromStart + distanceFromEnd), 0.0, 1.0);\n\
-s = (s * v_texcoordNormalizationAndStartEcYZ.x) + v_texcoordNormalizationAndStartEcYZ.y;\n\
-float t = (widthwiseDistance + halfMaxWidth) / (2.0 * halfMaxWidth);\n\
-czm_materialInput materialInput;\n\
-materialInput.s = s;\n\
-materialInput.st = vec2(s, t);\n\
-materialInput.str = vec3(s, t, 0.0);\n\
-czm_material material = czm_getMaterial(materialInput);\n\
-gl_FragColor = vec4(material.diffuse + material.emission, material.alpha);\n\
+    // Clamp - distance to aligned planes may be negative due to mitering,\n\
+    // so fragment texture coordinate might be out-of-bounds.\n\
+    float s = clamp(distanceFromStart / (distanceFromStart + distanceFromEnd), 0.0, 1.0);\n\
+    s = (s * v_texcoordNormalizationAndStartEcYZ.x) + v_texcoordNormalizationAndStartEcYZ.y;\n\
+    float t = (widthwiseDistance + halfMaxWidth) / (2.0 * halfMaxWidth);\n\
+\n\
+    czm_materialInput materialInput;\n\
+\n\
+    materialInput.s = s;\n\
+    materialInput.st = vec2(s, t);\n\
+    materialInput.str = vec3(s, t, 0.0);\n\
+\n\
+    czm_material material = czm_getMaterial(materialInput);\n\
+    gl_FragColor = vec4(material.diffuse + material.emission, material.alpha);\n\
 #endif // PER_INSTANCE_COLOR\n\
-czm_writeDepthClampedToFarPlane();\n\
+\n\
+    czm_writeDepthClampedToFarPlane();\n\
 }\n\
 ";
 });
@@ -28644,6 +27503,7 @@ define('Shaders/PolylineShadowVolumeMorphVS',[],function() {
     'use strict';
     return "attribute vec3 position3DHigh;\n\
 attribute vec3 position3DLow;\n\
+\n\
 attribute vec4 startHiAndForwardOffsetX;\n\
 attribute vec4 startLoAndForwardOffsetY;\n\
 attribute vec4 startNormalAndForwardOffsetZ;\n\
@@ -28653,113 +27513,169 @@ attribute vec4 startHiLo2D;\n\
 attribute vec4 offsetAndRight2D;\n\
 attribute vec4 startEndNormals2D;\n\
 attribute vec2 texcoordNormalization2D;\n\
+\n\
 attribute float batchId;\n\
+\n\
 varying vec3 v_forwardDirectionEC;\n\
 varying vec3 v_texcoordNormalizationAndHalfWidth;\n\
 varying float v_batchId;\n\
+\n\
+// For materials\n\
 #ifdef WIDTH_VARYING\n\
 varying float v_width;\n\
 #endif\n\
 #ifdef ANGLE_VARYING\n\
 varying float v_polylineAngle;\n\
 #endif\n\
+\n\
 #ifdef PER_INSTANCE_COLOR\n\
 varying vec4 v_color;\n\
 #else\n\
 varying vec2 v_alignedPlaneDistances;\n\
 varying float v_texcoordT;\n\
 #endif\n\
+\n\
+// Morphing planes using SLERP or NLERP doesn't seem to work, so instead draw the material directly on the shadow volume.\n\
+// Morph views are from very far away and aren't meant to be used precisely, so this should be sufficient.\n\
 void main()\n\
 {\n\
-v_batchId = batchId;\n\
-vec4 posRelativeToEye2D = czm_translateRelativeToEye(vec3(0.0, startHiLo2D.xy), vec3(0.0, startHiLo2D.zw));\n\
-vec4 posRelativeToEye3D = czm_translateRelativeToEye(startHiAndForwardOffsetX.xyz, startLoAndForwardOffsetY.xyz);\n\
-vec4 posRelativeToEye = czm_columbusViewMorph(posRelativeToEye2D, posRelativeToEye3D, czm_morphTime);\n\
-vec3 posEc2D = (czm_modelViewRelativeToEye * posRelativeToEye2D).xyz;\n\
-vec3 posEc3D = (czm_modelViewRelativeToEye * posRelativeToEye3D).xyz;\n\
-vec3 startEC = (czm_modelViewRelativeToEye * posRelativeToEye).xyz;\n\
-vec4 startPlane2D;\n\
-vec4 startPlane3D;\n\
-startPlane2D.xyz = czm_normal * vec3(0.0, startEndNormals2D.xy);\n\
-startPlane3D.xyz = czm_normal * startNormalAndForwardOffsetZ.xyz;\n\
-startPlane2D.w = -dot(startPlane2D.xyz, posEc2D);\n\
-startPlane3D.w = -dot(startPlane3D.xyz, posEc3D);\n\
-vec4 rightPlane2D;\n\
-vec4 rightPlane3D;\n\
-rightPlane2D.xyz = czm_normal * vec3(0.0, offsetAndRight2D.zw);\n\
-rightPlane3D.xyz = czm_normal * rightNormalAndTextureCoordinateNormalizationY.xyz;\n\
-rightPlane2D.w = -dot(rightPlane2D.xyz, posEc2D);\n\
-rightPlane3D.w = -dot(rightPlane3D.xyz, posEc3D);\n\
-posRelativeToEye2D = posRelativeToEye2D + vec4(0.0, offsetAndRight2D.xy, 0.0);\n\
-posRelativeToEye3D = posRelativeToEye3D + vec4(startHiAndForwardOffsetX.w, startLoAndForwardOffsetY.w, startNormalAndForwardOffsetZ.w, 0.0);\n\
-posRelativeToEye = czm_columbusViewMorph(posRelativeToEye2D, posRelativeToEye3D, czm_morphTime);\n\
-posEc2D = (czm_modelViewRelativeToEye * posRelativeToEye2D).xyz;\n\
-posEc3D = (czm_modelViewRelativeToEye * posRelativeToEye3D).xyz;\n\
-vec3 endEC = (czm_modelViewRelativeToEye * posRelativeToEye).xyz;\n\
-vec3 forwardEc3D = czm_normal * normalize(vec3(startHiAndForwardOffsetX.w, startLoAndForwardOffsetY.w, startNormalAndForwardOffsetZ.w));\n\
-vec3 forwardEc2D = czm_normal * normalize(vec3(0.0, offsetAndRight2D.xy));\n\
-vec4 endPlane2D;\n\
-vec4 endPlane3D;\n\
-endPlane2D.xyz = czm_normal * vec3(0.0, startEndNormals2D.zw);\n\
-endPlane3D.xyz = czm_normal * endNormalAndTextureCoordinateNormalizationX.xyz;\n\
-endPlane2D.w = -dot(endPlane2D.xyz, posEc2D);\n\
-endPlane3D.w = -dot(endPlane3D.xyz, posEc3D);\n\
-v_forwardDirectionEC = normalize(endEC - startEC);\n\
-vec2 cleanTexcoordNormalization2D;\n\
-cleanTexcoordNormalization2D.x = abs(texcoordNormalization2D.x);\n\
-cleanTexcoordNormalization2D.y = czm_branchFreeTernary(texcoordNormalization2D.y > 1.0, 0.0, abs(texcoordNormalization2D.y));\n\
-vec2 cleanTexcoordNormalization3D;\n\
-cleanTexcoordNormalization3D.x = abs(endNormalAndTextureCoordinateNormalizationX.w);\n\
-cleanTexcoordNormalization3D.y = rightNormalAndTextureCoordinateNormalizationY.w;\n\
-cleanTexcoordNormalization3D.y = czm_branchFreeTernary(cleanTexcoordNormalization3D.y > 1.0, 0.0, abs(cleanTexcoordNormalization3D.y));\n\
-v_texcoordNormalizationAndHalfWidth.xy = mix(cleanTexcoordNormalization2D, cleanTexcoordNormalization3D, czm_morphTime);\n\
+    v_batchId = batchId;\n\
+\n\
+    // Start position\n\
+    vec4 posRelativeToEye2D = czm_translateRelativeToEye(vec3(0.0, startHiLo2D.xy), vec3(0.0, startHiLo2D.zw));\n\
+    vec4 posRelativeToEye3D = czm_translateRelativeToEye(startHiAndForwardOffsetX.xyz, startLoAndForwardOffsetY.xyz);\n\
+    vec4 posRelativeToEye = czm_columbusViewMorph(posRelativeToEye2D, posRelativeToEye3D, czm_morphTime);\n\
+    vec3 posEc2D = (czm_modelViewRelativeToEye * posRelativeToEye2D).xyz;\n\
+    vec3 posEc3D = (czm_modelViewRelativeToEye * posRelativeToEye3D).xyz;\n\
+    vec3 startEC = (czm_modelViewRelativeToEye * posRelativeToEye).xyz;\n\
+\n\
+    // Start plane\n\
+    vec4 startPlane2D;\n\
+    vec4 startPlane3D;\n\
+    startPlane2D.xyz = czm_normal * vec3(0.0, startEndNormals2D.xy);\n\
+    startPlane3D.xyz = czm_normal * startNormalAndForwardOffsetZ.xyz;\n\
+    startPlane2D.w = -dot(startPlane2D.xyz, posEc2D);\n\
+    startPlane3D.w = -dot(startPlane3D.xyz, posEc3D);\n\
+\n\
+    // Right plane\n\
+    vec4 rightPlane2D;\n\
+    vec4 rightPlane3D;\n\
+    rightPlane2D.xyz = czm_normal * vec3(0.0, offsetAndRight2D.zw);\n\
+    rightPlane3D.xyz = czm_normal * rightNormalAndTextureCoordinateNormalizationY.xyz;\n\
+    rightPlane2D.w = -dot(rightPlane2D.xyz, posEc2D);\n\
+    rightPlane3D.w = -dot(rightPlane3D.xyz, posEc3D);\n\
+\n\
+    // End position\n\
+    posRelativeToEye2D = posRelativeToEye2D + vec4(0.0, offsetAndRight2D.xy, 0.0);\n\
+    posRelativeToEye3D = posRelativeToEye3D + vec4(startHiAndForwardOffsetX.w, startLoAndForwardOffsetY.w, startNormalAndForwardOffsetZ.w, 0.0);\n\
+    posRelativeToEye = czm_columbusViewMorph(posRelativeToEye2D, posRelativeToEye3D, czm_morphTime);\n\
+    posEc2D = (czm_modelViewRelativeToEye * posRelativeToEye2D).xyz;\n\
+    posEc3D = (czm_modelViewRelativeToEye * posRelativeToEye3D).xyz;\n\
+    vec3 endEC = (czm_modelViewRelativeToEye * posRelativeToEye).xyz;\n\
+    vec3 forwardEc3D = czm_normal * normalize(vec3(startHiAndForwardOffsetX.w, startLoAndForwardOffsetY.w, startNormalAndForwardOffsetZ.w));\n\
+    vec3 forwardEc2D = czm_normal * normalize(vec3(0.0, offsetAndRight2D.xy));\n\
+\n\
+    // End plane\n\
+    vec4 endPlane2D;\n\
+    vec4 endPlane3D;\n\
+    endPlane2D.xyz = czm_normal * vec3(0.0, startEndNormals2D.zw);\n\
+    endPlane3D.xyz = czm_normal * endNormalAndTextureCoordinateNormalizationX.xyz;\n\
+    endPlane2D.w = -dot(endPlane2D.xyz, posEc2D);\n\
+    endPlane3D.w = -dot(endPlane3D.xyz, posEc3D);\n\
+\n\
+    // Forward direction\n\
+    v_forwardDirectionEC = normalize(endEC - startEC);\n\
+\n\
+    vec2 cleanTexcoordNormalization2D;\n\
+    cleanTexcoordNormalization2D.x = abs(texcoordNormalization2D.x);\n\
+    cleanTexcoordNormalization2D.y = czm_branchFreeTernary(texcoordNormalization2D.y > 1.0, 0.0, abs(texcoordNormalization2D.y));\n\
+    vec2 cleanTexcoordNormalization3D;\n\
+    cleanTexcoordNormalization3D.x = abs(endNormalAndTextureCoordinateNormalizationX.w);\n\
+    cleanTexcoordNormalization3D.y = rightNormalAndTextureCoordinateNormalizationY.w;\n\
+    cleanTexcoordNormalization3D.y = czm_branchFreeTernary(cleanTexcoordNormalization3D.y > 1.0, 0.0, abs(cleanTexcoordNormalization3D.y));\n\
+\n\
+    v_texcoordNormalizationAndHalfWidth.xy = mix(cleanTexcoordNormalization2D, cleanTexcoordNormalization3D, czm_morphTime);\n\
+\n\
 #ifdef PER_INSTANCE_COLOR\n\
-v_color = czm_batchTable_color(batchId);\n\
+    v_color = czm_batchTable_color(batchId);\n\
 #else // PER_INSTANCE_COLOR\n\
-v_alignedPlaneDistances.x = -dot(v_forwardDirectionEC, startEC);\n\
-v_alignedPlaneDistances.y = -dot(-v_forwardDirectionEC, endEC);\n\
+    // For computing texture coordinates\n\
+\n\
+    v_alignedPlaneDistances.x = -dot(v_forwardDirectionEC, startEC);\n\
+    v_alignedPlaneDistances.y = -dot(-v_forwardDirectionEC, endEC);\n\
 #endif // PER_INSTANCE_COLOR\n\
+\n\
 #ifdef WIDTH_VARYING\n\
-float width = czm_batchTable_width(batchId);\n\
-float halfWidth = width * 0.5;\n\
-v_width = width;\n\
-v_texcoordNormalizationAndHalfWidth.z = halfWidth;\n\
+    float width = czm_batchTable_width(batchId);\n\
+    float halfWidth = width * 0.5;\n\
+    v_width = width;\n\
+    v_texcoordNormalizationAndHalfWidth.z = halfWidth;\n\
 #else\n\
-float halfWidth = 0.5 * czm_batchTable_width(batchId);\n\
-v_texcoordNormalizationAndHalfWidth.z = halfWidth;\n\
+    float halfWidth = 0.5 * czm_batchTable_width(batchId);\n\
+    v_texcoordNormalizationAndHalfWidth.z = halfWidth;\n\
 #endif\n\
-vec4 positionEc3D = czm_modelViewRelativeToEye * czm_translateRelativeToEye(position3DHigh, position3DLow);\n\
-float absStartPlaneDistance = abs(czm_planeDistance(startPlane3D, positionEc3D.xyz));\n\
-float absEndPlaneDistance = abs(czm_planeDistance(endPlane3D, positionEc3D.xyz));\n\
-vec3 planeDirection = czm_branchFreeTernary(absStartPlaneDistance < absEndPlaneDistance, startPlane3D.xyz, endPlane3D.xyz);\n\
-vec3 upOrDown = normalize(cross(rightPlane3D.xyz, planeDirection));\n\
-vec3 normalEC = normalize(cross(planeDirection, upOrDown));\n\
-vec3 geodeticSurfaceNormal = normalize(cross(normalEC, forwardEc3D));\n\
-geodeticSurfaceNormal *= float(0.0 <= rightNormalAndTextureCoordinateNormalizationY.w && rightNormalAndTextureCoordinateNormalizationY.w <= 1.0);\n\
-geodeticSurfaceNormal *= MAX_TERRAIN_HEIGHT;\n\
-positionEc3D.xyz += geodeticSurfaceNormal;\n\
-normalEC *= sign(endNormalAndTextureCoordinateNormalizationX.w);\n\
-positionEc3D.xyz += halfWidth * max(0.0, czm_metersPerPixel(positionEc3D)) * normalEC;\n\
-vec4 positionEc2D = czm_modelViewRelativeToEye * czm_translateRelativeToEye(position2DHigh.zxy, position2DLow.zxy);\n\
-absStartPlaneDistance = abs(czm_planeDistance(startPlane2D, positionEc2D.xyz));\n\
-absEndPlaneDistance = abs(czm_planeDistance(endPlane2D, positionEc2D.xyz));\n\
-planeDirection = czm_branchFreeTernary(absStartPlaneDistance < absEndPlaneDistance, startPlane2D.xyz, endPlane2D.xyz);\n\
-upOrDown = normalize(cross(rightPlane2D.xyz, planeDirection));\n\
-normalEC = normalize(cross(planeDirection, upOrDown));\n\
-geodeticSurfaceNormal = normalize(cross(normalEC, forwardEc2D));\n\
-geodeticSurfaceNormal *= float(0.0 <= texcoordNormalization2D.y && texcoordNormalization2D.y <= 1.0);\n\
-geodeticSurfaceNormal *= MAX_TERRAIN_HEIGHT;\n\
-positionEc2D.xyz += geodeticSurfaceNormal;\n\
-normalEC *= sign(texcoordNormalization2D.x);\n\
+\n\
+    // Compute a normal along which to \"push\" the position out, extending the miter depending on view distance.\n\
+    // Position has already been \"pushed\" by unit length along miter normal, and miter normals are encoded in the planes.\n\
+    // Decode the normal to use at this specific vertex, push the position back, and then push to where it needs to be.\n\
+    // Since this is morphing, compute both 3D and 2D positions and then blend.\n\
+\n\
+    // ****** 3D ******\n\
+    // Check distance to the end plane and start plane, pick the plane that is closer\n\
+    vec4 positionEc3D = czm_modelViewRelativeToEye * czm_translateRelativeToEye(position3DHigh, position3DLow); // w = 1.0, see czm_computePosition\n\
+    float absStartPlaneDistance = abs(czm_planeDistance(startPlane3D, positionEc3D.xyz));\n\
+    float absEndPlaneDistance = abs(czm_planeDistance(endPlane3D, positionEc3D.xyz));\n\
+    vec3 planeDirection = czm_branchFreeTernary(absStartPlaneDistance < absEndPlaneDistance, startPlane3D.xyz, endPlane3D.xyz);\n\
+    vec3 upOrDown = normalize(cross(rightPlane3D.xyz, planeDirection)); // Points \"up\" for start plane, \"down\" at end plane.\n\
+    vec3 normalEC = normalize(cross(planeDirection, upOrDown));         // In practice, the opposite seems to work too.\n\
+\n\
+    // Nudge the top vertex upwards to prevent flickering\n\
+    vec3 geodeticSurfaceNormal = normalize(cross(normalEC, forwardEc3D));\n\
+    geodeticSurfaceNormal *= float(0.0 <= rightNormalAndTextureCoordinateNormalizationY.w && rightNormalAndTextureCoordinateNormalizationY.w <= 1.0);\n\
+    geodeticSurfaceNormal *= MAX_TERRAIN_HEIGHT;\n\
+    positionEc3D.xyz += geodeticSurfaceNormal;\n\
+\n\
+    // Determine if this vertex is on the \"left\" or \"right\"\n\
+    normalEC *= sign(endNormalAndTextureCoordinateNormalizationX.w);\n\
+\n\
+    // A \"perfect\" implementation would push along normals according to the angle against forward.\n\
+    // In practice, just pushing the normal out by halfWidth is sufficient for morph views.\n\
+    positionEc3D.xyz += halfWidth * max(0.0, czm_metersPerPixel(positionEc3D)) * normalEC; // prevent artifacts when czm_metersPerPixel is negative (behind camera)\n\
+\n\
+    // ****** 2D ******\n\
+    // Check distance to the end plane and start plane, pick the plane that is closer\n\
+    vec4 positionEc2D = czm_modelViewRelativeToEye * czm_translateRelativeToEye(position2DHigh.zxy, position2DLow.zxy); // w = 1.0, see czm_computePosition\n\
+    absStartPlaneDistance = abs(czm_planeDistance(startPlane2D, positionEc2D.xyz));\n\
+    absEndPlaneDistance = abs(czm_planeDistance(endPlane2D, positionEc2D.xyz));\n\
+    planeDirection = czm_branchFreeTernary(absStartPlaneDistance < absEndPlaneDistance, startPlane2D.xyz, endPlane2D.xyz);\n\
+    upOrDown = normalize(cross(rightPlane2D.xyz, planeDirection)); // Points \"up\" for start plane, \"down\" at end plane.\n\
+    normalEC = normalize(cross(planeDirection, upOrDown));         // In practice, the opposite seems to work too.\n\
+\n\
+    // Nudge the top vertex upwards to prevent flickering\n\
+    geodeticSurfaceNormal = normalize(cross(normalEC, forwardEc2D));\n\
+    geodeticSurfaceNormal *= float(0.0 <= texcoordNormalization2D.y && texcoordNormalization2D.y <= 1.0);\n\
+    geodeticSurfaceNormal *= MAX_TERRAIN_HEIGHT;\n\
+    positionEc2D.xyz += geodeticSurfaceNormal;\n\
+\n\
+    // Determine if this vertex is on the \"left\" or \"right\"\n\
+    normalEC *= sign(texcoordNormalization2D.x);\n\
 #ifndef PER_INSTANCE_COLOR\n\
-v_texcoordT = clamp(sign(texcoordNormalization2D.x), 0.0, 1.0);\n\
+    // Use vertex's sidedness to compute its texture coordinate.\n\
+    v_texcoordT = clamp(sign(texcoordNormalization2D.x), 0.0, 1.0);\n\
 #endif\n\
-positionEc2D.xyz += halfWidth * max(0.0, czm_metersPerPixel(positionEc2D)) * normalEC;\n\
-gl_Position = czm_projection * mix(positionEc2D, positionEc3D, czm_morphTime);\n\
+\n\
+    // A \"perfect\" implementation would push along normals according to the angle against forward.\n\
+    // In practice, just pushing the normal out by halfWidth is sufficient for morph views.\n\
+    positionEc2D.xyz += halfWidth * max(0.0, czm_metersPerPixel(positionEc2D)) * normalEC; // prevent artifacts when czm_metersPerPixel is negative (behind camera)\n\
+\n\
+    // Blend for actual position\n\
+    gl_Position = czm_projection * mix(positionEc2D, positionEc3D, czm_morphTime);\n\
+\n\
 #ifdef ANGLE_VARYING\n\
-vec2 approxLineDirection = normalize(vec2(v_forwardDirectionEC.x, -v_forwardDirectionEC.y));\n\
-approxLineDirection.y = czm_branchFreeTernary(approxLineDirection.x == 0.0 && approxLineDirection.y == 0.0, -1.0, approxLineDirection.y);\n\
-v_polylineAngle = czm_fastApproximateAtan(approxLineDirection.x, approxLineDirection.y);\n\
+    // Approximate relative screen space direction of the line.\n\
+    vec2 approxLineDirection = normalize(vec2(v_forwardDirectionEC.x, -v_forwardDirectionEC.y));\n\
+    approxLineDirection.y = czm_branchFreeTernary(approxLineDirection.x == 0.0 && approxLineDirection.y == 0.0, -1.0, approxLineDirection.y);\n\
+    v_polylineAngle = czm_fastApproximateAtan(approxLineDirection.x, approxLineDirection.y);\n\
 #endif\n\
 }\n\
 ";
@@ -28770,34 +27686,46 @@ define('Shaders/PolylineShadowVolumeMorphFS',[],function() {
     return "varying vec3 v_forwardDirectionEC;\n\
 varying vec3 v_texcoordNormalizationAndHalfWidth;\n\
 varying float v_batchId;\n\
+\n\
 #ifdef PER_INSTANCE_COLOR\n\
 varying vec4 v_color;\n\
 #else\n\
 varying vec2 v_alignedPlaneDistances;\n\
 varying float v_texcoordT;\n\
 #endif\n\
+\n\
 float rayPlaneDistanceUnsafe(vec3 origin, vec3 direction, vec3 planeNormal, float planeDistance) {\n\
-return (-planeDistance - dot(planeNormal, origin)) / dot(planeNormal, direction);\n\
+    // We don't expect the ray to ever be parallel to the plane\n\
+    return (-planeDistance - dot(planeNormal, origin)) / dot(planeNormal, direction);\n\
 }\n\
+\n\
 void main(void)\n\
 {\n\
-vec4 eyeCoordinate = gl_FragCoord;\n\
-eyeCoordinate /= eyeCoordinate.w;\n\
+    vec4 eyeCoordinate = gl_FragCoord;\n\
+    eyeCoordinate /= eyeCoordinate.w;\n\
+\n\
 #ifdef PER_INSTANCE_COLOR\n\
-gl_FragColor = v_color;\n\
+    gl_FragColor = v_color;\n\
 #else // PER_INSTANCE_COLOR\n\
-float distanceFromStart = rayPlaneDistanceUnsafe(eyeCoordinate.xyz, -v_forwardDirectionEC, v_forwardDirectionEC.xyz, v_alignedPlaneDistances.x);\n\
-float distanceFromEnd = rayPlaneDistanceUnsafe(eyeCoordinate.xyz, v_forwardDirectionEC, -v_forwardDirectionEC.xyz, v_alignedPlaneDistances.y);\n\
-distanceFromStart = max(0.0, distanceFromStart);\n\
-distanceFromEnd = max(0.0, distanceFromEnd);\n\
-float s = distanceFromStart / (distanceFromStart + distanceFromEnd);\n\
-s = (s * v_texcoordNormalizationAndHalfWidth.x) + v_texcoordNormalizationAndHalfWidth.y;\n\
-czm_materialInput materialInput;\n\
-materialInput.s = s;\n\
-materialInput.st = vec2(s, v_texcoordT);\n\
-materialInput.str = vec3(s, v_texcoordT, 0.0);\n\
-czm_material material = czm_getMaterial(materialInput);\n\
-gl_FragColor = vec4(material.diffuse + material.emission, material.alpha);\n\
+    // Use distances for planes aligned with segment to prevent skew in dashing\n\
+    float distanceFromStart = rayPlaneDistanceUnsafe(eyeCoordinate.xyz, -v_forwardDirectionEC, v_forwardDirectionEC.xyz, v_alignedPlaneDistances.x);\n\
+    float distanceFromEnd = rayPlaneDistanceUnsafe(eyeCoordinate.xyz, v_forwardDirectionEC, -v_forwardDirectionEC.xyz, v_alignedPlaneDistances.y);\n\
+\n\
+    // Clamp - distance to aligned planes may be negative due to mitering\n\
+    distanceFromStart = max(0.0, distanceFromStart);\n\
+    distanceFromEnd = max(0.0, distanceFromEnd);\n\
+\n\
+    float s = distanceFromStart / (distanceFromStart + distanceFromEnd);\n\
+    s = (s * v_texcoordNormalizationAndHalfWidth.x) + v_texcoordNormalizationAndHalfWidth.y;\n\
+\n\
+    czm_materialInput materialInput;\n\
+\n\
+    materialInput.s = s;\n\
+    materialInput.st = vec2(s, v_texcoordT);\n\
+    materialInput.str = vec3(s, v_texcoordT, 0.0);\n\
+\n\
+    czm_material material = czm_getMaterial(materialInput);\n\
+    gl_FragColor = vec4(material.diffuse + material.emission, material.alpha);\n\
 #endif // PER_INSTANCE_COLOR\n\
 }\n\
 ";
@@ -29445,8 +28373,6 @@ define('Core/BoundingRectangle',[
      * @returns {Number[]} The array that was packed into
      */
     BoundingRectangle.pack = function(value, array, startingIndex) {
-                Check.typeOf.object('value', value);
-        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -29467,7 +28393,6 @@ define('Core/BoundingRectangle',[
      * @returns {BoundingRectangle} The modified result parameter or a new BoundingRectangle instance if one was not provided.
      */
     BoundingRectangle.unpack = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -29598,8 +28523,6 @@ define('Core/BoundingRectangle',[
      * @returns {BoundingRectangle} The modified result parameter or a new BoundingRectangle instance if one was not provided.
      */
     BoundingRectangle.union = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         if (!defined(result)) {
             result = new BoundingRectangle();
@@ -29626,8 +28549,6 @@ define('Core/BoundingRectangle',[
      * @returns {BoundingRectangle} The modified result parameter or a new BoundingRectangle instance if one was not provided.
      */
     BoundingRectangle.expand = function(rectangle, point, result) {
-                Check.typeOf.object('rectangle', rectangle);
-        Check.typeOf.object('point', point);
         
         result = BoundingRectangle.clone(rectangle, result);
 
@@ -29659,8 +28580,6 @@ define('Core/BoundingRectangle',[
      * @returns {Intersect} <code>Intersect.INTESECTING</code> if the rectangles intersect, <code>Intersect.OUTSIDE</code> otherwise.
      */
     BoundingRectangle.intersect = function(left, right) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
         
         var leftX = left.x;
         var leftY = left.y;
@@ -29812,7 +28731,6 @@ define('Core/Color',[
      * @returns {Color} The modified result parameter or a new Color instance if one was not provided.
      */
     Color.fromCartesian4 = function(cartesian, result) {
-                Check.typeOf.object('cartesian', cartesian);
         
         if (!defined(result)) {
             return new Color(cartesian.x, cartesian.y, cartesian.z, cartesian.w);
@@ -29865,8 +28783,6 @@ define('Core/Color',[
      * @example var translucentRed = Cesium.Color.fromAlpha(Cesium.Color.RED, 0.9);
      */
     Color.fromAlpha = function(color, alpha, result) {
-                Check.typeOf.object('color', color);
-        Check.typeOf.number('alpha', alpha);
         
         if (!defined(result)) {
             return new Color(color.red, color.green, color.blue, alpha);
@@ -30006,7 +28922,6 @@ define('Core/Color',[
             var minimumRed = defaultValue(options.minimumRed, 0);
             var maximumRed = defaultValue(options.maximumRed, 1.0);
 
-                        Check.typeOf.number.lessThanOrEquals('minimumRed', minimumRed, maximumRed);
             
             red = minimumRed + (CesiumMath.nextRandomNumber() * (maximumRed - minimumRed));
         }
@@ -30016,7 +28931,6 @@ define('Core/Color',[
             var minimumGreen = defaultValue(options.minimumGreen, 0);
             var maximumGreen = defaultValue(options.maximumGreen, 1.0);
 
-                        Check.typeOf.number.lessThanOrEquals('minimumGreen', minimumGreen, maximumGreen);
                         green = minimumGreen + (CesiumMath.nextRandomNumber() * (maximumGreen - minimumGreen));
         }
 
@@ -30025,7 +28939,6 @@ define('Core/Color',[
             var minimumBlue = defaultValue(options.minimumBlue, 0);
             var maximumBlue = defaultValue(options.maximumBlue, 1.0);
 
-                        Check.typeOf.number.lessThanOrEquals('minimumBlue', minimumBlue, maximumBlue);
             
             blue = minimumBlue + (CesiumMath.nextRandomNumber() * (maximumBlue - minimumBlue));
         }
@@ -30035,7 +28948,6 @@ define('Core/Color',[
             var minimumAlpha = defaultValue(options.minimumAlpha, 0);
             var maximumAlpha = defaultValue(options.maximumAlpha, 1.0);
 
-                        Check.typeOf.number.lessThanOrEquals('minumumAlpha', minimumAlpha, maximumAlpha);
             
             alpha = minimumAlpha + (CesiumMath.nextRandomNumber() * (maximumAlpha - minimumAlpha));
         }
@@ -30075,7 +28987,6 @@ define('Core/Color',[
      * @see {@link http://www.w3.org/TR/css3-color|CSS color values}
      */
     Color.fromCssColorString = function(color, result) {
-                Check.typeOf.string('color', color);
         
         if (!defined(result)) {
             result = new Color();
@@ -30142,8 +29053,6 @@ define('Core/Color',[
      * @returns {Number[]} The array that was packed into
      */
     Color.pack = function(value, array, startingIndex) {
-                Check.typeOf.object('value', value);
-        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
         array[startingIndex++] = value.red;
@@ -30163,7 +29072,6 @@ define('Core/Color',[
      * @returns {Color} The modified result parameter or a new Color instance if one was not provided.
      */
     Color.unpack = function(array, startingIndex, result) {
-                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
         if (!defined(result)) {
@@ -30363,9 +29271,6 @@ define('Core/Color',[
      * var brightBlue = Cesium.Color.BLUE.brighten(0.5, new Cesium.Color());
      */
     Color.prototype.brighten = function(magnitude, result) {
-                Check.typeOf.number('magnitude', magnitude);
-        Check.typeOf.number.greaterThanOrEquals('magnitude', magnitude, 0.0);
-        Check.typeOf.object('result', result);
         
         magnitude = (1.0 - magnitude);
         result.red = 1.0 - ((1.0 - this.red) * magnitude);
@@ -30386,9 +29291,6 @@ define('Core/Color',[
      * var darkBlue = Cesium.Color.BLUE.darken(0.5, new Cesium.Color());
      */
     Color.prototype.darken = function(magnitude, result) {
-                Check.typeOf.number('magnitude', magnitude);
-        Check.typeOf.number.greaterThanOrEquals('magnitude', magnitude, 0.0);
-        Check.typeOf.object('result', result);
         
         magnitude = (1.0 - magnitude);
         result.red = this.red * magnitude;
@@ -30421,9 +29323,6 @@ define('Core/Color',[
      * @returns {Color} The modified result parameter.
      */
     Color.add = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.red = left.red + right.red;
         result.green = left.green + right.green;
@@ -30441,9 +29340,6 @@ define('Core/Color',[
      * @returns {Color} The modified result parameter.
      */
     Color.subtract = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.red = left.red - right.red;
         result.green = left.green - right.green;
@@ -30461,9 +29357,6 @@ define('Core/Color',[
      * @returns {Color} The modified result parameter.
      */
     Color.multiply = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.red = left.red * right.red;
         result.green = left.green * right.green;
@@ -30481,9 +29374,6 @@ define('Core/Color',[
      * @returns {Color} The modified result parameter.
      */
     Color.divide = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.red = left.red / right.red;
         result.green = left.green / right.green;
@@ -30501,9 +29391,6 @@ define('Core/Color',[
      * @returns {Color} The modified result parameter.
      */
     Color.mod = function(left, right, result) {
-                Check.typeOf.object('left', left);
-        Check.typeOf.object('right', right);
-        Check.typeOf.object('result', result);
         
         result.red = left.red % right.red;
         result.green = left.green % right.green;
@@ -30521,9 +29408,6 @@ define('Core/Color',[
      * @returns {Color} The modified result parameter.
      */
     Color.multiplyByScalar = function(color, scalar, result) {
-                Check.typeOf.object('color', color);
-        Check.typeOf.number('scalar', scalar);
-        Check.typeOf.object('result', result);
         
         result.red = color.red * scalar;
         result.green = color.green * scalar;
@@ -30541,9 +29425,6 @@ define('Core/Color',[
      * @returns {Color} The modified result parameter.
      */
     Color.divideByScalar = function(color, scalar, result) {
-                Check.typeOf.object('color', color);
-        Check.typeOf.number('scalar', scalar);
-        Check.typeOf.object('result', result);
         
         result.red = color.red / scalar;
         result.green = color.green / scalar;
@@ -32428,100 +31309,6 @@ define('Renderer/RenderState',[
         };
         this.viewport = (defined(viewport)) ? new BoundingRectangle(viewport.x, viewport.y, viewport.width, viewport.height) : undefined;
 
-                if ((this.lineWidth < ContextLimits.minimumAliasedLineWidth) ||
-            (this.lineWidth > ContextLimits.maximumAliasedLineWidth)) {
-            throw new DeveloperError('renderState.lineWidth is out of range.  Check minimumAliasedLineWidth and maximumAliasedLineWidth.');
-        }
-        if (!WindingOrder.validate(this.frontFace)) {
-            throw new DeveloperError('Invalid renderState.frontFace.');
-        }
-        if (!validateCullFace(this.cull.face)) {
-            throw new DeveloperError('Invalid renderState.cull.face.');
-        }
-        if ((this.scissorTest.rectangle.width < 0) ||
-            (this.scissorTest.rectangle.height < 0)) {
-            throw new DeveloperError('renderState.scissorTest.rectangle.width and renderState.scissorTest.rectangle.height must be greater than or equal to zero.');
-        }
-        if (this.depthRange.near > this.depthRange.far) {
-            // WebGL specific - not an error in GL ES
-            throw new DeveloperError('renderState.depthRange.near can not be greater than renderState.depthRange.far.');
-        }
-        if (this.depthRange.near < 0) {
-            // Would be clamped by GL
-            throw new DeveloperError('renderState.depthRange.near must be greater than or equal to zero.');
-        }
-        if (this.depthRange.far > 1) {
-            // Would be clamped by GL
-            throw new DeveloperError('renderState.depthRange.far must be less than or equal to one.');
-        }
-        if (!validateDepthFunction(this.depthTest.func)) {
-            throw new DeveloperError('Invalid renderState.depthTest.func.');
-        }
-        if ((this.blending.color.red < 0.0) || (this.blending.color.red > 1.0) ||
-            (this.blending.color.green < 0.0) || (this.blending.color.green > 1.0) ||
-            (this.blending.color.blue < 0.0) || (this.blending.color.blue > 1.0) ||
-            (this.blending.color.alpha < 0.0) || (this.blending.color.alpha > 1.0)) {
-            // Would be clamped by GL
-            throw new DeveloperError('renderState.blending.color components must be greater than or equal to zero and less than or equal to one.');
-        }
-        if (!validateBlendEquation(this.blending.equationRgb)) {
-            throw new DeveloperError('Invalid renderState.blending.equationRgb.');
-        }
-        if (!validateBlendEquation(this.blending.equationAlpha)) {
-            throw new DeveloperError('Invalid renderState.blending.equationAlpha.');
-        }
-        if (!validateBlendFunction(this.blending.functionSourceRgb)) {
-            throw new DeveloperError('Invalid renderState.blending.functionSourceRgb.');
-        }
-        if (!validateBlendFunction(this.blending.functionSourceAlpha)) {
-            throw new DeveloperError('Invalid renderState.blending.functionSourceAlpha.');
-        }
-        if (!validateBlendFunction(this.blending.functionDestinationRgb)) {
-            throw new DeveloperError('Invalid renderState.blending.functionDestinationRgb.');
-        }
-        if (!validateBlendFunction(this.blending.functionDestinationAlpha)) {
-            throw new DeveloperError('Invalid renderState.blending.functionDestinationAlpha.');
-        }
-        if (!validateStencilFunction(this.stencilTest.frontFunction)) {
-            throw new DeveloperError('Invalid renderState.stencilTest.frontFunction.');
-        }
-        if (!validateStencilFunction(this.stencilTest.backFunction)) {
-            throw new DeveloperError('Invalid renderState.stencilTest.backFunction.');
-        }
-        if (!validateStencilOperation(this.stencilTest.frontOperation.fail)) {
-            throw new DeveloperError('Invalid renderState.stencilTest.frontOperation.fail.');
-        }
-        if (!validateStencilOperation(this.stencilTest.frontOperation.zFail)) {
-            throw new DeveloperError('Invalid renderState.stencilTest.frontOperation.zFail.');
-        }
-        if (!validateStencilOperation(this.stencilTest.frontOperation.zPass)) {
-            throw new DeveloperError('Invalid renderState.stencilTest.frontOperation.zPass.');
-        }
-        if (!validateStencilOperation(this.stencilTest.backOperation.fail)) {
-            throw new DeveloperError('Invalid renderState.stencilTest.backOperation.fail.');
-        }
-        if (!validateStencilOperation(this.stencilTest.backOperation.zFail)) {
-            throw new DeveloperError('Invalid renderState.stencilTest.backOperation.zFail.');
-        }
-        if (!validateStencilOperation(this.stencilTest.backOperation.zPass)) {
-            throw new DeveloperError('Invalid renderState.stencilTest.backOperation.zPass.');
-        }
-
-        if (defined(this.viewport)) {
-            if (this.viewport.width < 0) {
-                throw new DeveloperError('renderState.viewport.width must be greater than or equal to zero.');
-            }
-            if (this.viewport.height < 0) {
-                throw new DeveloperError('renderState.viewport.height must be greater than or equal to zero.');
-            }
-
-            if (this.viewport.width > ContextLimits.maximumViewportWidth) {
-                throw new DeveloperError('renderState.viewport.width must be less than or equal to the maximum viewport width (' + ContextLimits.maximumViewportWidth.toString() + ').  Check maximumViewportWidth.');
-            }
-            if (this.viewport.height > ContextLimits.maximumViewportHeight) {
-                throw new DeveloperError('renderState.viewport.height must be less than or equal to the maximum viewport height (' + ContextLimits.maximumViewportHeight.toString() + ').  Check maximumViewportHeight.');
-            }
-        }
         
         this.id = 0;
         this._applyFunctions = [];
@@ -32664,7 +31451,6 @@ define('Renderer/RenderState',[
         cachedState = renderStateCache[fullKey];
         if (!defined(cachedState)) {
             states.id = nextRenderStateId++;
-                        states = freezeRenderState(states);
                         cachedState = {
                 referenceCount : 0,
                 state : states
@@ -33013,9 +31799,6 @@ define('Renderer/RenderState',[
     };
 
     RenderState.getState = function(renderState) {
-                if (!defined(renderState)) {
-            throw new DeveloperError('renderState is required.');
-        }
         
         return {
             frontFace : renderState.frontFace,
@@ -33156,7 +31939,6 @@ define('Renderer/AutomaticUniforms',[
          * and <code>w</code> components, respectively.
          *
          * @alias czm_viewport
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33190,7 +31972,6 @@ define('Renderer/AutomaticUniforms',[
          * from window coordinates to clip coordinates, and is often used to assign to <code>gl_Position</code>.
          *
          * @alias czm_viewportOrthographic
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33229,7 +32010,6 @@ define('Renderer/AutomaticUniforms',[
          * from window coordinates to clip coordinates, and is often used to assign to <code>gl_Position</code>.
          *
          * @alias czm_viewportTransformation
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33263,7 +32043,6 @@ define('Renderer/AutomaticUniforms',[
          * @private
          *
          * @alias czm_globeDepthTexture
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33287,7 +32066,6 @@ define('Renderer/AutomaticUniforms',[
          * transforms model coordinates to world coordinates.
          *
          * @alias czm_model
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33315,7 +32093,6 @@ define('Renderer/AutomaticUniforms',[
          * transforms world coordinates to model coordinates.
          *
          * @alias czm_inverseModel
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33342,7 +32119,6 @@ define('Renderer/AutomaticUniforms',[
          * transforms world coordinates to eye coordinates.
          *
          * @alias czm_view
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33375,7 +32151,6 @@ define('Renderer/AutomaticUniforms',[
          * 2D and Columbus View in the same way that 3D is lit.
          *
          * @alias czm_view3D
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33401,7 +32176,6 @@ define('Renderer/AutomaticUniforms',[
          * transforms vectors in world coordinates to eye coordinates.
          *
          * @alias czm_viewRotation
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33432,7 +32206,6 @@ define('Renderer/AutomaticUniforms',[
          * 2D and Columbus View in the same way that 3D is lit.
          *
          * @alias czm_viewRotation3D
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33458,7 +32231,6 @@ define('Renderer/AutomaticUniforms',[
          * transforms from eye coordinates to world coordinates.
          *
          * @alias czm_inverseView
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33488,7 +32260,6 @@ define('Renderer/AutomaticUniforms',[
          * 2D and Columbus View in the same way that 3D is lit.
          *
          * @alias czm_inverseView3D
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33514,7 +32285,6 @@ define('Renderer/AutomaticUniforms',[
          * transforms vectors from eye coordinates to world coordinates.
          *
          * @alias czm_inverseViewRotation
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33545,7 +32315,6 @@ define('Renderer/AutomaticUniforms',[
          * 2D and Columbus View in the same way that 3D is lit.
          *
          * @alias czm_inverseViewRotation3D
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33572,7 +32341,6 @@ define('Renderer/AutomaticUniforms',[
          * coordinate system for a vertex shader's <code>gl_Position</code> output.
          *
          * @alias czm_projection
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33601,7 +32369,6 @@ define('Renderer/AutomaticUniforms',[
          * coordinate system for a vertex shader's <code>gl_Position</code> output.
          *
          * @alias czm_inverseProjection
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33630,7 +32397,6 @@ define('Renderer/AutomaticUniforms',[
          * are not clipped by the far plane.
          *
          * @alias czm_infiniteProjection
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33660,7 +32426,6 @@ define('Renderer/AutomaticUniforms',[
          * normals should be transformed using {@link czm_normal}.
          *
          * @alias czm_modelView
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33698,7 +32463,6 @@ define('Renderer/AutomaticUniforms',[
          * normals should be transformed using {@link czm_normal3D}.
          *
          * @alias czm_modelView3D
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33728,7 +32492,6 @@ define('Renderer/AutomaticUniforms',[
          * in conjunction with {@link czm_translateRelativeToEye}.
          *
          * @alias czm_modelViewRelativeToEye
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33762,7 +32525,6 @@ define('Renderer/AutomaticUniforms',[
          * transforms from eye coordinates to model coordinates.
          *
          * @alias czm_inverseModelView
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33791,7 +32553,6 @@ define('Renderer/AutomaticUniforms',[
          * 2D and Columbus View in the same way that 3D is lit.
          *
          * @alias czm_inverseModelView3D
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33819,7 +32580,6 @@ define('Renderer/AutomaticUniforms',[
          * coordinate system for a vertex shader's <code>gl_Position</code> output.
          *
          * @alias czm_viewProjection
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33852,7 +32612,6 @@ define('Renderer/AutomaticUniforms',[
          * coordinate system for a vertex shader's <code>gl_Position</code> output.
          *
          * @alias czm_inverseViewProjection
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33879,7 +32638,6 @@ define('Renderer/AutomaticUniforms',[
          * coordinate system for a vertex shader's <code>gl_Position</code> output.
          *
          * @alias czm_modelViewProjection
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33915,7 +32673,6 @@ define('Renderer/AutomaticUniforms',[
          * coordinate system for a vertex shader's <code>gl_Position</code> output.
          *
          * @alias czm_inverseModelViewProjection
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33943,7 +32700,6 @@ define('Renderer/AutomaticUniforms',[
          * conjunction with {@link czm_translateRelativeToEye}.
          *
          * @alias czm_modelViewProjectionRelativeToEye
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -33980,7 +32736,6 @@ define('Renderer/AutomaticUniforms',[
          * proxy geometry to ensure that triangles are not clipped by the far plane.
          *
          * @alias czm_modelViewInfiniteProjection
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34011,7 +32766,6 @@ define('Renderer/AutomaticUniforms',[
          * An automatic GLSL uniform that indicates if the current camera is orthographic in 3D.
          *
          * @alias czm_orthographicIn3D
-         * @namespace
          * @glslUniform
          * @see UniformState#orthographicIn3D
          */
@@ -34031,7 +32785,6 @@ define('Renderer/AutomaticUniforms',[
          * normals should be transformed using <code>czm_normal</code>.
          *
          * @alias czm_normal
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34065,7 +32818,6 @@ define('Renderer/AutomaticUniforms',[
          * normals should be transformed using <code>czm_normal3D</code>.
          *
          * @alias czm_normal3D
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34092,7 +32844,6 @@ define('Renderer/AutomaticUniforms',[
          * the opposite of the transform provided by {@link czm_normal}.
          *
          * @alias czm_inverseNormal
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34125,7 +32876,6 @@ define('Renderer/AutomaticUniforms',[
          * 2D and Columbus View in the same way that 3D is lit.
          *
          * @alias czm_inverseNormal3D
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34151,7 +32901,6 @@ define('Renderer/AutomaticUniforms',[
          *  of the eye (camera) in the 2D scene in meters.
          *
          * @alias czm_eyeHeight2D
-         * @namespace
          * @glslUniform
          *
          * @see UniformState#eyeHeight2D
@@ -34170,7 +32919,6 @@ define('Renderer/AutomaticUniforms',[
          * frustum used for multi-frustum rendering.
          *
          * @alias czm_entireFrustum
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34197,7 +32945,6 @@ define('Renderer/AutomaticUniforms',[
          * frustum used for multi-frustum rendering.
          *
          * @alias czm_currentFrustum
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34223,7 +32970,6 @@ define('Renderer/AutomaticUniforms',[
          * the x, y, z, and w components, respectively.
          *
          * @alias czm_frustumPlanes
-         * @namespace
          * @glslUniform
          */
         czm_frustumPlanes : new AutomaticUniform({
@@ -34238,7 +32984,6 @@ define('Renderer/AutomaticUniforms',[
          * The log2 of the current frustums far plane. Used for computing the log depth.
          *
          * @alias czm_log2FarDistance
-         * @namespace
          * @glslUniform
          *
          * @private
@@ -34256,7 +33001,6 @@ define('Renderer/AutomaticUniforms',[
          * This is used when reversing log depth computations.
          *
          * @alias czm_log2FarPlusOne
-         * @namespace
          * @glslUniform
          */
         czm_log2FarPlusOne : new AutomaticUniform({
@@ -34272,7 +33016,6 @@ define('Renderer/AutomaticUniforms',[
          * This is used when writing log depth in the fragment shader.
          *
          * @alias czm_log2NearDistance
-         * @namespace
          * @glslUniform
          */
         czm_log2NearDistance : new AutomaticUniform({
@@ -34287,7 +33030,6 @@ define('Renderer/AutomaticUniforms',[
          * An automatic GLSL uniform representing the sun position in world coordinates.
          *
          * @alias czm_sunPositionWC
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34310,7 +33052,6 @@ define('Renderer/AutomaticUniforms',[
          * An automatic GLSL uniform representing the sun position in Columbus view world coordinates.
          *
          * @alias czm_sunPositionColumbusView
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34333,7 +33074,6 @@ define('Renderer/AutomaticUniforms',[
          * This is commonly used for directional lighting computations.
          *
          * @alias czm_sunDirectionEC
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34360,7 +33100,6 @@ define('Renderer/AutomaticUniforms',[
          * This is commonly used for directional lighting computations.
          *
          * @alias czm_sunDirectionWC
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34384,7 +33123,6 @@ define('Renderer/AutomaticUniforms',[
          * This is commonly used for directional lighting computations.
          *
          * @alias czm_moonDirectionEC
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34411,7 +33149,6 @@ define('Renderer/AutomaticUniforms',[
          * as described in {@link http://blogs.agi.com/insight3d/index.php/2008/09/03/precisions-precisions/|Precisions, Precisions}.
          *
          * @alias czm_encodedCameraPositionMCHigh
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34436,7 +33173,6 @@ define('Renderer/AutomaticUniforms',[
          * as described in {@link http://blogs.agi.com/insight3d/index.php/2008/09/03/precisions-precisions/|Precisions, Precisions}.
          *
          * @alias czm_encodedCameraPositionMCLow
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34459,7 +33195,6 @@ define('Renderer/AutomaticUniforms',[
          * An automatic GLSL uniform representing the position of the viewer (camera) in world coordinates.
          *
          * @alias czm_viewerPositionWC
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34479,7 +33214,6 @@ define('Renderer/AutomaticUniforms',[
          * every frame.
          *
          * @alias czm_frameNumber
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34499,7 +33233,6 @@ define('Renderer/AutomaticUniforms',[
          * 2D/Columbus View and 3D, with 0.0 being 2D or Columbus View and 1.0 being 3D.
          *
          * @alias czm_morphTime
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34522,7 +33255,6 @@ define('Renderer/AutomaticUniforms',[
          * as a float.
          *
          * @alias czm_sceneMode
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34552,7 +33284,6 @@ define('Renderer/AutomaticUniforms',[
          * An automatic GLSL uniform representing the current rendering pass.
          *
          * @alias czm_pass
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34577,7 +33308,6 @@ define('Renderer/AutomaticUniforms',[
          * An automatic GLSL uniform representing the current scene background color.
          *
          * @alias czm_backgroundColor
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34607,7 +33337,6 @@ define('Renderer/AutomaticUniforms',[
          * An automatic GLSL uniform containing the BRDF look up texture used for image-based lighting computations.
          *
          * @alias czm_brdfLut
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34631,7 +33360,6 @@ define('Renderer/AutomaticUniforms',[
          * An automatic GLSL uniform containing the environment map used within the scene.
          *
          * @alias czm_environmentMap
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34655,7 +33383,6 @@ define('Renderer/AutomaticUniforms',[
          * from True Equator Mean Equinox (TEME) axes to the pseudo-fixed axes at the current scene time.
          *
          * @alias czm_temeToPseudoFixed
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34680,7 +33407,6 @@ define('Renderer/AutomaticUniforms',[
          * An automatic GLSL uniform representing the ratio of canvas coordinate space to canvas pixel space.
          *
          * @alias czm_resolutionScale
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34698,7 +33424,6 @@ define('Renderer/AutomaticUniforms',[
          * An automatic GLSL uniform scalar used to mix a color with the fog color based on the distance to the camera.
          *
          * @alias czm_fogDensity
-         * @namespace
          * @glslUniform
          *
          * @see czm_fog
@@ -34716,7 +33441,6 @@ define('Renderer/AutomaticUniforms',[
          * This will be in pixel coordinates relative to the canvas.
          *
          * @alias czm_imagerySplitPosition
-         * @namespace
          * @glslUniform
          *
          * @example
@@ -34735,7 +33459,6 @@ define('Renderer/AutomaticUniforms',[
          * An automatic GLSL uniform scalar representing the geometric tolerance per meter
          *
          * @alias czm_geometricToleranceOverMeter
-         * @namespace
          * @glslUniform
          */
         czm_geometricToleranceOverMeter : new AutomaticUniform({
@@ -34752,7 +33475,6 @@ define('Renderer/AutomaticUniforms',[
          * the depth test should never be applied.
          *
          * @alias czm_minimumDisableDepthTestDistance
-         * @namespace
          * @glslUniform
          */
         czm_minimumDisableDepthTestDistance : new AutomaticUniform({
@@ -34767,7 +33489,6 @@ define('Renderer/AutomaticUniforms',[
          * An automatic GLSL uniform that will be the highlight color of unclassified 3D Tiles.
          *
          * @alias czm_invertClassificationColor
-         * @namespace
          * @glslUniform
          */
         czm_invertClassificationColor : new AutomaticUniform({
@@ -34789,7 +33510,6 @@ define('Renderer/createUniform',[
         '../Core/Color',
         '../Core/defined',
         '../Core/DeveloperError',
-        '../Core/FeatureDetection',
         '../Core/Matrix2',
         '../Core/Matrix3',
         '../Core/Matrix4',
@@ -34801,18 +33521,11 @@ define('Renderer/createUniform',[
         Color,
         defined,
         DeveloperError,
-        FeatureDetection,
         Matrix2,
         Matrix3,
         Matrix4,
         RuntimeError) {
     'use strict';
-
-    // Bail out if the browser doesn't support typed arrays, to prevent the setup function
-    // from failing, since we won't be able to create a WebGL context anyway.
-    if (!FeatureDetection.supportsTypedArrays()) {
-        return {};
-    }
 
     /**
      * @private
@@ -34925,7 +33638,6 @@ define('Renderer/createUniform',[
                 this._gl.uniform3f(this._location, v.x, v.y, v.z);
             }
         } else {
-                        throw new DeveloperError('Invalid vec3 value for uniform "' + this.name + '".');
                     }
     };
 
@@ -34958,7 +33670,6 @@ define('Renderer/createUniform',[
                 this._gl.uniform4f(this._location, v.x, v.y, v.z, v.w);
             }
         } else {
-                        throw new DeveloperError('Invalid vec4 value for uniform "' + this.name + '".');
                     }
     };
 
@@ -35085,8 +33796,6 @@ define('Renderer/createUniform',[
 
     ///////////////////////////////////////////////////////////////////////////
 
-    var scratchUniformArray = new Float32Array(4);
-
     function UniformMat2(gl, activeUniform, uniformName, location) {
         /**
          * @readonly
@@ -35094,7 +33803,7 @@ define('Renderer/createUniform',[
         this.name = uniformName;
 
         this.value = undefined;
-        this._value = new Matrix2();
+        this._value = new Float32Array(4);
 
         this._gl = gl;
         this._location = location;
@@ -35102,16 +33811,12 @@ define('Renderer/createUniform',[
 
     UniformMat2.prototype.set = function() {
         if (!Matrix2.equalsArray(this.value, this._value, 0)) {
-            Matrix2.clone(this.value, this._value);
-
-            var array = Matrix2.toArray(this.value, scratchUniformArray);
-            this._gl.uniformMatrix2fv(this._location, false, array);
+            Matrix2.toArray(this.value, this._value);
+            this._gl.uniformMatrix2fv(this._location, false, this._value);
         }
     };
 
     ///////////////////////////////////////////////////////////////////////////
-
-    var scratchMat3Array = new Float32Array(9);
 
     function UniformMat3(gl, activeUniform, uniformName, location) {
         /**
@@ -35120,7 +33825,7 @@ define('Renderer/createUniform',[
         this.name = uniformName;
 
         this.value = undefined;
-        this._value = new Matrix3();
+        this._value = new Float32Array(9);
 
         this._gl = gl;
         this._location = location;
@@ -35128,16 +33833,12 @@ define('Renderer/createUniform',[
 
     UniformMat3.prototype.set = function() {
         if (!Matrix3.equalsArray(this.value, this._value, 0)) {
-            Matrix3.clone(this.value, this._value);
-
-            var array = Matrix3.toArray(this.value, scratchMat3Array);
-            this._gl.uniformMatrix3fv(this._location, false, array);
+            Matrix3.toArray(this.value, this._value);
+            this._gl.uniformMatrix3fv(this._location, false, this._value);
         }
     };
 
     ///////////////////////////////////////////////////////////////////////////
-
-    var scratchMat4Array = new Float32Array(16);
 
     function UniformMat4(gl, activeUniform, uniformName, location) {
         /**
@@ -35146,7 +33847,7 @@ define('Renderer/createUniform',[
         this.name = uniformName;
 
         this.value = undefined;
-        this._value = new Matrix4();
+        this._value = new Float32Array(16);
 
         this._gl = gl;
         this._location = location;
@@ -35154,10 +33855,8 @@ define('Renderer/createUniform',[
 
     UniformMat4.prototype.set = function() {
         if (!Matrix4.equalsArray(this.value, this._value, 0)) {
-            Matrix4.clone(this.value, this._value);
-
-            var array = Matrix4.toArray(this.value, scratchMat4Array);
-            this._gl.uniformMatrix4fv(this._location, false, array);
+            Matrix4.toArray(this.value, this._value);
+            this._gl.uniformMatrix4fv(this._location, false, this._value);
         }
     };
 
@@ -35344,7 +34043,6 @@ define('Renderer/createUniformArray',[
                     changed = true;
                 }
             } else {
-                                throw new DeveloperError('Invalid vec3 value.');
                             }
 
             j += 3;
@@ -35404,7 +34102,6 @@ define('Renderer/createUniformArray',[
                     changed = true;
                 }
             } else {
-                                throw new DeveloperError('Invalid vec4 value.');
                             }
 
             j += 4;
@@ -35802,7 +34499,6 @@ define('Renderer/ShaderProgram',[
     ShaderProgram.fromCache = function(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                Check.defined('options.context', options.context);
         
         return options.context.shaderCache.getShaderProgram(options);
     };
@@ -35810,7 +34506,6 @@ define('Renderer/ShaderProgram',[
     ShaderProgram.replaceCache = function(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                Check.defined('options.context', options.context);
         
         return options.context.shaderCache.replaceShaderProgram(options);
     };
@@ -36238,9 +34933,6 @@ define('Renderer/ShaderProgram',[
             var program = this._program;
 
             gl.validateProgram(program);
-                        if (!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
-                throw new DeveloperError('Program validation failed.  Program info log: ' + gl.getProgramInfoLog(program));
-            }
                     }
     };
 
@@ -36492,296 +35184,740 @@ define('Renderer/modernizeShader',[
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/degreesPerRadian',[],function() {
     'use strict';
-    return "const float czm_degreesPerRadian = 57.29577951308232;\n\
+    return "/**\n\
+ * A built-in GLSL floating-point constant for converting radians to degrees.\n\
+ *\n\
+ * @alias czm_degreesPerRadian\n\
+ * @glslConstant\n\
+ *\n\
+ * @see CesiumMath.DEGREES_PER_RADIAN\n\
+ *\n\
+ * @example\n\
+ * // GLSL declaration\n\
+ * const float czm_degreesPerRadian = ...;\n\
+ *\n\
+ * // Example\n\
+ * float deg = czm_degreesPerRadian * rad;\n\
+ */\n\
+const float czm_degreesPerRadian = 57.29577951308232;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/depthRange',[],function() {
     'use strict';
-    return "const czm_depthRangeStruct czm_depthRange = czm_depthRangeStruct(0.0, 1.0);\n\
+    return "/**\n\
+ * A built-in GLSL vec2 constant for defining the depth range.\n\
+ * This is a workaround to a bug where IE11 does not implement gl_DepthRange.\n\
+ *\n\
+ * @alias czm_depthRange\n\
+ * @glslConstant\n\
+ *\n\
+ * @example\n\
+ * // GLSL declaration\n\
+ * float depthRangeNear = czm_depthRange.near;\n\
+ * float depthRangeFar = czm_depthRange.far;\n\
+ *\n\
+ */\n\
+const czm_depthRangeStruct czm_depthRange = czm_depthRangeStruct(0.0, 1.0);\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/epsilon1',[],function() {
     'use strict';
-    return "const float czm_epsilon1 = 0.1;\n\
+    return "/**\n\
+ * 0.1\n\
+ *\n\
+ * @name czm_epsilon1\n\
+ * @glslConstant\n\
+ */\n\
+const float czm_epsilon1 = 0.1;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/epsilon2',[],function() {
     'use strict';
-    return "const float czm_epsilon2 = 0.01;\n\
+    return "/**\n\
+ * 0.01\n\
+ *\n\
+ * @name czm_epsilon2\n\
+ * @glslConstant\n\
+ */\n\
+const float czm_epsilon2 = 0.01;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/epsilon3',[],function() {
     'use strict';
-    return "const float czm_epsilon3 = 0.001;\n\
+    return "/**\n\
+ * 0.001\n\
+ *\n\
+ * @name czm_epsilon3\n\
+ * @glslConstant\n\
+ */\n\
+const float czm_epsilon3 = 0.001;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/epsilon4',[],function() {
     'use strict';
-    return "const float czm_epsilon4 = 0.0001;\n\
+    return "/**\n\
+ * 0.0001\n\
+ *\n\
+ * @name czm_epsilon4\n\
+ * @glslConstant\n\
+ */\n\
+const float czm_epsilon4 = 0.0001;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/epsilon5',[],function() {
     'use strict';
-    return "const float czm_epsilon5 = 0.00001;\n\
+    return "/**\n\
+ * 0.00001\n\
+ *\n\
+ * @name czm_epsilon5\n\
+ * @glslConstant\n\
+ */\n\
+const float czm_epsilon5 = 0.00001;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/epsilon6',[],function() {
     'use strict';
-    return "const float czm_epsilon6 = 0.000001;\n\
+    return "/**\n\
+ * 0.000001\n\
+ *\n\
+ * @name czm_epsilon6\n\
+ * @glslConstant\n\
+ */\n\
+const float czm_epsilon6 = 0.000001;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/epsilon7',[],function() {
     'use strict';
-    return "const float czm_epsilon7 = 0.0000001;\n\
+    return "/**\n\
+ * 0.0000001\n\
+ *\n\
+ * @name czm_epsilon7\n\
+ * @glslConstant\n\
+ */\n\
+const float czm_epsilon7 = 0.0000001;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/infinity',[],function() {
     'use strict';
-    return "const float czm_infinity = 5906376272000.0;\n\
+    return "/**\n\
+ * DOC_TBA\n\
+ *\n\
+ * @name czm_infinity\n\
+ * @glslConstant\n\
+ */\n\
+const float czm_infinity = 5906376272000.0;  // Distance from the Sun to Pluto in meters.  TODO: What is best given lowp, mediump, and highp?\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/oneOverPi',[],function() {
     'use strict';
-    return "const float czm_oneOverPi = 0.3183098861837907;\n\
+    return "/**\n\
+ * A built-in GLSL floating-point constant for <code>1/pi</code>.\n\
+ *\n\
+ * @alias czm_oneOverPi\n\
+ * @glslConstant\n\
+ *\n\
+ * @see CesiumMath.ONE_OVER_PI\n\
+ *\n\
+ * @example\n\
+ * // GLSL declaration\n\
+ * const float czm_oneOverPi = ...;\n\
+ *\n\
+ * // Example\n\
+ * float pi = 1.0 / czm_oneOverPi;\n\
+ */\n\
+const float czm_oneOverPi = 0.3183098861837907;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/oneOverTwoPi',[],function() {
     'use strict';
-    return "const float czm_oneOverTwoPi = 0.15915494309189535;\n\
+    return "/**\n\
+ * A built-in GLSL floating-point constant for <code>1/2pi</code>.\n\
+ *\n\
+ * @alias czm_oneOverTwoPi\n\
+ * @glslConstant\n\
+ *\n\
+ * @see CesiumMath.ONE_OVER_TWO_PI\n\
+ *\n\
+ * @example\n\
+ * // GLSL declaration\n\
+ * const float czm_oneOverTwoPi = ...;\n\
+ *\n\
+ * // Example\n\
+ * float pi = 2.0 * czm_oneOverTwoPi;\n\
+ */\n\
+const float czm_oneOverTwoPi = 0.15915494309189535;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/passCesium3DTile',[],function() {
     'use strict';
-    return "const float czm_passCesium3DTile = 4.0;\n\
+    return "/**\n\
+ * The automatic GLSL constant for {@link Pass#CESIUM_3D_TILE}\n\
+ *\n\
+ * @name czm_passCesium3DTile\n\
+ * @glslConstant\n\
+ *\n\
+ * @see czm_pass\n\
+ */\n\
+const float czm_passCesium3DTile = 4.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/passCesium3DTileClassification',[],function() {
     'use strict';
-    return "const float czm_passCesium3DTileClassification = 5.0;\n\
+    return "/**\n\
+ * The automatic GLSL constant for {@link Pass#CESIUM_3D_TILE_CLASSIFICATION}\n\
+ *\n\
+ * @name czm_passCesium3DTileClassification\n\
+ * @glslConstant\n\
+ *\n\
+ * @see czm_pass\n\
+ */\n\
+const float czm_passCesium3DTileClassification = 5.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/passCesium3DTileClassificationIgnoreShow',[],function() {
     'use strict';
-    return "const float czm_passCesium3DTileClassificationIgnoreShow = 6.0;\n\
+    return "/**\n\
+ * The automatic GLSL constant for {@link Pass#CESIUM_3D_TILE_CLASSIFICATION_IGNORE_SHOW}\n\
+ *\n\
+ * @name czm_passCesium3DTileClassificationIgnoreShow\n\
+ * @glslConstant\n\
+ *\n\
+ * @see czm_pass\n\
+ */\n\
+const float czm_passCesium3DTileClassificationIgnoreShow = 6.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/passClassification',[],function() {
     'use strict';
-    return "const float czm_passClassification = 7.0;\n\
+    return "/**\n\
+ * The automatic GLSL constant for {@link Pass#CLASSIFICATION}\n\
+ *\n\
+ * @name czm_passClassification\n\
+ * @glslConstant\n\
+ *\n\
+ * @see czm_pass\n\
+ */\n\
+const float czm_passClassification = 7.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/passCompute',[],function() {
     'use strict';
-    return "const float czm_passCompute = 1.0;\n\
+    return "/**\n\
+ * The automatic GLSL constant for {@link Pass#COMPUTE}\n\
+ *\n\
+ * @name czm_passCompute\n\
+ * @glslConstant\n\
+ *\n\
+ * @see czm_pass\n\
+ */\n\
+const float czm_passCompute = 1.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/passEnvironment',[],function() {
     'use strict';
-    return "const float czm_passEnvironment = 0.0;\n\
+    return "/**\n\
+ * The automatic GLSL constant for {@link Pass#ENVIRONMENT}\n\
+ *\n\
+ * @name czm_passEnvironment\n\
+ * @glslConstant\n\
+ *\n\
+ * @see czm_pass\n\
+ */\n\
+const float czm_passEnvironment = 0.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/passGlobe',[],function() {
     'use strict';
-    return "const float czm_passGlobe = 2.0;\n\
+    return "/**\n\
+ * The automatic GLSL constant for {@link Pass#GLOBE}\n\
+ *\n\
+ * @name czm_passGlobe\n\
+ * @glslConstant\n\
+ *\n\
+ * @see czm_pass\n\
+ */\n\
+const float czm_passGlobe = 2.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/passOpaque',[],function() {
     'use strict';
-    return "const float czm_passOpaque = 8.0;\n\
+    return "/**\n\
+ * The automatic GLSL constant for {@link Pass#OPAQUE}\n\
+ *\n\
+ * @name czm_passOpaque\n\
+ * @glslConstant\n\
+ *\n\
+ * @see czm_pass\n\
+ */\n\
+const float czm_passOpaque = 8.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/passOverlay',[],function() {
     'use strict';
-    return "const float czm_passOverlay = 10.0;\n\
+    return "/**\n\
+ * The automatic GLSL constant for {@link Pass#OVERLAY}\n\
+ *\n\
+ * @name czm_passOverlay\n\
+ * @glslConstant\n\
+ *\n\
+ * @see czm_pass\n\
+ */\n\
+const float czm_passOverlay = 10.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/passTerrainClassification',[],function() {
     'use strict';
-    return "const float czm_passTerrainClassification = 3.0;\n\
+    return "/**\n\
+ * The automatic GLSL constant for {@link Pass#TERRAIN_CLASSIFICATION}\n\
+ *\n\
+ * @name czm_passTerrainClassification\n\
+ * @glslConstant\n\
+ *\n\
+ * @see czm_pass\n\
+ */\n\
+const float czm_passTerrainClassification = 3.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/passTranslucent',[],function() {
     'use strict';
-    return "const float czm_passTranslucent = 9.0;\n\
+    return "/**\n\
+ * The automatic GLSL constant for {@link Pass#TRANSLUCENT}\n\
+ *\n\
+ * @name czm_passTranslucent\n\
+ * @glslConstant\n\
+ *\n\
+ * @see czm_pass\n\
+ */\n\
+const float czm_passTranslucent = 9.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/pi',[],function() {
     'use strict';
-    return "const float czm_pi = 3.141592653589793;\n\
+    return "/**\n\
+ * A built-in GLSL floating-point constant for <code>Math.PI</code>.\n\
+ *\n\
+ * @alias czm_pi\n\
+ * @glslConstant\n\
+ *\n\
+ * @see CesiumMath.PI\n\
+ *\n\
+ * @example\n\
+ * // GLSL declaration\n\
+ * const float czm_pi = ...;\n\
+ *\n\
+ * // Example\n\
+ * float twoPi = 2.0 * czm_pi;\n\
+ */\n\
+const float czm_pi = 3.141592653589793;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/piOverFour',[],function() {
     'use strict';
-    return "const float czm_piOverFour = 0.7853981633974483;\n\
+    return "/**\n\
+ * A built-in GLSL floating-point constant for <code>pi/4</code>.\n\
+ *\n\
+ * @alias czm_piOverFour\n\
+ * @glslConstant\n\
+ *\n\
+ * @see CesiumMath.PI_OVER_FOUR\n\
+ *\n\
+ * @example\n\
+ * // GLSL declaration\n\
+ * const float czm_piOverFour = ...;\n\
+ *\n\
+ * // Example\n\
+ * float pi = 4.0 * czm_piOverFour;\n\
+ */\n\
+const float czm_piOverFour = 0.7853981633974483;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/piOverSix',[],function() {
     'use strict';
-    return "const float czm_piOverSix = 0.5235987755982988;\n\
+    return "/**\n\
+ * A built-in GLSL floating-point constant for <code>pi/6</code>.\n\
+ *\n\
+ * @alias czm_piOverSix\n\
+ * @glslConstant\n\
+ *\n\
+ * @see CesiumMath.PI_OVER_SIX\n\
+ *\n\
+ * @example\n\
+ * // GLSL declaration\n\
+ * const float czm_piOverSix = ...;\n\
+ *\n\
+ * // Example\n\
+ * float pi = 6.0 * czm_piOverSix;\n\
+ */\n\
+const float czm_piOverSix = 0.5235987755982988;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/piOverThree',[],function() {
     'use strict';
-    return "const float czm_piOverThree = 1.0471975511965976;\n\
+    return "/**\n\
+ * A built-in GLSL floating-point constant for <code>pi/3</code>.\n\
+ *\n\
+ * @alias czm_piOverThree\n\
+ * @glslConstant\n\
+ *\n\
+ * @see CesiumMath.PI_OVER_THREE\n\
+ *\n\
+ * @example\n\
+ * // GLSL declaration\n\
+ * const float czm_piOverThree = ...;\n\
+ *\n\
+ * // Example\n\
+ * float pi = 3.0 * czm_piOverThree;\n\
+ */\n\
+const float czm_piOverThree = 1.0471975511965976;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/piOverTwo',[],function() {
     'use strict';
-    return "const float czm_piOverTwo = 1.5707963267948966;\n\
+    return "/**\n\
+ * A built-in GLSL floating-point constant for <code>pi/2</code>.\n\
+ *\n\
+ * @alias czm_piOverTwo\n\
+ * @glslConstant\n\
+ *\n\
+ * @see CesiumMath.PI_OVER_TWO\n\
+ *\n\
+ * @example\n\
+ * // GLSL declaration\n\
+ * const float czm_piOverTwo = ...;\n\
+ *\n\
+ * // Example\n\
+ * float pi = 2.0 * czm_piOverTwo;\n\
+ */\n\
+const float czm_piOverTwo = 1.5707963267948966;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/radiansPerDegree',[],function() {
     'use strict';
-    return "const float czm_radiansPerDegree = 0.017453292519943295;\n\
+    return "/**\n\
+ * A built-in GLSL floating-point constant for converting degrees to radians.\n\
+ *\n\
+ * @alias czm_radiansPerDegree\n\
+ * @glslConstant\n\
+ *\n\
+ * @see CesiumMath.RADIANS_PER_DEGREE\n\
+ *\n\
+ * @example\n\
+ * // GLSL declaration\n\
+ * const float czm_radiansPerDegree = ...;\n\
+ *\n\
+ * // Example\n\
+ * float rad = czm_radiansPerDegree * deg;\n\
+ */\n\
+const float czm_radiansPerDegree = 0.017453292519943295;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/sceneMode2D',[],function() {
     'use strict';
-    return "const float czm_sceneMode2D = 2.0;\n\
+    return "/**\n\
+ * The constant identifier for the 2D {@link SceneMode}\n\
+ *\n\
+ * @name czm_sceneMode2D\n\
+ * @glslConstant\n\
+ * @see czm_sceneMode\n\
+ * @see czm_sceneModeColumbusView\n\
+ * @see czm_sceneMode3D\n\
+ * @see czm_sceneModeMorphing\n\
+ */\n\
+const float czm_sceneMode2D = 2.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/sceneMode3D',[],function() {
     'use strict';
-    return "const float czm_sceneMode3D = 3.0;\n\
+    return "/**\n\
+ * The constant identifier for the 3D {@link SceneMode}\n\
+ *\n\
+ * @name czm_sceneMode3D\n\
+ * @glslConstant\n\
+ * @see czm_sceneMode\n\
+ * @see czm_sceneMode2D\n\
+ * @see czm_sceneModeColumbusView\n\
+ * @see czm_sceneModeMorphing\n\
+ */\n\
+const float czm_sceneMode3D = 3.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/sceneModeColumbusView',[],function() {
     'use strict';
-    return "const float czm_sceneModeColumbusView = 1.0;\n\
+    return "/**\n\
+ * The constant identifier for the Columbus View {@link SceneMode}\n\
+ *\n\
+ * @name czm_sceneModeColumbusView\n\
+ * @glslConstant\n\
+ * @see czm_sceneMode\n\
+ * @see czm_sceneMode2D\n\
+ * @see czm_sceneMode3D\n\
+ * @see czm_sceneModeMorphing\n\
+ */\n\
+const float czm_sceneModeColumbusView = 1.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/sceneModeMorphing',[],function() {
     'use strict';
-    return "const float czm_sceneModeMorphing = 0.0;\n\
+    return "/**\n\
+ * The constant identifier for the Morphing {@link SceneMode}\n\
+ *\n\
+ * @name czm_sceneModeMorphing\n\
+ * @glslConstant\n\
+ * @see czm_sceneMode\n\
+ * @see czm_sceneMode2D\n\
+ * @see czm_sceneModeColumbusView\n\
+ * @see czm_sceneMode3D\n\
+ */\n\
+const float czm_sceneModeMorphing = 0.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/solarRadius',[],function() {
     'use strict';
-    return "const float czm_solarRadius = 695500000.0;\n\
+    return "/**\n\
+ * A built-in GLSL floating-point constant for one solar radius.\n\
+ *\n\
+ * @alias czm_solarRadius\n\
+ * @glslConstant\n\
+ *\n\
+ * @see CesiumMath.SOLAR_RADIUS\n\
+ *\n\
+ * @example\n\
+ * // GLSL declaration\n\
+ * const float czm_solarRadius = ...;\n\
+ */\n\
+const float czm_solarRadius = 695500000.0;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/threePiOver2',[],function() {
     'use strict';
-    return "const float czm_threePiOver2 = 4.71238898038469;\n\
+    return "/**\n\
+ * A built-in GLSL floating-point constant for <code>3pi/2</code>.\n\
+ *\n\
+ * @alias czm_threePiOver2\n\
+ * @glslConstant\n\
+ *\n\
+ * @see CesiumMath.THREE_PI_OVER_TWO\n\
+ *\n\
+ * @example\n\
+ * // GLSL declaration\n\
+ * const float czm_threePiOver2 = ...;\n\
+ *\n\
+ * // Example\n\
+ * float pi = (2.0 / 3.0) * czm_threePiOver2;\n\
+ */\n\
+const float czm_threePiOver2 = 4.71238898038469;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/twoPi',[],function() {
     'use strict';
-    return "const float czm_twoPi = 6.283185307179586;\n\
+    return "/**\n\
+ * A built-in GLSL floating-point constant for <code>2pi</code>.\n\
+ *\n\
+ * @alias czm_twoPi\n\
+ * @glslConstant\n\
+ *\n\
+ * @see CesiumMath.TWO_PI\n\
+ *\n\
+ * @example\n\
+ * // GLSL declaration\n\
+ * const float czm_twoPi = ...;\n\
+ *\n\
+ * // Example\n\
+ * float pi = czm_twoPi / 2.0;\n\
+ */\n\
+const float czm_twoPi = 6.283185307179586;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Constants/webMercatorMaxLatitude',[],function() {
     'use strict';
-    return "const float czm_webMercatorMaxLatitude = 1.4844222297453324;\n\
+    return "/**\n\
+ * The maximum latitude, in radians, both North and South, supported by a Web Mercator\n\
+ * (EPSG:3857) projection.  Technically, the Mercator projection is defined\n\
+ * for any latitude up to (but not including) 90 degrees, but it makes sense\n\
+ * to cut it off sooner because it grows exponentially with increasing latitude.\n\
+ * The logic behind this particular cutoff value, which is the one used by\n\
+ * Google Maps, Bing Maps, and Esri, is that it makes the projection\n\
+ * square.  That is, the rectangle is equal in the X and Y directions.\n\
+ *\n\
+ * The constant value is computed as follows:\n\
+ *   czm_pi * 0.5 - (2.0 * atan(exp(-czm_pi)))\n\
+ *\n\
+ * @name czm_webMercatorMaxLatitude\n\
+ * @glslConstant\n\
+ */\n\
+const float czm_webMercatorMaxLatitude = 1.4844222297453324;\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Structs/depthRangeStruct',[],function() {
     'use strict';
-    return "struct czm_depthRangeStruct\n\
+    return "/**\n\
+ * @name czm_depthRangeStruct\n\
+ * @glslStruct\n\
+ */\n\
+struct czm_depthRangeStruct\n\
 {\n\
-float near;\n\
-float far;\n\
+    float near;\n\
+    float far;\n\
 };\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Structs/ellipsoid',[],function() {
     'use strict';
-    return "struct czm_ellipsoid\n\
+    return "/** DOC_TBA\n\
+ *\n\
+ * @name czm_ellipsoid\n\
+ * @glslStruct\n\
+ */\n\
+struct czm_ellipsoid\n\
 {\n\
-vec3 center;\n\
-vec3 radii;\n\
-vec3 inverseRadii;\n\
-vec3 inverseRadiiSquared;\n\
+    vec3 center;\n\
+    vec3 radii;\n\
+    vec3 inverseRadii;\n\
+    vec3 inverseRadiiSquared;\n\
 };\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Structs/material',[],function() {
     'use strict';
-    return "struct czm_material\n\
+    return "/**\n\
+ * Holds material information that can be used for lighting. Returned by all czm_getMaterial functions.\n\
+ *\n\
+ * @name czm_material\n\
+ * @glslStruct\n\
+ *\n\
+ * @property {vec3} diffuse Incoming light that scatters evenly in all directions.\n\
+ * @property {float} specular Intensity of incoming light reflecting in a single direction.\n\
+ * @property {float} shininess The sharpness of the specular reflection.  Higher values create a smaller, more focused specular highlight.\n\
+ * @property {vec3} normal Surface's normal in eye coordinates. It is used for effects such as normal mapping. The default is the surface's unmodified normal.\n\
+ * @property {vec3} emission Light emitted by the material equally in all directions. The default is vec3(0.0), which emits no light.\n\
+ * @property {float} alpha Opacity of this material. 0.0 is completely transparent; 1.0 is completely opaque.\n\
+ */\n\
+struct czm_material\n\
 {\n\
-vec3 diffuse;\n\
-float specular;\n\
-float shininess;\n\
-vec3 normal;\n\
-vec3 emission;\n\
-float alpha;\n\
+    vec3 diffuse;\n\
+    float specular;\n\
+    float shininess;\n\
+    vec3 normal;\n\
+    vec3 emission;\n\
+    float alpha;\n\
 };\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Structs/materialInput',[],function() {
     'use strict';
-    return "struct czm_materialInput\n\
+    return "/**\n\
+ * Used as input to every material's czm_getMaterial function.\n\
+ *\n\
+ * @name czm_materialInput\n\
+ * @glslStruct\n\
+ *\n\
+ * @property {float} s 1D texture coordinates.\n\
+ * @property {vec2} st 2D texture coordinates.\n\
+ * @property {vec3} str 3D texture coordinates.\n\
+ * @property {vec3} normalEC Unperturbed surface normal in eye coordinates.\n\
+ * @property {mat3} tangentToEyeMatrix Matrix for converting a tangent space normal to eye space.\n\
+ * @property {vec3} positionToEyeEC Vector from the fragment to the eye in eye coordinates.  The magnitude is the distance in meters from the fragment to the eye.\n\
+ * @property {float} height The height of the terrain in meters above or below the WGS84 ellipsoid.  Only available for globe materials.\n\
+ * @property {float} slope The slope of the terrain normalized from 0 to 1.  0 is completely vertical, 1 is completely flat.  Only available for globe materials.\n\
+ */\n\
+struct czm_materialInput\n\
 {\n\
-float s;\n\
-vec2 st;\n\
-vec3 str;\n\
-vec3 normalEC;\n\
-mat3 tangentToEyeMatrix;\n\
-vec3 positionToEyeEC;\n\
-float height;\n\
-float slope;\n\
+    float s;\n\
+    vec2 st;\n\
+    vec3 str;\n\
+    vec3 normalEC;\n\
+    mat3 tangentToEyeMatrix;\n\
+    vec3 positionToEyeEC;\n\
+    float height;\n\
+    float slope;\n\
 };\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Structs/ray',[],function() {
     'use strict';
-    return "struct czm_ray\n\
+    return "/**\n\
+ * DOC_TBA\n\
+ *\n\
+ * @name czm_ray\n\
+ * @glslStruct\n\
+ */\n\
+struct czm_ray\n\
 {\n\
-vec3 origin;\n\
-vec3 direction;\n\
+    vec3 origin;\n\
+    vec3 direction;\n\
 };\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Structs/raySegment',[],function() {
     'use strict';
-    return "struct czm_raySegment\n\
+    return "/**\n\
+ * DOC_TBA\n\
+ *\n\
+ * @name czm_raySegment\n\
+ * @glslStruct\n\
+ */\n\
+struct czm_raySegment\n\
 {\n\
-float start;\n\
-float stop;\n\
+    float start;\n\
+    float stop;\n\
 };\n\
+\n\
+/**\n\
+ * DOC_TBA\n\
+ *\n\
+ * @name czm_emptyRaySegment\n\
+ * @glslConstant \n\
+ */\n\
 const czm_raySegment czm_emptyRaySegment = czm_raySegment(-czm_infinity, -czm_infinity);\n\
+\n\
+/**\n\
+ * DOC_TBA\n\
+ *\n\
+ * @name czm_fullRaySegment\n\
+ * @glslConstant \n\
+ */\n\
 const czm_raySegment czm_fullRaySegment = czm_raySegment(0.0, czm_infinity);\n\
 ";
 });
@@ -36791,766 +35927,1474 @@ define('Shaders/Builtin/Structs/shadowParameters',[],function() {
     return "struct czm_shadowParameters\n\
 {\n\
 #ifdef USE_CUBE_MAP_SHADOW\n\
-vec3 texCoords;\n\
+    vec3 texCoords;\n\
 #else\n\
-vec2 texCoords;\n\
+    vec2 texCoords;\n\
 #endif\n\
-float depthBias;\n\
-float depth;\n\
-float nDotL;\n\
-vec2 texelStepSize;\n\
-float normalShadingSmooth;\n\
-float darkness;\n\
+\n\
+    float depthBias;\n\
+    float depth;\n\
+    float nDotL;\n\
+    vec2 texelStepSize;\n\
+    float normalShadingSmooth;\n\
+    float darkness;\n\
 };\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/alphaWeight',[],function() {
     'use strict';
-    return "float czm_alphaWeight(float a)\n\
+    return "/**\n\
+ * @private\n\
+ */\n\
+float czm_alphaWeight(float a)\n\
 {\n\
-float z = (gl_FragCoord.z - czm_viewportTransformation[3][2]) / czm_viewportTransformation[2][2];\n\
-return pow(a + 0.01, 4.0) + max(1e-2, min(3.0 * 1e3, 0.003 / (1e-5 + pow(abs(z) / 200.0, 4.0))));\n\
+    float z = (gl_FragCoord.z - czm_viewportTransformation[3][2]) / czm_viewportTransformation[2][2];\n\
+\n\
+    // See Weighted Blended Order-Independent Transparency for examples of different weighting functions:\n\
+    // http://jcgt.org/published/0002/02/09/\n\
+    return pow(a + 0.01, 4.0) + max(1e-2, min(3.0 * 1e3, 0.003 / (1e-5 + pow(abs(z) / 200.0, 4.0))));\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/antialias',[],function() {
     'use strict';
-    return "vec4 czm_antialias(vec4 color1, vec4 color2, vec4 currentColor, float dist, float fuzzFactor)\n\
+    return "/**\n\
+ * Procedural anti-aliasing by blurring two colors that meet at a sharp edge.\n\
+ *\n\
+ * @name czm_antialias\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec4} color1 The color on one side of the edge.\n\
+ * @param {vec4} color2 The color on the other side of the edge.\n\
+ * @param {vec4} currentcolor The current color, either <code>color1</code> or <code>color2</code>.\n\
+ * @param {float} dist The distance to the edge in texture coordinates.\n\
+ * @param {float} [fuzzFactor=0.1] Controls the blurriness between the two colors.\n\
+ * @returns {vec4} The anti-aliased color.\n\
+ *\n\
+ * @example\n\
+ * // GLSL declarations\n\
+ * vec4 czm_antialias(vec4 color1, vec4 color2, vec4 currentColor, float dist, float fuzzFactor);\n\
+ * vec4 czm_antialias(vec4 color1, vec4 color2, vec4 currentColor, float dist);\n\
+ *\n\
+ * // get the color for a material that has a sharp edge at the line y = 0.5 in texture space\n\
+ * float dist = abs(textureCoordinates.t - 0.5);\n\
+ * vec4 currentColor = mix(bottomColor, topColor, step(0.5, textureCoordinates.t));\n\
+ * vec4 color = czm_antialias(bottomColor, topColor, currentColor, dist, 0.1);\n\
+ */\n\
+vec4 czm_antialias(vec4 color1, vec4 color2, vec4 currentColor, float dist, float fuzzFactor)\n\
 {\n\
-float val1 = clamp(dist / fuzzFactor, 0.0, 1.0);\n\
-float val2 = clamp((dist - 0.5) / fuzzFactor, 0.0, 1.0);\n\
-val1 = val1 * (1.0 - val2);\n\
-val1 = val1 * val1 * (3.0 - (2.0 * val1));\n\
-val1 = pow(val1, 0.5);\n\
-vec4 midColor = (color1 + color2) * 0.5;\n\
-return mix(midColor, currentColor, val1);\n\
+    float val1 = clamp(dist / fuzzFactor, 0.0, 1.0);\n\
+    float val2 = clamp((dist - 0.5) / fuzzFactor, 0.0, 1.0);\n\
+    val1 = val1 * (1.0 - val2);\n\
+    val1 = val1 * val1 * (3.0 - (2.0 * val1));\n\
+    val1 = pow(val1, 0.5); //makes the transition nicer\n\
+    \n\
+    vec4 midColor = (color1 + color2) * 0.5;\n\
+    return mix(midColor, currentColor, val1);\n\
 }\n\
+\n\
 vec4 czm_antialias(vec4 color1, vec4 color2, vec4 currentColor, float dist)\n\
 {\n\
-return czm_antialias(color1, color2, currentColor, dist, 0.1);\n\
+    return czm_antialias(color1, color2, currentColor, dist, 0.1);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/approximateSphericalCoordinates',[],function() {
     'use strict';
-    return "vec2 czm_approximateSphericalCoordinates(vec3 normal) {\n\
-float latitudeApproximation = czm_fastApproximateAtan(sqrt(normal.x * normal.x + normal.y * normal.y), normal.z);\n\
-float longitudeApproximation = czm_fastApproximateAtan(normal.x, normal.y);\n\
-return vec2(latitudeApproximation, longitudeApproximation);\n\
+    return "/**\n\
+ * Approximately computes spherical coordinates given a normal.\n\
+ * Uses approximate inverse trigonometry for speed and consistency,\n\
+ * since inverse trigonometry can differ from vendor-to-vendor and when compared with the CPU.\n\
+ *\n\
+ * @name czm_approximateSphericalCoordinates\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec3} normal arbitrary-length normal.\n\
+ *\n\
+ * @returns {vec2} Approximate latitude and longitude spherical coordinates.\n\
+ */\n\
+vec2 czm_approximateSphericalCoordinates(vec3 normal) {\n\
+    // Project into plane with vertical for latitude\n\
+    float latitudeApproximation = czm_fastApproximateAtan(sqrt(normal.x * normal.x + normal.y * normal.y), normal.z);\n\
+    float longitudeApproximation = czm_fastApproximateAtan(normal.x, normal.y);\n\
+    return vec2(latitudeApproximation, longitudeApproximation);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/branchFreeTernary',[],function() {
     'use strict';
-    return "float czm_branchFreeTernary(bool comparison, float a, float b) {\n\
-float useA = float(comparison);\n\
-return a * useA + b * (1.0 - useA);\n\
+    return "/**\n\
+ * Branchless ternary operator to be used when it's inexpensive to explicitly\n\
+ * evaluate both possibilities for a float expression.\n\
+ *\n\
+ * @name czm_branchFreeTernary\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {bool} comparison A comparison statement\n\
+ * @param {float} a Value to return if the comparison is true.\n\
+ * @param {float} b Value to return if the comparison is false.\n\
+ *\n\
+ * @returns {float} equivalent of comparison ? a : b\n\
+ */\n\
+float czm_branchFreeTernary(bool comparison, float a, float b) {\n\
+    float useA = float(comparison);\n\
+    return a * useA + b * (1.0 - useA);\n\
 }\n\
+\n\
+/**\n\
+ * Branchless ternary operator to be used when it's inexpensive to explicitly\n\
+ * evaluate both possibilities for a vec2 expression.\n\
+ *\n\
+ * @name czm_branchFreeTernary\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {bool} comparison A comparison statement\n\
+ * @param {vec2} a Value to return if the comparison is true.\n\
+ * @param {vec2} b Value to return if the comparison is false.\n\
+ *\n\
+ * @returns {vec2} equivalent of comparison ? a : b\n\
+ */\n\
 vec2 czm_branchFreeTernary(bool comparison, vec2 a, vec2 b) {\n\
-float useA = float(comparison);\n\
-return a * useA + b * (1.0 - useA);\n\
+    float useA = float(comparison);\n\
+    return a * useA + b * (1.0 - useA);\n\
 }\n\
+\n\
+/**\n\
+ * Branchless ternary operator to be used when it's inexpensive to explicitly\n\
+ * evaluate both possibilities for a vec3 expression.\n\
+ *\n\
+ * @name czm_branchFreeTernary\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {bool} comparison A comparison statement\n\
+ * @param {vec3} a Value to return if the comparison is true.\n\
+ * @param {vec3} b Value to return if the comparison is false.\n\
+ *\n\
+ * @returns {vec3} equivalent of comparison ? a : b\n\
+ */\n\
 vec3 czm_branchFreeTernary(bool comparison, vec3 a, vec3 b) {\n\
-float useA = float(comparison);\n\
-return a * useA + b * (1.0 - useA);\n\
+    float useA = float(comparison);\n\
+    return a * useA + b * (1.0 - useA);\n\
 }\n\
+\n\
+/**\n\
+ * Branchless ternary operator to be used when it's inexpensive to explicitly\n\
+ * evaluate both possibilities for a vec4 expression.\n\
+ *\n\
+ * @name czm_branchFreeTernary\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {bool} comparison A comparison statement\n\
+ * @param {vec3} a Value to return if the comparison is true.\n\
+ * @param {vec3} b Value to return if the comparison is false.\n\
+ *\n\
+ * @returns {vec3} equivalent of comparison ? a : b\n\
+ */\n\
 vec4 czm_branchFreeTernary(bool comparison, vec4 a, vec4 b) {\n\
-float useA = float(comparison);\n\
-return a * useA + b * (1.0 - useA);\n\
+    float useA = float(comparison);\n\
+    return a * useA + b * (1.0 - useA);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/cascadeColor',[],function() {
     'use strict';
-    return "vec4 czm_cascadeColor(vec4 weights)\n\
+    return "\n\
+vec4 czm_cascadeColor(vec4 weights)\n\
 {\n\
-return vec4(1.0, 0.0, 0.0, 1.0) * weights.x +\n\
-vec4(0.0, 1.0, 0.0, 1.0) * weights.y +\n\
-vec4(0.0, 0.0, 1.0, 1.0) * weights.z +\n\
-vec4(1.0, 0.0, 1.0, 1.0) * weights.w;\n\
+    return vec4(1.0, 0.0, 0.0, 1.0) * weights.x +\n\
+           vec4(0.0, 1.0, 0.0, 1.0) * weights.y +\n\
+           vec4(0.0, 0.0, 1.0, 1.0) * weights.z +\n\
+           vec4(1.0, 0.0, 1.0, 1.0) * weights.w;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/cascadeDistance',[],function() {
     'use strict';
-    return "uniform vec4 shadowMap_cascadeDistances;\n\
+    return "\n\
+uniform vec4 shadowMap_cascadeDistances;\n\
+\n\
 float czm_cascadeDistance(vec4 weights)\n\
 {\n\
-return dot(shadowMap_cascadeDistances, weights);\n\
+    return dot(shadowMap_cascadeDistances, weights);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/cascadeMatrix',[],function() {
     'use strict';
-    return "uniform mat4 shadowMap_cascadeMatrices[4];\n\
+    return "\n\
+uniform mat4 shadowMap_cascadeMatrices[4];\n\
+\n\
 mat4 czm_cascadeMatrix(vec4 weights)\n\
 {\n\
-return shadowMap_cascadeMatrices[0] * weights.x +\n\
-shadowMap_cascadeMatrices[1] * weights.y +\n\
-shadowMap_cascadeMatrices[2] * weights.z +\n\
-shadowMap_cascadeMatrices[3] * weights.w;\n\
+    return shadowMap_cascadeMatrices[0] * weights.x +\n\
+           shadowMap_cascadeMatrices[1] * weights.y +\n\
+           shadowMap_cascadeMatrices[2] * weights.z +\n\
+           shadowMap_cascadeMatrices[3] * weights.w;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/cascadeWeights',[],function() {
     'use strict';
-    return "uniform vec4 shadowMap_cascadeSplits[2];\n\
+    return "\n\
+uniform vec4 shadowMap_cascadeSplits[2];\n\
+\n\
 vec4 czm_cascadeWeights(float depthEye)\n\
 {\n\
-vec4 near = step(shadowMap_cascadeSplits[0], vec4(depthEye));\n\
-vec4 far = step(depthEye, shadowMap_cascadeSplits[1]);\n\
-return near * far;\n\
+    // One component is set to 1.0 and all others set to 0.0.\n\
+    vec4 near = step(shadowMap_cascadeSplits[0], vec4(depthEye));\n\
+    vec4 far = step(depthEye, shadowMap_cascadeSplits[1]);\n\
+    return near * far;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/columbusViewMorph',[],function() {
     'use strict';
-    return "vec4 czm_columbusViewMorph(vec4 position2D, vec4 position3D, float time)\n\
+    return "/**\n\
+ * DOC_TBA\n\
+ *\n\
+ * @name czm_columbusViewMorph\n\
+ * @glslFunction\n\
+ */\n\
+vec4 czm_columbusViewMorph(vec4 position2D, vec4 position3D, float time)\n\
 {\n\
-vec3 p = mix(position2D.xyz, position3D.xyz, time);\n\
-return vec4(p, 1.0);\n\
+    // Just linear for now.\n\
+    vec3 p = mix(position2D.xyz, position3D.xyz, time);\n\
+    return vec4(p, 1.0);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/computePosition',[],function() {
     'use strict';
-    return "vec4 czm_computePosition();\n\
+    return "/**\n\
+ * Returns a position in model coordinates relative to eye taking into\n\
+ * account the current scene mode: 3D, 2D, or Columbus view.\n\
+ * <p>\n\
+ * This uses standard position attributes, <code>position3DHigh</code>, \n\
+ * <code>position3DLow</code>, <code>position2DHigh</code>, and <code>position2DLow</code>, \n\
+ * and should be used when writing a vertex shader for an {@link Appearance}.\n\
+ * </p>\n\
+ *\n\
+ * @name czm_computePosition\n\
+ * @glslFunction\n\
+ *\n\
+ * @returns {vec4} The position relative to eye.\n\
+ *\n\
+ * @example\n\
+ * vec4 p = czm_computePosition();\n\
+ * v_positionEC = (czm_modelViewRelativeToEye * p).xyz;\n\
+ * gl_Position = czm_modelViewProjectionRelativeToEye * p;\n\
+ *\n\
+ * @see czm_translateRelativeToEye\n\
+ */\n\
+vec4 czm_computePosition();\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/cosineAndSine',[],function() {
     'use strict';
-    return "vec2 cordic(float angle)\n\
+    return "/**\n\
+ * @private\n\
+ */\n\
+vec2 cordic(float angle)\n\
 {\n\
-vec2 vector = vec2(6.0725293500888267e-1, 0.0);\n\
-float sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-mat2 rotation = mat2(1.0, sense, -sense, 1.0);\n\
-vector = rotation * vector;\n\
-angle -= sense * 7.8539816339744828e-1;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-float factor = sense * 5.0e-1;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 4.6364760900080609e-1;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 2.5e-1;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 2.4497866312686414e-1;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 1.25e-1;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 1.2435499454676144e-1;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 6.25e-2;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 6.2418809995957350e-2;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 3.125e-2;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 3.1239833430268277e-2;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 1.5625e-2;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 1.5623728620476831e-2;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 7.8125e-3;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 7.8123410601011111e-3;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 3.90625e-3;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 3.9062301319669718e-3;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 1.953125e-3;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 1.9531225164788188e-3;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 9.765625e-4;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 9.7656218955931946e-4;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 4.8828125e-4;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 4.8828121119489829e-4;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 2.44140625e-4;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 2.4414062014936177e-4;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 1.220703125e-4;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 1.2207031189367021e-4;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 6.103515625e-5;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 6.1035156174208773e-5;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 3.0517578125e-5;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 3.0517578115526096e-5;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 1.52587890625e-5;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 1.5258789061315762e-5;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 7.62939453125e-6;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 7.6293945311019700e-6;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 3.814697265625e-6;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 3.8146972656064961e-6;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 1.9073486328125e-6;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 1.9073486328101870e-6;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 9.5367431640625e-7;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 9.5367431640596084e-7;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 4.76837158203125e-7;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 4.7683715820308884e-7;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 2.384185791015625e-7;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-angle -= sense * 2.3841857910155797e-7;\n\
-sense = (angle < 0.0) ? -1.0 : 1.0;\n\
-factor = sense * 1.1920928955078125e-7;\n\
-rotation[0][1] = factor;\n\
-rotation[1][0] = -factor;\n\
-vector = rotation * vector;\n\
-return vector;\n\
+// Scale the vector by the appropriate factor for the 24 iterations to follow.\n\
+    vec2 vector = vec2(6.0725293500888267e-1, 0.0);\n\
+// Iteration 1\n\
+    float sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+ //   float factor = sense * 1.0;  // 2^-0\n\
+    mat2 rotation = mat2(1.0, sense, -sense, 1.0);\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 7.8539816339744828e-1;  // atan(2^-0)\n\
+// Iteration 2\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    float factor = sense * 5.0e-1;  // 2^-1\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 4.6364760900080609e-1;  // atan(2^-1)\n\
+// Iteration 3\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 2.5e-1;  // 2^-2\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 2.4497866312686414e-1;  // atan(2^-2)\n\
+// Iteration 4\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 1.25e-1;  // 2^-3\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 1.2435499454676144e-1;  // atan(2^-3)\n\
+// Iteration 5\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 6.25e-2;  // 2^-4\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 6.2418809995957350e-2;  // atan(2^-4)\n\
+// Iteration 6\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 3.125e-2;  // 2^-5\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 3.1239833430268277e-2;  // atan(2^-5)\n\
+// Iteration 7\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 1.5625e-2;  // 2^-6\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 1.5623728620476831e-2;  // atan(2^-6)\n\
+// Iteration 8\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 7.8125e-3;  // 2^-7\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 7.8123410601011111e-3;  // atan(2^-7)\n\
+// Iteration 9\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 3.90625e-3;  // 2^-8\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 3.9062301319669718e-3;  // atan(2^-8)\n\
+// Iteration 10\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 1.953125e-3;  // 2^-9\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 1.9531225164788188e-3;  // atan(2^-9)\n\
+// Iteration 11\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 9.765625e-4;  // 2^-10\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 9.7656218955931946e-4;  // atan(2^-10)\n\
+// Iteration 12\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 4.8828125e-4;  // 2^-11\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 4.8828121119489829e-4;  // atan(2^-11)\n\
+// Iteration 13\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 2.44140625e-4;  // 2^-12\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 2.4414062014936177e-4;  // atan(2^-12)\n\
+// Iteration 14\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 1.220703125e-4;  // 2^-13\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 1.2207031189367021e-4;  // atan(2^-13)\n\
+// Iteration 15\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 6.103515625e-5;  // 2^-14\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 6.1035156174208773e-5;  // atan(2^-14)\n\
+// Iteration 16\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 3.0517578125e-5;  // 2^-15\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 3.0517578115526096e-5;  // atan(2^-15)\n\
+// Iteration 17\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 1.52587890625e-5;  // 2^-16\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 1.5258789061315762e-5;  // atan(2^-16)\n\
+// Iteration 18\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 7.62939453125e-6;  // 2^-17\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 7.6293945311019700e-6;  // atan(2^-17)\n\
+// Iteration 19\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 3.814697265625e-6;  // 2^-18\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 3.8146972656064961e-6;  // atan(2^-18)\n\
+// Iteration 20\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 1.9073486328125e-6;  // 2^-19\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 1.9073486328101870e-6;  // atan(2^-19)\n\
+// Iteration 21\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 9.5367431640625e-7;  // 2^-20\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 9.5367431640596084e-7;  // atan(2^-20)\n\
+// Iteration 22\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 4.76837158203125e-7;  // 2^-21\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 4.7683715820308884e-7;  // atan(2^-21)\n\
+// Iteration 23\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 2.384185791015625e-7;  // 2^-22\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+    angle -= sense * 2.3841857910155797e-7;  // atan(2^-22)\n\
+// Iteration 24\n\
+    sense = (angle < 0.0) ? -1.0 : 1.0;\n\
+    factor = sense * 1.1920928955078125e-7;  // 2^-23\n\
+    rotation[0][1] = factor;\n\
+    rotation[1][0] = -factor;\n\
+    vector = rotation * vector;\n\
+//    angle -= sense * 1.1920928955078068e-7;  // atan(2^-23)\n\
+\n\
+    return vector;\n\
 }\n\
+\n\
+/**\n\
+ * Computes the cosine and sine of the provided angle using the CORDIC algorithm.\n\
+ *\n\
+ * @name czm_cosineAndSine\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {float} angle The angle in radians.\n\
+ *\n\
+ * @returns {vec2} The resulting cosine of the angle (as the x coordinate) and sine of the angle (as the y coordinate).\n\
+ *\n\
+ * @example\n\
+ * vec2 v = czm_cosineAndSine(czm_piOverSix);\n\
+ * float cosine = v.x;\n\
+ * float sine = v.y;\n\
+ */\n\
 vec2 czm_cosineAndSine(float angle)\n\
 {\n\
-if (angle < -czm_piOverTwo || angle > czm_piOverTwo)\n\
-{\n\
-if (angle < 0.0)\n\
-{\n\
-return -cordic(angle + czm_pi);\n\
-}\n\
-else\n\
-{\n\
-return -cordic(angle - czm_pi);\n\
-}\n\
-}\n\
-else\n\
-{\n\
-return cordic(angle);\n\
-}\n\
+    if (angle < -czm_piOverTwo || angle > czm_piOverTwo)\n\
+    {\n\
+        if (angle < 0.0)\n\
+        {\n\
+            return -cordic(angle + czm_pi);\n\
+        }\n\
+        else\n\
+        {\n\
+            return -cordic(angle - czm_pi);\n\
+        }\n\
+    }\n\
+    else\n\
+    {\n\
+        return cordic(angle);\n\
+    }\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/decompressTextureCoordinates',[],function() {
     'use strict';
-    return "vec2 czm_decompressTextureCoordinates(float encoded)\n\
-{\n\
-float temp = encoded / 4096.0;\n\
-float xZeroTo4095 = floor(temp);\n\
-float stx = xZeroTo4095 / 4095.0;\n\
-float sty = (encoded - xZeroTo4095 * 4096.0) / 4095.0;\n\
-return vec2(stx, sty);\n\
-}\n\
+    return "/**\n\
+ * Decompresses texture coordinates that were packed into a single float.\n\
+ *\n\
+ * @name czm_decompressTextureCoordinates\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {float} encoded The compressed texture coordinates.\n\
+ * @returns {vec2} The decompressed texture coordinates.\n\
+ */\n\
+ vec2 czm_decompressTextureCoordinates(float encoded)\n\
+ {\n\
+    float temp = encoded / 4096.0;\n\
+    float xZeroTo4095 = floor(temp);\n\
+    float stx = xZeroTo4095 / 4095.0;\n\
+    float sty = (encoded - xZeroTo4095 * 4096.0) / 4095.0;\n\
+    return vec2(stx, sty);\n\
+ }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/depthClampFarPlane',[],function() {
     'use strict';
-    return "#ifndef LOG_DEPTH\n\
+    return "// emulated noperspective\n\
+#ifndef LOG_DEPTH\n\
 varying float v_WindowZ;\n\
 #endif\n\
+\n\
+/**\n\
+ * Clamps a vertex to the far plane.\n\
+ *\n\
+ * @name czm_depthClampFarPlane\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec4} coords The vertex in clip coordinates.\n\
+ * @returns {vec4} The vertex clipped to the far plane.\n\
+ *\n\
+ * @example\n\
+ * gl_Position = czm_depthClampFarPlane(czm_modelViewProjection * vec4(position, 1.0));\n\
+ *\n\
+ * @see czm_writeDepthClampedToFarPlane\n\
+ */\n\
 vec4 czm_depthClampFarPlane(vec4 coords)\n\
 {\n\
 #ifndef LOG_DEPTH\n\
-v_WindowZ = (0.5 * (coords.z / coords.w) + 0.5) * coords.w;\n\
-coords.z = min(coords.z, coords.w);\n\
+    v_WindowZ = (0.5 * (coords.z / coords.w) + 0.5) * coords.w;\n\
+    coords.z = min(coords.z, coords.w);\n\
 #endif\n\
-return coords;\n\
+    return coords;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/eastNorthUpToEyeCoordinates',[],function() {
     'use strict';
-    return "mat3 czm_eastNorthUpToEyeCoordinates(vec3 positionMC, vec3 normalEC)\n\
+    return "/**\n\
+ * Computes a 3x3 rotation matrix that transforms vectors from an ellipsoid's east-north-up coordinate system \n\
+ * to eye coordinates.  In east-north-up coordinates, x points east, y points north, and z points along the \n\
+ * surface normal.  East-north-up can be used as an ellipsoid's tangent space for operations such as bump mapping.\n\
+ * <br /><br />\n\
+ * The ellipsoid is assumed to be centered at the model coordinate's origin.\n\
+ *\n\
+ * @name czm_eastNorthUpToEyeCoordinates\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec3} positionMC The position on the ellipsoid in model coordinates.\n\
+ * @param {vec3} normalEC The normalized ellipsoid surface normal, at <code>positionMC</code>, in eye coordinates.\n\
+ *\n\
+ * @returns {mat3} A 3x3 rotation matrix that transforms vectors from the east-north-up coordinate system to eye coordinates.\n\
+ *\n\
+ * @example\n\
+ * // Transform a vector defined in the east-north-up coordinate \n\
+ * // system, (0, 0, 1) which is the surface normal, to eye \n\
+ * // coordinates.\n\
+ * mat3 m = czm_eastNorthUpToEyeCoordinates(positionMC, normalEC);\n\
+ * vec3 normalEC = m * vec3(0.0, 0.0, 1.0);\n\
+ */\n\
+mat3 czm_eastNorthUpToEyeCoordinates(vec3 positionMC, vec3 normalEC)\n\
 {\n\
-vec3 tangentMC = normalize(vec3(-positionMC.y, positionMC.x, 0.0));\n\
-vec3 tangentEC = normalize(czm_normal3D * tangentMC);\n\
-vec3 bitangentEC = normalize(cross(normalEC, tangentEC));\n\
-return mat3(\n\
-tangentEC.x,   tangentEC.y,   tangentEC.z,\n\
-bitangentEC.x, bitangentEC.y, bitangentEC.z,\n\
-normalEC.x,    normalEC.y,    normalEC.z);\n\
+    vec3 tangentMC = normalize(vec3(-positionMC.y, positionMC.x, 0.0));  // normalized surface tangent in model coordinates\n\
+    vec3 tangentEC = normalize(czm_normal3D * tangentMC);                // normalized surface tangent in eye coordiantes\n\
+    vec3 bitangentEC = normalize(cross(normalEC, tangentEC));            // normalized surface bitangent in eye coordinates\n\
+\n\
+    return mat3(\n\
+        tangentEC.x,   tangentEC.y,   tangentEC.z,\n\
+        bitangentEC.x, bitangentEC.y, bitangentEC.z,\n\
+        normalEC.x,    normalEC.y,    normalEC.z);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/ellipsoidContainsPoint',[],function() {
     'use strict';
-    return "bool czm_ellipsoidContainsPoint(czm_ellipsoid ellipsoid, vec3 point)\n\
+    return "/**\n\
+ * DOC_TBA\n\
+ *\n\
+ * @name czm_ellipsoidContainsPoint\n\
+ * @glslFunction\n\
+ *\n\
+ */\n\
+bool czm_ellipsoidContainsPoint(czm_ellipsoid ellipsoid, vec3 point)\n\
 {\n\
-vec3 scaled = ellipsoid.inverseRadii * (czm_inverseModelView * vec4(point, 1.0)).xyz;\n\
-return (dot(scaled, scaled) <= 1.0);\n\
+    vec3 scaled = ellipsoid.inverseRadii * (czm_inverseModelView * vec4(point, 1.0)).xyz;\n\
+    return (dot(scaled, scaled) <= 1.0);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/ellipsoidNew',[],function() {
     'use strict';
-    return "czm_ellipsoid czm_ellipsoidNew(vec3 center, vec3 radii)\n\
+    return "/**\n\
+ * DOC_TBA\n\
+ *\n\
+ * @name czm_ellipsoidNew\n\
+ * @glslFunction\n\
+ *\n\
+ */\n\
+czm_ellipsoid czm_ellipsoidNew(vec3 center, vec3 radii)\n\
 {\n\
-vec3 inverseRadii = vec3(1.0 / radii.x, 1.0 / radii.y, 1.0 / radii.z);\n\
-vec3 inverseRadiiSquared = inverseRadii * inverseRadii;\n\
-czm_ellipsoid temp = czm_ellipsoid(center, radii, inverseRadii, inverseRadiiSquared);\n\
-return temp;\n\
+    vec3 inverseRadii = vec3(1.0 / radii.x, 1.0 / radii.y, 1.0 / radii.z);\n\
+    vec3 inverseRadiiSquared = inverseRadii * inverseRadii;\n\
+    czm_ellipsoid temp = czm_ellipsoid(center, radii, inverseRadii, inverseRadiiSquared);\n\
+    return temp;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/ellipsoidWgs84TextureCoordinates',[],function() {
     'use strict';
-    return "vec2 czm_ellipsoidWgs84TextureCoordinates(vec3 normal)\n\
+    return "/**\n\
+ * DOC_TBA\n\
+ *\n\
+ * @name czm_ellipsoidWgs84TextureCoordinates\n\
+ * @glslFunction\n\
+ */\n\
+vec2 czm_ellipsoidWgs84TextureCoordinates(vec3 normal)\n\
 {\n\
-return vec2(atan(normal.y, normal.x) * czm_oneOverTwoPi + 0.5, asin(normal.z) * czm_oneOverPi + 0.5);\n\
+    return vec2(atan(normal.y, normal.x) * czm_oneOverTwoPi + 0.5, asin(normal.z) * czm_oneOverPi + 0.5);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/equalsEpsilon',[],function() {
     'use strict';
-    return "bool czm_equalsEpsilon(vec4 left, vec4 right, float epsilon) {\n\
-return all(lessThanEqual(abs(left - right), vec4(epsilon)));\n\
+    return "/**\n\
+ * Compares <code>left</code> and <code>right</code> componentwise. Returns <code>true</code>\n\
+ * if they are within <code>epsilon</code> and <code>false</code> otherwise. The inputs\n\
+ * <code>left</code> and <code>right</code> can be <code>float</code>s, <code>vec2</code>s,\n\
+ * <code>vec3</code>s, or <code>vec4</code>s.\n\
+ *\n\
+ * @name czm_equalsEpsilon\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {} left The first vector.\n\
+ * @param {} right The second vector.\n\
+ * @param {float} epsilon The epsilon to use for equality testing.\n\
+ * @returns {bool} <code>true</code> if the components are within <code>epsilon</code> and <code>false</code> otherwise.\n\
+ *\n\
+ * @example\n\
+ * // GLSL declarations\n\
+ * bool czm_equalsEpsilon(float left, float right, float epsilon);\n\
+ * bool czm_equalsEpsilon(vec2 left, vec2 right, float epsilon);\n\
+ * bool czm_equalsEpsilon(vec3 left, vec3 right, float epsilon);\n\
+ * bool czm_equalsEpsilon(vec4 left, vec4 right, float epsilon);\n\
+ */\n\
+bool czm_equalsEpsilon(vec4 left, vec4 right, float epsilon) {\n\
+    return all(lessThanEqual(abs(left - right), vec4(epsilon)));\n\
 }\n\
+\n\
 bool czm_equalsEpsilon(vec3 left, vec3 right, float epsilon) {\n\
-return all(lessThanEqual(abs(left - right), vec3(epsilon)));\n\
+    return all(lessThanEqual(abs(left - right), vec3(epsilon)));\n\
 }\n\
+\n\
 bool czm_equalsEpsilon(vec2 left, vec2 right, float epsilon) {\n\
-return all(lessThanEqual(abs(left - right), vec2(epsilon)));\n\
+    return all(lessThanEqual(abs(left - right), vec2(epsilon)));\n\
 }\n\
+\n\
 bool czm_equalsEpsilon(float left, float right, float epsilon) {\n\
-return (abs(left - right) <= epsilon);\n\
+    return (abs(left - right) <= epsilon);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/eyeOffset',[],function() {
     'use strict';
-    return "vec4 czm_eyeOffset(vec4 positionEC, vec3 eyeOffset)\n\
+    return "/**\n\
+ * DOC_TBA\n\
+ *\n\
+ * @name czm_eyeOffset\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec4} positionEC DOC_TBA.\n\
+ * @param {vec3} eyeOffset DOC_TBA.\n\
+ *\n\
+ * @returns {vec4} DOC_TBA.\n\
+ */\n\
+vec4 czm_eyeOffset(vec4 positionEC, vec3 eyeOffset)\n\
 {\n\
-vec4 p = positionEC;\n\
-vec4 zEyeOffset = normalize(p) * eyeOffset.z;\n\
-p.xy += eyeOffset.xy + zEyeOffset.xy;\n\
-p.z += zEyeOffset.z;\n\
-return p;\n\
+    // This equation is approximate in x and y.\n\
+    vec4 p = positionEC;\n\
+    vec4 zEyeOffset = normalize(p) * eyeOffset.z;\n\
+    p.xy += eyeOffset.xy + zEyeOffset.xy;\n\
+    p.z += zEyeOffset.z;\n\
+    return p;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/eyeToWindowCoordinates',[],function() {
     'use strict';
-    return "vec4 czm_eyeToWindowCoordinates(vec4 positionEC)\n\
+    return "/**\n\
+ * Transforms a position from eye to window coordinates.  The transformation\n\
+ * from eye to clip coordinates is done using {@link czm_projection}.\n\
+ * The transform from normalized device coordinates to window coordinates is\n\
+ * done using {@link czm_viewportTransformation}, which assumes a depth range\n\
+ * of <code>near = 0</code> and <code>far = 1</code>.\n\
+ * <br /><br />\n\
+ * This transform is useful when there is a need to manipulate window coordinates\n\
+ * in a vertex shader as done by {@link BillboardCollection}.\n\
+ *\n\
+ * @name czm_eyeToWindowCoordinates\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec4} position The position in eye coordinates to transform.\n\
+ *\n\
+ * @returns {vec4} The transformed position in window coordinates.\n\
+ *\n\
+ * @see czm_modelToWindowCoordinates\n\
+ * @see czm_projection\n\
+ * @see czm_viewportTransformation\n\
+ * @see BillboardCollection\n\
+ *\n\
+ * @example\n\
+ * vec4 positionWC = czm_eyeToWindowCoordinates(positionEC);\n\
+ */\n\
+vec4 czm_eyeToWindowCoordinates(vec4 positionEC)\n\
 {\n\
-vec4 q = czm_projection * positionEC;\n\
-q.xyz /= q.w;\n\
-q.xyz = (czm_viewportTransformation * vec4(q.xyz, 1.0)).xyz;\n\
-return q;\n\
+    vec4 q = czm_projection * positionEC;                        // clip coordinates\n\
+    q.xyz /= q.w;                                                // normalized device coordinates\n\
+    q.xyz = (czm_viewportTransformation * vec4(q.xyz, 1.0)).xyz; // window coordinates\n\
+    return q;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/fastApproximateAtan',[],function() {
     'use strict';
-    return "float czm_fastApproximateAtan(float x) {\n\
-return x * (-0.1784 * x - 0.0663 * x * x + 1.0301);\n\
+    return "/**\n\
+ * Approxiamtes atan over the range [0, 1]. Safe to flip output for negative input.\n\
+ *\n\
+ * Based on Michal Drobot's approximation from ShaderFastLibs, which in turn is based on\n\
+ * \"Efficient approximations for the arctangent function,\" Rajan, S. Sichun Wang Inkol, R. Joyal, A., May 2006.\n\
+ * Adapted from ShaderFastLibs under MIT License.\n\
+ *\n\
+ * Chosen for the following characteristics over range [0, 1]:\n\
+ * - basically no error at 0 and 1, important for getting around range limit (naive atan2 via atan requires infinite range atan)\n\
+ * - no visible artifacts from first-derivative discontinuities, unlike latitude via range-reduced sqrt asin approximations (at equator)\n\
+ *\n\
+ * The original code is x * (-0.1784 * abs(x) - 0.0663 * x * x + 1.0301);\n\
+ * Removed the abs() in here because it isn't needed, the input range is guaranteed as [0, 1] by how we're approximating atan2.\n\
+ *\n\
+ * @name czm_fastApproximateAtan\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {float} x Value between 0 and 1 inclusive.\n\
+ *\n\
+ * @returns {float} Approximation of atan(x)\n\
+ */\n\
+float czm_fastApproximateAtan(float x) {\n\
+    return x * (-0.1784 * x - 0.0663 * x * x + 1.0301);\n\
 }\n\
+\n\
+/**\n\
+ * Approximation of atan2.\n\
+ *\n\
+ * Range reduction math based on nvidia's cg reference implementation for atan2: http://developer.download.nvidia.com/cg/atan2.html\n\
+ * However, we replaced their atan curve with Michael Drobot's (see above).\n\
+ *\n\
+ * @name czm_fastApproximateAtan\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {float} x Value between -1 and 1 inclusive.\n\
+ * @param {float} y Value between -1 and 1 inclusive.\n\
+ *\n\
+ * @returns {float} Approximation of atan2(x, y)\n\
+ */\n\
 float czm_fastApproximateAtan(float x, float y) {\n\
-float t = abs(x);\n\
-float opposite = abs(y);\n\
-float adjacent = max(t, opposite);\n\
-opposite = min(t, opposite);\n\
-t = czm_fastApproximateAtan(opposite / adjacent);\n\
-t = czm_branchFreeTernary(abs(y) > abs(x), czm_piOverTwo - t, t);\n\
-t = czm_branchFreeTernary(x < 0.0, czm_pi - t, t);\n\
-t = czm_branchFreeTernary(y < 0.0, -t, t);\n\
-return t;\n\
+    // atan approximations are usually only reliable over [-1, 1], or, in our case, [0, 1] due to modifications.\n\
+    // So range-reduce using abs and by flipping whether x or y is on top.\n\
+    float t = abs(x); // t used as swap and atan result.\n\
+    float opposite = abs(y);\n\
+    float adjacent = max(t, opposite);\n\
+    opposite = min(t, opposite);\n\
+\n\
+    t = czm_fastApproximateAtan(opposite / adjacent);\n\
+\n\
+    // Undo range reduction\n\
+    t = czm_branchFreeTernary(abs(y) > abs(x), czm_piOverTwo - t, t);\n\
+    t = czm_branchFreeTernary(x < 0.0, czm_pi - t, t);\n\
+    t = czm_branchFreeTernary(y < 0.0, -t, t);\n\
+    return t;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/fog',[],function() {
     'use strict';
-    return "vec3 czm_fog(float distanceToCamera, vec3 color, vec3 fogColor)\n\
+    return "/**\n\
+ * Gets the color with fog at a distance from the camera.\n\
+ * \n\
+ * @name czm_fog\n\
+ * @glslFunction\n\
+ * \n\
+ * @param {float} distanceToCamera The distance to the camera in meters.\n\
+ * @param {vec3} color The original color.\n\
+ * @param {vec3} fogColor The color of the fog.\n\
+ *\n\
+ * @returns {vec3} The color adjusted for fog at the distance from the camera.\n\
+ */\n\
+vec3 czm_fog(float distanceToCamera, vec3 color, vec3 fogColor)\n\
 {\n\
-float scalar = distanceToCamera * czm_fogDensity;\n\
-float fog = 1.0 - exp(-(scalar * scalar));\n\
-return mix(color, fogColor, fog);\n\
+    float scalar = distanceToCamera * czm_fogDensity;\n\
+    float fog = 1.0 - exp(-(scalar * scalar));\n\
+    \n\
+    return mix(color, fogColor, fog);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/geodeticSurfaceNormal',[],function() {
     'use strict';
-    return "vec3 czm_geodeticSurfaceNormal(vec3 positionOnEllipsoid, vec3 ellipsoidCenter, vec3 oneOverEllipsoidRadiiSquared)\n\
+    return "/**\n\
+ * DOC_TBA\n\
+ *\n\
+ * @name czm_geodeticSurfaceNormal\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec3} positionOnEllipsoid DOC_TBA\n\
+ * @param {vec3} ellipsoidCenter DOC_TBA\n\
+ * @param {vec3} oneOverEllipsoidRadiiSquared DOC_TBA\n\
+ * \n\
+ * @returns {vec3} DOC_TBA.\n\
+ */\n\
+vec3 czm_geodeticSurfaceNormal(vec3 positionOnEllipsoid, vec3 ellipsoidCenter, vec3 oneOverEllipsoidRadiiSquared)\n\
 {\n\
-return normalize((positionOnEllipsoid - ellipsoidCenter) * oneOverEllipsoidRadiiSquared);\n\
+    return normalize((positionOnEllipsoid - ellipsoidCenter) * oneOverEllipsoidRadiiSquared);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/getDefaultMaterial',[],function() {
     'use strict';
-    return "czm_material czm_getDefaultMaterial(czm_materialInput materialInput)\n\
+    return "/**\n\
+ * An czm_material with default values. Every material's czm_getMaterial\n\
+ * should use this default material as a base for the material it returns.\n\
+ * The default normal value is given by materialInput.normalEC.\n\
+ *\n\
+ * @name czm_getDefaultMaterial\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {czm_materialInput} input The input used to construct the default material.\n\
+ *\n\
+ * @returns {czm_material} The default material.\n\
+ *\n\
+ * @see czm_materialInput\n\
+ * @see czm_material\n\
+ * @see czm_getMaterial\n\
+ */\n\
+czm_material czm_getDefaultMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material;\n\
-material.diffuse = vec3(0.0);\n\
-material.specular = 0.0;\n\
-material.shininess = 1.0;\n\
-material.normal = materialInput.normalEC;\n\
-material.emission = vec3(0.0);\n\
-material.alpha = 1.0;\n\
-return material;\n\
+    czm_material material;\n\
+    material.diffuse = vec3(0.0);\n\
+    material.specular = 0.0;\n\
+    material.shininess = 1.0;\n\
+    material.normal = materialInput.normalEC;\n\
+    material.emission = vec3(0.0);\n\
+    material.alpha = 1.0;\n\
+    return material;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/getLambertDiffuse',[],function() {
     'use strict';
-    return "float czm_getLambertDiffuse(vec3 lightDirectionEC, vec3 normalEC)\n\
+    return "/**\n\
+ * Calculates the intensity of diffusely reflected light.\n\
+ *\n\
+ * @name czm_getLambertDiffuse\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec3} lightDirectionEC Unit vector pointing to the light source in eye coordinates.\n\
+ * @param {vec3} normalEC The surface normal in eye coordinates.\n\
+ *\n\
+ * @returns {float} The intensity of the diffuse reflection.\n\
+ *\n\
+ * @see czm_phong\n\
+ *\n\
+ * @example\n\
+ * float diffuseIntensity = czm_getLambertDiffuse(lightDirectionEC, normalEC);\n\
+ * float specularIntensity = czm_getSpecular(lightDirectionEC, toEyeEC, normalEC, 200);\n\
+ * vec3 color = (diffuseColor * diffuseIntensity) + (specularColor * specularIntensity);\n\
+ */\n\
+float czm_getLambertDiffuse(vec3 lightDirectionEC, vec3 normalEC)\n\
 {\n\
-return max(dot(lightDirectionEC, normalEC), 0.0);\n\
+    return max(dot(lightDirectionEC, normalEC), 0.0);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/getSpecular',[],function() {
     'use strict';
-    return "float czm_getSpecular(vec3 lightDirectionEC, vec3 toEyeEC, vec3 normalEC, float shininess)\n\
+    return "/**\n\
+ * Calculates the specular intensity of reflected light.\n\
+ *\n\
+ * @name czm_getSpecular\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec3} lightDirectionEC Unit vector pointing to the light source in eye coordinates.\n\
+ * @param {vec3} toEyeEC Unit vector pointing to the eye position in eye coordinates.\n\
+ * @param {vec3} normalEC The surface normal in eye coordinates.\n\
+ * @param {float} shininess The sharpness of the specular reflection.  Higher values create a smaller, more focused specular highlight.\n\
+ *\n\
+ * @returns {float} The intensity of the specular highlight.\n\
+ *\n\
+ * @see czm_phong\n\
+ *\n\
+ * @example\n\
+ * float diffuseIntensity = czm_getLambertDiffuse(lightDirectionEC, normalEC);\n\
+ * float specularIntensity = czm_getSpecular(lightDirectionEC, toEyeEC, normalEC, 200);\n\
+ * vec3 color = (diffuseColor * diffuseIntensity) + (specularColor * specularIntensity);\n\
+ */\n\
+float czm_getSpecular(vec3 lightDirectionEC, vec3 toEyeEC, vec3 normalEC, float shininess)\n\
 {\n\
-vec3 toReflectedLight = reflect(-lightDirectionEC, normalEC);\n\
-float specular = max(dot(toReflectedLight, toEyeEC), 0.0);\n\
-return pow(specular, max(shininess, czm_epsilon2));\n\
+    vec3 toReflectedLight = reflect(-lightDirectionEC, normalEC);\n\
+    float specular = max(dot(toReflectedLight, toEyeEC), 0.0);\n\
+\n\
+    // pow has undefined behavior if both parameters <= 0.\n\
+    // Prevent this by making sure shininess is at least czm_epsilon2.\n\
+    return pow(specular, max(shininess, czm_epsilon2));\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/getWaterNoise',[],function() {
     'use strict';
-    return "vec4 czm_getWaterNoise(sampler2D normalMap, vec2 uv, float time, float angleInRadians)\n\
+    return "/**\n\
+ * @private\n\
+ */\n\
+vec4 czm_getWaterNoise(sampler2D normalMap, vec2 uv, float time, float angleInRadians)\n\
 {\n\
-float cosAngle = cos(angleInRadians);\n\
-float sinAngle = sin(angleInRadians);\n\
-vec2 s0 = vec2(1.0/17.0, 0.0);\n\
-vec2 s1 = vec2(-1.0/29.0, 0.0);\n\
-vec2 s2 = vec2(1.0/101.0, 1.0/59.0);\n\
-vec2 s3 = vec2(-1.0/109.0, -1.0/57.0);\n\
-s0 = vec2((cosAngle * s0.x) - (sinAngle * s0.y), (sinAngle * s0.x) + (cosAngle * s0.y));\n\
-s1 = vec2((cosAngle * s1.x) - (sinAngle * s1.y), (sinAngle * s1.x) + (cosAngle * s1.y));\n\
-s2 = vec2((cosAngle * s2.x) - (sinAngle * s2.y), (sinAngle * s2.x) + (cosAngle * s2.y));\n\
-s3 = vec2((cosAngle * s3.x) - (sinAngle * s3.y), (sinAngle * s3.x) + (cosAngle * s3.y));\n\
-vec2 uv0 = (uv/103.0) + (time * s0);\n\
-vec2 uv1 = uv/107.0 + (time * s1) + vec2(0.23);\n\
-vec2 uv2 = uv/vec2(897.0, 983.0) + (time * s2) + vec2(0.51);\n\
-vec2 uv3 = uv/vec2(991.0, 877.0) + (time * s3) + vec2(0.71);\n\
-uv0 = fract(uv0);\n\
-uv1 = fract(uv1);\n\
-uv2 = fract(uv2);\n\
-uv3 = fract(uv3);\n\
-vec4 noise = (texture2D(normalMap, uv0)) +\n\
-(texture2D(normalMap, uv1)) +\n\
-(texture2D(normalMap, uv2)) +\n\
-(texture2D(normalMap, uv3));\n\
-return ((noise / 4.0) - 0.5) * 2.0;\n\
+    float cosAngle = cos(angleInRadians);\n\
+    float sinAngle = sin(angleInRadians);\n\
+\n\
+    // time dependent sampling directions\n\
+    vec2 s0 = vec2(1.0/17.0, 0.0);\n\
+    vec2 s1 = vec2(-1.0/29.0, 0.0);\n\
+    vec2 s2 = vec2(1.0/101.0, 1.0/59.0);\n\
+    vec2 s3 = vec2(-1.0/109.0, -1.0/57.0);\n\
+\n\
+    // rotate sampling direction by specified angle\n\
+    s0 = vec2((cosAngle * s0.x) - (sinAngle * s0.y), (sinAngle * s0.x) + (cosAngle * s0.y));\n\
+    s1 = vec2((cosAngle * s1.x) - (sinAngle * s1.y), (sinAngle * s1.x) + (cosAngle * s1.y));\n\
+    s2 = vec2((cosAngle * s2.x) - (sinAngle * s2.y), (sinAngle * s2.x) + (cosAngle * s2.y));\n\
+    s3 = vec2((cosAngle * s3.x) - (sinAngle * s3.y), (sinAngle * s3.x) + (cosAngle * s3.y));\n\
+\n\
+    vec2 uv0 = (uv/103.0) + (time * s0);\n\
+    vec2 uv1 = uv/107.0 + (time * s1) + vec2(0.23);\n\
+    vec2 uv2 = uv/vec2(897.0, 983.0) + (time * s2) + vec2(0.51);\n\
+    vec2 uv3 = uv/vec2(991.0, 877.0) + (time * s3) + vec2(0.71);\n\
+\n\
+    uv0 = fract(uv0);\n\
+    uv1 = fract(uv1);\n\
+    uv2 = fract(uv2);\n\
+    uv3 = fract(uv3);\n\
+    vec4 noise = (texture2D(normalMap, uv0)) +\n\
+                 (texture2D(normalMap, uv1)) +\n\
+                 (texture2D(normalMap, uv2)) +\n\
+                 (texture2D(normalMap, uv3));\n\
+\n\
+    // average and scale to between -1 and 1\n\
+    return ((noise / 4.0) - 0.5) * 2.0;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/getWgs84EllipsoidEC',[],function() {
     'use strict';
-    return "czm_ellipsoid czm_getWgs84EllipsoidEC()\n\
+    return "/**\n\
+ * Returns the WGS84 ellipsoid, with its center at the origin of world coordinates, in eye coordinates.\n\
+ *\n\
+ * @name czm_getWgs84EllipsoidEC\n\
+ * @glslFunction\n\
+ *\n\
+ * @returns {czm_ellipsoid} The WGS84 ellipsoid, with its center at the origin of world coordinates, in eye coordinates.\n\
+ *\n\
+ * @see Ellipsoid.WGS84\n\
+ *\n\
+ * @example\n\
+ * czm_ellipsoid ellipsoid = czm_getWgs84EllipsoidEC();\n\
+ */\n\
+czm_ellipsoid czm_getWgs84EllipsoidEC()\n\
 {\n\
-vec3 radii = vec3(6378137.0, 6378137.0, 6356752.314245);\n\
-vec3 inverseRadii = vec3(1.0 / radii.x, 1.0 / radii.y, 1.0 / radii.z);\n\
-vec3 inverseRadiiSquared = inverseRadii * inverseRadii;\n\
-czm_ellipsoid temp = czm_ellipsoid(czm_view[3].xyz, radii, inverseRadii, inverseRadiiSquared);\n\
-return temp;\n\
+    vec3 radii = vec3(6378137.0, 6378137.0, 6356752.314245);\n\
+    vec3 inverseRadii = vec3(1.0 / radii.x, 1.0 / radii.y, 1.0 / radii.z);\n\
+    vec3 inverseRadiiSquared = inverseRadii * inverseRadii;\n\
+    czm_ellipsoid temp = czm_ellipsoid(czm_view[3].xyz, radii, inverseRadii, inverseRadiiSquared);\n\
+    return temp;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/HSBToRGB',[],function() {
     'use strict';
-    return "const vec4 K_HSB2RGB = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n\
+    return "/**\n\
+ * Converts an HSB color (hue, saturation, brightness) to RGB\n\
+ * HSB <-> RGB conversion with minimal branching: {@link http://lolengine.net/blog/2013/07/27/rgb-to-hsv-in-glsl}\n\
+ *\n\
+ * @name czm_HSBToRGB\n\
+ * @glslFunction\n\
+ * \n\
+ * @param {vec3} hsb The color in HSB.\n\
+ *\n\
+ * @returns {vec3} The color in RGB.\n\
+ *\n\
+ * @example\n\
+ * vec3 hsb = czm_RGBToHSB(rgb);\n\
+ * hsb.z *= 0.1;\n\
+ * rgb = czm_HSBToRGB(hsb);\n\
+ */\n\
+\n\
+const vec4 K_HSB2RGB = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n\
+\n\
 vec3 czm_HSBToRGB(vec3 hsb)\n\
 {\n\
-vec3 p = abs(fract(hsb.xxx + K_HSB2RGB.xyz) * 6.0 - K_HSB2RGB.www);\n\
-return hsb.z * mix(K_HSB2RGB.xxx, clamp(p - K_HSB2RGB.xxx, 0.0, 1.0), hsb.y);\n\
+    vec3 p = abs(fract(hsb.xxx + K_HSB2RGB.xyz) * 6.0 - K_HSB2RGB.www);\n\
+    return hsb.z * mix(K_HSB2RGB.xxx, clamp(p - K_HSB2RGB.xxx, 0.0, 1.0), hsb.y);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/HSLToRGB',[],function() {
     'use strict';
-    return "vec3 hueToRGB(float hue)\n\
+    return "/**\n\
+ * Converts an HSL color (hue, saturation, lightness) to RGB\n\
+ * HSL <-> RGB conversion: {@link http://www.chilliant.com/rgb2hsv.html}\n\
+ *\n\
+ * @name czm_HSLToRGB\n\
+ * @glslFunction\n\
+ * \n\
+ * @param {vec3} rgb The color in HSL.\n\
+ *\n\
+ * @returns {vec3} The color in RGB.\n\
+ *\n\
+ * @example\n\
+ * vec3 hsl = czm_RGBToHSL(rgb);\n\
+ * hsl.z *= 0.1;\n\
+ * rgb = czm_HSLToRGB(hsl);\n\
+ */\n\
+\n\
+vec3 hueToRGB(float hue)\n\
 {\n\
-float r = abs(hue * 6.0 - 3.0) - 1.0;\n\
-float g = 2.0 - abs(hue * 6.0 - 2.0);\n\
-float b = 2.0 - abs(hue * 6.0 - 4.0);\n\
-return clamp(vec3(r, g, b), 0.0, 1.0);\n\
+    float r = abs(hue * 6.0 - 3.0) - 1.0;\n\
+    float g = 2.0 - abs(hue * 6.0 - 2.0);\n\
+    float b = 2.0 - abs(hue * 6.0 - 4.0);\n\
+    return clamp(vec3(r, g, b), 0.0, 1.0);\n\
 }\n\
+\n\
 vec3 czm_HSLToRGB(vec3 hsl)\n\
 {\n\
-vec3 rgb = hueToRGB(hsl.x);\n\
-float c = (1.0 - abs(2.0 * hsl.z - 1.0)) * hsl.y;\n\
-return (rgb - 0.5) * c + hsl.z;\n\
+    vec3 rgb = hueToRGB(hsl.x);\n\
+    float c = (1.0 - abs(2.0 * hsl.z - 1.0)) * hsl.y;\n\
+    return (rgb - 0.5) * c + hsl.z;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/hue',[],function() {
     'use strict';
-    return "vec3 czm_hue(vec3 rgb, float adjustment)\n\
+    return "/**\n\
+ * Adjusts the hue of a color.\n\
+ * \n\
+ * @name czm_hue\n\
+ * @glslFunction\n\
+ * \n\
+ * @param {vec3} rgb The color.\n\
+ * @param {float} adjustment The amount to adjust the hue of the color in radians.\n\
+ *\n\
+ * @returns {float} The color with the hue adjusted.\n\
+ *\n\
+ * @example\n\
+ * vec3 adjustHue = czm_hue(color, czm_pi); // The same as czm_hue(color, -czm_pi)\n\
+ */\n\
+vec3 czm_hue(vec3 rgb, float adjustment)\n\
 {\n\
-const mat3 toYIQ = mat3(0.299,     0.587,     0.114,\n\
-0.595716, -0.274453, -0.321263,\n\
-0.211456, -0.522591,  0.311135);\n\
-const mat3 toRGB = mat3(1.0,  0.9563,  0.6210,\n\
-1.0, -0.2721, -0.6474,\n\
-1.0, -1.107,   1.7046);\n\
-vec3 yiq = toYIQ * rgb;\n\
-float hue = atan(yiq.z, yiq.y) + adjustment;\n\
-float chroma = sqrt(yiq.z * yiq.z + yiq.y * yiq.y);\n\
-vec3 color = vec3(yiq.x, chroma * cos(hue), chroma * sin(hue));\n\
-return toRGB * color;\n\
+    const mat3 toYIQ = mat3(0.299,     0.587,     0.114,\n\
+                            0.595716, -0.274453, -0.321263,\n\
+                            0.211456, -0.522591,  0.311135);\n\
+    const mat3 toRGB = mat3(1.0,  0.9563,  0.6210,\n\
+                            1.0, -0.2721, -0.6474,\n\
+                            1.0, -1.107,   1.7046);\n\
+    \n\
+    vec3 yiq = toYIQ * rgb;\n\
+    float hue = atan(yiq.z, yiq.y) + adjustment;\n\
+    float chroma = sqrt(yiq.z * yiq.z + yiq.y * yiq.y);\n\
+    \n\
+    vec3 color = vec3(yiq.x, chroma * cos(hue), chroma * sin(hue));\n\
+    return toRGB * color;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/isEmpty',[],function() {
     'use strict';
-    return "bool czm_isEmpty(czm_raySegment interval)\n\
+    return "/**\n\
+ * Determines if a time interval is empty.\n\
+ *\n\
+ * @name czm_isEmpty\n\
+ * @glslFunction \n\
+ * \n\
+ * @param {czm_raySegment} interval The interval to test.\n\
+ * \n\
+ * @returns {bool} <code>true</code> if the time interval is empty; otherwise, <code>false</code>.\n\
+ *\n\
+ * @example\n\
+ * bool b0 = czm_isEmpty(czm_emptyRaySegment);      // true\n\
+ * bool b1 = czm_isEmpty(czm_raySegment(0.0, 1.0)); // false\n\
+ * bool b2 = czm_isEmpty(czm_raySegment(1.0, 1.0)); // false, contains 1.0.\n\
+ */\n\
+bool czm_isEmpty(czm_raySegment interval)\n\
 {\n\
-return (interval.stop < 0.0);\n\
+    return (interval.stop < 0.0);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/isFull',[],function() {
     'use strict';
-    return "bool czm_isFull(czm_raySegment interval)\n\
+    return "/**\n\
+ * Determines if a time interval is empty.\n\
+ *\n\
+ * @name czm_isFull\n\
+ * @glslFunction \n\
+ * \n\
+ * @param {czm_raySegment} interval The interval to test.\n\
+ * \n\
+ * @returns {bool} <code>true</code> if the time interval is empty; otherwise, <code>false</code>.\n\
+ *\n\
+ * @example\n\
+ * bool b0 = czm_isEmpty(czm_emptyRaySegment);      // true\n\
+ * bool b1 = czm_isEmpty(czm_raySegment(0.0, 1.0)); // false\n\
+ * bool b2 = czm_isEmpty(czm_raySegment(1.0, 1.0)); // false, contains 1.0.\n\
+ */\n\
+bool czm_isFull(czm_raySegment interval)\n\
 {\n\
-return (interval.start == 0.0 && interval.stop == czm_infinity);\n\
+    return (interval.start == 0.0 && interval.stop == czm_infinity);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/latitudeToWebMercatorFraction',[],function() {
     'use strict';
-    return "float czm_latitudeToWebMercatorFraction(float latitude, float southMercatorY, float oneOverMercatorHeight)\n\
+    return "/**\n\
+ * Computes the fraction of a Web Wercator rectangle at which a given geodetic latitude is located.\n\
+ *\n\
+ * @name czm_latitudeToWebMercatorFraction\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {float} latitude The geodetic latitude, in radians.\n\
+ * @param {float} southMercatorY The Web Mercator coordinate of the southern boundary of the rectangle.\n\
+ * @param {float} oneOverMercatorHeight The total height of the rectangle in Web Mercator coordinates.\n\
+ *\n\
+ * @returns {float} The fraction of the rectangle at which the latitude occurs.  If the latitude is the southern\n\
+ *          boundary of the rectangle, the return value will be zero.  If it is the northern boundary, the return\n\
+ *          value will be 1.0.  Latitudes in between are mapped according to the Web Mercator projection.\n\
+ */ \n\
+float czm_latitudeToWebMercatorFraction(float latitude, float southMercatorY, float oneOverMercatorHeight)\n\
 {\n\
-float sinLatitude = sin(latitude);\n\
-float mercatorY = 0.5 * log((1.0 + sinLatitude) / (1.0 - sinLatitude));\n\
-return (mercatorY - southMercatorY) * oneOverMercatorHeight;\n\
+    float sinLatitude = sin(latitude);\n\
+    float mercatorY = 0.5 * log((1.0 + sinLatitude) / (1.0 - sinLatitude));\n\
+    \n\
+    return (mercatorY - southMercatorY) * oneOverMercatorHeight;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/lineDistance',[],function() {
     'use strict';
-    return "float czm_lineDistance(vec2 point1, vec2 point2, vec2 point) {\n\
-return abs((point2.y - point1.y) * point.x - (point2.x - point1.x) * point.y + point2.x * point1.y - point2.y * point1.x) / distance(point2, point1);\n\
+    return "/**\n\
+ * Computes distance from an point in 2D to a line in 2D.\n\
+ *\n\
+ * @name czm_lineDistance\n\
+ * @glslFunction\n\
+ *\n\
+ * param {vec2} point1 A point along the line.\n\
+ * param {vec2} point2 A point along the line.\n\
+ * param {vec2} point A point that may or may not be on the line.\n\
+ * returns {float} The distance from the point to the line.\n\
+ */\n\
+float czm_lineDistance(vec2 point1, vec2 point2, vec2 point) {\n\
+    return abs((point2.y - point1.y) * point.x - (point2.x - point1.x) * point.y + point2.x * point1.y - point2.y * point1.x) / distance(point2, point1);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/luminance',[],function() {
     'use strict';
-    return "float czm_luminance(vec3 rgb)\n\
+    return "/**\n\
+ * Computes the luminance of a color. \n\
+ *\n\
+ * @name czm_luminance\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec3} rgb The color.\n\
+ * \n\
+ * @returns {float} The luminance.\n\
+ *\n\
+ * @example\n\
+ * float light = czm_luminance(vec3(0.0)); // 0.0\n\
+ * float dark = czm_luminance(vec3(1.0));  // ~1.0 \n\
+ */\n\
+float czm_luminance(vec3 rgb)\n\
 {\n\
-const vec3 W = vec3(0.2125, 0.7154, 0.0721);\n\
-return dot(rgb, W);\n\
+    // Algorithm from Chapter 10 of Graphics Shaders.\n\
+    const vec3 W = vec3(0.2125, 0.7154, 0.0721);\n\
+    return dot(rgb, W);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/metersPerPixel',[],function() {
     'use strict';
-    return "float czm_metersPerPixel(vec4 positionEC)\n\
+    return "/**\n\
+ * Computes the size of a pixel in meters at a distance from the eye.\n\
+\n\
+ * @name czm_metersPerPixel\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec3} positionEC The position to get the meters per pixel in eye coordinates.\n\
+ *\n\
+ * @returns {float} The meters per pixel at positionEC.\n\
+ */\n\
+float czm_metersPerPixel(vec4 positionEC)\n\
 {\n\
-float width = czm_viewport.z;\n\
-float height = czm_viewport.w;\n\
-float pixelWidth;\n\
-float pixelHeight;\n\
-float top = czm_frustumPlanes.x;\n\
-float bottom = czm_frustumPlanes.y;\n\
-float left = czm_frustumPlanes.z;\n\
-float right = czm_frustumPlanes.w;\n\
-if (czm_sceneMode == czm_sceneMode2D || czm_orthographicIn3D == 1.0)\n\
-{\n\
-float frustumWidth = right - left;\n\
-float frustumHeight = top - bottom;\n\
-pixelWidth = frustumWidth / width;\n\
-pixelHeight = frustumHeight / height;\n\
-}\n\
-else\n\
-{\n\
-float distanceToPixel = -positionEC.z;\n\
-float inverseNear = 1.0 / czm_currentFrustum.x;\n\
-float tanTheta = top * inverseNear;\n\
-pixelHeight = 2.0 * distanceToPixel * tanTheta / height;\n\
-tanTheta = right * inverseNear;\n\
-pixelWidth = 2.0 * distanceToPixel * tanTheta / width;\n\
-}\n\
-return max(pixelWidth, pixelHeight);\n\
+    float width = czm_viewport.z;\n\
+    float height = czm_viewport.w;\n\
+    float pixelWidth;\n\
+    float pixelHeight;\n\
+\n\
+    float top = czm_frustumPlanes.x;\n\
+    float bottom = czm_frustumPlanes.y;\n\
+    float left = czm_frustumPlanes.z;\n\
+    float right = czm_frustumPlanes.w;\n\
+\n\
+    if (czm_sceneMode == czm_sceneMode2D || czm_orthographicIn3D == 1.0)\n\
+    {\n\
+        float frustumWidth = right - left;\n\
+        float frustumHeight = top - bottom;\n\
+        pixelWidth = frustumWidth / width;\n\
+        pixelHeight = frustumHeight / height;\n\
+    }\n\
+    else\n\
+    {\n\
+        float distanceToPixel = -positionEC.z;\n\
+        float inverseNear = 1.0 / czm_currentFrustum.x;\n\
+        float tanTheta = top * inverseNear;\n\
+        pixelHeight = 2.0 * distanceToPixel * tanTheta / height;\n\
+        tanTheta = right * inverseNear;\n\
+        pixelWidth = 2.0 * distanceToPixel * tanTheta / width;\n\
+    }\n\
+\n\
+    return max(pixelWidth, pixelHeight);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/modelToWindowCoordinates',[],function() {
     'use strict';
-    return "vec4 czm_modelToWindowCoordinates(vec4 position)\n\
+    return "/**\n\
+ * Transforms a position from model to window coordinates.  The transformation\n\
+ * from model to clip coordinates is done using {@link czm_modelViewProjection}.\n\
+ * The transform from normalized device coordinates to window coordinates is\n\
+ * done using {@link czm_viewportTransformation}, which assumes a depth range\n\
+ * of <code>near = 0</code> and <code>far = 1</code>.\n\
+ * <br /><br />\n\
+ * This transform is useful when there is a need to manipulate window coordinates\n\
+ * in a vertex shader as done by {@link BillboardCollection}.\n\
+ * <br /><br />\n\
+ * This function should not be confused with {@link czm_viewportOrthographic},\n\
+ * which is an orthographic projection matrix that transforms from window \n\
+ * coordinates to clip coordinates.\n\
+ *\n\
+ * @name czm_modelToWindowCoordinates\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec4} position The position in model coordinates to transform.\n\
+ *\n\
+ * @returns {vec4} The transformed position in window coordinates.\n\
+ *\n\
+ * @see czm_eyeToWindowCoordinates\n\
+ * @see czm_modelViewProjection\n\
+ * @see czm_viewportTransformation\n\
+ * @see czm_viewportOrthographic\n\
+ * @see BillboardCollection\n\
+ *\n\
+ * @example\n\
+ * vec4 positionWC = czm_modelToWindowCoordinates(positionMC);\n\
+ */\n\
+vec4 czm_modelToWindowCoordinates(vec4 position)\n\
 {\n\
-vec4 q = czm_modelViewProjection * position;\n\
-q.xyz /= q.w;\n\
-q.xyz = (czm_viewportTransformation * vec4(q.xyz, 1.0)).xyz;\n\
-return q;\n\
+    vec4 q = czm_modelViewProjection * position;                // clip coordinates\n\
+    q.xyz /= q.w;                                                // normalized device coordinates\n\
+    q.xyz = (czm_viewportTransformation * vec4(q.xyz, 1.0)).xyz; // window coordinates\n\
+    return q;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/multiplyWithColorBalance',[],function() {
     'use strict';
-    return "vec3 czm_multiplyWithColorBalance(vec3 left, vec3 right)\n\
+    return "/**\n\
+ * DOC_TBA\n\
+ *\n\
+ * @name czm_multiplyWithColorBalance\n\
+ * @glslFunction\n\
+ */\n\
+vec3 czm_multiplyWithColorBalance(vec3 left, vec3 right)\n\
 {\n\
-const vec3 W = vec3(0.2125, 0.7154, 0.0721);\n\
-vec3 target = left * right;\n\
-float leftLuminance = dot(left, W);\n\
-float rightLuminance = dot(right, W);\n\
-float targetLuminance = dot(target, W);\n\
-return ((leftLuminance + rightLuminance) / (2.0 * targetLuminance)) * target;\n\
+    // Algorithm from Chapter 10 of Graphics Shaders.\n\
+    const vec3 W = vec3(0.2125, 0.7154, 0.0721);\n\
+    \n\
+    vec3 target = left * right;\n\
+    float leftLuminance = dot(left, W);\n\
+    float rightLuminance = dot(right, W);\n\
+    float targetLuminance = dot(target, W);\n\
+    \n\
+    return ((leftLuminance + rightLuminance) / (2.0 * targetLuminance)) * target;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/nearFarScalar',[],function() {
     'use strict';
-    return "float czm_nearFarScalar(vec4 nearFarScalar, float cameraDistSq)\n\
+    return "/**\n\
+ * Computes a value that scales with distance.  The scaling is clamped at the near and\n\
+ * far distances, and does not extrapolate.  This function works with the\n\
+ * {@link NearFarScalar} JavaScript class.\n\
+ *\n\
+ * @name czm_nearFarScalar\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec4} nearFarScalar A vector with 4 components: Near distance (x), Near value (y), Far distance (z), Far value (w).\n\
+ * @param {float} cameraDistSq The square of the current distance from the camera.\n\
+ *\n\
+ * @returns {float} The value at this distance.\n\
+ */\n\
+float czm_nearFarScalar(vec4 nearFarScalar, float cameraDistSq)\n\
 {\n\
-float valueAtMin = nearFarScalar.y;\n\
-float valueAtMax = nearFarScalar.w;\n\
-float nearDistanceSq = nearFarScalar.x * nearFarScalar.x;\n\
-float farDistanceSq = nearFarScalar.z * nearFarScalar.z;\n\
-float t = (cameraDistSq - nearDistanceSq) / (farDistanceSq - nearDistanceSq);\n\
-t = pow(clamp(t, 0.0, 1.0), 0.2);\n\
-return mix(valueAtMin, valueAtMax, t);\n\
+    float valueAtMin = nearFarScalar.y;\n\
+    float valueAtMax = nearFarScalar.w;\n\
+    float nearDistanceSq = nearFarScalar.x * nearFarScalar.x;\n\
+    float farDistanceSq = nearFarScalar.z * nearFarScalar.z;\n\
+\n\
+    float t = (cameraDistSq - nearDistanceSq) / (farDistanceSq - nearDistanceSq);\n\
+\n\
+    t = pow(clamp(t, 0.0, 1.0), 0.2);\n\
+\n\
+    return mix(valueAtMin, valueAtMax, t);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/octDecode',[],function() {
     'use strict';
-    return "vec3 czm_octDecode(vec2 encoded, float range)\n\
-{\n\
-if (encoded.x == 0.0 && encoded.y == 0.0) {\n\
-return vec3(0.0, 0.0, 0.0);\n\
-}\n\
-encoded = encoded / range * 2.0 - 1.0;\n\
-vec3 v = vec3(encoded.x, encoded.y, 1.0 - abs(encoded.x) - abs(encoded.y));\n\
-if (v.z < 0.0)\n\
-{\n\
-v.xy = (1.0 - abs(v.yx)) * czm_signNotZero(v.xy);\n\
-}\n\
-return normalize(v);\n\
-}\n\
-vec3 czm_octDecode(vec2 encoded)\n\
-{\n\
-return czm_octDecode(encoded, 255.0);\n\
-}\n\
-vec3 czm_octDecode(float encoded)\n\
-{\n\
-float temp = encoded / 256.0;\n\
-float x = floor(temp);\n\
-float y = (temp - x) * 256.0;\n\
-return czm_octDecode(vec2(x, y));\n\
-}\n\
-void czm_octDecode(vec2 encoded, out vec3 vector1, out vec3 vector2, out vec3 vector3)\n\
-{\n\
-float temp = encoded.x / 65536.0;\n\
-float x = floor(temp);\n\
-float encodedFloat1 = (temp - x) * 65536.0;\n\
-temp = encoded.y / 65536.0;\n\
-float y = floor(temp);\n\
-float encodedFloat2 = (temp - y) * 65536.0;\n\
-vector1 = czm_octDecode(encodedFloat1);\n\
-vector2 = czm_octDecode(encodedFloat2);\n\
-vector3 = czm_octDecode(vec2(x, y));\n\
-}\n\
+    return " /**\n\
+  * Decodes a unit-length vector in 'oct' encoding to a normalized 3-component Cartesian vector.\n\
+  * The 'oct' encoding is described in \"A Survey of Efficient Representations of Independent Unit Vectors\",\n\
+  * Cigolle et al 2014: http://jcgt.org/published/0003/02/01/\n\
+  *\n\
+  * @name czm_octDecode\n\
+  * @param {vec2} encoded The oct-encoded, unit-length vector\n\
+  * @param {float} range The maximum value of the SNORM range. The encoded vector is stored in log2(rangeMax+1) bits.\n\
+  * @returns {vec3} The decoded and normalized vector\n\
+  */\n\
+  vec3 czm_octDecode(vec2 encoded, float range)\n\
+  {\n\
+      if (encoded.x == 0.0 && encoded.y == 0.0) {\n\
+          return vec3(0.0, 0.0, 0.0);\n\
+      }\n\
+\n\
+     encoded = encoded / range * 2.0 - 1.0;\n\
+     vec3 v = vec3(encoded.x, encoded.y, 1.0 - abs(encoded.x) - abs(encoded.y));\n\
+     if (v.z < 0.0)\n\
+     {\n\
+         v.xy = (1.0 - abs(v.yx)) * czm_signNotZero(v.xy);\n\
+     }\n\
+\n\
+     return normalize(v);\n\
+  }\n\
+\n\
+/**\n\
+ * Decodes a unit-length vector in 'oct' encoding to a normalized 3-component Cartesian vector.\n\
+ * The 'oct' encoding is described in \"A Survey of Efficient Representations of Independent Unit Vectors\",\n\
+ * Cigolle et al 2014: http://jcgt.org/published/0003/02/01/\n\
+ *\n\
+ * @name czm_octDecode\n\
+ * @param {vec2} encoded The oct-encoded, unit-length vector\n\
+ * @returns {vec3} The decoded and normalized vector\n\
+ */\n\
+ vec3 czm_octDecode(vec2 encoded)\n\
+ {\n\
+    return czm_octDecode(encoded, 255.0);\n\
+ }\n\
+\n\
+ /**\n\
+ * Decodes a unit-length vector in 'oct' encoding packed into a floating-point number to a normalized 3-component Cartesian vector.\n\
+ * The 'oct' encoding is described in \"A Survey of Efficient Representations of Independent Unit Vectors\",\n\
+ * Cigolle et al 2014: http://jcgt.org/published/0003/02/01/\n\
+ *\n\
+ * @name czm_octDecode\n\
+ * @param {float} encoded The oct-encoded, unit-length vector\n\
+ * @returns {vec3} The decoded and normalized vector\n\
+ */\n\
+ vec3 czm_octDecode(float encoded)\n\
+ {\n\
+    float temp = encoded / 256.0;\n\
+    float x = floor(temp);\n\
+    float y = (temp - x) * 256.0;\n\
+    return czm_octDecode(vec2(x, y));\n\
+ }\n\
+\n\
+/**\n\
+ * Decodes three unit-length vectors in 'oct' encoding packed into two floating-point numbers to normalized 3-component Cartesian vectors.\n\
+ * The 'oct' encoding is described in \"A Survey of Efficient Representations of Independent Unit Vectors\",\n\
+ * Cigolle et al 2014: http://jcgt.org/published/0003/02/01/\n\
+ *\n\
+ * @name czm_octDecode\n\
+ * @param {vec2} encoded The packed oct-encoded, unit-length vectors.\n\
+ * @param {vec3} vector1 One decoded and normalized vector.\n\
+ * @param {vec3} vector2 One decoded and normalized vector.\n\
+ * @param {vec3} vector3 One decoded and normalized vector.\n\
+ */\n\
+  void czm_octDecode(vec2 encoded, out vec3 vector1, out vec3 vector2, out vec3 vector3)\n\
+ {\n\
+    float temp = encoded.x / 65536.0;\n\
+    float x = floor(temp);\n\
+    float encodedFloat1 = (temp - x) * 65536.0;\n\
+\n\
+    temp = encoded.y / 65536.0;\n\
+    float y = floor(temp);\n\
+    float encodedFloat2 = (temp - y) * 65536.0;\n\
+\n\
+    vector1 = czm_octDecode(encodedFloat1);\n\
+    vector2 = czm_octDecode(encodedFloat2);\n\
+    vector3 = czm_octDecode(vec2(x, y));\n\
+ }\n\
+\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/packDepth',[],function() {
     'use strict';
-    return "vec4 czm_packDepth(float depth)\n\
+    return "/**\n\
+ * Packs a depth value into a vec3 that can be represented by unsigned bytes.\n\
+ *\n\
+ * @name czm_packDepth\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {float} depth The floating-point depth.\n\
+ * @returns {vec3} The packed depth.\n\
+ */\n\
+vec4 czm_packDepth(float depth)\n\
 {\n\
-vec4 enc = vec4(1.0, 255.0, 65025.0, 16581375.0) * depth;\n\
-enc = fract(enc);\n\
-enc -= enc.yzww * vec4(1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0);\n\
-return enc;\n\
+    // See Aras Pranckevičius' post Encoding Floats to RGBA\n\
+    // http://aras-p.info/blog/2009/07/30/encoding-floats-to-rgba-the-final/\n\
+    vec4 enc = vec4(1.0, 255.0, 65025.0, 16581375.0) * depth;\n\
+    enc = fract(enc);\n\
+    enc -= enc.yzww * vec4(1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0);\n\
+    return enc;\n\
 }\n\
 ";
 });
@@ -37559,132 +37403,211 @@ define('Shaders/Builtin/Functions/phong',[],function() {
     'use strict';
     return "float czm_private_getLambertDiffuseOfMaterial(vec3 lightDirectionEC, czm_material material)\n\
 {\n\
-return czm_getLambertDiffuse(lightDirectionEC, material.normal);\n\
+    return czm_getLambertDiffuse(lightDirectionEC, material.normal);\n\
 }\n\
+\n\
 float czm_private_getSpecularOfMaterial(vec3 lightDirectionEC, vec3 toEyeEC, czm_material material)\n\
 {\n\
-return czm_getSpecular(lightDirectionEC, toEyeEC, material.normal, material.shininess);\n\
+    return czm_getSpecular(lightDirectionEC, toEyeEC, material.normal, material.shininess);\n\
 }\n\
+\n\
+/**\n\
+ * Computes a color using the Phong lighting model.\n\
+ *\n\
+ * @name czm_phong\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec3} toEye A normalized vector from the fragment to the eye in eye coordinates.\n\
+ * @param {czm_material} material The fragment's material.\n\
+ * \n\
+ * @returns {vec4} The computed color.\n\
+ * \n\
+ * @example\n\
+ * vec3 positionToEyeEC = // ...\n\
+ * czm_material material = // ...\n\
+ * gl_FragColor = czm_phong(normalize(positionToEyeEC), material);\n\
+ *\n\
+ * @see czm_getMaterial\n\
+ */\n\
 vec4 czm_phong(vec3 toEye, czm_material material)\n\
 {\n\
-float diffuse = czm_private_getLambertDiffuseOfMaterial(vec3(0.0, 0.0, 1.0), material);\n\
-if (czm_sceneMode == czm_sceneMode3D) {\n\
-diffuse += czm_private_getLambertDiffuseOfMaterial(vec3(0.0, 1.0, 0.0), material);\n\
+    // Diffuse from directional light sources at eye (for top-down)\n\
+    float diffuse = czm_private_getLambertDiffuseOfMaterial(vec3(0.0, 0.0, 1.0), material);\n\
+    if (czm_sceneMode == czm_sceneMode3D) {\n\
+        // (and horizon views in 3D)\n\
+        diffuse += czm_private_getLambertDiffuseOfMaterial(vec3(0.0, 1.0, 0.0), material);\n\
+    }\n\
+\n\
+    // Specular from sun and pseudo-moon\n\
+    float specular = czm_private_getSpecularOfMaterial(czm_sunDirectionEC, toEye, material) + czm_private_getSpecularOfMaterial(czm_moonDirectionEC, toEye, material);\n\
+\n\
+    // Temporary workaround for adding ambient.\n\
+    vec3 materialDiffuse = material.diffuse * 0.5;\n\
+    \n\
+    vec3 ambient = materialDiffuse;\n\
+    vec3 color = ambient + material.emission;\n\
+    color += materialDiffuse * diffuse;\n\
+    color += material.specular * specular;\n\
+\n\
+    return vec4(color, material.alpha);\n\
 }\n\
-float specular = czm_private_getSpecularOfMaterial(czm_sunDirectionEC, toEye, material) + czm_private_getSpecularOfMaterial(czm_moonDirectionEC, toEye, material);\n\
-vec3 materialDiffuse = material.diffuse * 0.5;\n\
-vec3 ambient = materialDiffuse;\n\
-vec3 color = ambient + material.emission;\n\
-color += materialDiffuse * diffuse;\n\
-color += material.specular * specular;\n\
-return vec4(color, material.alpha);\n\
-}\n\
+\n\
 vec4 czm_private_phong(vec3 toEye, czm_material material)\n\
 {\n\
-float diffuse = czm_private_getLambertDiffuseOfMaterial(czm_sunDirectionEC, material);\n\
-float specular = czm_private_getSpecularOfMaterial(czm_sunDirectionEC, toEye, material);\n\
-vec3 ambient = vec3(0.0);\n\
-vec3 color = ambient + material.emission;\n\
-color += material.diffuse * diffuse;\n\
-color += material.specular * specular;\n\
-return vec4(color, material.alpha);\n\
+    float diffuse = czm_private_getLambertDiffuseOfMaterial(czm_sunDirectionEC, material);\n\
+    float specular = czm_private_getSpecularOfMaterial(czm_sunDirectionEC, toEye, material);\n\
+\n\
+    vec3 ambient = vec3(0.0);\n\
+    vec3 color = ambient + material.emission;\n\
+    color += material.diffuse * diffuse;\n\
+    color += material.specular * specular;\n\
+\n\
+    return vec4(color, material.alpha);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/planeDistance',[],function() {
     'use strict';
-    return "float czm_planeDistance(vec4 plane, vec3 point) {\n\
-return (dot(plane.xyz, point) + plane.w);\n\
+    return "/**\n\
+ * Computes distance from a point to a plane.\n\
+ *\n\
+ * @name czm_planeDistance\n\
+ * @glslFunction\n\
+ *\n\
+ * param {vec4} plane A Plane in Hessian Normal Form. See Plane.js\n\
+ * param {vec3} point A point in the same space as the plane.\n\
+ * returns {float} The distance from the point to the plane.\n\
+ */\n\
+float czm_planeDistance(vec4 plane, vec3 point) {\n\
+    return (dot(plane.xyz, point) + plane.w);\n\
 }\n\
+\n\
+/**\n\
+ * Computes distance from a point to a plane.\n\
+ *\n\
+ * @name czm_planeDistance\n\
+ * @glslFunction\n\
+ *\n\
+ * param {vec3} planeNormal Normal for a plane in Hessian Normal Form. See Plane.js\n\
+ * param {float} planeDistance Distance for a plane in Hessian Normal form. See Plane.js\n\
+ * param {vec3} point A point in the same space as the plane.\n\
+ * returns {float} The distance from the point to the plane.\n\
+ */\n\
 float czm_planeDistance(vec3 planeNormal, float planeDistance, vec3 point) {\n\
-return (dot(planeNormal, point) + planeDistance);\n\
+    return (dot(planeNormal, point) + planeDistance);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/pointAlongRay',[],function() {
     'use strict';
-    return "vec3 czm_pointAlongRay(czm_ray ray, float time)\n\
+    return "/**\n\
+ * Computes the point along a ray at the given time.  <code>time</code> can be positive, negative, or zero.\n\
+ *\n\
+ * @name czm_pointAlongRay\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {czm_ray} ray The ray to compute the point along.\n\
+ * @param {float} time The time along the ray.\n\
+ * \n\
+ * @returns {vec3} The point along the ray at the given time.\n\
+ * \n\
+ * @example\n\
+ * czm_ray ray = czm_ray(vec3(0.0), vec3(1.0, 0.0, 0.0)); // origin, direction\n\
+ * vec3 v = czm_pointAlongRay(ray, 2.0); // (2.0, 0.0, 0.0)\n\
+ */\n\
+vec3 czm_pointAlongRay(czm_ray ray, float time)\n\
 {\n\
-return ray.origin + (time * ray.direction);\n\
+    return ray.origin + (time * ray.direction);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/rayEllipsoidIntersectionInterval',[],function() {
     'use strict';
-    return "czm_raySegment czm_rayEllipsoidIntersectionInterval(czm_ray ray, czm_ellipsoid ellipsoid)\n\
+    return "/**\n\
+ * DOC_TBA\n\
+ *\n\
+ * @name czm_rayEllipsoidIntersectionInterval\n\
+ * @glslFunction\n\
+ */\n\
+czm_raySegment czm_rayEllipsoidIntersectionInterval(czm_ray ray, czm_ellipsoid ellipsoid)\n\
 {\n\
-vec3 q = ellipsoid.inverseRadii * (czm_inverseModelView * vec4(ray.origin, 1.0)).xyz;\n\
-vec3 w = ellipsoid.inverseRadii * (czm_inverseModelView * vec4(ray.direction, 0.0)).xyz;\n\
-q = q - ellipsoid.inverseRadii * (czm_inverseModelView * vec4(ellipsoid.center, 1.0)).xyz;\n\
-float q2 = dot(q, q);\n\
-float qw = dot(q, w);\n\
-if (q2 > 1.0)\n\
-{\n\
-if (qw >= 0.0)\n\
-{\n\
-return czm_emptyRaySegment;\n\
-}\n\
-else\n\
-{\n\
-float qw2 = qw * qw;\n\
-float difference = q2 - 1.0;\n\
-float w2 = dot(w, w);\n\
-float product = w2 * difference;\n\
-if (qw2 < product)\n\
-{\n\
-return czm_emptyRaySegment;\n\
-}\n\
-else if (qw2 > product)\n\
-{\n\
-float discriminant = qw * qw - product;\n\
-float temp = -qw + sqrt(discriminant);\n\
-float root0 = temp / w2;\n\
-float root1 = difference / temp;\n\
-if (root0 < root1)\n\
-{\n\
-czm_raySegment i = czm_raySegment(root0, root1);\n\
-return i;\n\
-}\n\
-else\n\
-{\n\
-czm_raySegment i = czm_raySegment(root1, root0);\n\
-return i;\n\
-}\n\
-}\n\
-else\n\
-{\n\
-float root = sqrt(difference / w2);\n\
-czm_raySegment i = czm_raySegment(root, root);\n\
-return i;\n\
-}\n\
-}\n\
-}\n\
-else if (q2 < 1.0)\n\
-{\n\
-float difference = q2 - 1.0;\n\
-float w2 = dot(w, w);\n\
-float product = w2 * difference;\n\
-float discriminant = qw * qw - product;\n\
-float temp = -qw + sqrt(discriminant);\n\
-czm_raySegment i = czm_raySegment(0.0, temp / w2);\n\
-return i;\n\
-}\n\
-else\n\
-{\n\
-if (qw < 0.0)\n\
-{\n\
-float w2 = dot(w, w);\n\
-czm_raySegment i = czm_raySegment(0.0, -qw / w2);\n\
-return i;\n\
-}\n\
-else\n\
-{\n\
-return czm_emptyRaySegment;\n\
-}\n\
-}\n\
+   // ray and ellipsoid center in eye coordinates.  radii in model coordinates.\n\
+    vec3 q = ellipsoid.inverseRadii * (czm_inverseModelView * vec4(ray.origin, 1.0)).xyz;\n\
+    vec3 w = ellipsoid.inverseRadii * (czm_inverseModelView * vec4(ray.direction, 0.0)).xyz;\n\
+   \n\
+    q = q - ellipsoid.inverseRadii * (czm_inverseModelView * vec4(ellipsoid.center, 1.0)).xyz;\n\
+    \n\
+    float q2 = dot(q, q);\n\
+    float qw = dot(q, w);\n\
+    \n\
+    if (q2 > 1.0) // Outside ellipsoid.\n\
+    {\n\
+        if (qw >= 0.0) // Looking outward or tangent (0 intersections).\n\
+        {\n\
+            return czm_emptyRaySegment;\n\
+        }\n\
+        else // qw < 0.0.\n\
+        {\n\
+            float qw2 = qw * qw;\n\
+            float difference = q2 - 1.0; // Positively valued.\n\
+            float w2 = dot(w, w);\n\
+            float product = w2 * difference;\n\
+            \n\
+            if (qw2 < product) // Imaginary roots (0 intersections).\n\
+            {\n\
+                return czm_emptyRaySegment;     \n\
+            }   \n\
+            else if (qw2 > product) // Distinct roots (2 intersections).\n\
+            {\n\
+                float discriminant = qw * qw - product;\n\
+                float temp = -qw + sqrt(discriminant); // Avoid cancellation.\n\
+                float root0 = temp / w2;\n\
+                float root1 = difference / temp;\n\
+                if (root0 < root1)\n\
+                {\n\
+                    czm_raySegment i = czm_raySegment(root0, root1);\n\
+                    return i;\n\
+                }\n\
+                else\n\
+                {\n\
+                    czm_raySegment i = czm_raySegment(root1, root0);\n\
+                    return i;\n\
+                }\n\
+            }\n\
+            else // qw2 == product.  Repeated roots (2 intersections).\n\
+            {\n\
+                float root = sqrt(difference / w2);\n\
+                czm_raySegment i = czm_raySegment(root, root);\n\
+                return i;\n\
+            }\n\
+        }\n\
+    }\n\
+    else if (q2 < 1.0) // Inside ellipsoid (2 intersections).\n\
+    {\n\
+        float difference = q2 - 1.0; // Negatively valued.\n\
+        float w2 = dot(w, w);\n\
+        float product = w2 * difference; // Negatively valued.\n\
+        float discriminant = qw * qw - product;\n\
+        float temp = -qw + sqrt(discriminant); // Positively valued.\n\
+        czm_raySegment i = czm_raySegment(0.0, temp / w2);\n\
+        return i;\n\
+    }\n\
+    else // q2 == 1.0. On ellipsoid.\n\
+    {\n\
+        if (qw < 0.0) // Looking inward.\n\
+        {\n\
+            float w2 = dot(w, w);\n\
+            czm_raySegment i = czm_raySegment(0.0, -qw / w2);\n\
+            return i;\n\
+        }\n\
+        else // qw >= 0.0.  Looking outward or tangent.\n\
+        {\n\
+            return czm_emptyRaySegment;\n\
+        }\n\
+    }\n\
 }\n\
 ";
 });
@@ -37693,7 +37616,7 @@ define('Shaders/Builtin/Functions/readDepth',[],function() {
     'use strict';
     return "float czm_readDepth(sampler2D depthTexture, vec2 texCoords)\n\
 {\n\
-return czm_reverseLogDepth(texture2D(depthTexture, texCoords).r);\n\
+    return czm_reverseLogDepth(texture2D(depthTexture, texCoords).r);\n\
 }\n\
 ";
 });
@@ -37703,162 +37626,244 @@ define('Shaders/Builtin/Functions/reverseLogDepth',[],function() {
     return "float czm_reverseLogDepth(float logZ)\n\
 {\n\
 #ifdef LOG_DEPTH\n\
-float near = czm_currentFrustum.x;\n\
-float far = czm_currentFrustum.y;\n\
-logZ = pow(2.0, logZ * czm_log2FarPlusOne) - 1.0;\n\
-logZ = far * (1.0 - near / logZ) / (far - near);\n\
+    float near = czm_currentFrustum.x;\n\
+    float far = czm_currentFrustum.y;\n\
+    logZ = pow(2.0, logZ * czm_log2FarPlusOne) - 1.0;\n\
+    logZ = far * (1.0 - near / logZ) / (far - near);\n\
 #endif\n\
-return logZ;\n\
+    return logZ;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/RGBToHSB',[],function() {
     'use strict';
-    return "const vec4 K_RGB2HSB = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n\
+    return "/**\n\
+ * Converts an RGB color to HSB (hue, saturation, brightness)\n\
+ * HSB <-> RGB conversion with minimal branching: {@link http://lolengine.net/blog/2013/07/27/rgb-to-hsv-in-glsl}\n\
+ *\n\
+ * @name czm_RGBToHSB\n\
+ * @glslFunction\n\
+ * \n\
+ * @param {vec3} rgb The color in RGB.\n\
+ *\n\
+ * @returns {vec3} The color in HSB.\n\
+ *\n\
+ * @example\n\
+ * vec3 hsb = czm_RGBToHSB(rgb);\n\
+ * hsb.z *= 0.1;\n\
+ * rgb = czm_HSBToRGB(hsb);\n\
+ */\n\
+\n\
+const vec4 K_RGB2HSB = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n\
+\n\
 vec3 czm_RGBToHSB(vec3 rgb)\n\
 {\n\
-vec4 p = mix(vec4(rgb.bg, K_RGB2HSB.wz), vec4(rgb.gb, K_RGB2HSB.xy), step(rgb.b, rgb.g));\n\
-vec4 q = mix(vec4(p.xyw, rgb.r), vec4(rgb.r, p.yzx), step(p.x, rgb.r));\n\
-float d = q.x - min(q.w, q.y);\n\
-return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + czm_epsilon7)), d / (q.x + czm_epsilon7), q.x);\n\
+    vec4 p = mix(vec4(rgb.bg, K_RGB2HSB.wz), vec4(rgb.gb, K_RGB2HSB.xy), step(rgb.b, rgb.g));\n\
+    vec4 q = mix(vec4(p.xyw, rgb.r), vec4(rgb.r, p.yzx), step(p.x, rgb.r));\n\
+\n\
+    float d = q.x - min(q.w, q.y);\n\
+    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + czm_epsilon7)), d / (q.x + czm_epsilon7), q.x);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/RGBToHSL',[],function() {
     'use strict';
-    return "vec3 RGBtoHCV(vec3 rgb)\n\
+    return "/**\n\
+ * Converts an RGB color to HSL (hue, saturation, lightness)\n\
+ * HSL <-> RGB conversion: {@link http://www.chilliant.com/rgb2hsv.html}\n\
+ *\n\
+ * @name czm_RGBToHSL\n\
+ * @glslFunction\n\
+ * \n\
+ * @param {vec3} rgb The color in RGB.\n\
+ *\n\
+ * @returns {vec3} The color in HSL.\n\
+ *\n\
+ * @example\n\
+ * vec3 hsl = czm_RGBToHSL(rgb);\n\
+ * hsl.z *= 0.1;\n\
+ * rgb = czm_HSLToRGB(hsl);\n\
+ */\n\
+ \n\
+vec3 RGBtoHCV(vec3 rgb)\n\
 {\n\
-vec4 p = (rgb.g < rgb.b) ? vec4(rgb.bg, -1.0, 2.0 / 3.0) : vec4(rgb.gb, 0.0, -1.0 / 3.0);\n\
-vec4 q = (rgb.r < p.x) ? vec4(p.xyw, rgb.r) : vec4(rgb.r, p.yzx);\n\
-float c = q.x - min(q.w, q.y);\n\
-float h = abs((q.w - q.y) / (6.0 * c + czm_epsilon7) + q.z);\n\
-return vec3(h, c, q.x);\n\
+    // Based on work by Sam Hocevar and Emil Persson\n\
+    vec4 p = (rgb.g < rgb.b) ? vec4(rgb.bg, -1.0, 2.0 / 3.0) : vec4(rgb.gb, 0.0, -1.0 / 3.0);\n\
+    vec4 q = (rgb.r < p.x) ? vec4(p.xyw, rgb.r) : vec4(rgb.r, p.yzx);\n\
+    float c = q.x - min(q.w, q.y);\n\
+    float h = abs((q.w - q.y) / (6.0 * c + czm_epsilon7) + q.z);\n\
+    return vec3(h, c, q.x);\n\
 }\n\
+\n\
 vec3 czm_RGBToHSL(vec3 rgb)\n\
 {\n\
-vec3 hcv = RGBtoHCV(rgb);\n\
-float l = hcv.z - hcv.y * 0.5;\n\
-float s = hcv.y / (1.0 - abs(l * 2.0 - 1.0) + czm_epsilon7);\n\
-return vec3(hcv.x, s, l);\n\
+    vec3 hcv = RGBtoHCV(rgb);\n\
+    float l = hcv.z - hcv.y * 0.5;\n\
+    float s = hcv.y / (1.0 - abs(l * 2.0 - 1.0) + czm_epsilon7);\n\
+    return vec3(hcv.x, s, l);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/RGBToXYZ',[],function() {
     'use strict';
-    return "vec3 czm_RGBToXYZ(vec3 rgb)\n\
+    return "/**\n\
+ * Converts an RGB color to CIE Yxy.\n\
+ * <p>The conversion is described in\n\
+ * {@link http://content.gpwiki.org/index.php/D3DBook:High-Dynamic_Range_Rendering#Luminance_Transform|Luminance Transform}\n\
+ * </p>\n\
+ * \n\
+ * @name czm_RGBToXYZ\n\
+ * @glslFunction\n\
+ * \n\
+ * @param {vec3} rgb The color in RGB.\n\
+ *\n\
+ * @returns {vec3} The color in CIE Yxy.\n\
+ *\n\
+ * @example\n\
+ * vec3 xyz = czm_RGBToXYZ(rgb);\n\
+ * xyz.x = max(xyz.x - luminanceThreshold, 0.0);\n\
+ * rgb = czm_XYZToRGB(xyz);\n\
+ */\n\
+vec3 czm_RGBToXYZ(vec3 rgb)\n\
 {\n\
-const mat3 RGB2XYZ = mat3(0.4124, 0.2126, 0.0193,\n\
-0.3576, 0.7152, 0.1192,\n\
-0.1805, 0.0722, 0.9505);\n\
-vec3 xyz = RGB2XYZ * rgb;\n\
-vec3 Yxy;\n\
-Yxy.r = xyz.g;\n\
-float temp = dot(vec3(1.0), xyz);\n\
-Yxy.gb = xyz.rg / temp;\n\
-return Yxy;\n\
+    const mat3 RGB2XYZ = mat3(0.4124, 0.2126, 0.0193,\n\
+                              0.3576, 0.7152, 0.1192,\n\
+                              0.1805, 0.0722, 0.9505);\n\
+    vec3 xyz = RGB2XYZ * rgb;\n\
+    vec3 Yxy;\n\
+    Yxy.r = xyz.g;\n\
+    float temp = dot(vec3(1.0), xyz);\n\
+    Yxy.gb = xyz.rg / temp;\n\
+    return Yxy;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/saturation',[],function() {
     'use strict';
-    return "vec3 czm_saturation(vec3 rgb, float adjustment)\n\
+    return "/**\n\
+ * Adjusts the saturation of a color.\n\
+ * \n\
+ * @name czm_saturation\n\
+ * @glslFunction\n\
+ * \n\
+ * @param {vec3} rgb The color.\n\
+ * @param {float} adjustment The amount to adjust the saturation of the color.\n\
+ *\n\
+ * @returns {float} The color with the saturation adjusted.\n\
+ *\n\
+ * @example\n\
+ * vec3 greyScale = czm_saturation(color, 0.0);\n\
+ * vec3 doubleSaturation = czm_saturation(color, 2.0);\n\
+ */\n\
+vec3 czm_saturation(vec3 rgb, float adjustment)\n\
 {\n\
-const vec3 W = vec3(0.2125, 0.7154, 0.0721);\n\
-vec3 intensity = vec3(dot(rgb, W));\n\
-return mix(intensity, rgb, adjustment);\n\
+    // Algorithm from Chapter 16 of OpenGL Shading Language\n\
+    const vec3 W = vec3(0.2125, 0.7154, 0.0721);\n\
+    vec3 intensity = vec3(dot(rgb, W));\n\
+    return mix(intensity, rgb, adjustment);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/shadowDepthCompare',[],function() {
     'use strict';
-    return "float czm_sampleShadowMap(samplerCube shadowMap, vec3 d)\n\
+    return "\n\
+float czm_sampleShadowMap(samplerCube shadowMap, vec3 d)\n\
 {\n\
-return czm_unpackDepth(textureCube(shadowMap, d));\n\
+    return czm_unpackDepth(textureCube(shadowMap, d));\n\
 }\n\
+\n\
 float czm_sampleShadowMap(sampler2D shadowMap, vec2 uv)\n\
 {\n\
 #ifdef USE_SHADOW_DEPTH_TEXTURE\n\
-return texture2D(shadowMap, uv).r;\n\
+    return texture2D(shadowMap, uv).r;\n\
 #else\n\
-return czm_unpackDepth(texture2D(shadowMap, uv));\n\
+    return czm_unpackDepth(texture2D(shadowMap, uv));\n\
 #endif\n\
 }\n\
+\n\
 float czm_shadowDepthCompare(samplerCube shadowMap, vec3 uv, float depth)\n\
 {\n\
-return step(depth, czm_sampleShadowMap(shadowMap, uv));\n\
+    return step(depth, czm_sampleShadowMap(shadowMap, uv));\n\
 }\n\
+\n\
 float czm_shadowDepthCompare(sampler2D shadowMap, vec2 uv, float depth)\n\
 {\n\
-return step(depth, czm_sampleShadowMap(shadowMap, uv));\n\
+    return step(depth, czm_sampleShadowMap(shadowMap, uv));\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/shadowVisibility',[],function() {
     'use strict';
-    return "float czm_private_shadowVisibility(float visibility, float nDotL, float normalShadingSmooth, float darkness)\n\
+    return "\n\
+float czm_private_shadowVisibility(float visibility, float nDotL, float normalShadingSmooth, float darkness)\n\
 {\n\
 #ifdef USE_NORMAL_SHADING\n\
 #ifdef USE_NORMAL_SHADING_SMOOTH\n\
-float strength = clamp(nDotL / normalShadingSmooth, 0.0, 1.0);\n\
+    float strength = clamp(nDotL / normalShadingSmooth, 0.0, 1.0);\n\
 #else\n\
-float strength = step(0.0, nDotL);\n\
+    float strength = step(0.0, nDotL);\n\
 #endif\n\
-visibility *= strength;\n\
+    visibility *= strength;\n\
 #endif\n\
-visibility = max(visibility, darkness);\n\
-return visibility;\n\
+\n\
+    visibility = max(visibility, darkness);\n\
+    return visibility;\n\
 }\n\
+\n\
 #ifdef USE_CUBE_MAP_SHADOW\n\
 float czm_shadowVisibility(samplerCube shadowMap, czm_shadowParameters shadowParameters)\n\
 {\n\
-float depthBias = shadowParameters.depthBias;\n\
-float depth = shadowParameters.depth;\n\
-float nDotL = shadowParameters.nDotL;\n\
-float normalShadingSmooth = shadowParameters.normalShadingSmooth;\n\
-float darkness = shadowParameters.darkness;\n\
-vec3 uvw = shadowParameters.texCoords;\n\
-depth -= depthBias;\n\
-float visibility = czm_shadowDepthCompare(shadowMap, uvw, depth);\n\
-return czm_private_shadowVisibility(visibility, nDotL, normalShadingSmooth, darkness);\n\
+    float depthBias = shadowParameters.depthBias;\n\
+    float depth = shadowParameters.depth;\n\
+    float nDotL = shadowParameters.nDotL;\n\
+    float normalShadingSmooth = shadowParameters.normalShadingSmooth;\n\
+    float darkness = shadowParameters.darkness;\n\
+    vec3 uvw = shadowParameters.texCoords;\n\
+\n\
+    depth -= depthBias;\n\
+    float visibility = czm_shadowDepthCompare(shadowMap, uvw, depth);\n\
+    return czm_private_shadowVisibility(visibility, nDotL, normalShadingSmooth, darkness);\n\
 }\n\
 #else\n\
 float czm_shadowVisibility(sampler2D shadowMap, czm_shadowParameters shadowParameters)\n\
 {\n\
-float depthBias = shadowParameters.depthBias;\n\
-float depth = shadowParameters.depth;\n\
-float nDotL = shadowParameters.nDotL;\n\
-float normalShadingSmooth = shadowParameters.normalShadingSmooth;\n\
-float darkness = shadowParameters.darkness;\n\
-vec2 uv = shadowParameters.texCoords;\n\
-depth -= depthBias;\n\
+    float depthBias = shadowParameters.depthBias;\n\
+    float depth = shadowParameters.depth;\n\
+    float nDotL = shadowParameters.nDotL;\n\
+    float normalShadingSmooth = shadowParameters.normalShadingSmooth;\n\
+    float darkness = shadowParameters.darkness;\n\
+    vec2 uv = shadowParameters.texCoords;\n\
+\n\
+    depth -= depthBias;\n\
 #ifdef USE_SOFT_SHADOWS\n\
-vec2 texelStepSize = shadowParameters.texelStepSize;\n\
-float radius = 1.0;\n\
-float dx0 = -texelStepSize.x * radius;\n\
-float dy0 = -texelStepSize.y * radius;\n\
-float dx1 = texelStepSize.x * radius;\n\
-float dy1 = texelStepSize.y * radius;\n\
-float visibility = (\n\
-czm_shadowDepthCompare(shadowMap, uv, depth) +\n\
-czm_shadowDepthCompare(shadowMap, uv + vec2(dx0, dy0), depth) +\n\
-czm_shadowDepthCompare(shadowMap, uv + vec2(0.0, dy0), depth) +\n\
-czm_shadowDepthCompare(shadowMap, uv + vec2(dx1, dy0), depth) +\n\
-czm_shadowDepthCompare(shadowMap, uv + vec2(dx0, 0.0), depth) +\n\
-czm_shadowDepthCompare(shadowMap, uv + vec2(dx1, 0.0), depth) +\n\
-czm_shadowDepthCompare(shadowMap, uv + vec2(dx0, dy1), depth) +\n\
-czm_shadowDepthCompare(shadowMap, uv + vec2(0.0, dy1), depth) +\n\
-czm_shadowDepthCompare(shadowMap, uv + vec2(dx1, dy1), depth)\n\
-) * (1.0 / 9.0);\n\
+    vec2 texelStepSize = shadowParameters.texelStepSize;\n\
+    float radius = 1.0;\n\
+    float dx0 = -texelStepSize.x * radius;\n\
+    float dy0 = -texelStepSize.y * radius;\n\
+    float dx1 = texelStepSize.x * radius;\n\
+    float dy1 = texelStepSize.y * radius;\n\
+    float visibility = (\n\
+        czm_shadowDepthCompare(shadowMap, uv, depth) +\n\
+        czm_shadowDepthCompare(shadowMap, uv + vec2(dx0, dy0), depth) +\n\
+        czm_shadowDepthCompare(shadowMap, uv + vec2(0.0, dy0), depth) +\n\
+        czm_shadowDepthCompare(shadowMap, uv + vec2(dx1, dy0), depth) +\n\
+        czm_shadowDepthCompare(shadowMap, uv + vec2(dx0, 0.0), depth) +\n\
+        czm_shadowDepthCompare(shadowMap, uv + vec2(dx1, 0.0), depth) +\n\
+        czm_shadowDepthCompare(shadowMap, uv + vec2(dx0, dy1), depth) +\n\
+        czm_shadowDepthCompare(shadowMap, uv + vec2(0.0, dy1), depth) +\n\
+        czm_shadowDepthCompare(shadowMap, uv + vec2(dx1, dy1), depth)\n\
+    ) * (1.0 / 9.0);\n\
 #else\n\
-float visibility = czm_shadowDepthCompare(shadowMap, uv, depth);\n\
+    float visibility = czm_shadowDepthCompare(shadowMap, uv, depth);\n\
 #endif\n\
-return czm_private_shadowVisibility(visibility, nDotL, normalShadingSmooth, darkness);\n\
+\n\
+    return czm_private_shadowVisibility(visibility, nDotL, normalShadingSmooth, darkness);\n\
 }\n\
 #endif\n\
 ";
@@ -37866,35 +37871,64 @@ return czm_private_shadowVisibility(visibility, nDotL, normalShadingSmooth, dark
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/signNotZero',[],function() {
     'use strict';
-    return "float czm_signNotZero(float value)\n\
+    return "/**\n\
+ * Returns 1.0 if the given value is positive or zero, and -1.0 if it is negative.  This is similar to the GLSL\n\
+ * built-in function <code>sign</code> except that returns 1.0 instead of 0.0 when the input value is 0.0.\n\
+ * \n\
+ * @name czm_signNotZero\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {} value The value for which to determine the sign.\n\
+ * @returns {} 1.0 if the value is positive or zero, -1.0 if the value is negative.\n\
+ */\n\
+float czm_signNotZero(float value)\n\
 {\n\
-return value >= 0.0 ? 1.0 : -1.0;\n\
+    return value >= 0.0 ? 1.0 : -1.0;\n\
 }\n\
+\n\
 vec2 czm_signNotZero(vec2 value)\n\
 {\n\
-return vec2(czm_signNotZero(value.x), czm_signNotZero(value.y));\n\
+    return vec2(czm_signNotZero(value.x), czm_signNotZero(value.y));\n\
 }\n\
+\n\
 vec3 czm_signNotZero(vec3 value)\n\
 {\n\
-return vec3(czm_signNotZero(value.x), czm_signNotZero(value.y), czm_signNotZero(value.z));\n\
+    return vec3(czm_signNotZero(value.x), czm_signNotZero(value.y), czm_signNotZero(value.z));\n\
 }\n\
+\n\
 vec4 czm_signNotZero(vec4 value)\n\
 {\n\
-return vec4(czm_signNotZero(value.x), czm_signNotZero(value.y), czm_signNotZero(value.z), czm_signNotZero(value.w));\n\
+    return vec4(czm_signNotZero(value.x), czm_signNotZero(value.y), czm_signNotZero(value.z), czm_signNotZero(value.w));\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/tangentToEyeSpaceMatrix',[],function() {
     'use strict';
-    return "mat3 czm_tangentToEyeSpaceMatrix(vec3 normalEC, vec3 tangentEC, vec3 bitangentEC)\n\
+    return "/**\n\
+ * Creates a matrix that transforms vectors from tangent space to eye space.\n\
+ *\n\
+ * @name czm_tangentToEyeSpaceMatrix\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec3} normalEC The normal vector in eye coordinates.\n\
+ * @param {vec3} tangentEC The tangent vector in eye coordinates.\n\
+ * @param {vec3} bitangentEC The bitangent vector in eye coordinates.\n\
+ *\n\
+ * @returns {mat3} The matrix that transforms from tangent space to eye space.\n\
+ *\n\
+ * @example\n\
+ * mat3 tangentToEye = czm_tangentToEyeSpaceMatrix(normalEC, tangentEC, bitangentEC);\n\
+ * vec3 normal = tangentToEye * texture2D(normalMap, st).xyz;\n\
+ */\n\
+mat3 czm_tangentToEyeSpaceMatrix(vec3 normalEC, vec3 tangentEC, vec3 bitangentEC)\n\
 {\n\
-vec3 normal = normalize(normalEC);\n\
-vec3 tangent = normalize(tangentEC);\n\
-vec3 bitangent = normalize(bitangentEC);\n\
-return mat3(tangent.x  , tangent.y  , tangent.z,\n\
-bitangent.x, bitangent.y, bitangent.z,\n\
-normal.x   , normal.y   , normal.z);\n\
+    vec3 normal = normalize(normalEC);\n\
+    vec3 tangent = normalize(tangentEC);\n\
+    vec3 bitangent = normalize(bitangentEC);\n\
+    return mat3(tangent.x  , tangent.y  , tangent.z,\n\
+                bitangent.x, bitangent.y, bitangent.z,\n\
+                normal.x   , normal.y   , normal.z);\n\
 }\n\
 ";
 });
@@ -37902,80 +37936,163 @@ normal.x   , normal.y   , normal.z);\n\
 define('Shaders/Builtin/Functions/transformPlane',[],function() {
     'use strict';
     return "vec4 czm_transformPlane(vec4 clippingPlane, mat4 transform) {\n\
-vec3 transformedDirection = normalize((transform * vec4(clippingPlane.xyz, 0.0)).xyz);\n\
-vec3 transformedPosition = (transform * vec4(clippingPlane.xyz * -clippingPlane.w, 1.0)).xyz;\n\
-vec4 transformedPlane;\n\
-transformedPlane.xyz = transformedDirection;\n\
-transformedPlane.w = -dot(transformedDirection, transformedPosition);\n\
-return transformedPlane;\n\
+    vec3 transformedDirection = normalize((transform * vec4(clippingPlane.xyz, 0.0)).xyz);\n\
+    vec3 transformedPosition = (transform * vec4(clippingPlane.xyz * -clippingPlane.w, 1.0)).xyz;\n\
+    vec4 transformedPlane;\n\
+    transformedPlane.xyz = transformedDirection;\n\
+    transformedPlane.w = -dot(transformedDirection, transformedPosition);\n\
+    return transformedPlane;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/translateRelativeToEye',[],function() {
     'use strict';
-    return "vec4 czm_translateRelativeToEye(vec3 high, vec3 low)\n\
+    return "/**\n\
+ * Translates a position (or any <code>vec3</code>) that was encoded with {@link EncodedCartesian3},\n\
+ * and then provided to the shader as separate <code>high</code> and <code>low</code> bits to\n\
+ * be relative to the eye.  As shown in the example, the position can then be transformed in eye\n\
+ * or clip coordinates using {@link czm_modelViewRelativeToEye} or {@link czm_modelViewProjectionRelativeToEye},\n\
+ * respectively.\n\
+ * <p>\n\
+ * This technique, called GPU RTE, eliminates jittering artifacts when using large coordinates as\n\
+ * described in {@link http://blogs.agi.com/insight3d/index.php/2008/09/03/precisions-precisions/|Precisions, Precisions}.\n\
+ * </p>\n\
+ *\n\
+ * @name czm_translateRelativeToEye\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec3} high The position's high bits.\n\
+ * @param {vec3} low The position's low bits.\n\
+ * @returns {vec3} The position translated to be relative to the camera's position.\n\
+ *\n\
+ * @example\n\
+ * attribute vec3 positionHigh;\n\
+ * attribute vec3 positionLow;\n\
+ * \n\
+ * void main() \n\
+ * {\n\
+ *   vec4 p = czm_translateRelativeToEye(positionHigh, positionLow);\n\
+ *   gl_Position = czm_modelViewProjectionRelativeToEye * p;\n\
+ * }\n\
+ *\n\
+ * @see czm_modelViewRelativeToEye\n\
+ * @see czm_modelViewProjectionRelativeToEye\n\
+ * @see czm_computePosition\n\
+ * @see EncodedCartesian3\n\
+ */\n\
+vec4 czm_translateRelativeToEye(vec3 high, vec3 low)\n\
 {\n\
-vec3 highDifference = high - czm_encodedCameraPositionMCHigh;\n\
-vec3 lowDifference = low - czm_encodedCameraPositionMCLow;\n\
-return vec4(highDifference + lowDifference, 1.0);\n\
+    vec3 highDifference = high - czm_encodedCameraPositionMCHigh;\n\
+    vec3 lowDifference = low - czm_encodedCameraPositionMCLow;\n\
+\n\
+    return vec4(highDifference + lowDifference, 1.0);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/translucentPhong',[],function() {
     'use strict';
-    return "vec4 czm_translucentPhong(vec3 toEye, czm_material material)\n\
+    return "/**\n\
+ * @private\n\
+ */\n\
+vec4 czm_translucentPhong(vec3 toEye, czm_material material)\n\
 {\n\
-float diffuse = czm_getLambertDiffuse(vec3(0.0, 0.0, 1.0), material.normal);\n\
-if (czm_sceneMode == czm_sceneMode3D) {\n\
-diffuse += czm_getLambertDiffuse(vec3(0.0, 1.0, 0.0), material.normal);\n\
-}\n\
-diffuse = clamp(diffuse, 0.0, 1.0);\n\
-float specular = czm_getSpecular(czm_sunDirectionEC, toEye, material.normal, material.shininess);\n\
-specular += czm_getSpecular(czm_moonDirectionEC, toEye, material.normal, material.shininess);\n\
-vec3 materialDiffuse = material.diffuse * 0.5;\n\
-vec3 ambient = materialDiffuse;\n\
-vec3 color = ambient + material.emission;\n\
-color += materialDiffuse * diffuse;\n\
-color += material.specular * specular;\n\
-return vec4(color, material.alpha);\n\
+    // Diffuse from directional light sources at eye (for top-down and horizon views)\n\
+    float diffuse = czm_getLambertDiffuse(vec3(0.0, 0.0, 1.0), material.normal);\n\
+    \n\
+    if (czm_sceneMode == czm_sceneMode3D) {\n\
+        // (and horizon views in 3D)\n\
+        diffuse += czm_getLambertDiffuse(vec3(0.0, 1.0, 0.0), material.normal);\n\
+    }\n\
+    \n\
+    diffuse = clamp(diffuse, 0.0, 1.0);\n\
+\n\
+    // Specular from sun and pseudo-moon\n\
+    float specular = czm_getSpecular(czm_sunDirectionEC, toEye, material.normal, material.shininess);\n\
+    specular += czm_getSpecular(czm_moonDirectionEC, toEye, material.normal, material.shininess);\n\
+\n\
+    // Temporary workaround for adding ambient.\n\
+    vec3 materialDiffuse = material.diffuse * 0.5;\n\
+\n\
+    vec3 ambient = materialDiffuse;\n\
+    vec3 color = ambient + material.emission;\n\
+    color += materialDiffuse * diffuse;\n\
+    color += material.specular * specular;\n\
+\n\
+    return vec4(color, material.alpha);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/transpose',[],function() {
     'use strict';
-    return "mat2 czm_transpose(mat2 matrix)\n\
+    return "/**\n\
+ * Returns the transpose of the matrix.  The input <code>matrix</code> can be\n\
+ * a <code>mat2</code>, <code>mat3</code>, or <code>mat4</code>.\n\
+ *\n\
+ * @name czm_transpose\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {} matrix The matrix to transpose.\n\
+ *\n\
+ * @returns {} The transposed matrix.\n\
+ *\n\
+ * @example\n\
+ * // GLSL declarations\n\
+ * mat2 czm_transpose(mat2 matrix);\n\
+ * mat3 czm_transpose(mat3 matrix);\n\
+ * mat4 czm_transpose(mat4 matrix);\n\
+ *\n\
+ * // Transpose a 3x3 rotation matrix to find its inverse.\n\
+ * mat3 eastNorthUpToEye = czm_eastNorthUpToEyeCoordinates(\n\
+ *     positionMC, normalEC);\n\
+ * mat3 eyeToEastNorthUp = czm_transpose(eastNorthUpToEye);\n\
+ */\n\
+mat2 czm_transpose(mat2 matrix)\n\
 {\n\
-return mat2(\n\
-matrix[0][0], matrix[1][0],\n\
-matrix[0][1], matrix[1][1]);\n\
+    return mat2(\n\
+        matrix[0][0], matrix[1][0],\n\
+        matrix[0][1], matrix[1][1]);\n\
 }\n\
+\n\
 mat3 czm_transpose(mat3 matrix)\n\
 {\n\
-return mat3(\n\
-matrix[0][0], matrix[1][0], matrix[2][0],\n\
-matrix[0][1], matrix[1][1], matrix[2][1],\n\
-matrix[0][2], matrix[1][2], matrix[2][2]);\n\
+    return mat3(\n\
+        matrix[0][0], matrix[1][0], matrix[2][0],\n\
+        matrix[0][1], matrix[1][1], matrix[2][1],\n\
+        matrix[0][2], matrix[1][2], matrix[2][2]);\n\
 }\n\
+\n\
 mat4 czm_transpose(mat4 matrix)\n\
 {\n\
-return mat4(\n\
-matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0],\n\
-matrix[0][1], matrix[1][1], matrix[2][1], matrix[3][1],\n\
-matrix[0][2], matrix[1][2], matrix[2][2], matrix[3][2],\n\
-matrix[0][3], matrix[1][3], matrix[2][3], matrix[3][3]);\n\
+    return mat4(\n\
+        matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0],\n\
+        matrix[0][1], matrix[1][1], matrix[2][1], matrix[3][1],\n\
+        matrix[0][2], matrix[1][2], matrix[2][2], matrix[3][2],\n\
+        matrix[0][3], matrix[1][3], matrix[2][3], matrix[3][3]);\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/unpackDepth',[],function() {
     'use strict';
-    return "float czm_unpackDepth(vec4 packedDepth)\n\
-{\n\
-return dot(packedDepth, vec4(1.0, 1.0 / 255.0, 1.0 / 65025.0, 1.0 / 16581375.0));\n\
-}\n\
+    return "/**\n\
+ * Unpacks a vec4 depth value to a float in [0, 1) range.\n\
+ *\n\
+ * @name czm_unpackDepth\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec4} packedDepth The packed depth.\n\
+ *\n\
+ * @returns {float} The floating-point depth in [0, 1) range.\n\
+ */\n\
+ float czm_unpackDepth(vec4 packedDepth)\n\
+ {\n\
+    // See Aras Pranckevičius' post Encoding Floats to RGBA\n\
+    // http://aras-p.info/blog/2009/07/30/encoding-floats-to-rgba-the-final/\n\
+    return dot(packedDepth, vec4(1.0, 1.0 / 255.0, 1.0 / 65025.0, 1.0 / 16581375.0));\n\
+ }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
@@ -37984,20 +38101,32 @@ define('Shaders/Builtin/Functions/unpackFloat',[],function() {
     return "#define SHIFT_RIGHT_8 0.00390625 //1.0 / 256.0\n\
 #define SHIFT_RIGHT_16 0.00001525878 //1.0 / 65536.0\n\
 #define SHIFT_RIGHT_24 5.960464477539063e-8//1.0 / 16777216.0\n\
+\n\
 #define BIAS 38.0\n\
-float czm_unpackFloat(vec4 packedFloat)\n\
+\n\
+/**\n\
+ * Unpacks a vec4 value containing values expressable as uint8 to an arbitrary float.\n\
+ *\n\
+ * @name czm_unpackFloat\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec4} packedFloat The packed float.\n\
+ *\n\
+ * @returns {float} The floating-point depth in arbitrary range.\n\
+ */\n\
+ float czm_unpackFloat(vec4 packedFloat)\n\
 {\n\
-packedFloat *= 255.0;\n\
-float temp = packedFloat.w / 2.0;\n\
-float exponent = floor(temp);\n\
-float sign = (temp - exponent) * 2.0;\n\
-exponent = exponent - float(BIAS);\n\
-sign = sign * 2.0 - 1.0;\n\
-sign = -sign;\n\
-float unpacked = sign * packedFloat.x * float(SHIFT_RIGHT_8);\n\
-unpacked += sign * packedFloat.y * float(SHIFT_RIGHT_16);\n\
-unpacked += sign * packedFloat.z * float(SHIFT_RIGHT_24);\n\
-return unpacked * pow(10.0, exponent);\n\
+    packedFloat *= 255.0;\n\
+    float temp = packedFloat.w / 2.0;\n\
+    float exponent = floor(temp);\n\
+    float sign = (temp - exponent) * 2.0;\n\
+    exponent = exponent - float(BIAS);\n\
+    sign = sign * 2.0 - 1.0;\n\
+    sign = -sign;\n\
+    float unpacked = sign * packedFloat.x * float(SHIFT_RIGHT_8);\n\
+    unpacked += sign * packedFloat.y * float(SHIFT_RIGHT_16);\n\
+    unpacked += sign * packedFloat.z * float(SHIFT_RIGHT_24);\n\
+    return unpacked * pow(10.0, exponent);\n\
 }\n\
 ";
 });
@@ -38006,38 +38135,58 @@ define('Shaders/Builtin/Functions/vertexLogDepth',[],function() {
     'use strict';
     return "#ifdef LOG_DEPTH\n\
 varying float v_logZ;\n\
-#ifdef SHADOW_MAP\n\
 varying vec3 v_logPositionEC;\n\
 #endif\n\
-#endif\n\
+\n\
 void czm_updatePositionDepth() {\n\
 #if defined(LOG_DEPTH) && !defined(DISABLE_GL_POSITION_LOG_DEPTH)\n\
-vec3 logPositionEC = (czm_inverseProjection * gl_Position).xyz;\n\
-#ifdef SHADOW_MAP\n\
-v_logPositionEC = logPositionEC;\n\
-#endif\n\
+    v_logPositionEC = (czm_inverseProjection * gl_Position).xyz;\n\
+\n\
 #ifdef ENABLE_GL_POSITION_LOG_DEPTH_AT_HEIGHT\n\
-if (length(logPositionEC) < 2.0e6)\n\
-{\n\
-return;\n\
-}\n\
+    if (length(v_logPositionEC) < 2.0e6)\n\
+    {\n\
+        return;\n\
+    }\n\
 #endif\n\
-gl_Position.z = log2(max(1e-6, 1.0 + gl_Position.w)) * czm_log2FarDistance - 1.0;\n\
-gl_Position.z *= gl_Position.w;\n\
+\n\
+    gl_Position.z = log2(max(1e-6, 1.0 + gl_Position.w)) * czm_log2FarDistance - 1.0;\n\
+    gl_Position.z *= gl_Position.w;\n\
 #endif\n\
 }\n\
+\n\
+/**\n\
+ * Writes the logarithmic depth to gl_Position using the already computed gl_Position.\n\
+ *\n\
+ * @name czm_vertexLogDepth\n\
+ * @glslFunction\n\
+ */\n\
 void czm_vertexLogDepth()\n\
 {\n\
 #ifdef LOG_DEPTH\n\
-v_logZ = 1.0 + gl_Position.w;\n\
-czm_updatePositionDepth();\n\
+    v_logZ = 1.0 + gl_Position.w;\n\
+    czm_updatePositionDepth();\n\
 #endif\n\
 }\n\
+\n\
+/**\n\
+ * Writes the logarithmic depth to gl_Position using the provided clip coordinates.\n\
+ * <p>\n\
+ * An example use case for this function would be moving the vertex in window coordinates\n\
+ * before converting back to clip coordinates. Use the original vertex clip coordinates.\n\
+ * </p>\n\
+ * @name czm_vertexLogDepth\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec4} clipCoords The vertex in clip coordinates.\n\
+ *\n\
+ * @example\n\
+ * czm_vertexLogDepth(czm_projection * vec4(positionEyeCoordinates, 1.0));\n\
+ */\n\
 void czm_vertexLogDepth(vec4 clipCoords)\n\
 {\n\
 #ifdef LOG_DEPTH\n\
-v_logZ = 1.0 + clipCoords.w;\n\
-czm_updatePositionDepth();\n\
+    v_logZ = 1.0 + clipCoords.w;\n\
+    czm_updatePositionDepth();\n\
 #endif\n\
 }\n\
 ";
@@ -38045,59 +38194,126 @@ czm_updatePositionDepth();\n\
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/windowToEyeCoordinates',[],function() {
     'use strict';
-    return "vec4 czm_windowToEyeCoordinates(vec4 fragmentCoordinate)\n\
+    return "/**\n\
+ * Transforms a position from window to eye coordinates.\n\
+ * The transform from window to normalized device coordinates is done using components\n\
+ * of (@link czm_viewport} and {@link czm_viewportTransformation} instead of calculating\n\
+ * the inverse of <code>czm_viewportTransformation</code>. The transformation from\n\
+ * normalized device coordinates to clip coordinates is done using <code>positionWC.w</code>,\n\
+ * which is expected to be the scalar used in the perspective divide. The transformation\n\
+ * from clip to eye coordinates is done using {@link czm_inverseProjection}.\n\
+ *\n\
+ * @name czm_windowToEyeCoordinates\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec4} fragmentCoordinate The position in window coordinates to transform.\n\
+ *\n\
+ * @returns {vec4} The transformed position in eye coordinates.\n\
+ *\n\
+ * @see czm_modelToWindowCoordinates\n\
+ * @see czm_eyeToWindowCoordinates\n\
+ * @see czm_inverseProjection\n\
+ * @see czm_viewport\n\
+ * @see czm_viewportTransformation\n\
+ *\n\
+ * @example\n\
+ * vec4 positionEC = czm_windowToEyeCoordinates(gl_FragCoord);\n\
+ */\n\
+vec4 czm_windowToEyeCoordinates(vec4 fragmentCoordinate)\n\
 {\n\
-float x = 2.0 * (fragmentCoordinate.x - czm_viewport.x) / czm_viewport.z - 1.0;\n\
-float y = 2.0 * (fragmentCoordinate.y - czm_viewport.y) / czm_viewport.w - 1.0;\n\
-float z = (fragmentCoordinate.z - czm_viewportTransformation[3][2]) / czm_viewportTransformation[2][2];\n\
-vec4 q = vec4(x, y, z, 1.0);\n\
-q /= fragmentCoordinate.w;\n\
-if (!(czm_inverseProjection == mat4(0.0)))\n\
-{\n\
-q = czm_inverseProjection * q;\n\
+    float x = 2.0 * (fragmentCoordinate.x - czm_viewport.x) / czm_viewport.z - 1.0;\n\
+    float y = 2.0 * (fragmentCoordinate.y - czm_viewport.y) / czm_viewport.w - 1.0;\n\
+    float z = (fragmentCoordinate.z - czm_viewportTransformation[3][2]) / czm_viewportTransformation[2][2];\n\
+    vec4 q = vec4(x, y, z, 1.0);\n\
+    q /= fragmentCoordinate.w;\n\
+\n\
+    if (!(czm_inverseProjection == mat4(0.0))) // IE and Edge sometimes do something weird with != between mat4s\n\
+    {\n\
+        q = czm_inverseProjection * q;\n\
+    }\n\
+    else\n\
+    {\n\
+        float top = czm_frustumPlanes.x;\n\
+        float bottom = czm_frustumPlanes.y;\n\
+        float left = czm_frustumPlanes.z;\n\
+        float right = czm_frustumPlanes.w;\n\
+\n\
+        float near = czm_currentFrustum.x;\n\
+        float far = czm_currentFrustum.y;\n\
+\n\
+        q.x = (q.x * (right - left) + left + right) * 0.5;\n\
+        q.y = (q.y * (top - bottom) + bottom + top) * 0.5;\n\
+        q.z = (q.z * (near - far) - near - far) * 0.5;\n\
+        q.w = 1.0;\n\
+    }\n\
+\n\
+    return q;\n\
 }\n\
-else\n\
-{\n\
-float top = czm_frustumPlanes.x;\n\
-float bottom = czm_frustumPlanes.y;\n\
-float left = czm_frustumPlanes.z;\n\
-float right = czm_frustumPlanes.w;\n\
-float near = czm_currentFrustum.x;\n\
-float far = czm_currentFrustum.y;\n\
-q.x = (q.x * (right - left) + left + right) * 0.5;\n\
-q.y = (q.y * (top - bottom) + bottom + top) * 0.5;\n\
-q.z = (q.z * (near - far) - near - far) * 0.5;\n\
-q.w = 1.0;\n\
-}\n\
-return q;\n\
-}\n\
+\n\
+/**\n\
+ * Transforms a position given as window x/y and a depth or a log depth from window to eye coordinates.\n\
+ * This function produces more accurate results for window positions with log depth than\n\
+ * conventionally unpacking the log depth using czm_reverseLogDepth and using the standard version\n\
+ * of czm_windowToEyeCoordinates.\n\
+ *\n\
+ * @name czm_windowToEyeCoordinates\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {vec2} fragmentCoordinateXY The XY position in window coordinates to transform.\n\
+ * @param {float} depthOrLogDepth A depth or log depth for the fragment.\n\
+ *\n\
+ * @see czm_modelToWindowCoordinates\n\
+ * @see czm_eyeToWindowCoordinates\n\
+ * @see czm_inverseProjection\n\
+ * @see czm_viewport\n\
+ * @see czm_viewportTransformation\n\
+ *\n\
+ * @returns {vec4} The transformed position in eye coordinates.\n\
+ */\n\
 vec4 czm_windowToEyeCoordinates(vec2 fragmentCoordinateXY, float depthOrLogDepth)\n\
 {\n\
+    // See reverseLogDepth.glsl. This is separate to re-use the pow.\n\
 #ifdef LOG_DEPTH\n\
-float near = czm_currentFrustum.x;\n\
-float far = czm_currentFrustum.y;\n\
-float unscaledDepth = pow(2.0, depthOrLogDepth * czm_log2FarPlusOne) - 1.0;\n\
-vec4 windowCoord = vec4(fragmentCoordinateXY, far * (1.0 - near / unscaledDepth) / (far - near), 1.0);\n\
-vec4 eyeCoordinate = czm_windowToEyeCoordinates(windowCoord);\n\
-eyeCoordinate.w = 1.0 / unscaledDepth;\n\
+    float near = czm_currentFrustum.x;\n\
+    float far = czm_currentFrustum.y;\n\
+    float unscaledDepth = pow(2.0, depthOrLogDepth * czm_log2FarPlusOne) - 1.0;\n\
+    vec4 windowCoord = vec4(fragmentCoordinateXY, far * (1.0 - near / unscaledDepth) / (far - near), 1.0);\n\
+    vec4 eyeCoordinate = czm_windowToEyeCoordinates(windowCoord);\n\
+    eyeCoordinate.w = 1.0 / unscaledDepth; // Better precision\n\
 #else\n\
-vec4 windowCoord = vec4(fragmentCoordinateXY, depthOrLogDepth, 1.0);\n\
-vec4 eyeCoordinate = czm_windowToEyeCoordinates(windowCoord);\n\
+    vec4 windowCoord = vec4(fragmentCoordinateXY, depthOrLogDepth, 1.0);\n\
+    vec4 eyeCoordinate = czm_windowToEyeCoordinates(windowCoord);\n\
 #endif\n\
-return eyeCoordinate;\n\
+    return eyeCoordinate;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/writeDepthClampedToFarPlane',[],function() {
     'use strict';
-    return "#ifndef LOG_DEPTH\n\
+    return "// emulated noperspective\n\
+#ifndef LOG_DEPTH\n\
 varying float v_WindowZ;\n\
 #endif\n\
+/**\n\
+ * Clamps a vertex to the far plane by writing the fragments depth.\n\
+ * <p>\n\
+ * The shader must enable the GL_EXT_frag_depth extension.\n\
+ * </p>\n\
+ *\n\
+ * @name czm_writeDepthClampedToFarPlane\n\
+ * @glslFunction\n\
+ *\n\
+ * @example\n\
+ * gl_FragColor = color;\n\
+ * czm_writeDepthClampedToFarPlane();\n\
+ *\n\
+ * @see czm_depthClampFarPlane\n\
+ */\n\
 void czm_writeDepthClampedToFarPlane()\n\
 {\n\
 #if defined(GL_EXT_frag_depth) && !defined(LOG_DEPTH)\n\
-gl_FragDepthEXT = min(v_WindowZ * gl_FragCoord.w, 1.0);\n\
+    gl_FragDepthEXT = min(v_WindowZ * gl_FragCoord.w, 1.0);\n\
 #endif\n\
 }\n\
 ";
@@ -38108,20 +38324,45 @@ define('Shaders/Builtin/Functions/writeLogDepth',[],function() {
     return "#ifdef LOG_DEPTH\n\
 varying float v_logZ;\n\
 #endif\n\
+\n\
+/**\n\
+ * Writes the fragment depth to the logarithmic depth buffer.\n\
+ * <p>\n\
+ * Use this when the vertex shader does not calls {@link czm_vertexlogDepth}, for example, when\n\
+ * ray-casting geometry using a full screen quad.\n\
+ * </p>\n\
+ * @name czm_writeLogDepth\n\
+ * @glslFunction\n\
+ *\n\
+ * @param {float} logZ The w coordinate of the vertex in clip coordinates plus 1.0.\n\
+ *\n\
+ * @example\n\
+ * czm_writeLogDepth((czm_projection * v_positionEyeCoordinates).w + 1.0);\n\
+ */\n\
 void czm_writeLogDepth(float logZ)\n\
 {\n\
 #if defined(GL_EXT_frag_depth) && defined(LOG_DEPTH) && !defined(DISABLE_LOG_DEPTH_FRAGMENT_WRITE)\n\
-float halfLogFarDistance = czm_log2FarDistance * 0.5;\n\
-float depth = log2(logZ);\n\
-if (depth < czm_log2NearDistance) {\n\
-discard;\n\
-}\n\
-gl_FragDepthEXT = depth * halfLogFarDistance;\n\
+    float halfLogFarDistance = czm_log2FarDistance * 0.5;\n\
+    float depth = log2(logZ);\n\
+    if (depth < czm_log2NearDistance) {\n\
+        discard;\n\
+    }\n\
+    gl_FragDepthEXT = depth * halfLogFarDistance;\n\
 #endif\n\
 }\n\
+\n\
+/**\n\
+ * Writes the fragment depth to the logarithmic depth buffer.\n\
+ * <p>\n\
+ * Use this when the vertex shader calls {@link czm_vertexlogDepth}.\n\
+ * </p>\n\
+ *\n\
+ * @name czm_writeLogDepth\n\
+ * @glslFunction\n\
+ */\n\
 void czm_writeLogDepth() {\n\
 #ifdef LOG_DEPTH\n\
-czm_writeLogDepth(v_logZ);\n\
+    czm_writeLogDepth(v_logZ);\n\
 #endif\n\
 }\n\
 ";
@@ -38129,16 +38370,35 @@ czm_writeLogDepth(v_logZ);\n\
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Builtin/Functions/XYZToRGB',[],function() {
     'use strict';
-    return "vec3 czm_XYZToRGB(vec3 Yxy)\n\
+    return "/**\n\
+ * Converts a CIE Yxy color to RGB.\n\
+ * <p>The conversion is described in\n\
+ * {@link http://content.gpwiki.org/index.php/D3DBook:High-Dynamic_Range_Rendering#Luminance_Transform|Luminance Transform}\n\
+ * </p>\n\
+ * \n\
+ * @name czm_XYZToRGB\n\
+ * @glslFunction\n\
+ * \n\
+ * @param {vec3} Yxy The color in CIE Yxy.\n\
+ *\n\
+ * @returns {vec3} The color in RGB.\n\
+ *\n\
+ * @example\n\
+ * vec3 xyz = czm_RGBToXYZ(rgb);\n\
+ * xyz.x = max(xyz.x - luminanceThreshold, 0.0);\n\
+ * rgb = czm_XYZToRGB(xyz);\n\
+ */\n\
+vec3 czm_XYZToRGB(vec3 Yxy)\n\
 {\n\
-const mat3 XYZ2RGB = mat3( 3.2405, -0.9693,  0.0556,\n\
--1.5371,  1.8760, -0.2040,\n\
--0.4985,  0.0416,  1.0572);\n\
-vec3 xyz;\n\
-xyz.r = Yxy.r * Yxy.g / Yxy.b;\n\
-xyz.g = Yxy.r;\n\
-xyz.b = Yxy.r * (1.0 - Yxy.g - Yxy.b) / Yxy.b;\n\
-return XYZ2RGB * xyz;\n\
+    const mat3 XYZ2RGB = mat3( 3.2405, -0.9693,  0.0556,\n\
+                              -1.5371,  1.8760, -0.2040,\n\
+                              -0.4985,  0.0416,  1.0572);\n\
+    vec3 xyz;\n\
+    xyz.r = Yxy.r * Yxy.g / Yxy.b;\n\
+    xyz.g = Yxy.r;\n\
+    xyz.b = Yxy.r * (1.0 - Yxy.g - Yxy.b) / Yxy.b;\n\
+    \n\
+    return XYZ2RGB * xyz;\n\
 }\n\
 ";
 });
@@ -38608,13 +38868,6 @@ define('Renderer/ShaderSource',[
             }
         }
 
-                if (badNodes.length !== 0) {
-            var message = 'A circular dependency was found in the following built-in functions/structs/constants: \n';
-            for (var k = 0; k < badNodes.length; ++k) {
-                message = message + badNodes[k].name + '\n';
-            }
-            throw new DeveloperError(message);
-        }
             }
 
     function getBuiltinsAndAutomaticUniforms(shaderSource) {
@@ -38653,9 +38906,6 @@ define('Renderer/ShaderSource',[
         // Extract existing shader version from sources
         var version;
         combinedSources = combinedSources.replace(/#version\s+(.*?)\n/gm, function(match, group1) {
-                        if (defined(version) && version !== group1) {
-                throw new DeveloperError('inconsistent versions found: ' + version + ' and ' + group1);
-            }
             
             // Extract #version to put at the top
             version = group1;
@@ -38776,9 +39026,6 @@ define('Renderer/ShaderSource',[
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
         var pickColorQualifier = options.pickColorQualifier;
 
-                if (defined(pickColorQualifier) && pickColorQualifier !== 'uniform' && pickColorQualifier !== 'varying') {
-            throw new DeveloperError('options.pickColorQualifier must be \'uniform\' or \'varying\'.');
-        }
         
         this.defines = defined(options.defines) ? options.defines.slice(0) : [];
         this.sources = defined(options.sources) ? options.sources.slice(0) : [];
@@ -39461,12 +39708,6 @@ define('Core/VertexFormat',[
      * @returns {Number[]} The array that was packed into
      */
     VertexFormat.pack = function(value, array, startingIndex) {
-                if (!defined(value)) {
-            throw new DeveloperError('value is required');
-        }
-        if (!defined(array)) {
-            throw new DeveloperError('array is required');
-        }
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -39489,9 +39730,6 @@ define('Core/VertexFormat',[
      * @returns {VertexFormat} The modified result parameter or a new VertexFormat instance if one was not provided.
      */
     VertexFormat.unpack = function(array, startingIndex, result) {
-                if (!defined(array)) {
-            throw new DeveloperError('array is required');
-        }
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -39539,9 +39777,10 @@ define('Core/VertexFormat',[
 define('Shaders/Appearances/PerInstanceFlatColorAppearanceFS',[],function() {
     'use strict';
     return "varying vec4 v_color;\n\
+\n\
 void main()\n\
 {\n\
-gl_FragColor = v_color;\n\
+    gl_FragColor = v_color;\n\
 }\n\
 ";
 });
@@ -39557,21 +39796,27 @@ attribute vec3 nextPosition3DLow;\n\
 attribute vec2 expandAndWidth;\n\
 attribute vec4 color;\n\
 attribute float batchId;\n\
+\n\
 varying vec4 v_color;\n\
+\n\
 void main()\n\
 {\n\
-float expandDir = expandAndWidth.x;\n\
-float width = abs(expandAndWidth.y) + 0.5;\n\
-bool usePrev = expandAndWidth.y < 0.0;\n\
-vec4 p = czm_computePosition();\n\
-vec4 prev = czm_computePrevPosition();\n\
-vec4 next = czm_computeNextPosition();\n\
-v_color = color;\n\
-float angle;\n\
-vec4 positionWC = getPolylineWindowCoordinates(p, prev, next, expandDir, width, usePrev, angle);\n\
-gl_Position = czm_viewportOrthographic * positionWC;\n\
+    float expandDir = expandAndWidth.x;\n\
+    float width = abs(expandAndWidth.y) + 0.5;\n\
+    bool usePrev = expandAndWidth.y < 0.0;\n\
+\n\
+    vec4 p = czm_computePosition();\n\
+    vec4 prev = czm_computePrevPosition();\n\
+    vec4 next = czm_computeNextPosition();\n\
+\n\
+    v_color = color;\n\
+\n\
+    float angle;\n\
+    vec4 positionWC = getPolylineWindowCoordinates(p, prev, next, expandDir, width, usePrev, angle);\n\
+    gl_Position = czm_viewportOrthographic * positionWC;\n\
+\n\
 #ifdef LOG_DEPTH\n\
-czm_vertexLogDepth(czm_modelViewProjectionRelativeToEye * p);\n\
+    czm_vertexLogDepth(czm_modelViewProjectionRelativeToEye * p);\n\
 #endif\n\
 }\n\
 ";
@@ -39580,95 +39825,120 @@ czm_vertexLogDepth(czm_modelViewProjectionRelativeToEye * p);\n\
 define('Shaders/PolylineCommon',[],function() {
     'use strict';
     return "void clipLineSegmentToNearPlane(\n\
-vec3 p0,\n\
-vec3 p1,\n\
-out vec4 positionWC,\n\
-out bool clipped,\n\
-out bool culledByNearPlane)\n\
+    vec3 p0,\n\
+    vec3 p1,\n\
+    out vec4 positionWC,\n\
+    out bool clipped,\n\
+    out bool culledByNearPlane)\n\
 {\n\
-culledByNearPlane = false;\n\
-clipped = false;\n\
-vec3 p1ToP0 = p1 - p0;\n\
-float magnitude = length(p1ToP0);\n\
-vec3 direction = normalize(p1ToP0);\n\
-float endPoint0Distance =  -(czm_currentFrustum.x + p0.z);\n\
-float denominator = -direction.z;\n\
-if (endPoint0Distance < 0.0 && abs(denominator) < czm_epsilon7)\n\
-{\n\
-culledByNearPlane = true;\n\
+    culledByNearPlane = false;\n\
+    clipped = false;\n\
+\n\
+    vec3 p1ToP0 = p1 - p0;\n\
+    float magnitude = length(p1ToP0);\n\
+    vec3 direction = normalize(p1ToP0);\n\
+    float endPoint0Distance =  -(czm_currentFrustum.x + p0.z);\n\
+    float denominator = -direction.z;\n\
+\n\
+    if (endPoint0Distance < 0.0 && abs(denominator) < czm_epsilon7)\n\
+    {\n\
+        culledByNearPlane = true;\n\
+    }\n\
+    else if (endPoint0Distance < 0.0 && abs(denominator) > czm_epsilon7)\n\
+    {\n\
+        // t = (-plane distance - dot(plane normal, ray origin)) / dot(plane normal, ray direction)\n\
+        float t = (czm_currentFrustum.x + p0.z) / denominator;\n\
+        if (t < 0.0 || t > magnitude)\n\
+        {\n\
+            culledByNearPlane = true;\n\
+        }\n\
+        else\n\
+        {\n\
+            p0 = p0 + t * direction;\n\
+            clipped = true;\n\
+        }\n\
+    }\n\
+\n\
+    positionWC = czm_eyeToWindowCoordinates(vec4(p0, 1.0));\n\
 }\n\
-else if (endPoint0Distance < 0.0 && abs(denominator) > czm_epsilon7)\n\
-{\n\
-float t = (czm_currentFrustum.x + p0.z) / denominator;\n\
-if (t < 0.0 || t > magnitude)\n\
-{\n\
-culledByNearPlane = true;\n\
-}\n\
-else\n\
-{\n\
-p0 = p0 + t * direction;\n\
-clipped = true;\n\
-}\n\
-}\n\
-positionWC = czm_eyeToWindowCoordinates(vec4(p0, 1.0));\n\
-}\n\
+\n\
 vec4 getPolylineWindowCoordinatesEC(vec4 positionEC, vec4 prevEC, vec4 nextEC, float expandDirection, float width, bool usePrevious, out float angle)\n\
 {\n\
-vec4 endPointWC, p0, p1;\n\
-bool culledByNearPlane, clipped;\n\
+    vec4 endPointWC, p0, p1;\n\
+    bool culledByNearPlane, clipped;\n\
+\n\
 #ifdef POLYLINE_DASH\n\
-vec4 positionWindow = czm_eyeToWindowCoordinates(positionEC);\n\
-vec4 previousWindow = czm_eyeToWindowCoordinates(prevEC);\n\
-vec4 nextWindow = czm_eyeToWindowCoordinates(nextEC);\n\
-vec2 lineDir;\n\
-if (usePrevious) {\n\
-lineDir = normalize(positionWindow.xy - previousWindow.xy);\n\
-}\n\
-else {\n\
-lineDir = normalize(nextWindow.xy - positionWindow.xy);\n\
-}\n\
-angle = atan(lineDir.x, lineDir.y) - 1.570796327;\n\
-angle = floor(angle / czm_piOverFour + 0.5) * czm_piOverFour;\n\
+    // Compute the window coordinates of the points.\n\
+    vec4 positionWindow = czm_eyeToWindowCoordinates(positionEC);\n\
+    vec4 previousWindow = czm_eyeToWindowCoordinates(prevEC);\n\
+    vec4 nextWindow = czm_eyeToWindowCoordinates(nextEC);\n\
+\n\
+    // Determine the relative screen space direction of the line.\n\
+    vec2 lineDir;\n\
+    if (usePrevious) {\n\
+        lineDir = normalize(positionWindow.xy - previousWindow.xy);\n\
+    }\n\
+    else {\n\
+        lineDir = normalize(nextWindow.xy - positionWindow.xy);\n\
+    }\n\
+    angle = atan(lineDir.x, lineDir.y) - 1.570796327; // precomputed atan(1,0)\n\
+\n\
+    // Quantize the angle so it doesn't change rapidly between segments.\n\
+    angle = floor(angle / czm_piOverFour + 0.5) * czm_piOverFour;\n\
 #endif\n\
-clipLineSegmentToNearPlane(prevEC.xyz, positionEC.xyz, p0, clipped, culledByNearPlane);\n\
-clipLineSegmentToNearPlane(nextEC.xyz, positionEC.xyz, p1, clipped, culledByNearPlane);\n\
-clipLineSegmentToNearPlane(positionEC.xyz, usePrevious ? prevEC.xyz : nextEC.xyz, endPointWC, clipped, culledByNearPlane);\n\
-if (culledByNearPlane)\n\
-{\n\
-return vec4(0.0, 0.0, 0.0, 1.0);\n\
+\n\
+    clipLineSegmentToNearPlane(prevEC.xyz, positionEC.xyz, p0, clipped, culledByNearPlane);\n\
+    clipLineSegmentToNearPlane(nextEC.xyz, positionEC.xyz, p1, clipped, culledByNearPlane);\n\
+    clipLineSegmentToNearPlane(positionEC.xyz, usePrevious ? prevEC.xyz : nextEC.xyz, endPointWC, clipped, culledByNearPlane);\n\
+\n\
+    if (culledByNearPlane)\n\
+    {\n\
+        return vec4(0.0, 0.0, 0.0, 1.0);\n\
+    }\n\
+\n\
+    vec2 prevWC = normalize(p0.xy - endPointWC.xy);\n\
+    vec2 nextWC = normalize(p1.xy - endPointWC.xy);\n\
+\n\
+    float expandWidth = width * 0.5;\n\
+    vec2 direction;\n\
+\n\
+    if (czm_equalsEpsilon(prevEC.xyz - positionEC.xyz, vec3(0.0), czm_epsilon1) || czm_equalsEpsilon(prevWC, -nextWC, czm_epsilon1))\n\
+    {\n\
+        direction = vec2(-nextWC.y, nextWC.x);\n\
+    }\n\
+    else if (czm_equalsEpsilon(nextEC.xyz - positionEC.xyz, vec3(0.0), czm_epsilon1) || clipped)\n\
+    {\n\
+        direction = vec2(prevWC.y, -prevWC.x);\n\
+    }\n\
+    else\n\
+    {\n\
+        vec2 normal = vec2(-nextWC.y, nextWC.x);\n\
+        direction = normalize((nextWC + prevWC) * 0.5);\n\
+        if (dot(direction, normal) < 0.0)\n\
+        {\n\
+            direction = -direction;\n\
+        }\n\
+\n\
+        // The sine of the angle between the two vectors is given by the formula\n\
+        //         |a x b| = |a||b|sin(theta)\n\
+        // which is\n\
+        //     float sinAngle = length(cross(vec3(direction, 0.0), vec3(nextWC, 0.0)));\n\
+        // Because the z components of both vectors are zero, the x and y coordinate will be zero.\n\
+        // Therefore, the sine of the angle is just the z component of the cross product.\n\
+        float sinAngle = abs(direction.x * nextWC.y - direction.y * nextWC.x);\n\
+        expandWidth = clamp(expandWidth / sinAngle, 0.0, width * 2.0);\n\
+    }\n\
+\n\
+    vec2 offset = direction * expandDirection * expandWidth * czm_resolutionScale;\n\
+    return vec4(endPointWC.xy + offset, -endPointWC.z, 1.0);\n\
 }\n\
-vec2 prevWC = normalize(p0.xy - endPointWC.xy);\n\
-vec2 nextWC = normalize(p1.xy - endPointWC.xy);\n\
-float expandWidth = width * 0.5;\n\
-vec2 direction;\n\
-if (czm_equalsEpsilon(prevEC.xyz - positionEC.xyz, vec3(0.0), czm_epsilon1) || czm_equalsEpsilon(prevWC, -nextWC, czm_epsilon1))\n\
-{\n\
-direction = vec2(-nextWC.y, nextWC.x);\n\
-}\n\
-else if (czm_equalsEpsilon(nextEC.xyz - positionEC.xyz, vec3(0.0), czm_epsilon1) || clipped)\n\
-{\n\
-direction = vec2(prevWC.y, -prevWC.x);\n\
-}\n\
-else\n\
-{\n\
-vec2 normal = vec2(-nextWC.y, nextWC.x);\n\
-direction = normalize((nextWC + prevWC) * 0.5);\n\
-if (dot(direction, normal) < 0.0)\n\
-{\n\
-direction = -direction;\n\
-}\n\
-float sinAngle = abs(direction.x * nextWC.y - direction.y * nextWC.x);\n\
-expandWidth = clamp(expandWidth / sinAngle, 0.0, width * 2.0);\n\
-}\n\
-vec2 offset = direction * expandDirection * expandWidth * czm_resolutionScale;\n\
-return vec4(endPointWC.xy + offset, -endPointWC.z, 1.0);\n\
-}\n\
+\n\
 vec4 getPolylineWindowCoordinates(vec4 position, vec4 previous, vec4 next, float expandDirection, float width, bool usePrevious, out float angle)\n\
 {\n\
-vec4 positionEC = czm_modelViewRelativeToEye * position;\n\
-vec4 prevEC = czm_modelViewRelativeToEye * previous;\n\
-vec4 nextEC = czm_modelViewRelativeToEye * next;\n\
-return getPolylineWindowCoordinatesEC(positionEC, prevEC, nextEC, expandDirection, width, usePrevious, angle);\n\
+    vec4 positionEC = czm_modelViewRelativeToEye * position;\n\
+    vec4 prevEC = czm_modelViewRelativeToEye * previous;\n\
+    vec4 nextEC = czm_modelViewRelativeToEye * next;\n\
+    return getPolylineWindowCoordinatesEC(positionEC, prevEC, nextEC, expandDirection, width, usePrevious, angle);\n\
 }\n\
 ";
 });
@@ -40119,23 +40389,29 @@ attribute vec3 nextPosition3DLow;\n\
 attribute vec2 expandAndWidth;\n\
 attribute vec2 st;\n\
 attribute float batchId;\n\
+\n\
 varying float v_width;\n\
 varying vec2 v_st;\n\
 varying float v_polylineAngle;\n\
+\n\
 void main()\n\
 {\n\
-float expandDir = expandAndWidth.x;\n\
-float width = abs(expandAndWidth.y) + 0.5;\n\
-bool usePrev = expandAndWidth.y < 0.0;\n\
-vec4 p = czm_computePosition();\n\
-vec4 prev = czm_computePrevPosition();\n\
-vec4 next = czm_computeNextPosition();\n\
-v_width = width;\n\
-v_st = st;\n\
-vec4 positionWC = getPolylineWindowCoordinates(p, prev, next, expandDir, width, usePrev, v_polylineAngle);\n\
-gl_Position = czm_viewportOrthographic * positionWC;\n\
+    float expandDir = expandAndWidth.x;\n\
+    float width = abs(expandAndWidth.y) + 0.5;\n\
+    bool usePrev = expandAndWidth.y < 0.0;\n\
+\n\
+    vec4 p = czm_computePosition();\n\
+    vec4 prev = czm_computePrevPosition();\n\
+    vec4 next = czm_computeNextPosition();\n\
+\n\
+    v_width = width;\n\
+    v_st = st;\n\
+\n\
+    vec4 positionWC = getPolylineWindowCoordinates(p, prev, next, expandDir, width, usePrev, v_polylineAngle);\n\
+    gl_Position = czm_viewportOrthographic * positionWC;\n\
+\n\
 #ifdef LOG_DEPTH\n\
-czm_vertexLogDepth(czm_modelViewProjectionRelativeToEye * p);\n\
+    czm_vertexLogDepth(czm_modelViewProjectionRelativeToEye * p);\n\
 #endif\n\
 }\n\
 ";
@@ -40146,19 +40422,24 @@ define('Shaders/PolylineFS',[],function() {
     return "#ifdef VECTOR_TILE\n\
 uniform vec4 u_highlightColor;\n\
 #endif\n\
+\n\
 varying vec2 v_st;\n\
+\n\
 void main()\n\
 {\n\
-czm_materialInput materialInput;\n\
-materialInput.s = v_st.s;\n\
-materialInput.st = v_st;\n\
-materialInput.str = vec3(v_st, 0.0);\n\
-czm_material material = czm_getMaterial(materialInput);\n\
-gl_FragColor = vec4(material.diffuse + material.emission, material.alpha);\n\
+    czm_materialInput materialInput;\n\
+\n\
+    materialInput.s = v_st.s;\n\
+    materialInput.st = v_st;\n\
+    materialInput.str = vec3(v_st, 0.0);\n\
+\n\
+    czm_material material = czm_getMaterial(materialInput);\n\
+    gl_FragColor = vec4(material.diffuse + material.emission, material.alpha);\n\
 #ifdef VECTOR_TILE\n\
-gl_FragColor *= u_highlightColor;\n\
+    gl_FragColor *= u_highlightColor;\n\
 #endif\n\
-czm_writeLogDepth();\n\
+\n\
+    czm_writeLogDepth();\n\
 }\n\
 ";
 });
@@ -40704,9 +40985,6 @@ define('Core/loadCRN',[
      * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
     function loadCRN(resourceOrUrlOrBuffer) {
-                if (!defined(resourceOrUrlOrBuffer)) {
-            throw new DeveloperError('resourceOrUrlOrBuffer is required.');
-        }
         
         var loadPromise;
         if (resourceOrUrlOrBuffer instanceof ArrayBuffer || ArrayBuffer.isView(resourceOrUrlOrBuffer)) {
@@ -41204,7 +41482,6 @@ define('Core/loadKTX',[
      * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
     function loadKTX(resourceOrUrlOrBuffer) {
-                Check.defined('resourceOrUrlOrBuffer', resourceOrUrlOrBuffer);
         
         var loadPromise;
         if (resourceOrUrlOrBuffer instanceof ArrayBuffer || ArrayBuffer.isView(resourceOrUrlOrBuffer)) {
@@ -41435,15 +41712,6 @@ define('Renderer/CubeMapFace',[
         xOffset = defaultValue(xOffset, 0);
         yOffset = defaultValue(yOffset, 0);
 
-                Check.defined('source', source);
-        Check.typeOf.number.greaterThanOrEquals('xOffset', xOffset, 0);
-        Check.typeOf.number.greaterThanOrEquals('yOffset', yOffset, 0);
-        if (xOffset + source.width > this._size) {
-            throw new DeveloperError('xOffset + source.width must be less than or equal to width.');
-        }
-        if (yOffset + source.height > this._size) {
-            throw new DeveloperError('yOffset + source.height must be less than or equal to height.');
-        }
         
         var gl = this._gl;
         var target = this._textureTarget;
@@ -41551,22 +41819,6 @@ define('Renderer/CubeMapFace',[
         width = defaultValue(width, this._size);
         height = defaultValue(height, this._size);
 
-                Check.typeOf.number.greaterThanOrEquals('xOffset', xOffset, 0);
-        Check.typeOf.number.greaterThanOrEquals('yOffset', yOffset, 0);
-        Check.typeOf.number.greaterThanOrEquals('framebufferXOffset', framebufferXOffset, 0);
-        Check.typeOf.number.greaterThanOrEquals('framebufferYOffset', framebufferYOffset, 0);
-        if (xOffset + width > this._size) {
-            throw new DeveloperError('xOffset + source.width must be less than or equal to width.');
-        }
-        if (yOffset + height > this._size) {
-            throw new DeveloperError('yOffset + source.height must be less than or equal to height.');
-        }
-        if (this._pixelDatatype === PixelDatatype.FLOAT) {
-            throw new DeveloperError('Cannot call copyFromFramebuffer when the texture pixel data type is FLOAT.');
-        }
-        if (this._pixelDatatype === PixelDatatype.HALF_FLOAT) {
-            throw new DeveloperError('Cannot call copyFromFramebuffer when the texture pixel data type is HALF_FLOAT.');
-        }
         
         var gl = this._gl;
         var target = this._textureTarget;
@@ -41810,23 +42062,6 @@ define('Renderer/Sampler',[
         var magnificationFilter = defaultValue(options.magnificationFilter, TextureMagnificationFilter.LINEAR);
         var maximumAnisotropy = (defined(options.maximumAnisotropy)) ? options.maximumAnisotropy : 1.0;
 
-                if (!TextureWrap.validate(wrapS)) {
-            throw new DeveloperError('Invalid sampler.wrapS.');
-        }
-
-        if (!TextureWrap.validate(wrapT)) {
-            throw new DeveloperError('Invalid sampler.wrapT.');
-        }
-
-        if (!TextureMinificationFilter.validate(minificationFilter)) {
-            throw new DeveloperError('Invalid sampler.minificationFilter.');
-        }
-
-        if (!TextureMagnificationFilter.validate(magnificationFilter)) {
-            throw new DeveloperError('Invalid sampler.magnificationFilter.');
-        }
-
-        Check.typeOf.number.greaterThanOrEquals('maximumAnisotropy', maximumAnisotropy, 1.0);
         
         this._wrapS = wrapS;
         this._wrapT = wrapT;
@@ -41914,7 +42149,6 @@ define('Renderer/CubeMap',[
     function CubeMap(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                Check.defined('options.context', options.context);
         
         var context = options.context;
         var source = options.source;
@@ -41924,18 +42158,10 @@ define('Renderer/CubeMap',[
         if (defined(source)) {
             var faces = [source.positiveX, source.negativeX, source.positiveY, source.negativeY, source.positiveZ, source.negativeZ];
 
-                        if (!faces[0] || !faces[1] || !faces[2] || !faces[3] || !faces[4] || !faces[5]) {
-                throw new DeveloperError('options.source requires positiveX, negativeX, positiveY, negativeY, positiveZ, and negativeZ faces.');
-            }
             
             width = faces[0].width;
             height = faces[0].height;
 
-                        for ( var i = 1; i < 6; ++i) {
-                if ((Number(faces[i].width) !== width) || (Number(faces[i].height) !== height)) {
-                    throw new DeveloperError('Each face in options.source must have the same width and height.');
-                }
-            }
                     } else {
             width = options.width;
             height = options.height;
@@ -41945,41 +42171,6 @@ define('Renderer/CubeMap',[
         var pixelFormat = defaultValue(options.pixelFormat, PixelFormat.RGBA);
         var pixelDatatype = defaultValue(options.pixelDatatype, PixelDatatype.UNSIGNED_BYTE);
 
-                if (!defined(width) || !defined(height)) {
-            throw new DeveloperError('options requires a source field to create an initialized cube map or width and height fields to create a blank cube map.');
-        }
-
-        if (width !== height) {
-            throw new DeveloperError('Width must equal height.');
-        }
-
-        if (size <= 0) {
-            throw new DeveloperError('Width and height must be greater than zero.');
-        }
-
-        if (size > ContextLimits.maximumCubeMapSize) {
-            throw new DeveloperError('Width and height must be less than or equal to the maximum cube map size (' + ContextLimits.maximumCubeMapSize + ').  Check maximumCubeMapSize.');
-        }
-
-        if (!PixelFormat.validate(pixelFormat)) {
-            throw new DeveloperError('Invalid options.pixelFormat.');
-        }
-
-        if (PixelFormat.isDepthFormat(pixelFormat)) {
-            throw new DeveloperError('options.pixelFormat cannot be DEPTH_COMPONENT or DEPTH_STENCIL.');
-        }
-
-        if (!PixelDatatype.validate(pixelDatatype)) {
-            throw new DeveloperError('Invalid options.pixelDatatype.');
-        }
-
-        if ((pixelDatatype === PixelDatatype.FLOAT) && !context.floatingPointTexture) {
-            throw new DeveloperError('When options.pixelDatatype is FLOAT, this WebGL implementation must support the OES_texture_float extension.');
-        }
-
-        if ((pixelDatatype === PixelDatatype.HALF_FLOAT) && !context.halfFloatingPointTexture) {
-            throw new DeveloperError('When options.pixelDatatype is HALF_FLOAT, this WebGL implementation must support the OES_texture_half_float extension.');
-        }
         
         var sizeInBytes = PixelFormat.textureSizeInBytes(pixelFormat, pixelDatatype, size, size) * 6;
 
@@ -42192,12 +42383,6 @@ define('Renderer/CubeMap',[
     CubeMap.prototype.generateMipmap = function(hint) {
         hint = defaultValue(hint, MipmapHint.DONT_CARE);
 
-                if ((this._size > 1) && !CesiumMath.isPowerOfTwo(this._size)) {
-            throw new DeveloperError('width and height must be a power of two to call generateMipmap().');
-        }
-        if (!MipmapHint.validate(hint)) {
-            throw new DeveloperError('hint is invalid.');
-        }
         
         this._hasMipmap = true;
 
@@ -42269,7 +42454,6 @@ define('Renderer/Texture',[
     function Texture(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                Check.defined('options.context', options.context);
         
         var context = options.context;
         var width = options.width;
@@ -42335,74 +42519,6 @@ define('Renderer/Texture',[
             }
         }
 
-                if (!defined(width) || !defined(height)) {
-            throw new DeveloperError('options requires a source field to create an initialized texture or width and height fields to create a blank texture.');
-        }
-
-        Check.typeOf.number.greaterThan('width', width, 0);
-
-        if (width > ContextLimits.maximumTextureSize) {
-            throw new DeveloperError('Width must be less than or equal to the maximum texture size (' + ContextLimits.maximumTextureSize + ').  Check maximumTextureSize.');
-        }
-
-        Check.typeOf.number.greaterThan('height', height, 0);
-
-        if (height > ContextLimits.maximumTextureSize) {
-            throw new DeveloperError('Height must be less than or equal to the maximum texture size (' + ContextLimits.maximumTextureSize + ').  Check maximumTextureSize.');
-        }
-
-        if (!PixelFormat.validate(pixelFormat)) {
-            throw new DeveloperError('Invalid options.pixelFormat.');
-        }
-
-        if (!isCompressed && !PixelDatatype.validate(pixelDatatype)) {
-            throw new DeveloperError('Invalid options.pixelDatatype.');
-        }
-
-        if ((pixelFormat === PixelFormat.DEPTH_COMPONENT) &&
-            ((pixelDatatype !== PixelDatatype.UNSIGNED_SHORT) && (pixelDatatype !== PixelDatatype.UNSIGNED_INT))) {
-            throw new DeveloperError('When options.pixelFormat is DEPTH_COMPONENT, options.pixelDatatype must be UNSIGNED_SHORT or UNSIGNED_INT.');
-        }
-
-        if ((pixelFormat === PixelFormat.DEPTH_STENCIL) && (pixelDatatype !== PixelDatatype.UNSIGNED_INT_24_8)) {
-            throw new DeveloperError('When options.pixelFormat is DEPTH_STENCIL, options.pixelDatatype must be UNSIGNED_INT_24_8.');
-        }
-
-        if ((pixelDatatype === PixelDatatype.FLOAT) && !context.floatingPointTexture) {
-            throw new DeveloperError('When options.pixelDatatype is FLOAT, this WebGL implementation must support the OES_texture_float extension.  Check context.floatingPointTexture.');
-        }
-
-        if ((pixelDatatype === PixelDatatype.HALF_FLOAT) && !context.halfFloatingPointTexture) {
-            throw new DeveloperError('When options.pixelDatatype is HALF_FLOAT, this WebGL implementation must support the OES_texture_half_float extension. Check context.halfFloatingPointTexture.');
-        }
-
-        if (PixelFormat.isDepthFormat(pixelFormat)) {
-            if (defined(source)) {
-                throw new DeveloperError('When options.pixelFormat is DEPTH_COMPONENT or DEPTH_STENCIL, source cannot be provided.');
-            }
-
-            if (!context.depthTexture) {
-                throw new DeveloperError('When options.pixelFormat is DEPTH_COMPONENT or DEPTH_STENCIL, this WebGL implementation must support WEBGL_depth_texture.  Check context.depthTexture.');
-            }
-        }
-
-        if (isCompressed) {
-            if (!defined(source) || !defined(source.arrayBufferView)) {
-                throw new DeveloperError('When options.pixelFormat is compressed, options.source.arrayBufferView must be defined.');
-            }
-
-            if (PixelFormat.isDXTFormat(internalFormat) && !context.s3tc) {
-                throw new DeveloperError('When options.pixelFormat is S3TC compressed, this WebGL implementation must support the WEBGL_texture_compression_s3tc extension. Check context.s3tc.');
-            } else if (PixelFormat.isPVRTCFormat(internalFormat) && !context.pvrtc) {
-                throw new DeveloperError('When options.pixelFormat is PVRTC compressed, this WebGL implementation must support the WEBGL_texture_compression_pvrtc extension. Check context.pvrtc.');
-            } else if (PixelFormat.isETC1Format(internalFormat) && !context.etc1) {
-                throw new DeveloperError('When options.pixelFormat is ETC1 compressed, this WebGL implementation must support the WEBGL_texture_compression_etc1 extension. Check context.etc1.');
-            }
-
-            if (PixelFormat.compressedTextureSizeInBytes(internalFormat, width, height) !== source.arrayBufferView.byteLength) {
-                throw new DeveloperError('The byte length of the array buffer is invalid for the compressed texture with the given width and height.');
-            }
-        }
         
         // Use premultiplied alpha for opaque textures should perform better on Chrome:
         // http://media.tojicode.com/webglCamp4/#20
@@ -42526,7 +42642,6 @@ define('Renderer/Texture',[
     Texture.fromFramebuffer = function(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                Check.defined('options.context', options.context);
         
         var context = options.context;
         var gl = context._gl;
@@ -42538,21 +42653,6 @@ define('Renderer/Texture',[
         var height = defaultValue(options.height, gl.drawingBufferHeight);
         var framebuffer = options.framebuffer;
 
-                if (!PixelFormat.validate(pixelFormat)) {
-            throw new DeveloperError('Invalid pixelFormat.');
-        }
-        if (PixelFormat.isDepthFormat(pixelFormat) || PixelFormat.isCompressedFormat(pixelFormat)) {
-            throw new DeveloperError('pixelFormat cannot be DEPTH_COMPONENT, DEPTH_STENCIL or a compressed format.');
-        }
-        Check.defined('options.context', options.context);
-        Check.typeOf.number.greaterThanOrEquals('framebufferXOffset', framebufferXOffset, 0);
-        Check.typeOf.number.greaterThanOrEquals('framebufferYOffset', framebufferYOffset, 0);
-        if (framebufferXOffset + width > gl.drawingBufferWidth) {
-            throw new DeveloperError('framebufferXOffset + width must be less than or equal to drawingBufferWidth');
-        }
-        if (framebufferYOffset + height > gl.drawingBufferHeight) {
-            throw new DeveloperError('framebufferYOffset + height must be less than or equal to drawingBufferHeight.');
-        }
         
         var texture = new Texture({
             context : context,
@@ -42708,17 +42808,6 @@ define('Renderer/Texture',[
         xOffset = defaultValue(xOffset, 0);
         yOffset = defaultValue(yOffset, 0);
 
-                Check.defined('source', source);
-        if (PixelFormat.isDepthFormat(this._pixelFormat)) {
-            throw new DeveloperError('Cannot call copyFrom when the texture pixel format is DEPTH_COMPONENT or DEPTH_STENCIL.');
-        }
-        if (PixelFormat.isCompressedFormat(this._pixelFormat)) {
-            throw new DeveloperError('Cannot call copyFrom with a compressed texture pixel format.');
-        }
-        Check.typeOf.number.greaterThanOrEquals('xOffset', xOffset, 0);
-        Check.typeOf.number.greaterThanOrEquals('yOffset', yOffset, 0);
-        Check.typeOf.number.lessThanOrEquals('xOffset + source.width', xOffset + source.width, this._width);
-        Check.typeOf.number.lessThanOrEquals('yOffset + source.height', yOffset + source.height, this._height);
         
         var gl = this._context._gl;
         var target = this._textureTarget;
@@ -42820,25 +42909,6 @@ define('Renderer/Texture',[
         width = defaultValue(width, this._width);
         height = defaultValue(height, this._height);
 
-                if (PixelFormat.isDepthFormat(this._pixelFormat)) {
-            throw new DeveloperError('Cannot call copyFromFramebuffer when the texture pixel format is DEPTH_COMPONENT or DEPTH_STENCIL.');
-        }
-        if (this._pixelDatatype === PixelDatatype.FLOAT) {
-            throw new DeveloperError('Cannot call copyFromFramebuffer when the texture pixel data type is FLOAT.');
-        }
-        if (this._pixelDatatype === PixelDatatype.HALF_FLOAT) {
-            throw new DeveloperError('Cannot call copyFromFramebuffer when the texture pixel data type is HALF_FLOAT.');
-        }
-        if (PixelFormat.isCompressedFormat(this._pixelFormat)) {
-            throw new DeveloperError('Cannot call copyFrom with a compressed texture pixel format.');
-        }
-
-        Check.typeOf.number.greaterThanOrEquals('xOffset', xOffset, 0);
-        Check.typeOf.number.greaterThanOrEquals('yOffset', yOffset, 0);
-        Check.typeOf.number.greaterThanOrEquals('framebufferXOffset', framebufferXOffset, 0);
-        Check.typeOf.number.greaterThanOrEquals('framebufferYOffset', framebufferYOffset, 0);
-        Check.typeOf.number.lessThanOrEquals('xOffset + width', xOffset + width, this._width);
-        Check.typeOf.number.lessThanOrEquals('yOffset + height', yOffset + height, this._height);
         
         var gl = this._context._gl;
         var target = this._textureTarget;
@@ -42863,21 +42933,6 @@ define('Renderer/Texture',[
     Texture.prototype.generateMipmap = function(hint) {
         hint = defaultValue(hint, MipmapHint.DONT_CARE);
 
-                if (PixelFormat.isDepthFormat(this._pixelFormat)) {
-            throw new DeveloperError('Cannot call generateMipmap when the texture pixel format is DEPTH_COMPONENT or DEPTH_STENCIL.');
-        }
-        if (PixelFormat.isCompressedFormat(this._pixelFormat)) {
-            throw new DeveloperError('Cannot call generateMipmap with a compressed pixel format.');
-        }
-        if (this._width > 1 && !CesiumMath.isPowerOfTwo(this._width)) {
-            throw new DeveloperError('width must be a power of two to call generateMipmap().');
-        }
-        if (this._height > 1 && !CesiumMath.isPowerOfTwo(this._height)) {
-            throw new DeveloperError('height must be a power of two to call generateMipmap().');
-        }
-        if (!MipmapHint.validate(hint)) {
-            throw new DeveloperError('hint is invalid.');
-        }
         
         this._hasMipmap = true;
 
@@ -42909,23 +42964,31 @@ define('Shaders/Materials/BumpMapMaterial',[],function() {
     return "uniform sampler2D image;\n\
 uniform float strength;\n\
 uniform vec2 repeat;\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-vec2 st = materialInput.st;\n\
-vec2 centerPixel = fract(repeat * st);\n\
-float centerBump = texture2D(image, centerPixel).channel;\n\
-float imageWidth = float(imageDimensions.x);\n\
-vec2 rightPixel = fract(repeat * (st + vec2(1.0 / imageWidth, 0.0)));\n\
-float rightBump = texture2D(image, rightPixel).channel;\n\
-float imageHeight = float(imageDimensions.y);\n\
-vec2 leftPixel = fract(repeat * (st + vec2(0.0, 1.0 / imageHeight)));\n\
-float topBump = texture2D(image, leftPixel).channel;\n\
-vec3 normalTangentSpace = normalize(vec3(centerBump - rightBump, centerBump - topBump, clamp(1.0 - strength, 0.1, 1.0)));\n\
-vec3 normalEC = materialInput.tangentToEyeMatrix * normalTangentSpace;\n\
-material.normal = normalEC;\n\
-material.diffuse = vec3(0.01);\n\
-return material;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+\n\
+    vec2 st = materialInput.st;\n\
+\n\
+    vec2 centerPixel = fract(repeat * st);\n\
+    float centerBump = texture2D(image, centerPixel).channel;\n\
+\n\
+    float imageWidth = float(imageDimensions.x);\n\
+    vec2 rightPixel = fract(repeat * (st + vec2(1.0 / imageWidth, 0.0)));\n\
+    float rightBump = texture2D(image, rightPixel).channel;\n\
+\n\
+    float imageHeight = float(imageDimensions.y);\n\
+    vec2 leftPixel = fract(repeat * (st + vec2(0.0, 1.0 / imageHeight)));\n\
+    float topBump = texture2D(image, leftPixel).channel;\n\
+\n\
+    vec3 normalTangentSpace = normalize(vec3(centerBump - rightBump, centerBump - topBump, clamp(1.0 - strength, 0.1, 1.0)));\n\
+    vec3 normalEC = materialInput.tangentToEyeMatrix * normalTangentSpace;\n\
+\n\
+    material.normal = normalEC;\n\
+    material.diffuse = vec3(0.01);\n\
+\n\
+    return material;\n\
 }\n\
 ";
 });
@@ -42935,21 +42998,30 @@ define('Shaders/Materials/CheckerboardMaterial',[],function() {
     return "uniform vec4 lightColor;\n\
 uniform vec4 darkColor;\n\
 uniform vec2 repeat;\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-vec2 st = materialInput.st;\n\
-float b = mod(floor(repeat.s * st.s) + floor(repeat.t * st.t), 2.0);\n\
-float scaledWidth = fract(repeat.s * st.s);\n\
-scaledWidth = abs(scaledWidth - floor(scaledWidth + 0.5));\n\
-float scaledHeight = fract(repeat.t * st.t);\n\
-scaledHeight = abs(scaledHeight - floor(scaledHeight + 0.5));\n\
-float value = min(scaledWidth, scaledHeight);\n\
-vec4 currentColor = mix(lightColor, darkColor, b);\n\
-vec4 color = czm_antialias(lightColor, darkColor, currentColor, value, 0.03);\n\
-material.diffuse = color.rgb;\n\
-material.alpha = color.a;\n\
-return material;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+\n\
+    vec2 st = materialInput.st;\n\
+\n\
+    // From Stefan Gustavson's Procedural Textures in GLSL in OpenGL Insights\n\
+    float b = mod(floor(repeat.s * st.s) + floor(repeat.t * st.t), 2.0);  // 0.0 or 1.0\n\
+\n\
+    // Find the distance from the closest separator (region between two colors)\n\
+    float scaledWidth = fract(repeat.s * st.s);\n\
+    scaledWidth = abs(scaledWidth - floor(scaledWidth + 0.5));\n\
+    float scaledHeight = fract(repeat.t * st.t);\n\
+    scaledHeight = abs(scaledHeight - floor(scaledHeight + 0.5));\n\
+    float value = min(scaledWidth, scaledHeight);\n\
+\n\
+    vec4 currentColor = mix(lightColor, darkColor, b);\n\
+    vec4 color = czm_antialias(lightColor, darkColor, currentColor, value, 0.03);\n\
+\n\
+    material.diffuse = color.rgb;\n\
+    material.alpha = color.a;\n\
+\n\
+    return material;\n\
 }\n\
 ";
 });
@@ -42959,14 +43031,19 @@ define('Shaders/Materials/DotMaterial',[],function() {
     return "uniform vec4 lightColor;\n\
 uniform vec4 darkColor;\n\
 uniform vec2 repeat;\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-float b = smoothstep(0.3, 0.32, length(fract(repeat * materialInput.st) - 0.5));\n\
-vec4 color = mix(lightColor, darkColor, b);\n\
-material.diffuse = color.rgb;\n\
-material.alpha = color.a;\n\
-return material;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+    \n\
+    // From Stefan Gustavson's Procedural Textures in GLSL in OpenGL Insights\n\
+    float b = smoothstep(0.3, 0.32, length(fract(repeat * materialInput.st) - 0.5));  // 0.0 or 1.0\n\
+\n\
+    vec4 color = mix(lightColor, darkColor, b);\n\
+    material.diffuse = color.rgb;\n\
+    material.alpha = color.a;\n\
+    \n\
+    return material;\n\
 }\n\
 ";
 });
@@ -42974,25 +43051,31 @@ return material;\n\
 define('Shaders/Materials/ElevationContourMaterial',[],function() {
     'use strict';
     return "#ifdef GL_OES_standard_derivatives\n\
-#extension GL_OES_standard_derivatives : enable\n\
+    #extension GL_OES_standard_derivatives : enable\n\
 #endif\n\
+\n\
 uniform vec4 color;\n\
 uniform float spacing;\n\
 uniform float width;\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-float distanceToContour = mod(materialInput.height, spacing);\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+\n\
+    float distanceToContour = mod(materialInput.height, spacing);\n\
+\n\
 #ifdef GL_OES_standard_derivatives\n\
-float dxc = abs(dFdx(materialInput.height));\n\
-float dyc = abs(dFdy(materialInput.height));\n\
-float dF = max(dxc, dyc) * width;\n\
-material.alpha = (distanceToContour < dF) ? 1.0 : 0.0;\n\
+    float dxc = abs(dFdx(materialInput.height));\n\
+    float dyc = abs(dFdy(materialInput.height));\n\
+    float dF = max(dxc, dyc) * width;\n\
+    material.alpha = (distanceToContour < dF) ? 1.0 : 0.0;\n\
 #else\n\
-material.alpha = (distanceToContour < (czm_resolutionScale * width)) ? 1.0 : 0.0;\n\
+    material.alpha = (distanceToContour < (czm_resolutionScale * width)) ? 1.0 : 0.0;\n\
 #endif\n\
-material.diffuse = color.rgb;\n\
-return material;\n\
+\n\
+    material.diffuse = color.rgb;\n\
+\n\
+    return material;\n\
 }\n\
 ";
 });
@@ -43002,14 +43085,15 @@ define('Shaders/Materials/ElevationRampMaterial',[],function() {
     return "uniform sampler2D image;\n\
 uniform float minimumHeight;\n\
 uniform float maximumHeight;\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-float scaledHeight = clamp((materialInput.height - minimumHeight) / (maximumHeight - minimumHeight), 0.0, 1.0);\n\
-vec4 rampColor = texture2D(image, vec2(scaledHeight, 0.5));\n\
-material.diffuse = rampColor.rgb;\n\
-material.alpha = rampColor.a;\n\
-return material;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+    float scaledHeight = clamp((materialInput.height - minimumHeight) / (maximumHeight - minimumHeight), 0.0, 1.0);\n\
+    vec4 rampColor = texture2D(image, vec2(scaledHeight, 0.5));\n\
+    material.diffuse = rampColor.rgb;\n\
+    material.alpha = rampColor.a;\n\
+    return material;\n\
 }\n\
 ";
 });
@@ -43022,29 +43106,35 @@ uniform float maximumDistance;\n\
 uniform bool repeat;\n\
 uniform vec2 fadeDirection;\n\
 uniform vec2 time;\n\
+\n\
 float getTime(float t, float coord)\n\
 {\n\
-float scalar = 1.0 / maximumDistance;\n\
-float q  = distance(t, coord) * scalar;\n\
-if (repeat)\n\
-{\n\
-float r = distance(t, coord + 1.0) * scalar;\n\
-float s = distance(t, coord - 1.0) * scalar;\n\
-q = min(min(r, s), q);\n\
+    float scalar = 1.0 / maximumDistance;\n\
+    float q  = distance(t, coord) * scalar;\n\
+    if (repeat)\n\
+    {\n\
+        float r = distance(t, coord + 1.0) * scalar;\n\
+        float s = distance(t, coord - 1.0) * scalar;\n\
+        q = min(min(r, s), q);\n\
+    }\n\
+    return clamp(q, 0.0, 1.0);\n\
 }\n\
-return clamp(q, 0.0, 1.0);\n\
-}\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-vec2 st = materialInput.st;\n\
-float s = getTime(time.x, st.s) * fadeDirection.s;\n\
-float t = getTime(time.y, st.t) * fadeDirection.t;\n\
-float u = length(vec2(s, t));\n\
-vec4 color = mix(fadeInColor, fadeOutColor, u);\n\
-material.emission = color.rgb;\n\
-material.alpha = color.a;\n\
-return material;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+    \n\
+    vec2 st = materialInput.st;\n\
+    float s = getTime(time.x, st.s) * fadeDirection.s;\n\
+    float t = getTime(time.y, st.t) * fadeDirection.t;\n\
+    \n\
+    float u = length(vec2(s, t));\n\
+    vec4 color = mix(fadeInColor, fadeOutColor, u);\n\
+    \n\
+    material.emission = color.rgb;\n\
+    material.alpha = color.a;\n\
+    \n\
+    return material;\n\
 }\n\
 ";
 });
@@ -43052,46 +43142,61 @@ return material;\n\
 define('Shaders/Materials/GridMaterial',[],function() {
     'use strict';
     return "#ifdef GL_OES_standard_derivatives\n\
-#extension GL_OES_standard_derivatives : enable\n\
+    #extension GL_OES_standard_derivatives : enable\n\
 #endif\n\
+\n\
 uniform vec4 color;\n\
 uniform float cellAlpha;\n\
 uniform vec2 lineCount;\n\
 uniform vec2 lineThickness;\n\
 uniform vec2 lineOffset;\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-vec2 st = materialInput.st;\n\
-float scaledWidth = fract(lineCount.s * st.s - lineOffset.s);\n\
-scaledWidth = abs(scaledWidth - floor(scaledWidth + 0.5));\n\
-float scaledHeight = fract(lineCount.t * st.t - lineOffset.t);\n\
-scaledHeight = abs(scaledHeight - floor(scaledHeight + 0.5));\n\
-float value;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+\n\
+    vec2 st = materialInput.st;\n\
+\n\
+    float scaledWidth = fract(lineCount.s * st.s - lineOffset.s);\n\
+    scaledWidth = abs(scaledWidth - floor(scaledWidth + 0.5));\n\
+    float scaledHeight = fract(lineCount.t * st.t - lineOffset.t);\n\
+    scaledHeight = abs(scaledHeight - floor(scaledHeight + 0.5));\n\
+\n\
+    float value;\n\
 #ifdef GL_OES_standard_derivatives\n\
-const float fuzz = 1.2;\n\
-vec2 thickness = (lineThickness * czm_resolutionScale) - 1.0;\n\
-vec2 dx = abs(dFdx(st));\n\
-vec2 dy = abs(dFdy(st));\n\
-vec2 dF = vec2(max(dx.s, dy.s), max(dx.t, dy.t)) * lineCount;\n\
-value = min(\n\
-smoothstep(dF.s * thickness.s, dF.s * (fuzz + thickness.s), scaledWidth),\n\
-smoothstep(dF.t * thickness.t, dF.t * (fuzz + thickness.t), scaledHeight));\n\
+    // Fuzz Factor - Controls blurriness of lines\n\
+    const float fuzz = 1.2;\n\
+    vec2 thickness = (lineThickness * czm_resolutionScale) - 1.0;\n\
+\n\
+    // From \"3D Engine Design for Virtual Globes\" by Cozzi and Ring, Listing 4.13.\n\
+    vec2 dx = abs(dFdx(st));\n\
+    vec2 dy = abs(dFdy(st));\n\
+    vec2 dF = vec2(max(dx.s, dy.s), max(dx.t, dy.t)) * lineCount;\n\
+    value = min(\n\
+        smoothstep(dF.s * thickness.s, dF.s * (fuzz + thickness.s), scaledWidth),\n\
+        smoothstep(dF.t * thickness.t, dF.t * (fuzz + thickness.t), scaledHeight));\n\
 #else\n\
-const float fuzz = 0.05;\n\
-vec2 range = 0.5 - (lineThickness * 0.05);\n\
-value = min(\n\
-1.0 - smoothstep(range.s, range.s + fuzz, scaledWidth),\n\
-1.0 - smoothstep(range.t, range.t + fuzz, scaledHeight));\n\
+    // Fuzz Factor - Controls blurriness of lines\n\
+    const float fuzz = 0.05;\n\
+\n\
+    vec2 range = 0.5 - (lineThickness * 0.05);\n\
+    value = min(\n\
+        1.0 - smoothstep(range.s, range.s + fuzz, scaledWidth),\n\
+        1.0 - smoothstep(range.t, range.t + fuzz, scaledHeight));\n\
 #endif\n\
-float dRim = 1.0 - abs(dot(materialInput.normalEC, normalize(materialInput.positionToEyeEC)));\n\
-float sRim = smoothstep(0.8, 1.0, dRim);\n\
-value *= (1.0 - sRim);\n\
-vec3 halfColor = color.rgb * 0.5;\n\
-material.diffuse = halfColor;\n\
-material.emission = halfColor;\n\
-material.alpha = color.a * (1.0 - ((1.0 - cellAlpha) * value));\n\
-return material;\n\
+\n\
+    // Edges taken from RimLightingMaterial.glsl\n\
+    // See http://www.fundza.com/rman_shaders/surface/fake_rim/fake_rim1.html\n\
+    float dRim = 1.0 - abs(dot(materialInput.normalEC, normalize(materialInput.positionToEyeEC)));\n\
+    float sRim = smoothstep(0.8, 1.0, dRim);\n\
+    value *= (1.0 - sRim);\n\
+\n\
+    vec3 halfColor = color.rgb * 0.5;\n\
+    material.diffuse = halfColor;\n\
+    material.emission = halfColor;\n\
+    material.alpha = color.a * (1.0 - ((1.0 - cellAlpha) * value));\n\
+\n\
+    return material;\n\
 }\n\
 ";
 });
@@ -43101,17 +43206,21 @@ define('Shaders/Materials/NormalMapMaterial',[],function() {
     return "uniform sampler2D image;\n\
 uniform float strength;\n\
 uniform vec2 repeat;\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-vec4 textureValue = texture2D(image, fract(repeat * materialInput.st));\n\
-vec3 normalTangentSpace = textureValue.channels;\n\
-normalTangentSpace.xy = normalTangentSpace.xy * 2.0 - 1.0;\n\
-normalTangentSpace.z = clamp(1.0 - strength, 0.1, 1.0);\n\
-normalTangentSpace = normalize(normalTangentSpace);\n\
-vec3 normalEC = materialInput.tangentToEyeMatrix * normalTangentSpace;\n\
-material.normal = normalEC;\n\
-return material;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+    \n\
+    vec4 textureValue = texture2D(image, fract(repeat * materialInput.st));\n\
+    vec3 normalTangentSpace = textureValue.channels;\n\
+    normalTangentSpace.xy = normalTangentSpace.xy * 2.0 - 1.0;\n\
+    normalTangentSpace.z = clamp(1.0 - strength, 0.1, 1.0);\n\
+    normalTangentSpace = normalize(normalTangentSpace);\n\
+    vec3 normalEC = materialInput.tangentToEyeMatrix * normalTangentSpace;\n\
+    \n\
+    material.normal = normalEC;\n\
+    \n\
+    return material;\n\
 }\n\
 ";
 });
@@ -43121,56 +43230,69 @@ define('Shaders/Materials/PolylineArrowMaterial',[],function() {
     return "#ifdef GL_OES_standard_derivatives\n\
 #extension GL_OES_standard_derivatives : enable\n\
 #endif\n\
+\n\
 uniform vec4 color;\n\
+\n\
 varying float v_width;\n\
+\n\
 float getPointOnLine(vec2 p0, vec2 p1, float x)\n\
 {\n\
-float slope = (p0.y - p1.y) / (p0.x - p1.x);\n\
-return slope * (x - p0.x) + p0.y;\n\
+    float slope = (p0.y - p1.y) / (p0.x - p1.x);\n\
+    return slope * (x - p0.x) + p0.y;\n\
 }\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-vec2 st = materialInput.st;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+\n\
+    vec2 st = materialInput.st;\n\
+\n\
 #ifdef GL_OES_standard_derivatives\n\
-float base = 1.0 - abs(fwidth(st.s)) * 10.0;\n\
+    float base = 1.0 - abs(fwidth(st.s)) * 10.0;\n\
 #else\n\
-float base = 0.99;\n\
+    float base = 0.99; // 1% of the line will be the arrow head\n\
 #endif\n\
-vec2 center = vec2(1.0, 0.5);\n\
-float ptOnUpperLine = getPointOnLine(vec2(base, 1.0), center, st.s);\n\
-float ptOnLowerLine = getPointOnLine(vec2(base, 0.0), center, st.s);\n\
-float halfWidth = 0.15;\n\
-float s = step(0.5 - halfWidth, st.t);\n\
-s *= 1.0 - step(0.5 + halfWidth, st.t);\n\
-s *= 1.0 - step(base, st.s);\n\
-float t = step(base, materialInput.st.s);\n\
-t *= 1.0 - step(ptOnUpperLine, st.t);\n\
-t *= step(ptOnLowerLine, st.t);\n\
-float dist;\n\
-if (st.s < base)\n\
-{\n\
-float d1 = abs(st.t - (0.5 - halfWidth));\n\
-float d2 = abs(st.t - (0.5 + halfWidth));\n\
-dist = min(d1, d2);\n\
-}\n\
-else\n\
-{\n\
-float d1 = czm_infinity;\n\
-if (st.t < 0.5 - halfWidth && st.t > 0.5 + halfWidth)\n\
-{\n\
-d1 = abs(st.s - base);\n\
-}\n\
-float d2 = abs(st.t - ptOnUpperLine);\n\
-float d3 = abs(st.t - ptOnLowerLine);\n\
-dist = min(min(d1, d2), d3);\n\
-}\n\
-vec4 outsideColor = vec4(0.0);\n\
-vec4 currentColor = mix(outsideColor, color, clamp(s + t, 0.0, 1.0));\n\
-vec4 outColor = czm_antialias(outsideColor, color, currentColor, dist);\n\
-material.diffuse = outColor.rgb;\n\
-material.alpha = outColor.a;\n\
-return material;\n\
+\n\
+    vec2 center = vec2(1.0, 0.5);\n\
+    float ptOnUpperLine = getPointOnLine(vec2(base, 1.0), center, st.s);\n\
+    float ptOnLowerLine = getPointOnLine(vec2(base, 0.0), center, st.s);\n\
+\n\
+    float halfWidth = 0.15;\n\
+    float s = step(0.5 - halfWidth, st.t);\n\
+    s *= 1.0 - step(0.5 + halfWidth, st.t);\n\
+    s *= 1.0 - step(base, st.s);\n\
+\n\
+    float t = step(base, materialInput.st.s);\n\
+    t *= 1.0 - step(ptOnUpperLine, st.t);\n\
+    t *= step(ptOnLowerLine, st.t);\n\
+\n\
+    // Find the distance from the closest separator (region between two colors)\n\
+    float dist;\n\
+    if (st.s < base)\n\
+    {\n\
+        float d1 = abs(st.t - (0.5 - halfWidth));\n\
+        float d2 = abs(st.t - (0.5 + halfWidth));\n\
+        dist = min(d1, d2);\n\
+    }\n\
+    else\n\
+    {\n\
+        float d1 = czm_infinity;\n\
+        if (st.t < 0.5 - halfWidth && st.t > 0.5 + halfWidth)\n\
+        {\n\
+            d1 = abs(st.s - base);\n\
+        }\n\
+        float d2 = abs(st.t - ptOnUpperLine);\n\
+        float d3 = abs(st.t - ptOnLowerLine);\n\
+        dist = min(min(d1, d2), d3);\n\
+    }\n\
+\n\
+    vec4 outsideColor = vec4(0.0);\n\
+    vec4 currentColor = mix(outsideColor, color, clamp(s + t, 0.0, 1.0));\n\
+    vec4 outColor = czm_antialias(outsideColor, color, currentColor, dist);\n\
+\n\
+    material.diffuse = outColor.rgb;\n\
+    material.alpha = outColor.a;\n\
+    return material;\n\
 }\n\
 ";
 });
@@ -43182,46 +43304,59 @@ uniform vec4 gapColor;\n\
 uniform float dashLength;\n\
 uniform float dashPattern;\n\
 varying float v_polylineAngle;\n\
+\n\
 const float maskLength = 16.0;\n\
+\n\
 mat2 rotate(float rad) {\n\
-float c = cos(rad);\n\
-float s = sin(rad);\n\
-return mat2(\n\
-c, s,\n\
--s, c\n\
-);\n\
+    float c = cos(rad);\n\
+    float s = sin(rad);\n\
+    return mat2(\n\
+        c, s,\n\
+        -s, c\n\
+    );\n\
 }\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-vec2 pos = rotate(v_polylineAngle) * gl_FragCoord.xy;\n\
-float dashPosition = fract(pos.x / dashLength);\n\
-float maskIndex = floor(dashPosition * maskLength);\n\
-float maskTest = floor(dashPattern / pow(2.0, maskIndex));\n\
-vec4 fragColor = (mod(maskTest, 2.0) < 1.0) ? gapColor : color;\n\
-if (fragColor.a < 0.005) {\n\
-discard;\n\
-}\n\
-material.emission = fragColor.rgb;\n\
-material.alpha = fragColor.a;\n\
-return material;\n\
-}\n\
-";
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+\n\
+    vec2 pos = rotate(v_polylineAngle) * gl_FragCoord.xy;\n\
+\n\
+    // Get the relative position within the dash from 0 to 1\n\
+    float dashPosition = fract(pos.x / dashLength);\n\
+    // Figure out the mask index.\n\
+    float maskIndex = floor(dashPosition * maskLength);\n\
+    // Test the bit mask.\n\
+    float maskTest = floor(dashPattern / pow(2.0, maskIndex));\n\
+    vec4 fragColor = (mod(maskTest, 2.0) < 1.0) ? gapColor : color;\n\
+    if (fragColor.a < 0.005) {   // matches 0/255 and 1/255\n\
+        discard;\n\
+    }\n\
+\n\
+    material.emission = fragColor.rgb;\n\
+    material.alpha = fragColor.a;\n\
+    return material;\n\
+}";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Materials/PolylineGlowMaterial',[],function() {
     'use strict';
     return "uniform vec4 color;\n\
 uniform float glowPower;\n\
+\n\
 varying float v_width;\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-vec2 st = materialInput.st;\n\
-float glow = glowPower / abs(st.t - 0.5) - (glowPower / 0.5);\n\
-material.emission = max(vec3(glow - 1.0 + color.rgb), color.rgb);\n\
-material.alpha = clamp(0.0, 1.0, glow) * color.a;\n\
-return material;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+\n\
+    vec2 st = materialInput.st;\n\
+    float glow = glowPower / abs(st.t - 0.5) - (glowPower / 0.5);\n\
+\n\
+    material.emission = max(vec3(glow - 1.0 + color.rgb), color.rgb);\n\
+    material.alpha = clamp(0.0, 1.0, glow) * color.a;\n\
+\n\
+    return material;\n\
 }\n\
 ";
 });
@@ -43231,22 +43366,30 @@ define('Shaders/Materials/PolylineOutlineMaterial',[],function() {
     return "uniform vec4 color;\n\
 uniform vec4 outlineColor;\n\
 uniform float outlineWidth;\n\
+\n\
 varying float v_width;\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-vec2 st = materialInput.st;\n\
-float halfInteriorWidth =  0.5 * (v_width - outlineWidth) / v_width;\n\
-float b = step(0.5 - halfInteriorWidth, st.t);\n\
-b *= 1.0 - step(0.5 + halfInteriorWidth, st.t);\n\
-float d1 = abs(st.t - (0.5 - halfInteriorWidth));\n\
-float d2 = abs(st.t - (0.5 + halfInteriorWidth));\n\
-float dist = min(d1, d2);\n\
-vec4 currentColor = mix(outlineColor, color, b);\n\
-vec4 outColor = czm_antialias(outlineColor, color, currentColor, dist);\n\
-material.diffuse = outColor.rgb;\n\
-material.alpha = outColor.a;\n\
-return material;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+    \n\
+    vec2 st = materialInput.st;\n\
+    float halfInteriorWidth =  0.5 * (v_width - outlineWidth) / v_width;\n\
+    float b = step(0.5 - halfInteriorWidth, st.t);\n\
+    b *= 1.0 - step(0.5 + halfInteriorWidth, st.t);\n\
+    \n\
+    // Find the distance from the closest separator (region between two colors)\n\
+    float d1 = abs(st.t - (0.5 - halfInteriorWidth));\n\
+    float d2 = abs(st.t - (0.5 + halfInteriorWidth));\n\
+    float dist = min(d1, d2);\n\
+    \n\
+    vec4 currentColor = mix(outlineColor, color, b);\n\
+    vec4 outColor = czm_antialias(outlineColor, color, currentColor, dist);\n\
+    \n\
+    material.diffuse = outColor.rgb;\n\
+    material.alpha = outColor.a;\n\
+    \n\
+    return material;\n\
 }\n\
 ";
 });
@@ -43256,15 +43399,20 @@ define('Shaders/Materials/RimLightingMaterial',[],function() {
     return "uniform vec4 color;\n\
 uniform vec4 rimColor;\n\
 uniform float width;\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-float d = 1.0 - dot(materialInput.normalEC, normalize(materialInput.positionToEyeEC));\n\
-float s = smoothstep(1.0 - width, 1.0, d);\n\
-material.diffuse = color.rgb;\n\
-material.emission = rimColor.rgb * s;\n\
-material.alpha = mix(color.a, rimColor.a, s);\n\
-return material;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+\n\
+    // See http://www.fundza.com/rman_shaders/surface/fake_rim/fake_rim1.html\n\
+    float d = 1.0 - dot(materialInput.normalEC, normalize(materialInput.positionToEyeEC));\n\
+    float s = smoothstep(1.0 - width, 1.0, d);\n\
+\n\
+    material.diffuse = color.rgb;\n\
+    material.emission = rimColor.rgb * s; \n\
+    material.alpha = mix(color.a, rimColor.a, s);\n\
+\n\
+    return material;\n\
 }\n\
 ";
 });
@@ -43272,13 +43420,14 @@ return material;\n\
 define('Shaders/Materials/SlopeRampMaterial',[],function() {
     'use strict';
     return "uniform sampler2D image;\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-vec4 rampColor = texture2D(image, vec2(materialInput.slope, 0.5));\n\
-material.diffuse = rampColor.rgb;\n\
-material.alpha = rampColor.a;\n\
-return material;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+    vec4 rampColor = texture2D(image, vec2(materialInput.slope, 0.5));\n\
+    material.diffuse = rampColor.rgb;\n\
+    material.alpha = rampColor.a;\n\
+    return material;\n\
 }\n\
 ";
 });
@@ -43290,24 +43439,33 @@ uniform vec4 oddColor;\n\
 uniform float offset;\n\
 uniform float repeat;\n\
 uniform bool horizontal;\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-float coord = mix(materialInput.st.s, materialInput.st.t, float(horizontal));\n\
-float value = fract((coord - offset) * (repeat * 0.5));\n\
-float dist = min(value, min(abs(value - 0.5), 1.0 - value));\n\
-vec4 currentColor = mix(evenColor, oddColor, step(0.5, value));\n\
-vec4 color = czm_antialias(evenColor, oddColor, currentColor, dist);\n\
-material.diffuse = color.rgb;\n\
-material.alpha = color.a;\n\
-return material;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+\n\
+    // Based on the Stripes Fragment Shader in the Orange Book (11.1.2)\n\
+    float coord = mix(materialInput.st.s, materialInput.st.t, float(horizontal));\n\
+    float value = fract((coord - offset) * (repeat * 0.5));\n\
+    float dist = min(value, min(abs(value - 0.5), 1.0 - value));\n\
+    \n\
+    vec4 currentColor = mix(evenColor, oddColor, step(0.5, value));\n\
+    vec4 color = czm_antialias(evenColor, oddColor, currentColor, dist);\n\
+    \n\
+    material.diffuse = color.rgb;\n\
+    material.alpha = color.a;\n\
+    \n\
+    return material;\n\
 }\n\
 ";
 });
 //This file is automatically rebuilt by the Cesium build process.
 define('Shaders/Materials/Water',[],function() {
     'use strict';
-    return "uniform sampler2D specularMap;\n\
+    return "// Thanks for the contribution Jonas\n\
+// http://29a.ch/2012/7/19/webgl-terrain-rendering-water-fog\n\
+\n\
+uniform sampler2D specularMap;\n\
 uniform sampler2D normalMap;\n\
 uniform vec4 baseWaterColor;\n\
 uniform vec4 blendColor;\n\
@@ -43316,25 +43474,49 @@ uniform float animationSpeed;\n\
 uniform float amplitude;\n\
 uniform float specularIntensity;\n\
 uniform float fadeFactor;\n\
+\n\
 czm_material czm_getMaterial(czm_materialInput materialInput)\n\
 {\n\
-czm_material material = czm_getDefaultMaterial(materialInput);\n\
-float time = czm_frameNumber * animationSpeed;\n\
-float fade = max(1.0, (length(materialInput.positionToEyeEC) / 10000000000.0) * frequency * fadeFactor);\n\
-float specularMapValue = texture2D(specularMap, materialInput.st).r;\n\
-vec4 noise = czm_getWaterNoise(normalMap, materialInput.st * frequency, time, 0.0);\n\
-vec3 normalTangentSpace = noise.xyz * vec3(1.0, 1.0, (1.0 / amplitude));\n\
-normalTangentSpace.xy /= fade;\n\
-normalTangentSpace = mix(vec3(0.0, 0.0, 50.0), normalTangentSpace, specularMapValue);\n\
-normalTangentSpace = normalize(normalTangentSpace);\n\
-float tsPerturbationRatio = clamp(dot(normalTangentSpace, vec3(0.0, 0.0, 1.0)), 0.0, 1.0);\n\
-material.alpha = specularMapValue;\n\
-material.diffuse = mix(blendColor.rgb, baseWaterColor.rgb, specularMapValue);\n\
-material.diffuse += (0.1 * tsPerturbationRatio);\n\
-material.normal = normalize(materialInput.tangentToEyeMatrix * normalTangentSpace);\n\
-material.specular = specularIntensity;\n\
-material.shininess = 10.0;\n\
-return material;\n\
+    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+\n\
+    float time = czm_frameNumber * animationSpeed;\n\
+    \n\
+    // fade is a function of the distance from the fragment and the frequency of the waves\n\
+    float fade = max(1.0, (length(materialInput.positionToEyeEC) / 10000000000.0) * frequency * fadeFactor);\n\
+            \n\
+    float specularMapValue = texture2D(specularMap, materialInput.st).r;\n\
+    \n\
+    // note: not using directional motion at this time, just set the angle to 0.0;\n\
+    vec4 noise = czm_getWaterNoise(normalMap, materialInput.st * frequency, time, 0.0);\n\
+    vec3 normalTangentSpace = noise.xyz * vec3(1.0, 1.0, (1.0 / amplitude));\n\
+    \n\
+    // fade out the normal perturbation as we move further from the water surface\n\
+    normalTangentSpace.xy /= fade;\n\
+        \n\
+    // attempt to fade out the normal perturbation as we approach non water areas (low specular map value)\n\
+    normalTangentSpace = mix(vec3(0.0, 0.0, 50.0), normalTangentSpace, specularMapValue);\n\
+    \n\
+    normalTangentSpace = normalize(normalTangentSpace);\n\
+    \n\
+    // get ratios for alignment of the new normal vector with a vector perpendicular to the tangent plane\n\
+    float tsPerturbationRatio = clamp(dot(normalTangentSpace, vec3(0.0, 0.0, 1.0)), 0.0, 1.0);\n\
+    \n\
+    // fade out water effect as specular map value decreases\n\
+    material.alpha = specularMapValue;\n\
+    \n\
+    // base color is a blend of the water and non-water color based on the value from the specular map\n\
+    // may need a uniform blend factor to better control this\n\
+    material.diffuse = mix(blendColor.rgb, baseWaterColor.rgb, specularMapValue);\n\
+    \n\
+    // diffuse highlights are based on how perturbed the normal is\n\
+    material.diffuse += (0.1 * tsPerturbationRatio);\n\
+    \n\
+    material.normal = normalize(materialInput.tangentToEyeMatrix * normalTangentSpace);\n\
+    \n\
+    material.specular = specularIntensity;\n\
+    material.shininess = 10.0;\n\
+    \n\
+    return material;\n\
 }\n\
 ";
 });
@@ -43719,9 +43901,6 @@ define('Scene/Material',[
      * });
      */
     Material.fromType = function(type, uniforms) {
-                if (!defined(Material._materialCache.getMaterial(type))) {
-            throw new DeveloperError('material with type \'' + type + '\' does not exist.');
-        }
         
         var material = new Material({
             fabric : {
@@ -43974,17 +44153,9 @@ define('Scene/Material',[
     }
 
     function invalidNameError(property, properties) {
-                var errorString = 'fabric: property name \'' + property + '\' is not valid. It should be ';
-        for ( var i = 0; i < properties.length; i++) {
-            var propertyName = '\'' + properties[i] + '\'';
-            errorString += (i === properties.length - 1) ? ('or ' + propertyName + '.') : (propertyName + ', ');
-        }
-        throw new DeveloperError(errorString);
             }
 
     function duplicateNameError(property, properties) {
-                var errorString = 'fabric: uniforms and materials cannot share the same property \'' + property + '\'';
-        throw new DeveloperError(errorString);
             }
 
     var templateProperties = ['type', 'materials', 'uniforms', 'components', 'source'];
@@ -43997,9 +44168,6 @@ define('Scene/Material',[
         var components = template.components;
 
         // Make sure source and components do not exist in the same template.
-                if (defined(components) && defined(template.source)) {
-            throw new DeveloperError('fabric: cannot have source and components in the same template.');
-        }
         
         // Make sure all template and components properties are valid.
         checkForValidProperties(template, templateProperties, invalidNameError, true);
@@ -44224,16 +44392,10 @@ define('Scene/Material',[
         var uniformValue = materialUniforms[uniformId];
         var uniformType = getUniformType(uniformValue);
 
-                if (!defined(uniformType)) {
-            throw new DeveloperError('fabric: uniform \'' + uniformId + '\' has invalid type.');
-        }
         
         var replacedTokenCount;
         if (uniformType === 'channels') {
             replacedTokenCount = replaceToken(material, uniformId, uniformValue, false);
-                        if (replacedTokenCount === 0 && strict) {
-                throw new DeveloperError('strict: shader source does not use channels \'' + uniformId + '\'.');
-            }
                     } else {
             // Since webgl doesn't allow texture dimension queries in glsl, create a uniform to do it.
             // Check if the shader source actually uses texture dimensions before creating the uniform.
@@ -44258,9 +44420,6 @@ define('Scene/Material',[
 
             var newUniformId = uniformId + '_' + material._count++;
             replacedTokenCount = replaceToken(material, uniformId, newUniformId);
-                        if (replacedTokenCount === 1 && strict) {
-                throw new DeveloperError('strict: shader source does not use uniform \'' + uniformId + '\'.');
-            }
             
             // Set uniform value
             material.uniforms[uniformId] = uniformValue;
@@ -44355,9 +44514,6 @@ define('Scene/Material',[
                 // Replace each material id with an czm_getMaterial method call.
                 var materialMethodCall = newMethodName + '(materialInput)';
                 var tokensReplacedCount = replaceToken(material, subMaterialId, materialMethodCall);
-                                if (tokensReplacedCount === 0 && strict) {
-                    throw new DeveloperError('strict: shader source does not use material \'' + subMaterialId + '\'.');
-                }
                             }
         }
     }
@@ -45224,13 +45380,6 @@ define('Core/subdivideArray',[
      * @exception {DeveloperError} numberOfArrays must be greater than 0.
      */
     function subdivideArray(array, numberOfArrays) {
-                if (!defined(array)) {
-            throw new DeveloperError('array is required.');
-        }
-
-        if (!defined(numberOfArrays) || numberOfArrays < 1) {
-            throw new DeveloperError('numberOfArrays must be greater than 0.');
-        }
         
         var result = [];
         var len = array.length;
@@ -45341,7 +45490,6 @@ define('Core/IndexDatatype',[
                 return Uint32Array.BYTES_PER_ELEMENT;
         }
 
-                throw new DeveloperError('indexDatatype is required and must be a valid IndexDatatype constant.');
             };
 
     /**
@@ -45374,9 +45522,6 @@ define('Core/IndexDatatype',[
      * this.indices = Cesium.IndexDatatype.createTypedArray(positions.length / 3, numberOfIndices);
      */
     IndexDatatype.createTypedArray = function(numberOfVertices, indicesLengthOrArray) {
-                if (!defined(numberOfVertices)) {
-            throw new DeveloperError('numberOfVertices is required.');
-        }
         
         if (numberOfVertices >= CesiumMath.SIXTY_FOUR_KILOBYTES) {
             return new Uint32Array(indicesLengthOrArray);
@@ -45397,15 +45542,6 @@ define('Core/IndexDatatype',[
      *
      */
     IndexDatatype.createTypedArrayFromArrayBuffer = function(numberOfVertices, sourceArray, byteOffset, length) {
-                if (!defined(numberOfVertices)) {
-            throw new DeveloperError('numberOfVertices is required.');
-        }
-        if (!defined(sourceArray)) {
-            throw new DeveloperError('sourceArray is required.');
-        }
-        if (!defined(byteOffset)) {
-            throw new DeveloperError('byteOffset is required.');
-        }
         
         if (numberOfVertices >= CesiumMath.SIXTY_FOUR_KILOBYTES) {
             return new Uint32Array(sourceArray, byteOffset, length);
@@ -45445,24 +45581,6 @@ define('Renderer/Buffer',[
     function Buffer(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                Check.defined('options.context', options.context);
-
-        if (!defined(options.typedArray) && !defined(options.sizeInBytes)) {
-            throw new DeveloperError('Either options.sizeInBytes or options.typedArray is required.');
-        }
-
-        if (defined(options.typedArray) && defined(options.sizeInBytes)) {
-            throw new DeveloperError('Cannot pass in both options.sizeInBytes and options.typedArray.');
-        }
-
-        if (defined(options.typedArray)) {
-            Check.typeOf.object('options.typedArray', options.typedArray);
-            Check.typeOf.number('options.typedArray.byteLength', options.typedArray.byteLength);
-        }
-
-        if (!BufferUsage.validate(options.usage)) {
-            throw new DeveloperError('usage is invalid.');
-        }
         
         var gl = options.context._gl;
         var bufferTarget = options.bufferTarget;
@@ -45475,7 +45593,6 @@ define('Renderer/Buffer',[
             sizeInBytes = typedArray.byteLength;
         }
 
-                Check.typeOf.number.greaterThan('sizeInBytes', sizeInBytes, 0);
         
         var buffer = gl.createBuffer();
         gl.bindBuffer(bufferTarget, buffer);
@@ -45532,7 +45649,6 @@ define('Renderer/Buffer',[
      * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glBufferData.xml|glBufferData} with <code>ARRAY_BUFFER</code>
      */
     Buffer.createVertexBuffer = function(options) {
-                Check.defined('options.context', options.context);
         
         return new Buffer({
             context: options.context,
@@ -45589,15 +45705,6 @@ define('Renderer/Buffer',[
      * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glBufferData.xml|glBufferData} with <code>ELEMENT_ARRAY_BUFFER</code>
      */
     Buffer.createIndexBuffer = function(options) {
-                Check.defined('options.context', options.context);
-
-        if (!IndexDatatype.validate(options.indexDatatype)) {
-            throw new DeveloperError('Invalid indexDatatype.');
-        }
-
-        if (options.indexDatatype === IndexDatatype.UNSIGNED_INT && !options.context.elementIndexUint) {
-            throw new DeveloperError('IndexDatatype.UNSIGNED_INT requires OES_element_index_uint, which is not supported on this system.  Check context.elementIndexUint.');
-        }
         
         var context = options.context;
         var indexDatatype = options.indexDatatype;
@@ -45655,8 +45762,6 @@ define('Renderer/Buffer',[
     Buffer.prototype.copyFromArrayView = function(arrayView, offsetInBytes) {
         offsetInBytes = defaultValue(offsetInBytes, 0);
 
-                Check.defined('arrayView', arrayView);
-        Check.typeOf.number.lessThanOrEquals('offsetInBytes + arrayView.byteLength', offsetInBytes + arrayView.byteLength, this._sizeInBytes);
         
         var gl = this._gl;
         var target = this._bufferTarget;
@@ -45666,28 +45771,6 @@ define('Renderer/Buffer',[
     };
 
     Buffer.prototype.copyFromBuffer = function(readBuffer, readOffset, writeOffset, sizeInBytes) {
-                if (!this._webgl2) {
-            throw new DeveloperError('A WebGL 2 context is required.');
-        }
-        if (!defined(readBuffer)) {
-            throw new DeveloperError('readBuffer must be defined.');
-        }
-        if (!defined(sizeInBytes) || sizeInBytes <= 0) {
-            throw new DeveloperError('sizeInBytes must be defined and be greater than zero.');
-        }
-        if (!defined(readOffset) || readOffset < 0 || readOffset + sizeInBytes > readBuffer._sizeInBytes) {
-            throw new DeveloperError('readOffset must be greater than or equal to zero and readOffset + sizeInBytes must be less than of equal to readBuffer.sizeInBytes.');
-        }
-        if (!defined(writeOffset) || writeOffset < 0 || writeOffset + sizeInBytes > this._sizeInBytes) {
-            throw new DeveloperError('writeOffset must be greater than or equal to zero and writeOffset + sizeInBytes must be less than of equal to this.sizeInBytes.');
-        }
-        if (this._buffer === readBuffer._buffer && ((writeOffset >= readOffset && writeOffset < readOffset + sizeInBytes) || (readOffset > writeOffset && readOffset < writeOffset + sizeInBytes))) {
-            throw new DeveloperError('When readBuffer is equal to this, the ranges [readOffset + sizeInBytes) and [writeOffset, writeOffset + sizeInBytes) must not overlap.');
-        }
-        if ((this._bufferTarget === WebGLConstants.ELEMENT_ARRAY_BUFFER && readBuffer._bufferTarget !== WebGLConstants.ELEMENT_ARRAY_BUFFER) ||
-            (this._bufferTarget !== WebGLConstants.ELEMENT_ARRAY_BUFFER && readBuffer._bufferTarget === WebGLConstants.ELEMENT_ARRAY_BUFFER)) {
-            throw new DeveloperError('Can not copy an index buffer into another buffer type.');
-        }
         
         var readTarget = WebGLConstants.COPY_READ_BUFFER;
         var writeTarget = WebGLConstants.COPY_WRITE_BUFFER;
@@ -45704,47 +45787,6 @@ define('Renderer/Buffer',[
         sourceOffset = defaultValue(sourceOffset, 0);
         destinationOffset = defaultValue(destinationOffset, 0);
 
-                if (!this._webgl2) {
-            throw new DeveloperError('A WebGL 2 context is required.');
-        }
-        if (!defined(arrayView)) {
-            throw new DeveloperError('arrayView is required.');
-        }
-
-        var copyLength;
-        var elementSize;
-        var arrayLength = arrayView.byteLength;
-        if (!defined(length)) {
-            if (defined(arrayLength)) {
-                copyLength = arrayLength - destinationOffset;
-                elementSize = 1;
-            } else {
-                arrayLength = arrayView.length;
-                copyLength = arrayLength - destinationOffset;
-                elementSize = arrayView.BYTES_PER_ELEMENT;
-            }
-        } else {
-            copyLength = length;
-            if (defined(arrayLength)) {
-                elementSize = 1;
-            } else {
-                arrayLength = arrayView.length;
-                elementSize = arrayView.BYTES_PER_ELEMENT;
-            }
-        }
-
-        if (destinationOffset < 0 || destinationOffset > arrayLength) {
-            throw new DeveloperError('destinationOffset must be greater than zero and less than the arrayView length.');
-        }
-        if (destinationOffset + copyLength > arrayLength) {
-            throw new DeveloperError('destinationOffset + length must be less than or equal to the arrayViewLength.');
-        }
-        if (sourceOffset < 0 || sourceOffset > this._sizeInBytes) {
-            throw new DeveloperError('sourceOffset must be greater than zero and less than the buffers size.');
-        }
-        if (sourceOffset + copyLength * elementSize > this._sizeInBytes) {
-            throw new DeveloperError('sourceOffset + length must be less than the buffers size.');
-        }
         
         var gl = this._gl;
         var target = WebGLConstants.COPY_READ_BUFFER;
@@ -45802,41 +45844,6 @@ define('Renderer/VertexArray',[
         var hasValue = defined(attribute.value);
         var componentsPerAttribute = attribute.value ? attribute.value.length : attribute.componentsPerAttribute;
 
-                if (!hasVertexBuffer && !hasValue) {
-            throw new DeveloperError('attribute must have a vertexBuffer or a value.');
-        }
-        if (hasVertexBuffer && hasValue) {
-            throw new DeveloperError('attribute cannot have both a vertexBuffer and a value.  It must have either a vertexBuffer property defining per-vertex data or a value property defining data for all vertices.');
-        }
-        if ((componentsPerAttribute !== 1) &&
-            (componentsPerAttribute !== 2) &&
-            (componentsPerAttribute !== 3) &&
-            (componentsPerAttribute !== 4)) {
-            if (hasValue) {
-                throw new DeveloperError('attribute.value.length must be in the range [1, 4].');
-            }
-
-            throw new DeveloperError('attribute.componentsPerAttribute must be in the range [1, 4].');
-        }
-        if (defined(attribute.componentDatatype) && !ComponentDatatype.validate(attribute.componentDatatype)) {
-            throw new DeveloperError('attribute must have a valid componentDatatype or not specify it.');
-        }
-        if (defined(attribute.strideInBytes) && (attribute.strideInBytes > 255)) {
-            // WebGL limit.  Not in GL ES.
-            throw new DeveloperError('attribute must have a strideInBytes less than or equal to 255 or not specify it.');
-        }
-        if (defined(attribute.instanceDivisor) && (attribute.instanceDivisor > 0) && !context.instancedArrays) {
-            throw new DeveloperError('instanced arrays is not supported');
-        }
-        if (defined(attribute.instanceDivisor) && (attribute.instanceDivisor < 0)) {
-            throw new DeveloperError('attribute must have an instanceDivisor greater than or equal to zero');
-        }
-        if (defined(attribute.instanceDivisor) && hasValue) {
-            throw new DeveloperError('attribute cannot have have an instanceDivisor if it is not backed by a buffer');
-        }
-        if (defined(attribute.instanceDivisor) && (attribute.instanceDivisor > 0) && (attribute.index === 0)) {
-            throw new DeveloperError('attribute zero cannot have an instanceDivisor greater than 0');
-        }
         
         // Shallow copy the attribute; we do not want to copy the vertex buffer.
         var attr = {
@@ -46032,8 +46039,6 @@ define('Renderer/VertexArray',[
     function VertexArray(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                Check.defined('options.context', options.context);
-        Check.defined('options.attributes', options.attributes);
         
         var context = options.context;
         var gl = context._gl;
@@ -46072,15 +46077,6 @@ define('Renderer/VertexArray',[
             }
         }
 
-                // Verify all attribute names are unique
-        var uniqueIndices = {};
-        for (i = 0; i < length; ++i) {
-            var index = vaAttributes[i].index;
-            if (uniqueIndices[index]) {
-                throw new DeveloperError('Index ' + index + ' is used by more than one attribute.');
-            }
-            uniqueIndices[index] = true;
-        }
         
         var vao;
 
@@ -46285,7 +46281,6 @@ define('Renderer/VertexArray',[
     VertexArray.fromGeometry = function(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                Check.defined('options.context', options.context);
         
         var context = options.context;
         var geometry = defaultValue(options.geometry, defaultValue.EMPTY_OBJECT);
@@ -46422,7 +46417,6 @@ define('Renderer/VertexArray',[
      * index is the location in the array of attributes, not the index property of an attribute.
      */
     VertexArray.prototype.getAttribute = function(index) {
-                Check.defined('index', index);
         
         return this._attributes[index];
     };
@@ -46629,15 +46623,6 @@ define('Scene/BatchTable',[
      * }
      */
     function BatchTable(context, attributes, numberOfInstances) {
-                if (!defined(context)) {
-            throw new DeveloperError('context is required');
-        }
-        if (!defined(attributes)) {
-            throw new DeveloperError('attributes is required');
-        }
-        if (!defined(numberOfInstances)) {
-            throw new DeveloperError('numberOfInstances is required');
-        }
         
         this._attributes = attributes;
         this._numberOfInstances = numberOfInstances;
@@ -46815,12 +46800,6 @@ define('Scene/BatchTable',[
      * @exception {DeveloperError} attributeIndex is out of range.
      */
     BatchTable.prototype.getBatchedAttribute = function(instanceIndex, attributeIndex, result) {
-                if (instanceIndex < 0 || instanceIndex >= this._numberOfInstances) {
-            throw new DeveloperError('instanceIndex is out of range.');
-        }
-        if (attributeIndex < 0 || attributeIndex >= this._attributes.length) {
-            throw new DeveloperError('attributeIndex is out of range');
-        }
         
         var attributes = this._attributes;
         var offset = this._offsets[attributeIndex];
@@ -46859,15 +46838,6 @@ define('Scene/BatchTable',[
      * @exception {DeveloperError} attributeIndex is out of range.
      */
     BatchTable.prototype.setBatchedAttribute = function(instanceIndex, attributeIndex, value) {
-                if (instanceIndex < 0 || instanceIndex >= this._numberOfInstances) {
-            throw new DeveloperError('instanceIndex is out of range.');
-        }
-        if (attributeIndex < 0 || attributeIndex >= this._attributes.length) {
-            throw new DeveloperError('attributeIndex is out of range');
-        }
-        if (!defined(value)) {
-            throw new DeveloperError('value is required.');
-        }
         
         var attributes = this._attributes;
         var result = setAttributeScratchValues[attributes[attributeIndex].componentsPerAttribute];
@@ -47263,12 +47233,6 @@ define('Core/AttributeCompression',[
      * @see AttributeCompression.octDecodeInRange
      */
     AttributeCompression.octEncodeInRange = function(vector, rangeMax, result) {
-                Check.defined('vector', vector);
-        Check.defined('result', result);
-        var magSquared = Cartesian3.magnitudeSquared(vector);
-        if (Math.abs(magSquared - 1.0) > CesiumMath.EPSILON6) {
-            throw new DeveloperError('vector must be normalized.');
-        }
         
         result.x = vector.x / (Math.abs(vector.x) + Math.abs(vector.y) + Math.abs(vector.z));
         result.y = vector.y / (Math.abs(vector.x) + Math.abs(vector.y) + Math.abs(vector.z));
@@ -47340,10 +47304,6 @@ define('Core/AttributeCompression',[
      * @see AttributeCompression.octEncodeInRange
      */
     AttributeCompression.octDecodeInRange = function(x, y, rangeMax, result) {
-                Check.defined('result', result);
-        if (x < 0 || x > rangeMax || y < 0 || y > rangeMax) {
-            throw new DeveloperError('x and y must be unsigned normalized integers between 0 and ' + rangeMax);
-        }
         
         result.x = CesiumMath.fromSNorm(x, rangeMax);
         result.y = CesiumMath.fromSNorm(y, rangeMax);
@@ -47388,15 +47348,10 @@ define('Core/AttributeCompression',[
      * @see AttributeCompression.octEncodeToCartesian4
      */
     AttributeCompression.octDecodeFromCartesian4 = function(encoded, result) {
-                Check.typeOf.object('encoded', encoded);
-        Check.typeOf.object('result', result);
                 var x = encoded.x;
         var y = encoded.y;
         var z = encoded.z;
         var w = encoded.w;
-                if (x < 0 || x > 255 || y < 0 || y > 255 || z < 0 || z > 255 || w < 0 || w > 255) {
-            throw new DeveloperError('x, y, z, and w must be unsigned normalized integers between 0 and 255');
-        }
         
         var xOct16 = x * LEFT_SHIFT + y;
         var yOct16 = z * LEFT_SHIFT + w;
@@ -47411,7 +47366,6 @@ define('Core/AttributeCompression',[
      *
      */
     AttributeCompression.octPackFloat = function(encoded) {
-                Check.defined('encoded', encoded);
                 return 256.0 * encoded.x + encoded.y;
     };
 
@@ -47440,7 +47394,6 @@ define('Core/AttributeCompression',[
      *
      */
     AttributeCompression.octDecodeFloat = function(value, result) {
-                Check.defined('value', value);
         
         var temp = value / 256.0;
         var x = Math.floor(temp);
@@ -47461,10 +47414,6 @@ define('Core/AttributeCompression',[
      *
      */
     AttributeCompression.octPack = function(v1, v2, v3, result) {
-                Check.defined('v1', v1);
-        Check.defined('v2', v2);
-        Check.defined('v3', v3);
-        Check.defined('result', result);
         
         var encoded1 = AttributeCompression.octEncodeFloat(v1);
         var encoded2 = AttributeCompression.octEncodeFloat(v2);
@@ -47484,10 +47433,6 @@ define('Core/AttributeCompression',[
      * @param {Cartesian3} v3 One decoded and normalized vector.
      */
     AttributeCompression.octUnpack = function(packed, v1, v2, v3) {
-                Check.defined('packed', packed);
-        Check.defined('v1', v1);
-        Check.defined('v2', v2);
-        Check.defined('v3', v3);
         
         var temp = packed.x / 65536.0;
         var x = Math.floor(temp);
@@ -47510,7 +47455,6 @@ define('Core/AttributeCompression',[
      *
      */
     AttributeCompression.compressTextureCoordinates = function(textureCoordinates) {
-                Check.defined('textureCoordinates', textureCoordinates);
         
         // Move x and y to the range 0-4095;
         var x = (textureCoordinates.x * 4095.0) | 0;
@@ -47527,8 +47471,6 @@ define('Core/AttributeCompression',[
      *
      */
     AttributeCompression.decompressTextureCoordinates = function(compressed, result) {
-                Check.defined('compressed', compressed);
-        Check.defined('result', result);
         
         var temp = compressed / 4096.0;
         var xZeroTo4095 = Math.floor(temp);
@@ -47551,12 +47493,6 @@ define('Core/AttributeCompression',[
      * @see {@link https://github.com/AnalyticalGraphicsInc/quantized-mesh|quantized-mesh-1.0 terrain format}
      */
     AttributeCompression.zigZagDeltaDecode = function(uBuffer, vBuffer, heightBuffer) {
-                Check.defined('uBuffer', uBuffer);
-        Check.defined('vBuffer', vBuffer);
-        Check.typeOf.number.equals('uBuffer.length', 'vBuffer.length', uBuffer.length, vBuffer.length);
-        if (defined(heightBuffer)) {
-            Check.typeOf.number.equals('uBuffer.length', 'heightBuffer.length', uBuffer.length, heightBuffer.length);
-        }
         
         var count = uBuffer.length;
 
@@ -47620,10 +47556,6 @@ define('Core/barycentricCoordinates',[
      *   new Cesium.Cartesian3( 0.0, 1.0, 1.0));
      */
     function barycentricCoordinates(point, p0, p1, p2, result) {
-                Check.defined('point', point);
-        Check.defined('p0', p0);
-        Check.defined('p1', p1);
-        Check.defined('p2', p2);
         
         if (!defined(result)) {
             result = new Cartesian3();
@@ -47744,21 +47676,9 @@ define('Core/Tipsify',[
         var maximumIndex = options.maximumIndex;
         var cacheSize = defaultValue(options.cacheSize, 24);
 
-                if (!defined(indices)) {
-            throw new DeveloperError('indices is required.');
-        }
         
         var numIndices = indices.length;
 
-                if (numIndices < 3 || numIndices % 3 !== 0) {
-            throw new DeveloperError('indices length must be a multiple of three.');
-        }
-        if (maximumIndex <= 0) {
-            throw new DeveloperError('maximumIndex must be greater than zero.');
-        }
-        if (cacheSize < 3) {
-            throw new DeveloperError('cacheSize must be greater than two.');
-        }
         
         // Compute the maximumIndex if not given
         if (!defined(maximumIndex)) {
@@ -47795,7 +47715,6 @@ define('Core/Tipsify',[
     /**
      * Optimizes triangles for the post-vertex shader cache.
      *
-     * @param {Object} options Object with the following properties:
      * @param {Number[]} options.indices Lists triads of numbers corresponding to the indices of the vertices
      *                        in the vertex buffer that define the geometry's triangles.
      * @param {Number} [options.maximumIndex] The maximum value of the elements in <code>args.indices</code>.
@@ -47866,21 +47785,9 @@ define('Core/Tipsify',[
             return n;
         }
 
-                if (!defined(indices)) {
-            throw new DeveloperError('indices is required.');
-        }
         
         var numIndices = indices.length;
 
-                if (numIndices < 3 || numIndices % 3 !== 0) {
-            throw new DeveloperError('indices length must be a multiple of three.');
-        }
-        if (maximumIndex <= 0) {
-            throw new DeveloperError('maximumIndex must be greater than zero.');
-        }
-        if (cacheSize < 3) {
-            throw new DeveloperError('cacheSize must be greater than two.');
-        }
         
         // Determine maximum index
         var maximumIndexPlusOne = 0;
@@ -48127,9 +48034,6 @@ define('Core/GeometryPipeline',[
      * geometry = Cesium.GeometryPipeline.toWireframe(geometry);
      */
     GeometryPipeline.toWireframe = function(geometry) {
-                if (!defined(geometry)) {
-            throw new DeveloperError('geometry is required.');
-        }
         
         var indices = geometry.indices;
         if (defined(indices)) {
@@ -48143,8 +48047,6 @@ define('Core/GeometryPipeline',[
                 case PrimitiveType.TRIANGLE_FAN:
                     geometry.indices = triangleFanToLines(indices);
                     break;
-                                default:
-                    throw new DeveloperError('geometry.primitiveType must be TRIANGLES, TRIANGLE_STRIP, or TRIANGLE_FAN.');
                             }
 
             geometry.primitiveType = PrimitiveType.LINES;
@@ -48171,15 +48073,6 @@ define('Core/GeometryPipeline',[
     GeometryPipeline.createLineSegmentsForVectors = function(geometry, attributeName, length) {
         attributeName = defaultValue(attributeName, 'normal');
 
-                if (!defined(geometry)) {
-            throw new DeveloperError('geometry is required.');
-        }
-        if (!defined(geometry.attributes.position)) {
-            throw new DeveloperError('geometry.attributes.position is required.');
-        }
-        if (!defined(geometry.attributes[attributeName])) {
-            throw new DeveloperError('geometry.attributes must have an attribute with the same name as the attributeName parameter, ' + attributeName + '.');
-        }
         
         length = defaultValue(length, 10000.0);
 
@@ -48235,9 +48128,6 @@ define('Core/GeometryPipeline',[
      * // }
      */
     GeometryPipeline.createAttributeLocations = function(geometry) {
-                if (!defined(geometry)) {
-            throw new DeveloperError('geometry is required.');
-        }
         
         // There can be a WebGL performance hit when attribute 0 is disabled, so
         // assign attribute locations to well-known attributes.
@@ -48308,9 +48198,6 @@ define('Core/GeometryPipeline',[
      * @see GeometryPipeline.reorderForPostVertexCache
      */
     GeometryPipeline.reorderForPreVertexCache = function(geometry) {
-                if (!defined(geometry)) {
-            throw new DeveloperError('geometry is required.');
-        }
         
         var numVertices = Geometry.computeNumberOfVertices(geometry);
 
@@ -48395,9 +48282,6 @@ define('Core/GeometryPipeline',[
      * by Sander, Nehab, and Barczak
      */
     GeometryPipeline.reorderForPostVertexCache = function(geometry, cacheCapacity) {
-                if (!defined(geometry)) {
-            throw new DeveloperError('geometry is required.');
-        }
         
         var indices = geometry.indices;
         if ((geometry.primitiveType === PrimitiveType.TRIANGLES) && (defined(indices))) {
@@ -48472,15 +48356,6 @@ define('Core/GeometryPipeline',[
      * var geometries = Cesium.GeometryPipeline.fitToUnsignedShortIndices(geometry);
      */
     GeometryPipeline.fitToUnsignedShortIndices = function(geometry) {
-                if (!defined(geometry)) {
-            throw new DeveloperError('geometry is required.');
-        }
-        if ((defined(geometry.indices)) &&
-            ((geometry.primitiveType !== PrimitiveType.TRIANGLES) &&
-             (geometry.primitiveType !== PrimitiveType.LINES) &&
-             (geometry.primitiveType !== PrimitiveType.POINTS))) {
-            throw new DeveloperError('geometry.primitiveType must equal to PrimitiveType.TRIANGLES, PrimitiveType.LINES, or PrimitiveType.POINTS.');
-        }
         
         var geometries = [];
 
@@ -48577,24 +48452,6 @@ define('Core/GeometryPipeline',[
      * geometry = Cesium.GeometryPipeline.projectTo2D(geometry, 'position', 'position3D', 'position2D');
      */
     GeometryPipeline.projectTo2D = function(geometry, attributeName, attributeName3D, attributeName2D, projection) {
-                if (!defined(geometry)) {
-            throw new DeveloperError('geometry is required.');
-        }
-        if (!defined(attributeName)) {
-            throw new DeveloperError('attributeName is required.');
-        }
-        if (!defined(attributeName3D)) {
-            throw new DeveloperError('attributeName3D is required.');
-        }
-        if (!defined(attributeName2D)) {
-            throw new DeveloperError('attributeName2D is required.');
-        }
-        if (!defined(geometry.attributes[attributeName])) {
-            throw new DeveloperError('geometry must have attribute matching the attributeName argument: ' + attributeName + '.');
-        }
-        if (geometry.attributes[attributeName].componentDatatype !== ComponentDatatype.DOUBLE) {
-            throw new DeveloperError('The attribute componentDatatype must be ComponentDatatype.DOUBLE.');
-        }
         
         var attribute = geometry.attributes[attributeName];
         projection = (defined(projection)) ? projection : new GeographicProjection();
@@ -48609,9 +48466,6 @@ define('Core/GeometryPipeline',[
             var value = Cartesian3.fromArray(values3D, i, scratchProjectTo2DCartesian3);
 
             var lonLat = ellipsoid.cartesianToCartographic(value, scratchProjectTo2DCartographic);
-                        if (!defined(lonLat)) {
-                throw new DeveloperError('Could not project point (' + value.x + ', ' + value.y + ', ' + value.z + ') to 2D.');
-            }
             
             var projectedLonLat = projection.project(lonLat, scratchProjectTo2DCartesian3);
 
@@ -48659,24 +48513,6 @@ define('Core/GeometryPipeline',[
      * geometry = Cesium.GeometryPipeline.encodeAttribute(geometry, 'position3D', 'position3DHigh', 'position3DLow');
      */
     GeometryPipeline.encodeAttribute = function(geometry, attributeName, attributeHighName, attributeLowName) {
-                if (!defined(geometry)) {
-            throw new DeveloperError('geometry is required.');
-        }
-        if (!defined(attributeName)) {
-            throw new DeveloperError('attributeName is required.');
-        }
-        if (!defined(attributeHighName)) {
-            throw new DeveloperError('attributeHighName is required.');
-        }
-        if (!defined(attributeLowName)) {
-            throw new DeveloperError('attributeLowName is required.');
-        }
-        if (!defined(geometry.attributes[attributeName])) {
-            throw new DeveloperError('geometry must have attribute matching the attributeName argument: ' + attributeName + '.');
-        }
-        if (geometry.attributes[attributeName].componentDatatype !== ComponentDatatype.DOUBLE) {
-            throw new DeveloperError('The attribute componentDatatype must be ComponentDatatype.DOUBLE.');
-        }
         
         var attribute = geometry.attributes[attributeName];
         var values = attribute.values;
@@ -48750,9 +48586,6 @@ define('Core/GeometryPipeline',[
      * Cesium.GeometryPipeline.transformToWorldCoordinates(instance);
      */
     GeometryPipeline.transformToWorldCoordinates = function(instance) {
-                if (!defined(instance)) {
-            throw new DeveloperError('instance is required.');
-        }
         
         var modelMatrix = instance.modelMatrix;
 
@@ -48852,17 +48685,6 @@ define('Core/GeometryPipeline',[
         var haveIndices = (defined(instances[0][propertyName].indices));
         var primitiveType = instances[0][propertyName].primitiveType;
 
-                for (i = 1; i < length; ++i) {
-            if (!Matrix4.equals(instances[i].modelMatrix, m)) {
-                throw new DeveloperError('All instances must have the same modelMatrix.');
-            }
-            if ((defined(instances[i][propertyName].indices)) !== haveIndices) {
-                throw new DeveloperError('All instance geometries must have an indices or not have one.');
-            }
-            if (instances[i][propertyName].primitiveType !== primitiveType) {
-                throw new DeveloperError('All instance geometries must have the same primitiveType.');
-            }
-        }
         
         // Find subset of attributes in all geometries
         var attributes = findAttributesInAllGeometries(instances, propertyName);
@@ -48987,9 +48809,6 @@ define('Core/GeometryPipeline',[
      * @see GeometryPipeline.transformToWorldCoordinates
      */
     GeometryPipeline.combineInstances = function(instances) {
-                if ((!defined(instances)) || (instances.length < 1)) {
-            throw new DeveloperError('instances is required and must have length greater than zero.');
-        }
         
         var instanceGeometry = [];
         var instanceSplitGeometry = [];
@@ -49037,21 +48856,6 @@ define('Core/GeometryPipeline',[
      * Cesium.GeometryPipeline.computeNormal(geometry);
      */
     GeometryPipeline.computeNormal = function(geometry) {
-                if (!defined(geometry)) {
-            throw new DeveloperError('geometry is required.');
-        }
-        if (!defined(geometry.attributes.position) || !defined(geometry.attributes.position.values)) {
-            throw new DeveloperError('geometry.attributes.position.values is required.');
-        }
-        if (!defined(geometry.indices)) {
-            throw new DeveloperError('geometry.indices is required.');
-        }
-        if (geometry.indices.length < 2 || geometry.indices.length % 3 !== 0) {
-            throw new DeveloperError('geometry.indices length must be greater than 0 and be a multiple of 3.');
-        }
-        if (geometry.primitiveType !== PrimitiveType.TRIANGLES) {
-            throw new DeveloperError('geometry.primitiveType must be PrimitiveType.TRIANGLES.');
-        }
         
         var indices = geometry.indices;
         var attributes = geometry.attributes;
@@ -49186,31 +48990,10 @@ define('Core/GeometryPipeline',[
      * Cesium.GeometryPipeline.computeTangentAndBiTangent(geometry);
      */
     GeometryPipeline.computeTangentAndBitangent = function(geometry) {
-                if (!defined(geometry)) {
-            throw new DeveloperError('geometry is required.');
-        }
         
         var attributes = geometry.attributes;
         var indices = geometry.indices;
 
-                if (!defined(attributes.position) || !defined(attributes.position.values)) {
-            throw new DeveloperError('geometry.attributes.position.values is required.');
-        }
-        if (!defined(attributes.normal) || !defined(attributes.normal.values)) {
-            throw new DeveloperError('geometry.attributes.normal.values is required.');
-        }
-        if (!defined(attributes.st) || !defined(attributes.st.values)) {
-            throw new DeveloperError('geometry.attributes.st.values is required.');
-        }
-        if (!defined(indices)) {
-            throw new DeveloperError('geometry.indices is required.');
-        }
-        if (indices.length < 2 || indices.length % 3 !== 0) {
-            throw new DeveloperError('geometry.indices length must be greater than 0 and be a multiple of 3.');
-        }
-        if (geometry.primitiveType !== PrimitiveType.TRIANGLES) {
-            throw new DeveloperError('geometry.primitiveType must be PrimitiveType.TRIANGLES.');
-        }
         
         var vertices = geometry.attributes.position.values;
         var normals = geometry.attributes.normal.values;
@@ -49321,9 +49104,6 @@ define('Core/GeometryPipeline',[
      * geometry = Cesium.GeometryPipeline.compressVertices(geometry);
      */
     GeometryPipeline.compressVertices = function(geometry) {
-                if (!defined(geometry)) {
-            throw new DeveloperError('geometry is required.');
-        }
         
         var extrudeAttribute = geometry.attributes.extrudeDirection;
         var i;
@@ -49461,12 +49241,6 @@ define('Core/GeometryPipeline',[
         }
         var numberOfVertices = Geometry.computeNumberOfVertices(geometry);
 
-                if (numberOfVertices < 3) {
-            throw new DeveloperError('The number of vertices must be at least three.');
-        }
-        if (numberOfVertices % 3 !== 0) {
-            throw new DeveloperError('The number of vertices must be a multiple of three.');
-        }
         
         var indices = IndexDatatype.createTypedArray(numberOfVertices, numberOfVertices);
         for (var i = 0; i < numberOfVertices; ++i) {
@@ -49480,9 +49254,6 @@ define('Core/GeometryPipeline',[
     function indexTriangleFan(geometry) {
         var numberOfVertices = Geometry.computeNumberOfVertices(geometry);
 
-                if (numberOfVertices < 3) {
-            throw new DeveloperError('The number of vertices must be at least three.');
-        }
         
         var indices = IndexDatatype.createTypedArray(numberOfVertices, (numberOfVertices - 2) * 3);
         indices[0] = 1;
@@ -49504,9 +49275,6 @@ define('Core/GeometryPipeline',[
     function indexTriangleStrip(geometry) {
         var numberOfVertices = Geometry.computeNumberOfVertices(geometry);
 
-                if (numberOfVertices < 3) {
-            throw new DeveloperError('The number of vertices must be at least 3.');
-        }
         
         var indices = IndexDatatype.createTypedArray(numberOfVertices, (numberOfVertices - 2) * 3);
         indices[0] = 0;
@@ -49543,12 +49311,6 @@ define('Core/GeometryPipeline',[
         }
         var numberOfVertices = Geometry.computeNumberOfVertices(geometry);
 
-                if (numberOfVertices < 2) {
-            throw new DeveloperError('The number of vertices must be at least two.');
-        }
-        if (numberOfVertices % 2 !== 0) {
-            throw new DeveloperError('The number of vertices must be a multiple of 2.');
-        }
         
         var indices = IndexDatatype.createTypedArray(numberOfVertices, numberOfVertices);
         for (var i = 0; i < numberOfVertices; ++i) {
@@ -49562,9 +49324,6 @@ define('Core/GeometryPipeline',[
     function indexLineStrip(geometry) {
         var numberOfVertices = Geometry.computeNumberOfVertices(geometry);
 
-                if (numberOfVertices < 2) {
-            throw new DeveloperError('The number of vertices must be at least two.');
-        }
         
         var indices = IndexDatatype.createTypedArray(numberOfVertices, (numberOfVertices - 1) * 2);
         indices[0] = 0;
@@ -49583,9 +49342,6 @@ define('Core/GeometryPipeline',[
     function indexLineLoop(geometry) {
         var numberOfVertices = Geometry.computeNumberOfVertices(geometry);
 
-                if (numberOfVertices < 2) {
-            throw new DeveloperError('The number of vertices must be at least two.');
-        }
         
         var indices = IndexDatatype.createTypedArray(numberOfVertices, numberOfVertices * 2);
 
@@ -50521,9 +50277,6 @@ define('Core/GeometryPipeline',[
      * instance = Cesium.GeometryPipeline.splitLongitude(instance);
      */
     GeometryPipeline.splitLongitude = function(instance) {
-                if (!defined(instance)) {
-            throw new DeveloperError('instance is required.');
-        }
         
         var geometry = instance.geometry;
         var boundingSphere = geometry.boundingSphere;
@@ -50663,7 +50416,6 @@ define('Core/OffsetGeometryInstanceAttribute',[
      * @returns {OffsetGeometryInstanceAttribute} The new {@link OffsetGeometryInstanceAttribute} instance.
      */
     OffsetGeometryInstanceAttribute.fromCartesian3 = function(offset) {
-                Check.defined('offset', offset);
         
         return new OffsetGeometryInstanceAttribute(offset.x, offset.y, offset.z);
     };
@@ -50680,7 +50432,6 @@ define('Core/OffsetGeometryInstanceAttribute',[
      * attributes.modelMatrix = Cesium.OffsetGeometryInstanceAttribute.toValue(modelMatrix, attributes.modelMatrix);
      */
     OffsetGeometryInstanceAttribute.toValue = function(offset, result) {
-                Check.defined('offset', offset);
         
         if (!defined(result)) {
             result = new Float32Array([offset.x, offset.y, offset.z]);
@@ -50817,11 +50568,6 @@ define('Scene/PrimitivePipeline',[
             }
         }
 
-                for (i = 1; i < length; ++i) {
-            if (defined(instances[i].geometry) && instances[i].geometry.primitiveType !== primitiveType) {
-                throw new DeveloperError('All instance geometries must have the same primitiveType.');
-            }
-        }
         
         // Unify to world coordinates before combining.
         transformToWorldCoordinates(instances, modelMatrix, scene3DOnly);
@@ -51931,9 +51677,6 @@ define('Scene/Primitive',[
          */
         this.rtcCenter = options.rtcCenter;
 
-                if (defined(this.rtcCenter) && (!defined(this.geometryInstances) || (isArray(this.geometryInstances) && this.geometryInstances !== 1))) {
-            throw new DeveloperError('Relative-to-center rendering only supports one geometry instance.');
-        }
         
         /**
          * Determines whether this primitive casts or receives shadows from each light source.
@@ -52462,9 +52205,6 @@ define('Scene/Primitive',[
             return vertexShaderSource;
         }
 
-                if (isDepthFail && !defined(primitive._batchTableAttributeIndices.depthFailColor)) {
-            throw new DeveloperError('A depthFailColor per-instance attribute is required when using a depth fail appearance that uses a color attribute.');
-        }
         
         var modifiedVS = vertexShaderSource;
         modifiedVS = modifiedVS.replace(/attribute\s+vec4\s+color;/g, '');
@@ -52697,14 +52437,6 @@ define('Scene/Primitive',[
         // to match the shader program.
         var shaderAttributes = shaderProgram.vertexAttributes;
 
-                for (var name in shaderAttributes) {
-            if (shaderAttributes.hasOwnProperty(name)) {
-                if (!defined(attributeLocations[name])) {
-                    throw new DeveloperError('Appearance/Geometry mismatch.  The appearance requires vertex shader attribute input \'' + name +
-                                             '\', which was not computed as part of the Geometry.  Use the appearance\'s vertexFormat property when constructing the geometry.');
-                }
-            }
-        }
             }
 
     function getUniformFunction(uniforms, name) {
@@ -52735,9 +52467,6 @@ define('Scene/Primitive',[
                 geometry = instances[i].geometry;
                 instanceIds.push(instances[i].id);
 
-                                if (!defined(geometry._workerName)) {
-                    throw new DeveloperError('_workerName must be defined for asynchronous geometry.');
-                }
                 
                 subTasks.push({
                     moduleName : geometry._workerName,
@@ -53246,10 +52975,6 @@ define('Scene/Primitive',[
             // Convert to uniform map of functions for the renderer
             for (var name in appearanceUniforms) {
                 if (appearanceUniforms.hasOwnProperty(name)) {
-                                        if (defined(materialUniformMap) && defined(materialUniformMap[name])) {
-                        // Later, we could rename uniforms behind-the-scenes if needed.
-                        throw new DeveloperError('Appearance and material have a uniform with the same name: ' + name);
-                    }
                     
                     appearanceUniformMap[name] = getUniformFunction(appearanceUniforms, name);
                 }
@@ -53395,9 +53120,6 @@ define('Scene/Primitive',[
     };
 
     function updateAndQueueCommands(primitive, frameState, colorCommands, pickCommands, modelMatrix, cull, debugShowBoundingVolume, twoPasses) {
-                if (frameState.mode !== SceneMode.SCENE3D && !Matrix4.equals(modelMatrix, Matrix4.IDENTITY)) {
-            throw new DeveloperError('Primitive.modelMatrix is only supported in 3D mode.');
-        }
         
         Primitive._updateBoundingVolumes(primitive, frameState, modelMatrix);
 
@@ -53470,9 +53192,6 @@ define('Scene/Primitive',[
             throw this._error;
         }
 
-                if (defined(this.rtcCenter) && !frameState.scene3DOnly) {
-            throw new DeveloperError('RTC rendering is only available for 3D only scenes.');
-        }
         
         if (this._state === PrimitiveState.FAILED) {
             return;
@@ -53606,9 +53325,6 @@ define('Scene/Primitive',[
 
     function createSetFunction(batchTable, instanceIndex, attributeIndex, primitive, name) {
         return function(value) {
-                        if (!defined(value) || !defined(value.length) || value.length < 1 || value.length > 4) {
-                throw new DeveloperError('value must be and array with length between 1 and 4.');
-            }
                         var attributeValue = getAttributeValue(value);
             batchTable.setBatchedAttribute(instanceIndex, attributeIndex, attributeValue);
             if (name === 'offset') {
@@ -53670,12 +53386,6 @@ define('Scene/Primitive',[
      * attributes.offset = Cesium.OffsetGeometryInstanceAttribute.toValue(Cartesian3.IDENTITY);
      */
     Primitive.prototype.getGeometryInstanceAttributes = function(id) {
-                if (!defined(id)) {
-            throw new DeveloperError('id is required');
-        }
-        if (!defined(this._batchTable)) {
-            throw new DeveloperError('must call update before calling getGeometryInstanceAttributes');
-        }
         
         var index = -1;
         var lastIndex = this._lastPerInstanceAttributeIndex;
@@ -54403,9 +54113,6 @@ define('Scene/GroundPolylinePrimitive',[
         }
 
         if (!GroundPolylinePrimitive._initialized) {
-                        if (!this.asynchronous) {
-                throw new DeveloperError('For synchronous GroundPolylinePrimitives, you must call GroundPolylinePrimitives.initializeTerrainHeights() and wait for the returned promise to resolve.');
-            }
             
             GroundPolylinePrimitive.initializeTerrainHeights();
             return;
@@ -54515,9 +54222,6 @@ define('Scene/GroundPolylinePrimitive',[
      * attributes.show = Cesium.ShowGeometryInstanceAttribute.toValue(true);
      */
     GroundPolylinePrimitive.prototype.getGeometryInstanceAttributes = function(id) {
-                if (!defined(this._primitive)) {
-            throw new DeveloperError('must call update before calling getGeometryInstanceAttributes');
-        }
                 return this._primitive.getGeometryInstanceAttributes(id);
     };
 

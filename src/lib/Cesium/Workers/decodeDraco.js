@@ -98,7 +98,6 @@ define('Core/defaultValue',[
     /**
      * A frozen empty object that can be used as the default value for options passed as
      * an object literal.
-     * @type {Object}
      */
     defaultValue.EMPTY_OBJECT = freezeObject({});
 
@@ -1501,9 +1500,6 @@ define('Core/ComponentDatatype',[
      * var size = Cesium.ComponentDatatype.getSizeInBytes(Cesium.ComponentDatatype.BYTE);
      */
     ComponentDatatype.getSizeInBytes = function(componentDatatype){
-                if (!defined(componentDatatype)) {
-            throw new DeveloperError('value is required.');
-        }
         
         switch (componentDatatype) {
         case ComponentDatatype.BYTE:
@@ -1522,8 +1518,6 @@ define('Core/ComponentDatatype',[
             return Float32Array.BYTES_PER_ELEMENT;
         case ComponentDatatype.DOUBLE:
             return Float64Array.BYTES_PER_ELEMENT;
-                default:
-            throw new DeveloperError('componentDatatype is not a valid value.');
                 }
     };
 
@@ -1597,12 +1591,6 @@ define('Core/ComponentDatatype',[
      * var typedArray = Cesium.ComponentDatatype.createTypedArray(Cesium.ComponentDatatype.FLOAT, 100);
      */
     ComponentDatatype.createTypedArray = function(componentDatatype, valuesOrLength) {
-                if (!defined(componentDatatype)) {
-            throw new DeveloperError('componentDatatype is required.');
-        }
-        if (!defined(valuesOrLength)) {
-            throw new DeveloperError('valuesOrLength is required.');
-        }
         
         switch (componentDatatype) {
         case ComponentDatatype.BYTE:
@@ -1621,8 +1609,6 @@ define('Core/ComponentDatatype',[
             return new Float32Array(valuesOrLength);
         case ComponentDatatype.DOUBLE:
             return new Float64Array(valuesOrLength);
-                default:
-            throw new DeveloperError('componentDatatype is not a valid value.');
                 }
     };
 
@@ -1638,12 +1624,6 @@ define('Core/ComponentDatatype',[
      * @exception {DeveloperError} componentDatatype is not a valid value.
      */
     ComponentDatatype.createArrayBufferView = function(componentDatatype, buffer, byteOffset, length) {
-                if (!defined(componentDatatype)) {
-            throw new DeveloperError('componentDatatype is required.');
-        }
-        if (!defined(buffer)) {
-            throw new DeveloperError('buffer is required.');
-        }
         
         byteOffset = defaultValue(byteOffset, 0);
         length = defaultValue(length, (buffer.byteLength - byteOffset) / ComponentDatatype.getSizeInBytes(componentDatatype));
@@ -1665,8 +1645,6 @@ define('Core/ComponentDatatype',[
             return new Float32Array(buffer, byteOffset, length);
         case ComponentDatatype.DOUBLE:
             return new Float64Array(buffer, byteOffset, length);
-                default:
-            throw new DeveloperError('componentDatatype is not a valid value.');
                 }
     };
 
@@ -1696,8 +1674,6 @@ define('Core/ComponentDatatype',[
                 return ComponentDatatype.FLOAT;
             case 'DOUBLE':
                 return ComponentDatatype.DOUBLE;
-                        default:
-                throw new DeveloperError('name is not a valid value.');
                     }
     };
 
@@ -2257,8 +2233,7 @@ define('Core/Math',[
     CesiumMath.EPSILON20 = 0.00000000000000000001;
 
     /**
-     * The gravitational parameter of the Earth in meters cubed
-     * per second squared as defined by the WGS84 model: 3.986004418e14
+     * 3.986004418e14
      * @type {Number}
      * @constant
      */
@@ -2511,9 +2486,6 @@ define('Core/Math',[
      * @returns {Number} The corresponding angle in radians.
      */
     CesiumMath.toRadians = function(degrees) {
-                if (!defined(degrees)) {
-            throw new DeveloperError('degrees is required.');
-        }
                 return degrees * CesiumMath.RADIANS_PER_DEGREE;
     };
 
@@ -2523,9 +2495,6 @@ define('Core/Math',[
      * @returns {Number} The corresponding angle in degrees.
      */
     CesiumMath.toDegrees = function(radians) {
-                if (!defined(radians)) {
-            throw new DeveloperError('radians is required.');
-        }
                 return radians * CesiumMath.DEGREES_PER_RADIAN;
     };
 
@@ -2540,9 +2509,6 @@ define('Core/Math',[
      * var longitude = Cesium.Math.convertLongitudeRange(Cesium.Math.toRadians(270.0));
      */
     CesiumMath.convertLongitudeRange = function(angle) {
-                if (!defined(angle)) {
-            throw new DeveloperError('angle is required.');
-        }
                 var twoPi = CesiumMath.TWO_PI;
 
         var simplified = angle - Math.floor(angle / twoPi) * twoPi;
@@ -2569,9 +2535,6 @@ define('Core/Math',[
      * var latitude = Cesium.Math.clampToLatitudeRange(Cesium.Math.toRadians(108.0));
      */
     CesiumMath.clampToLatitudeRange = function(angle) {
-                if (!defined(angle)) {
-            throw new DeveloperError('angle is required.');
-        }
         
         return CesiumMath.clamp(angle, -1*CesiumMath.PI_OVER_TWO, CesiumMath.PI_OVER_TWO);
     };
@@ -2583,9 +2546,6 @@ define('Core/Math',[
      * @returns {Number} The angle in the range [<code>-CesiumMath.PI</code>, <code>CesiumMath.PI</code>].
      */
     CesiumMath.negativePiToPi = function(angle) {
-                if (!defined(angle)) {
-            throw new DeveloperError('angle is required.');
-        }
                 return CesiumMath.zeroToTwoPi(angle + CesiumMath.PI) - CesiumMath.PI;
     };
 
@@ -2596,9 +2556,6 @@ define('Core/Math',[
      * @returns {Number} The angle in the range [0, <code>CesiumMath.TWO_PI</code>].
      */
     CesiumMath.zeroToTwoPi = function(angle) {
-                if (!defined(angle)) {
-            throw new DeveloperError('angle is required.');
-        }
                 var mod = CesiumMath.mod(angle, CesiumMath.TWO_PI);
         if (Math.abs(mod) < CesiumMath.EPSILON14 && Math.abs(angle) > CesiumMath.EPSILON14) {
             return CesiumMath.TWO_PI;
@@ -2614,12 +2571,6 @@ define('Core/Math',[
      * @returns {Number} The remainder.
      */
     CesiumMath.mod = function(m, n) {
-                if (!defined(m)) {
-            throw new DeveloperError('m is required.');
-        }
-        if (!defined(n)) {
-            throw new DeveloperError('n is required.');
-        }
                 return ((m % n) + n) % n;
     };
 
@@ -2642,15 +2593,6 @@ define('Core/Math',[
      * var d = Cesium.Math.equalsEpsilon(3699175.1634344, 3699175.2, Cesium.Math.EPSILON9); // false
      */
     CesiumMath.equalsEpsilon = function(left, right, relativeEpsilon, absoluteEpsilon) {
-                if (!defined(left)) {
-            throw new DeveloperError('left is required.');
-        }
-        if (!defined(right)) {
-            throw new DeveloperError('right is required.');
-        }
-        if (!defined(relativeEpsilon)) {
-            throw new DeveloperError('relativeEpsilon is required.');
-        }
                 absoluteEpsilon = defaultValue(absoluteEpsilon, relativeEpsilon);
         var absDiff = Math.abs(left - right);
         return absDiff <= absoluteEpsilon || absDiff <= relativeEpsilon * Math.max(Math.abs(left), Math.abs(right));
@@ -2674,9 +2616,6 @@ define('Core/Math',[
      * @see {@link http://en.wikipedia.org/wiki/Factorial|Factorial on Wikipedia}
      */
     CesiumMath.factorial = function(n) {
-                if (typeof n !== 'number' || n < 0) {
-            throw new DeveloperError('A number greater than or equal to 0 is required.');
-        }
         
         var length = factorials.length;
         if (n >= length) {
@@ -2705,12 +2644,6 @@ define('Core/Math',[
     CesiumMath.incrementWrap = function(n, maximumValue, minimumValue) {
         minimumValue = defaultValue(minimumValue, 0.0);
 
-                if (!defined(n)) {
-            throw new DeveloperError('n is required.');
-        }
-        if (maximumValue <= minimumValue) {
-            throw new DeveloperError('maximumValue must be greater than minimumValue.');
-        }
         
         ++n;
         if (n > maximumValue) {
@@ -2732,9 +2665,6 @@ define('Core/Math',[
      * var f = Cesium.Math.isPowerOfTwo(20); // false
      */
     CesiumMath.isPowerOfTwo = function(n) {
-                if (typeof n !== 'number' || n < 0) {
-            throw new DeveloperError('A number greater than or equal to 0 is required.');
-        }
         
         return (n !== 0) && ((n & (n - 1)) === 0);
     };
@@ -2752,9 +2682,6 @@ define('Core/Math',[
      * var m = Cesium.Math.nextPowerOfTwo(32); // 32
      */
     CesiumMath.nextPowerOfTwo = function(n) {
-                if (typeof n !== 'number' || n < 0) {
-            throw new DeveloperError('A number greater than or equal to 0 is required.');
-        }
         
         // From http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
         --n;
@@ -2777,15 +2704,6 @@ define('Core/Math',[
      * @returns {Number} The value clamped so that min <= value <= max.
      */
     CesiumMath.clamp = function(value, min, max) {
-                if (!defined(value)) {
-            throw new DeveloperError('value is required');
-        }
-        if (!defined(min)) {
-            throw new DeveloperError('min is required.');
-        }
-        if (!defined(max)) {
-            throw new DeveloperError('max is required.');
-        }
                 return value < min ? min : value > max ? max : value;
     };
 
@@ -2798,9 +2716,6 @@ define('Core/Math',[
      * @param {Number} seed An integer used as the seed.
      */
     CesiumMath.setRandomNumberSeed = function(seed) {
-                if (!defined(seed)) {
-            throw new DeveloperError('seed is required.');
-        }
         
         randomNumberGenerator = new MersenneTwister(seed);
     };
@@ -2838,9 +2753,6 @@ define('Core/Math',[
      *          whichever is closer, if the value is outside the range.
      */
     CesiumMath.acosClamped = function(value) {
-                if (!defined(value)) {
-            throw new DeveloperError('value is required.');
-        }
                 return Math.acos(CesiumMath.clamp(value, -1.0, 1.0));
     };
 
@@ -2853,9 +2765,6 @@ define('Core/Math',[
      *          whichever is closer, if the value is outside the range.
      */
     CesiumMath.asinClamped = function(value) {
-                if (!defined(value)) {
-            throw new DeveloperError('value is required.');
-        }
                 return Math.asin(CesiumMath.clamp(value, -1.0, 1.0));
     };
 
@@ -2867,12 +2776,6 @@ define('Core/Math',[
      * @returns {Number} The chord length.
      */
     CesiumMath.chordLength = function(angle, radius) {
-                if (!defined(angle)) {
-            throw new DeveloperError('angle is required.');
-        }
-        if (!defined(radius)) {
-            throw new DeveloperError('radius is required.');
-        }
                 return 2.0 * radius * Math.sin(angle * 0.5);
     };
 
@@ -2884,12 +2787,6 @@ define('Core/Math',[
      * @returns {Number} The result.
      */
     CesiumMath.logBase = function(number, base) {
-                if (!defined(number)) {
-            throw new DeveloperError('number is required.');
-        }
-        if (!defined(base)) {
-            throw new DeveloperError('base is required.');
-        }
                 return Math.log(number) / Math.log(base);
     };
 
@@ -2937,7 +2834,6 @@ define('Core/Math',[
      * @returns {Number} An approximation of atan(x)
      */
     CesiumMath.fastApproximateAtan = function(x) {
-                Check.typeOf.number('x', x);
         
         return x * (-0.1784 * Math.abs(x) - 0.0663 * x * x + 1.0301);
     };
@@ -2952,8 +2848,6 @@ define('Core/Math',[
      * @returns {Number} An approximation of atan2(x, y)
      */
     CesiumMath.fastApproximateAtan2 = function(x, y) {
-                Check.typeOf.number('x', x);
-        Check.typeOf.number('y', y);
         
         // atan approximations are usually only reliable over [-1, 1]
         // So reduce the range by flipping whether x or y is on top based on which is bigger.
@@ -2965,9 +2859,6 @@ define('Core/Math',[
         opposite = Math.min(t, opposite);
 
         var oppositeOverAdjacent = opposite / adjacent;
-                if (isNaN(oppositeOverAdjacent)) {
-            throw new DeveloperError('either x or y must be nonzero');
-        }
                 t = CesiumMath.fastApproximateAtan(oppositeOverAdjacent);
 
         // Undo range reduction
@@ -3049,7 +2940,6 @@ define('Core/IndexDatatype',[
                 return Uint32Array.BYTES_PER_ELEMENT;
         }
 
-                throw new DeveloperError('indexDatatype is required and must be a valid IndexDatatype constant.');
             };
 
     /**
@@ -3082,9 +2972,6 @@ define('Core/IndexDatatype',[
      * this.indices = Cesium.IndexDatatype.createTypedArray(positions.length / 3, numberOfIndices);
      */
     IndexDatatype.createTypedArray = function(numberOfVertices, indicesLengthOrArray) {
-                if (!defined(numberOfVertices)) {
-            throw new DeveloperError('numberOfVertices is required.');
-        }
         
         if (numberOfVertices >= CesiumMath.SIXTY_FOUR_KILOBYTES) {
             return new Uint32Array(indicesLengthOrArray);
@@ -3105,15 +2992,6 @@ define('Core/IndexDatatype',[
      *
      */
     IndexDatatype.createTypedArrayFromArrayBuffer = function(numberOfVertices, sourceArray, byteOffset, length) {
-                if (!defined(numberOfVertices)) {
-            throw new DeveloperError('numberOfVertices is required.');
-        }
-        if (!defined(sourceArray)) {
-            throw new DeveloperError('sourceArray is required.');
-        }
-        if (!defined(byteOffset)) {
-            throw new DeveloperError('byteOffset is required.');
-        }
         
         if (numberOfVertices >= CesiumMath.SIXTY_FOUR_KILOBYTES) {
             return new Uint32Array(sourceArray, byteOffset, length);
@@ -4135,8 +4013,9 @@ define('Workers/decodeDraco',[
     'use strict';
 
     var draco;
+    var dracoDecoder;
 
-    function decodeIndexArray(dracoGeometry, dracoDecoder) {
+    function decodeIndexArray(dracoGeometry) {
         var numPoints = dracoGeometry.num_points();
         var numFaces = dracoGeometry.num_faces();
         var faceIndices = new draco.DracoInt32Array();
@@ -4161,18 +4040,15 @@ define('Workers/decodeDraco',[
         };
     }
 
-    function decodeQuantizedDracoTypedArray(dracoGeometry, dracoDecoder, dracoAttribute, quantization, vertexArrayLength) {
+    function decodeQuantizedDracoTypedArray(dracoGeometry, attribute, quantization, vertexArrayLength) {
         var vertexArray;
-        var attributeData;
-        if (quantization.quantizationBits <= 8) {
-            attributeData = new draco.DracoUInt8Array();
-            vertexArray = new Uint8Array(vertexArrayLength);
-            dracoDecoder.GetAttributeUInt8ForAllPoints(dracoGeometry, dracoAttribute, attributeData);
+        var attributeData = new draco.DracoInt32Array();
+        if (quantization.octEncoded) {
+            vertexArray = new Int16Array(vertexArrayLength);
         } else {
-            attributeData = new draco.DracoUInt16Array();
             vertexArray = new Uint16Array(vertexArrayLength);
-            dracoDecoder.GetAttributeUInt16ForAllPoints(dracoGeometry, dracoAttribute, attributeData);
         }
+        dracoDecoder.GetAttributeInt32ForAllPoints(dracoGeometry, attribute, attributeData);
 
         for (var i = 0; i < vertexArrayLength; ++i) {
             vertexArray[i] = attributeData.GetValue(i);
@@ -4182,46 +4058,46 @@ define('Workers/decodeDraco',[
         return vertexArray;
     }
 
-    function decodeDracoTypedArray(dracoGeometry, dracoDecoder, dracoAttribute, vertexArrayLength) {
+    function decodeDracoTypedArray(dracoGeometry, attribute, vertexArrayLength) {
         var vertexArray;
         var attributeData;
 
         // Some attribute types are casted down to 32 bit since Draco only returns 32 bit values
-        switch (dracoAttribute.data_type()) {
+        switch (attribute.data_type()) {
             case 1: case 11: // DT_INT8 or DT_BOOL
                 attributeData = new draco.DracoInt8Array();
                 vertexArray = new Int8Array(vertexArrayLength);
-                dracoDecoder.GetAttributeInt8ForAllPoints(dracoGeometry, dracoAttribute, attributeData);
+                dracoDecoder.GetAttributeInt8ForAllPoints(dracoGeometry, attribute, attributeData);
                 break;
             case 2: // DT_UINT8
                 attributeData = new draco.DracoUInt8Array();
                 vertexArray = new Uint8Array(vertexArrayLength);
-                dracoDecoder.GetAttributeUInt8ForAllPoints(dracoGeometry, dracoAttribute, attributeData);
+                dracoDecoder.GetAttributeUInt8ForAllPoints(dracoGeometry, attribute, attributeData);
                 break;
             case 3: // DT_INT16
                 attributeData = new draco.DracoInt16Array();
                 vertexArray = new Int16Array(vertexArrayLength);
-                dracoDecoder.GetAttributeInt16ForAllPoints(dracoGeometry, dracoAttribute, attributeData);
+                dracoDecoder.GetAttributeInt16ForAllPoints(dracoGeometry, attribute, attributeData);
                 break;
             case 4: // DT_UINT16
                 attributeData = new draco.DracoUInt16Array();
                 vertexArray = new Uint16Array(vertexArrayLength);
-                dracoDecoder.GetAttributeUInt16ForAllPoints(dracoGeometry, dracoAttribute, attributeData);
+                dracoDecoder.GetAttributeUInt16ForAllPoints(dracoGeometry, attribute, attributeData);
                 break;
             case 5: case 7: // DT_INT32 or DT_INT64
                 attributeData = new draco.DracoInt32Array();
                 vertexArray = new Int32Array(vertexArrayLength);
-                dracoDecoder.GetAttributeInt32ForAllPoints(dracoGeometry, dracoAttribute, attributeData);
+                dracoDecoder.GetAttributeInt32ForAllPoints(dracoGeometry, attribute, attributeData);
                 break;
             case 6: case 8: // DT_UINT32 or DT_UINT64
-                attributeData = new draco.DracoUInt32Array();
+                attributeData = new draco.DracoUint32Array();
                 vertexArray = new Uint32Array(vertexArrayLength);
-                dracoDecoder.GetAttributeUInt32ForAllPoints(dracoGeometry, dracoAttribute, attributeData);
+                dracoDecoder.GetAttributeUInt32ForAllPoints(dracoGeometry, attribute, attributeData);
                 break;
             case 9: case 10: // DT_FLOAT32 or DT_FLOAT64
                 attributeData = new draco.DracoFloat32Array();
                 vertexArray = new Float32Array(vertexArrayLength);
-                dracoDecoder.GetAttributeFloatForAllPoints(dracoGeometry, dracoAttribute, attributeData);
+                dracoDecoder.GetAttributeFloatForAllPoints(dracoGeometry, attribute, attributeData);
                 break;
         }
 
@@ -4233,103 +4109,72 @@ define('Workers/decodeDraco',[
         return vertexArray;
     }
 
-    function decodeAttribute(dracoGeometry, dracoDecoder, dracoAttribute) {
+    function decodeAttributeData(dracoGeometry, compressedAttributes) {
         var numPoints = dracoGeometry.num_points();
-        var numComponents = dracoAttribute.num_components();
-
-        var quantization;
-        var transform = new draco.AttributeQuantizationTransform();
-        if (transform.InitFromAttribute(dracoAttribute)) {
-            var minValues = new Array(numComponents);
-            for (var i = 0; i < numComponents; ++i) {
-                minValues[i] = transform.min_value(i);
-            }
-            quantization = {
-                quantizationBits : transform.quantization_bits(),
-                minValues : minValues,
-                range : transform.range(),
-                octEncoded : false
-            };
-        }
-        draco.destroy(transform);
-
-        transform = new draco.AttributeOctahedronTransform();
-        if (transform.InitFromAttribute(dracoAttribute)) {
-            quantization = {
-                quantizationBits : transform.quantization_bits(),
-                octEncoded : true
-            };
-        }
-        draco.destroy(transform);
-
-        var vertexArrayLength = numPoints * numComponents;
+        var decodedAttributeData = {};
         var vertexArray;
-        if (defined(quantization)) {
-            vertexArray = decodeQuantizedDracoTypedArray(dracoGeometry, dracoDecoder, dracoAttribute, quantization, vertexArrayLength);
-        } else {
-            vertexArray = decodeDracoTypedArray(dracoGeometry, dracoDecoder, dracoAttribute, vertexArrayLength);
+        var quantization;
+        for (var attributeName in compressedAttributes) {
+            if (compressedAttributes.hasOwnProperty(attributeName)) {
+                var compressedAttribute = compressedAttributes[attributeName];
+                var attribute = dracoDecoder.GetAttributeByUniqueId(dracoGeometry, compressedAttribute);
+                var numComponents = attribute.num_components();
+
+                var i;
+                var transform = new draco.AttributeQuantizationTransform();
+                if (transform.InitFromAttribute(attribute)) {
+                    var minValues = new Array(numComponents);
+                    for (i = 0; i < numComponents; ++i) {
+                        minValues[i] = transform.min_value(i);
+                    }
+
+                    quantization = {
+                        quantizationBits : transform.quantization_bits(),
+                        minValues : minValues,
+                        range : transform.range(),
+                        octEncoded : false
+                    };
+                }
+                draco.destroy(transform);
+
+                transform = new draco.AttributeOctahedronTransform();
+                if (transform.InitFromAttribute(attribute)) {
+                    quantization = {
+                        quantizationBits : transform.quantization_bits(),
+                        octEncoded : true
+                    };
+                }
+                draco.destroy(transform);
+
+                var vertexArrayLength = numPoints * numComponents;
+                if (defined(quantization)) {
+                    vertexArray = decodeQuantizedDracoTypedArray(dracoGeometry, attribute, quantization, vertexArrayLength);
+                } else {
+                    vertexArray = decodeDracoTypedArray(dracoGeometry, attribute, vertexArrayLength);
+                }
+
+                var componentDatatype = ComponentDatatype.fromTypedArray(vertexArray);
+                decodedAttributeData[attributeName] = {
+                    array : vertexArray,
+                    data : {
+                        componentsPerAttribute : numComponents,
+                        componentDatatype : componentDatatype,
+                        byteOffset : attribute.byte_offset(),
+                        byteStride : ComponentDatatype.getSizeInBytes(componentDatatype) * numComponents,
+                        normalized : attribute.normalized(),
+                        quantization : quantization
+                    }
+                };
+
+                quantization = undefined;
+            }
         }
 
-        var componentDatatype = ComponentDatatype.fromTypedArray(vertexArray);
-
-        return {
-            array : vertexArray,
-            data : {
-                componentsPerAttribute : numComponents,
-                componentDatatype : componentDatatype,
-                byteOffset : dracoAttribute.byte_offset(),
-                byteStride : ComponentDatatype.getSizeInBytes(componentDatatype) * numComponents,
-                normalized : dracoAttribute.normalized(),
-                quantization : quantization
-            }
-        };
+        return decodedAttributeData;
     }
 
-    function decodePointCloud(parameters) {
-        var dracoDecoder = new draco.Decoder();
-
-        if (parameters.dequantizeInShader) {
-            dracoDecoder.SkipAttributeTransform(draco.POSITION);
-            dracoDecoder.SkipAttributeTransform(draco.NORMAL);
-        }
-
-        var buffer = new draco.DecoderBuffer();
-        buffer.Init(parameters.buffer, parameters.buffer.length);
-
-        var geometryType = dracoDecoder.GetEncodedGeometryType(buffer);
-        if (geometryType !== draco.POINT_CLOUD) {
-            throw new RuntimeError('Draco geometry type must be POINT_CLOUD.');
-        }
-
-        var dracoPointCloud = new draco.PointCloud();
-        var decodingStatus = dracoDecoder.DecodeBufferToPointCloud(buffer, dracoPointCloud);
-        if (!decodingStatus.ok() || dracoPointCloud.ptr === 0) {
-            throw new RuntimeError('Error decoding draco point cloud: ' + decodingStatus.error_msg());
-        }
-
-        draco.destroy(buffer);
-
-        var result = {};
-
-        var properties = parameters.properties;
-        for (var propertyName in properties) {
-            if (properties.hasOwnProperty(propertyName)) {
-                var attributeId = properties[propertyName];
-                var dracoAttribute = dracoDecoder.GetAttributeByUniqueId(dracoPointCloud, attributeId);
-                result[propertyName] = decodeAttribute(dracoPointCloud, dracoDecoder, dracoAttribute);
-            }
-        }
-
-        draco.destroy(dracoPointCloud);
-        draco.destroy(dracoDecoder);
-
-        return result;
-    }
-
-    function decodePrimitive(parameters) {
-        var dracoDecoder = new draco.Decoder();
-
-        // Skip all parameter types except generic
+    function decodeDracoPrimitive(parameters) {
+        // Skip all paramter types except generic
         var attributesToSkip = ['POSITION', 'NORMAL', 'COLOR', 'TEX_COORD'];
         if (parameters.dequantizeInShader) {
             for (var i = 0; i < attributesToSkip.length; ++i) {
@@ -4354,38 +4199,20 @@ define('Workers/decodeDraco',[
 
         draco.destroy(buffer);
 
-        var attributeData = {};
-
-        var compressedAttributes = parameters.compressedAttributes;
-        for (var attributeName in compressedAttributes) {
-            if (compressedAttributes.hasOwnProperty(attributeName)) {
-                var compressedAttribute = compressedAttributes[attributeName];
-                var dracoAttribute = dracoDecoder.GetAttributeByUniqueId(dracoGeometry, compressedAttribute);
-                attributeData[attributeName] = decodeAttribute(dracoGeometry, dracoDecoder, dracoAttribute);
-            }
-        }
-
         var result = {
-            indexArray : decodeIndexArray(dracoGeometry, dracoDecoder),
-            attributeData : attributeData
+            indexArray : decodeIndexArray(dracoGeometry),
+            attributeData : decodeAttributeData(dracoGeometry, parameters.compressedAttributes)
         };
 
         draco.destroy(dracoGeometry);
-        draco.destroy(dracoDecoder);
 
         return result;
     }
 
-    function decode(parameters) {
-        if (defined(parameters.primitive)) {
-            return decodePrimitive(parameters);
-        }
-        return decodePointCloud(parameters);
-    }
-
     function initWorker(dracoModule) {
         draco = dracoModule;
-        self.onmessage = createTaskProcessorWorker(decode);
+        dracoDecoder = new draco.Decoder();
+        self.onmessage = createTaskProcessorWorker(decodeDracoPrimitive);
         self.postMessage(true);
     }
 

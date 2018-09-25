@@ -41960,6 +41960,12 @@
       });
 
       /**
+        * @type {!Array.<ol.EventsKey>}
+        * @private
+        */
+      this.dragListenerKeys_ = [];
+
+      /**
        * Will hold the current resolution of the view.
        *
        * @type {number|undefined}
@@ -42137,6 +42143,17 @@
         this.previousX_ = event.clientX;
         this.previousY_ = event.clientY;
         this.dragging_ = true;
+
+        if (this.dragListenerKeys_.length === 0) {
+          var drag = this.handleDraggerDrag_;
+          var end = this.handleDraggerEnd_;
+          this.dragListenerKeys_.push(
+            listen(document, EventType.MOUSEMOVE, drag, this),
+            listen(document, PointerEventType.POINTERMOVE, drag, this),
+            listen(document, EventType.MOUSEUP, end, this),
+            listen(document, PointerEventType.POINTERUP, end, this)
+          );
+        }
       }
     };
 
@@ -42179,6 +42196,8 @@
         this.dragging_ = false;
         this.previousX_ = undefined;
         this.previousY_ = undefined;
+        this.dragListenerKeys_.forEach(unlistenByKey);
+        this.dragListenerKeys_.length = 0;
       }
     };
 
@@ -71489,8 +71508,7 @@
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
    * @property {number} [distance=20] Minimum distance in pixels between clusters.
-   * @property {import("../extent.js").Extent} [extent] Extent.
-   * @property {function(import("../Feature.js").default):import("../geom/Point.js").default} [geometryFunction]
+   * @property {function(Feature):Point} [geometryFunction]
    * Function that takes an {@link module:ol/Feature} as argument and returns an
    * {@link module:ol/geom/Point} as cluster calculation point for the feature. When a
    * feature should not be considered for clustering, the function should return
@@ -71503,8 +71521,7 @@
    * ```
    * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
    * calculation point for polygons.
-   * @property {import("../proj.js").ProjectionLike} projection Projection.
-   * @property {import("./Vector.js").default} source Source.
+   * @property {VectorSource} source Source.
    * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
    */
 
@@ -71536,25 +71553,25 @@
       this.distance = options.distance !== undefined ? options.distance : 20;
 
       /**
-       * @type {Array<import("../Feature.js").default>}
+       * @type {Array<Feature>}
        * @protected
        */
       this.features = [];
 
       /**
-       * @param {import("../Feature.js").default} feature Feature.
-       * @return {import("../geom/Point.js").default} Cluster calculation point.
+       * @param {Feature} feature Feature.
+       * @return {Point} Cluster calculation point.
        * @protected
        */
       this.geometryFunction = options.geometryFunction || function(feature) {
-        var geometry = /** @type {import("../geom/Point.js").default} */ (feature.getGeometry());
+        var geometry = /** @type {Point} */ (feature.getGeometry());
         assert(geometry instanceof Point,
-          10); // The default `geometryFunction` can only handle `import("../geom/Point.js").Point` geometries
+          10); // The default `geometryFunction` can only handle `Point` geometries
         return geometry;
       };
 
       /**
-       * @type {import("./Vector.js").default}
+       * @type {VectorSource}
        * @protected
        */
       this.source = options.source;
@@ -71577,7 +71594,7 @@
 
     /**
      * Get a reference to the wrapped source.
-     * @return {import("./Vector.js").default} Source.
+     * @return {VectorSource} Source.
      * @api
      */
     Cluster.prototype.getSource = function getSource () {
@@ -71663,8 +71680,8 @@
     };
 
     /**
-     * @param {Array<import("../Feature.js").default>} features Features
-     * @return {import("../Feature.js").default} The cluster feature.
+     * @param {Array<Feature>} features Features
+     * @return {Feature} The cluster feature.
      * @protected
      */
     Cluster.prototype.createCluster = function createCluster (features) {
@@ -71753,7 +71770,6 @@
   /**
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions]
-   * @property {import("../extent.js").Extent} [extent]
    * @property {import("../proj.js").ProjectionLike} projection
    * @property {Array<number>} [resolutions]
    * @property {import("./State.js").default} [state]
@@ -76901,7 +76917,7 @@
     return new CanvasImmediateRenderer(context, pixelRatio, extent, transform, 0);
   }
 
-  var undefined$1 = window['undefined'] = {};
+  var ol = window['ol'] = {};
 
   ol.AssertionError = AssertionError;
   ol.Collection = Collection;
