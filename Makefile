@@ -91,7 +91,7 @@ LESS_PARAMETERS ?= -ru
 
 
 # Map libs variables
-OL_VERSION ?= generate_all_exports_library # generate_all_exports_library branch from gberaudo repository, September 10 2018
+OL_VERSION ?= be12573# September 25 2018 (mind the absence of a space character after the version)
 OL_CESIUM_VERSION ?= 053de71c5ae1d74519ef1a2490932e0f1464bd0e # September 24 2018
 CESIUM_VERSION ?= 5709a765e2b047c11686c5cba585c3a272485013 # c2c/c2c_patches (Cesium 1.47), July 31 2018
 GEOBLOCKS_LEGACYLIB_VERSION ?= 0101a217be1b7525be8d590910fb8f70295194be # September 24 2018
@@ -494,7 +494,7 @@ openlayers: .build-artefacts/openlayers
 	npm i; cd ol5; \
 	git fetch; git reset --hard; \
 	git checkout $(GEOBLOCKS_LEGACYLIB_VERSION); \
-	sed 'sY"ol": ".*"Y"ol": "https://api.github.com/repos/openlayers/openlayers/tarball/'$(OL_VERSION)'"'Y package.json; \
+	sed -i 'sY"ol": ".*"Y"ol": "https://api.github.com/repos/openlayers/openlayers/tarball/$(OL_VERSION)"Y' package.json; \
 	npm install; \
 	npm run build  # having tons of jsdoc parsing errors is normal
 
@@ -751,7 +751,9 @@ src/deps.js: $(SRC_JS_FILES) ${PYTHON_VENV}
 	${PYTHON_CMD} node_modules/google-closure-library/closure/bin/build/depswriter.py \
 	    --root_with_prefix="src/components components" \
 	    --root_with_prefix="src/js js" \
-	    --output_file=$@
+	    --output_file=tmp
+	cat node_modules/google-closure-library/closure/goog/base.js tmp > $@
+	rm -f tmp
 
 src/style/app.css: $(SRC_LESS_FILES)
 	${LESSC} $(LESS_PARAMETERS) src/style/app.less $@
