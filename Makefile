@@ -93,8 +93,8 @@ LESS_PARAMETERS ?= -ru
 # Map libs variables
 OL_VERSION ?= generate_all_exports_library # generate_all_exports_library branch from gberaudo repository, September 10 2018
 OL_CESIUM_VERSION ?= 053de71c5ae1d74519ef1a2490932e0f1464bd0e # September 24 2018
-CESIUM_VERSION ?= 54d850855346610fde9b7aa8262a03d27e71c663 # c2c/c2c_patches (Cesium 1.44), April 23 2018
-GEOBLOCKS_LEGACYLIB_VERSION ?= 7ecea70fdd79659697bb7c849ee484ffddbb80d2 # September 24 2018
+CESIUM_VERSION ?= 5709a765e2b047c11686c5cba585c3a272485013 # c2c/c2c_patches (Cesium 1.47), July 31 2018
+GEOBLOCKS_LEGACYLIB_VERSION ?= 0101a217be1b7525be8d590910fb8f70295194be # September 24 2018
 
 
 # App variables
@@ -476,19 +476,25 @@ flushvarnishinternal: guard-API_URL guard-E2E_TARGETURL
 	done;
 
 .PHONY: cesium
-cesium:
-	npm install @camptocamp/cesium; \
-	cd node_modules/@camptocamp/cesium; \
-	cp -r Build/CesiumUnminified ../../../src/lib/Cesium; \
-	$(call moveto,Build/Cesium/Workers/*.js,../../../src/lib/Cesium/Workers/,'.js','.min.js') \
-	$(call moveto,Build/Cesium/ThirdParty/Workers/*.js,../../../src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js')
+cesium: .build-artefacts/cesium
+	cd .build-artefacts/cesium; \
+	git fetch --all; \
+	git checkout $(CESIUM_VERSION); \
+	npm install; \
+	npm run combineRelease; \
+	npm run minifyRelease; \
+	rm -r ../../src/lib/Cesium; \
+	cp -r Build/CesiumUnminified ../../src/lib/Cesium; \
+	cp Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js; \
+	$(call moveto,Build/Cesium/Workers/*.js,../../src/lib/Cesium/Workers/,'.js','.min.js') \
+	$(call moveto,Build/Cesium/ThirdParty/Workers/*.js,../../src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js')
 
 openlayers: .build-artefacts/openlayers
 	cd .build-artefacts/openlayers/; \
-        npm i; cd ol5; \
-	git fetch; \
-        git checkout $(GEOBLOCKS_LEGACYLIB_VERSION); \
-        sed 'sY"ol": ".*"Y"ol": "https://api.github.com/repos/openlayers/openlayers/tarball/'$(OL_VERSION)'"'Y package.json; \
+	npm i; cd ol5; \
+	git fetch; git reset --hard; \
+	git checkout $(GEOBLOCKS_LEGACYLIB_VERSION); \
+	sed 'sY"ol": ".*"Y"ol": "https://api.github.com/repos/openlayers/openlayers/tarball/'$(OL_VERSION)'"'Y package.json; \
 	npm install; \
 	npm run build  # having tons of jsdoc parsing errors is normal
 
@@ -496,7 +502,7 @@ openlayers: .build-artefacts/openlayers
 olcesium:  openlayers .build-artefacts/olcesium
 	if ! [ -f ".build-artefacts/cesium/Build/Cesium/Cesium.js" ]; then make cesium; else echo 'Cesium already built'; fi; \
 	cd .build-artefacts/olcesium; \
-	git fetch --all; \
+	git fetch --all; git reset --hard; \
 	git checkout $(OL_CESIUM_VERSION); \
 	cp -r ../../olcesium-plugin/Ga* src/olcs/; \
 	cp ../../olcesium-plugin/index.library.js src/; \
@@ -505,6 +511,7 @@ olcesium:  openlayers .build-artefacts/olcesium
 	cat ../openlayers/ol5/build/ol.js dist/olcesium.js > ../../src/lib/olcesium.js; \
 	npm run build-library-debug; \
 	cat ../openlayers/ol5/build/ol-debug.js dist/olcesium-debug.js > ../../src/lib/olcesium-debug.js; \
+
 
 .PHONY: filesaver
 filesaver: .build-artefacts/filesaver
@@ -925,6 +932,8 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 .build-artefacts/olcesium:
 	git clone https://github.com/openlayers/ol-cesium.git $@
 
+.build-artefacts/cesium:
+	git clone https://github.com/camptocamp/cesium.git $@
 
 # No npm module
 .build-artefacts/filesaver:
