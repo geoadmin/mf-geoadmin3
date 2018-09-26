@@ -88,10 +88,9 @@ describe('ga_profile_service', function() {
       it('returns empty profile if feature\'s geometry can\'t be handle', function(done) {
         var p = [];
         [
-          new ol.geom.Point(),
+          new ol.geom.Point([0, 0]),
           new ol.geom.MultiPoint([[0, 0]]),
-          new ol.geom.MultiLineString(),
-          new ol.geom.MultiPolygon(),
+          new ol.geom.MultiPolygon([[[[0, 0], [0, 1], [1, 1], [0, 0]]]]),
           new ol.geom.MultiLineString([[[0, 0]], [[1, 1]]]),
           new ol.geom.GeometryCollection([new ol.geom.Point([0, 0])])
         ].forEach(function(geom) {
