@@ -364,6 +364,7 @@ define('Core/defaultValue',[
     /**
      * A frozen empty object that can be used as the default value for options passed as
      * an object literal.
+     * @type {Object}
      */
     defaultValue.EMPTY_OBJECT = freezeObject({});
 
@@ -737,7 +738,8 @@ define('Core/Math',[
     CesiumMath.EPSILON20 = 0.00000000000000000001;
 
     /**
-     * 3.986004418e14
+     * The gravitational parameter of the Earth in meters cubed
+     * per second squared as defined by the WGS84 model: 3.986004418e14
      * @type {Number}
      * @constant
      */
@@ -2030,6 +2032,22 @@ define('Core/Cartesian3',[
         result.x = x;
         result.y = y;
         result.z = z;
+        return result;
+    };
+
+    /**
+     * Computes the midpoint between the right and left Cartesian.
+     * @param {Cartesian3} left The first Cartesian.
+     * @param {Cartesian3} right The second Cartesian.
+     * @param {Cartesian3} result The object onto which to store the result.
+     * @returns {Cartesian3} The midpoint.
+     */
+    Cartesian3.midpoint = function(left, right, result) {
+        
+        result.x = (left.x + right.x) * 0.5;
+        result.y = (left.y + right.y) * 0.5;
+        result.z = (left.z + right.z) * 0.5;
+
         return result;
     };
 
@@ -10164,7 +10182,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -10434,7 +10452,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -10592,7 +10610,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -10652,9 +10670,7 @@ define('Core/BoundingSphere',[
             result = new BoundingSphere();
         }
 
-        var center = result.center;
-        Cartesian3.add(corner, oppositeCorner, center);
-        Cartesian3.multiplyByScalar(center, 0.5, center);
+        var center = Cartesian3.midpoint(corner, oppositeCorner, result.center);
         result.radius = Cartesian3.distance(center, oppositeCorner);
         return result;
     };
@@ -12752,8 +12768,7 @@ define('Core/AxisAlignedBoundingBox',[
 
         //If center was not defined, compute it.
         if (!defined(center)) {
-            center = Cartesian3.add(this.minimum, this.maximum, new Cartesian3());
-            Cartesian3.multiplyByScalar(center, 0.5, center);
+            center = Cartesian3.midpoint(this.minimum, this.maximum, new Cartesian3());
         } else {
             center = Cartesian3.clone(center);
         }
@@ -12822,8 +12837,7 @@ define('Core/AxisAlignedBoundingBox',[
         maximum.y = maximumY;
         maximum.z = maximumZ;
 
-        var center = Cartesian3.add(minimum, maximum, result.center);
-        Cartesian3.multiplyByScalar(center, 0.5, center);
+        result.center = Cartesian3.midpoint(minimum, maximum, result.center);
 
         return result;
     };
@@ -17735,7 +17749,8 @@ define('Core/isCrossOriginUrl',[
         var protocol = a.protocol;
 
         a.href = url;
-        a.href = a.href; // IE only absolutizes href on get, not set
+        // IE only absolutizes href on get, not set
+        a.href = a.href; // eslint-disable-line no-self-assign
 
         return protocol !== a.protocol || host !== a.host;
     }
@@ -21711,7 +21726,9 @@ define('Core/buildModuleUrl',[
             a = document.createElement('a');
         }
         a.href = url;
-        a.href = a.href; // IE only absolutizes href on get, not set
+
+        // IE only absolutizes href on get, not set
+        a.href = a.href; // eslint-disable-line no-self-assign
         return a.href;
     }
 
@@ -23829,6 +23846,7 @@ define('Core/EllipsoidTangentPlane',[
         './Cartesian2',
         './Cartesian3',
         './Cartesian4',
+        './Check',
         './defaultValue',
         './defined',
         './defineProperties',
@@ -23844,6 +23862,7 @@ define('Core/EllipsoidTangentPlane',[
         Cartesian2,
         Cartesian3,
         Cartesian4,
+        Check,
         defaultValue,
         defined,
         defineProperties,
@@ -23962,8 +23981,8 @@ define('Core/EllipsoidTangentPlane',[
      * Creates a new instance from the provided ellipsoid and the center
      * point of the provided Cartesians.
      *
-     * @param {Ellipsoid} ellipsoid The ellipsoid to use.
      * @param {Cartesian3} cartesians The list of positions surrounding the center point.
+     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid to use.
      */
     EllipsoidTangentPlane.fromPoints = function(cartesians, ellipsoid) {
         
@@ -24094,6 +24113,34 @@ define('Core/EllipsoidTangentPlane',[
 
     var projectPointsOntoEllipsoidScratch = new Cartesian3();
     /**
+     * Computes the projection of the provided 2D position onto the 3D ellipsoid.
+     *
+     * @param {Cartesian2} cartesian The points to project.
+     * @param {Cartesian3} [result] The Cartesian3 instance to store result.
+     * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if none was provided.
+     */
+    EllipsoidTangentPlane.prototype.projectPointOntoEllipsoid = function(cartesian, result) {
+        
+        if (!defined(result)) {
+            result = new Cartesian3();
+        }
+
+        var ellipsoid = this._ellipsoid;
+        var origin = this._origin;
+        var xAxis = this._xAxis;
+        var yAxis = this._yAxis;
+        var tmp = projectPointsOntoEllipsoidScratch;
+
+        Cartesian3.multiplyByScalar(xAxis, cartesian.x, tmp);
+        result = Cartesian3.add(origin, tmp, result);
+        Cartesian3.multiplyByScalar(yAxis, cartesian.y, tmp);
+        Cartesian3.add(result, tmp, result);
+        ellipsoid.scaleToGeocentricSurface(result, result);
+
+        return result;
+    };
+
+    /**
      * Computes the projection of the provided 2D positions onto the 3D ellipsoid.
      *
      * @param {Cartesian2[]} cartesians The array of points to project.
@@ -24109,22 +24156,8 @@ define('Core/EllipsoidTangentPlane',[
             result.length = length;
         }
 
-        var ellipsoid = this._ellipsoid;
-        var origin = this._origin;
-        var xAxis = this._xAxis;
-        var yAxis = this._yAxis;
-        var tmp = projectPointsOntoEllipsoidScratch;
-
         for ( var i = 0; i < length; ++i) {
-            var position = cartesians[i];
-            Cartesian3.multiplyByScalar(xAxis, position.x, tmp);
-            if (!defined(result[i])) {
-                result[i] = new Cartesian3();
-            }
-            var point = Cartesian3.add(origin, tmp, result[i]);
-            Cartesian3.multiplyByScalar(yAxis, position.y, tmp);
-            Cartesian3.add(point, tmp, point);
-            ellipsoid.scaleToGeocentricSurface(point, point);
+            result[i] = this.projectPointOntoEllipsoid(cartesians[i], result[i]);
         }
 
         return result;
@@ -26447,6 +26480,7 @@ define('Core/Tipsify',[
     /**
      * Optimizes triangles for the post-vertex shader cache.
      *
+     * @param {Object} options Object with the following properties:
      * @param {Number[]} options.indices Lists triads of numbers corresponding to the indices of the vertices
      *                        in the vertex buffer that define the geometry's triangles.
      * @param {Number} [options.maximumIndex] The maximum value of the elements in <code>args.indices</code>.
@@ -30324,6 +30358,7 @@ define('Core/Queue',[
 
 define('Core/PolygonGeometryLibrary',[
         './arrayRemoveDuplicates',
+        './Cartesian2',
         './Cartesian3',
         './ComponentDatatype',
         './defaultValue',
@@ -30335,12 +30370,15 @@ define('Core/PolygonGeometryLibrary',[
         './GeometryPipeline',
         './IndexDatatype',
         './Math',
+        './Matrix3',
         './PolygonPipeline',
         './PrimitiveType',
+        './Quaternion',
         './Queue',
         './WindingOrder'
     ], function(
         arrayRemoveDuplicates,
+        Cartesian2,
         Cartesian3,
         ComponentDatatype,
         defaultValue,
@@ -30352,8 +30390,10 @@ define('Core/PolygonGeometryLibrary',[
         GeometryPipeline,
         IndexDatatype,
         CesiumMath,
+        Matrix3,
         PolygonPipeline,
         PrimitiveType,
+        Quaternion,
         Queue,
         WindingOrder) {
     'use strict';
@@ -30527,7 +30567,63 @@ define('Core/PolygonGeometryLibrary',[
         return geometry;
     };
 
-    PolygonGeometryLibrary.polygonsFromHierarchy = function(polygonHierarchy, perPositionHeight, tangentPlane, ellipsoid) {
+    PolygonGeometryLibrary.polygonOutlinesFromHierarchy = function(polygonHierarchy, scaleToEllipsoidSurface, ellipsoid) {
+        // create from a polygon hierarchy
+        // Algorithm adapted from http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
+        var polygons = [];
+        var queue = new Queue();
+        queue.enqueue(polygonHierarchy);
+        var i;
+        var j;
+        var length;
+        while (queue.length !== 0) {
+            var outerNode = queue.dequeue();
+            var outerRing = outerNode.positions;
+            if (scaleToEllipsoidSurface) {
+                length = outerRing.length;
+                for (i = 0; i < length; i++) {
+                    ellipsoid.scaleToGeodeticSurface(outerRing[i], outerRing[i]);
+                }
+            }
+            outerRing = arrayRemoveDuplicates(outerRing, Cartesian3.equalsEpsilon, true);
+            if (outerRing.length < 3) {
+                continue;
+            }
+
+            var numChildren = outerNode.holes ? outerNode.holes.length : 0;
+            // The outer polygon contains inner polygons
+            for (i = 0; i < numChildren; i++) {
+                var hole = outerNode.holes[i];
+                var holePositions = hole.positions;
+                if (scaleToEllipsoidSurface) {
+                    length = holePositions.length;
+                    for (j = 0; j < length; ++j) {
+                        ellipsoid.scaleToGeodeticSurface(holePositions[j], holePositions[j]);
+                    }
+                }
+                holePositions = arrayRemoveDuplicates(holePositions, Cartesian3.equalsEpsilon, true);
+                if (holePositions.length < 3) {
+                    continue;
+                }
+                polygons.push(holePositions);
+
+                var numGrandchildren = 0;
+                if (defined(hole.holes)) {
+                    numGrandchildren = hole.holes.length;
+                }
+
+                for (j = 0; j < numGrandchildren; j++) {
+                    queue.enqueue(hole.holes[j]);
+                }
+            }
+
+            polygons.push(outerRing);
+        }
+
+        return polygons;
+    };
+
+    PolygonGeometryLibrary.polygonsFromHierarchy = function(polygonHierarchy, projectPointsTo2D, scaleToEllipsoidSurface, ellipsoid) {
         // create from a polygon hierarchy
         // Algorithm adapted from http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
         var hierarchy = [];
@@ -30543,7 +30639,7 @@ define('Core/PolygonGeometryLibrary',[
 
             var i;
             var length;
-            if (!perPositionHeight) {
+            if (scaleToEllipsoidSurface) {
                 length = outerRing.length;
                 for (i = 0; i < length; i++) {
                     ellipsoid.scaleToGeodeticSurface(outerRing[i], outerRing[i]);
@@ -30555,7 +30651,10 @@ define('Core/PolygonGeometryLibrary',[
                 continue;
             }
 
-            var positions2D = tangentPlane.projectPointsOntoPlane(outerRing);
+            var positions2D = projectPointsTo2D(outerRing);
+            if (!defined(positions2D)) {
+                continue;
+            }
             var holeIndices = [];
 
             var originalWindingOrder = PolygonPipeline.computeWindingOrder2D(positions2D);
@@ -30572,7 +30671,7 @@ define('Core/PolygonGeometryLibrary',[
             for (i = 0; i < numChildren; i++) {
                 var hole = holes[i];
                 var holePositions = hole.positions;
-                if (!perPositionHeight) {
+                if (scaleToEllipsoidSurface) {
                     length = holePositions.length;
                     for (j = 0; j < length; ++j) {
                         ellipsoid.scaleToGeodeticSurface(holePositions[j], holePositions[j]);
@@ -30584,7 +30683,10 @@ define('Core/PolygonGeometryLibrary',[
                     continue;
                 }
 
-                var holePositions2D = tangentPlane.projectPointsOntoPlane(holePositions);
+                var holePositions2D = projectPointsTo2D(holePositions);
+                if (!defined(holePositions2D)) {
+                    continue;
+                }
 
                 originalWindingOrder = PolygonPipeline.computeWindingOrder2D(holePositions2D);
                 if (originalWindingOrder === WindingOrder.CLOCKWISE) {
@@ -30622,6 +30724,41 @@ define('Core/PolygonGeometryLibrary',[
             hierarchy : hierarchy,
             polygons : polygons
         };
+    };
+
+    var computeBoundingRectangleCartesian2 = new Cartesian2();
+    var computeBoundingRectangleCartesian3 = new Cartesian3();
+    var computeBoundingRectangleQuaternion = new Quaternion();
+    var computeBoundingRectangleMatrix3 = new Matrix3();
+    PolygonGeometryLibrary.computeBoundingRectangle = function (planeNormal, projectPointTo2D, positions, angle, result) {
+        var rotation = Quaternion.fromAxisAngle(planeNormal, angle, computeBoundingRectangleQuaternion);
+        var textureMatrix = Matrix3.fromQuaternion(rotation, computeBoundingRectangleMatrix3);
+
+        var minX = Number.POSITIVE_INFINITY;
+        var maxX = Number.NEGATIVE_INFINITY;
+        var minY = Number.POSITIVE_INFINITY;
+        var maxY = Number.NEGATIVE_INFINITY;
+
+        var length = positions.length;
+        for ( var i = 0; i < length; ++i) {
+            var p = Cartesian3.clone(positions[i], computeBoundingRectangleCartesian3);
+            Matrix3.multiplyByVector(textureMatrix, p, p);
+            var st = projectPointTo2D(p, computeBoundingRectangleCartesian2);
+
+            if (defined(st)) {
+                minX = Math.min(minX, st.x);
+                maxX = Math.max(maxX, st.x);
+
+                minY = Math.min(minY, st.y);
+                maxY = Math.max(maxY, st.y);
+            }
+        }
+
+        result.x = minX;
+        result.y = minY;
+        result.width = maxX - minX;
+        result.height = maxY - minY;
+        return result;
     };
 
     PolygonGeometryLibrary.createGeometryFromPositions = function(ellipsoid, polygon, granularity, perPositionHeight, vertexFormat) {
@@ -31134,42 +31271,6 @@ define('Core/PolygonGeometry',[
         WindingOrder) {
     'use strict';
 
-    var computeBoundingRectangleCartesian2 = new Cartesian2();
-    var computeBoundingRectangleCartesian3 = new Cartesian3();
-    var computeBoundingRectangleQuaternion = new Quaternion();
-    var computeBoundingRectangleMatrix3 = new Matrix3();
-
-    function computeBoundingRectangle(tangentPlane, positions, angle, result) {
-        var rotation = Quaternion.fromAxisAngle(tangentPlane._plane.normal, angle, computeBoundingRectangleQuaternion);
-        var textureMatrix = Matrix3.fromQuaternion(rotation, computeBoundingRectangleMatrix3);
-
-        var minX = Number.POSITIVE_INFINITY;
-        var maxX = Number.NEGATIVE_INFINITY;
-        var minY = Number.POSITIVE_INFINITY;
-        var maxY = Number.NEGATIVE_INFINITY;
-
-        var length = positions.length;
-        for ( var i = 0; i < length; ++i) {
-            var p = Cartesian3.clone(positions[i], computeBoundingRectangleCartesian3);
-            Matrix3.multiplyByVector(textureMatrix, p, p);
-            var st = tangentPlane.projectPointOntoPlane(p, computeBoundingRectangleCartesian2);
-
-            if (defined(st)) {
-                minX = Math.min(minX, st.x);
-                maxX = Math.max(maxX, st.x);
-
-                minY = Math.min(minY, st.y);
-                maxY = Math.max(maxY, st.y);
-            }
-        }
-
-        result.x = minX;
-        result.y = minY;
-        result.width = maxX - minX;
-        result.height = maxY - minY;
-        return result;
-    }
-
     var scratchCarto1 = new Cartographic();
     var scratchCarto2 = new Cartographic();
     function adjustPosHeightsForNormal(position, p1, p2, ellipsoid) {
@@ -31200,6 +31301,7 @@ define('Core/PolygonGeometry',[
     var appendTextureCoordinatesCartesian3 = new Cartesian3();
     var appendTextureCoordinatesQuaternion = new Quaternion();
     var appendTextureCoordinatesMatrix3 = new Matrix3();
+    var tangentMatrixScratch = new Matrix3();
 
     function computeAttributes(options) {
         var vertexFormat = options.vertexFormat;
@@ -31244,8 +31346,18 @@ define('Core/PolygonGeometry',[
             var bitangent = scratchBitangent;
             var recomputeNormal = true;
 
-            var rotation = Quaternion.fromAxisAngle(tangentPlane._plane.normal, stRotation, appendTextureCoordinatesQuaternion);
-            var textureMatrix = Matrix3.fromQuaternion(rotation, appendTextureCoordinatesMatrix3);
+            var textureMatrix = appendTextureCoordinatesMatrix3;
+            var tangentRotationMatrix = tangentMatrixScratch;
+            if (stRotation !== 0.0) {
+                var rotation = Quaternion.fromAxisAngle(tangentPlane._plane.normal, stRotation, appendTextureCoordinatesQuaternion);
+                textureMatrix = Matrix3.fromQuaternion(rotation, textureMatrix);
+
+                rotation = Quaternion.fromAxisAngle(tangentPlane._plane.normal, -stRotation, appendTextureCoordinatesQuaternion);
+                tangentRotationMatrix = Matrix3.fromQuaternion(rotation, tangentRotationMatrix);
+            } else {
+                textureMatrix = Matrix3.clone(Matrix3.IDENTITY, textureMatrix);
+                tangentRotationMatrix = Matrix3.clone(Matrix3.IDENTITY, tangentRotationMatrix);
+            }
 
             var bottomOffset = 0;
             var bottomOffset2 = 0;
@@ -31316,14 +31428,14 @@ define('Core/PolygonGeometry',[
                             if (perPositionHeight) {
                                 scratchPerPosNormal = Cartesian3.fromArray(normals, attrIndex, scratchPerPosNormal);
                                 scratchPerPosTangent = Cartesian3.cross(Cartesian3.UNIT_Z, scratchPerPosNormal, scratchPerPosTangent);
-                                scratchPerPosTangent = Cartesian3.normalize(Matrix3.multiplyByVector(textureMatrix, scratchPerPosTangent, scratchPerPosTangent), scratchPerPosTangent);
+                                scratchPerPosTangent = Cartesian3.normalize(Matrix3.multiplyByVector(tangentRotationMatrix, scratchPerPosTangent, scratchPerPosTangent), scratchPerPosTangent);
                                 if (vertexFormat.bitangent) {
                                     scratchPerPosBitangent = Cartesian3.normalize(Cartesian3.cross(scratchPerPosNormal, scratchPerPosTangent, scratchPerPosBitangent), scratchPerPosBitangent);
                                 }
                             }
 
                             tangent = Cartesian3.cross(Cartesian3.UNIT_Z, normal, tangent);
-                            tangent = Cartesian3.normalize(Matrix3.multiplyByVector(textureMatrix, tangent, tangent), tangent);
+                            tangent = Cartesian3.normalize(Matrix3.multiplyByVector(tangentRotationMatrix, tangent, tangent), tangent);
                             if (vertexFormat.bitangent) {
                                 bitangent = Cartesian3.normalize(Cartesian3.cross(normal, tangent, bitangent), bitangent);
                             }
@@ -31521,7 +31633,7 @@ define('Core/PolygonGeometry',[
                 }
 
                 topGeo.attributes.position.values = topBottomPositions;
-                if (perPositionHeight) {
+                if (perPositionHeight && vertexFormat.normal) {
                     var normals = topGeo.attributes.normal.values;
                     topGeo.attributes.normal.values = new Float32Array(topBottomPositions.length);
                     topGeo.attributes.normal.values.set(normals);
@@ -31906,7 +32018,7 @@ define('Core/PolygonGeometry',[
 
         var tangentPlane = EllipsoidTangentPlane.fromPoints(outerPositions, ellipsoid);
 
-        var results = PolygonGeometryLibrary.polygonsFromHierarchy(polygonHierarchy, perPositionHeight, tangentPlane, ellipsoid);
+        var results = PolygonGeometryLibrary.polygonsFromHierarchy(polygonHierarchy, tangentPlane.projectPointsOntoPlane.bind(tangentPlane), !perPositionHeight, ellipsoid);
         var hierarchy = results.hierarchy;
         var polygons = results.polygons;
 
@@ -31915,7 +32027,7 @@ define('Core/PolygonGeometry',[
         }
 
         outerPositions = hierarchy[0].outerRing;
-        var boundingRectangle = computeBoundingRectangle(tangentPlane, outerPositions, stRotation, scratchBoundingRectangle);
+        var boundingRectangle = PolygonGeometryLibrary.computeBoundingRectangle(tangentPlane.plane.normal, tangentPlane.projectPointOntoPlane.bind(tangentPlane), outerPositions, stRotation, scratchBoundingRectangle);
 
         var geometries = [];
 

@@ -364,6 +364,7 @@ define('Core/defaultValue',[
     /**
      * A frozen empty object that can be used as the default value for options passed as
      * an object literal.
+     * @type {Object}
      */
     defaultValue.EMPTY_OBJECT = freezeObject({});
 
@@ -737,7 +738,8 @@ define('Core/Math',[
     CesiumMath.EPSILON20 = 0.00000000000000000001;
 
     /**
-     * 3.986004418e14
+     * The gravitational parameter of the Earth in meters cubed
+     * per second squared as defined by the WGS84 model: 3.986004418e14
      * @type {Number}
      * @constant
      */
@@ -2672,6 +2674,22 @@ define('Core/Cartesian3',[
         result.x = x;
         result.y = y;
         result.z = z;
+        return result;
+    };
+
+    /**
+     * Computes the midpoint between the right and left Cartesian.
+     * @param {Cartesian3} left The first Cartesian.
+     * @param {Cartesian3} right The second Cartesian.
+     * @param {Cartesian3} result The object onto which to store the result.
+     * @returns {Cartesian3} The midpoint.
+     */
+    Cartesian3.midpoint = function(left, right, result) {
+        
+        result.x = (left.x + right.x) * 0.5;
+        result.y = (left.y + right.y) * 0.5;
+        result.z = (left.z + right.z) * 0.5;
+
         return result;
     };
 

@@ -364,6 +364,7 @@ define('Core/defaultValue',[
     /**
      * A frozen empty object that can be used as the default value for options passed as
      * an object literal.
+     * @type {Object}
      */
     defaultValue.EMPTY_OBJECT = freezeObject({});
 
@@ -737,7 +738,8 @@ define('Core/Math',[
     CesiumMath.EPSILON20 = 0.00000000000000000001;
 
     /**
-     * 3.986004418e14
+     * The gravitational parameter of the Earth in meters cubed
+     * per second squared as defined by the WGS84 model: 3.986004418e14
      * @type {Number}
      * @constant
      */
@@ -2030,6 +2032,22 @@ define('Core/Cartesian3',[
         result.x = x;
         result.y = y;
         result.z = z;
+        return result;
+    };
+
+    /**
+     * Computes the midpoint between the right and left Cartesian.
+     * @param {Cartesian3} left The first Cartesian.
+     * @param {Cartesian3} right The second Cartesian.
+     * @param {Cartesian3} result The object onto which to store the result.
+     * @returns {Cartesian3} The midpoint.
+     */
+    Cartesian3.midpoint = function(left, right, result) {
+        
+        result.x = (left.x + right.x) * 0.5;
+        result.y = (left.y + right.y) * 0.5;
+        result.z = (left.z + right.z) * 0.5;
+
         return result;
     };
 
@@ -9123,7 +9141,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -9393,7 +9411,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -9551,7 +9569,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -9611,9 +9629,7 @@ define('Core/BoundingSphere',[
             result = new BoundingSphere();
         }
 
-        var center = result.center;
-        Cartesian3.add(corner, oppositeCorner, center);
-        Cartesian3.multiplyByScalar(center, 0.5, center);
+        var center = Cartesian3.midpoint(corner, oppositeCorner, result.center);
         result.radius = Cartesian3.distance(center, oppositeCorner);
         return result;
     };
@@ -17183,7 +17199,8 @@ define('Core/isCrossOriginUrl',[
         var protocol = a.protocol;
 
         a.href = url;
-        a.href = a.href; // IE only absolutizes href on get, not set
+        // IE only absolutizes href on get, not set
+        a.href = a.href; // eslint-disable-line no-self-assign
 
         return protocol !== a.protocol || host !== a.host;
     }
@@ -21159,7 +21176,9 @@ define('Core/buildModuleUrl',[
             a = document.createElement('a');
         }
         a.href = url;
-        a.href = a.href; // IE only absolutizes href on get, not set
+
+        // IE only absolutizes href on get, not set
+        a.href = a.href; // eslint-disable-line no-self-assign
         return a.href;
     }
 
@@ -23360,6 +23379,7 @@ define('Core/OrthographicOffCenterFrustum',[
         './defined',
         './defineProperties',
         './DeveloperError',
+        './Math',
         './Matrix4'
     ], function(
         Cartesian3,
@@ -23369,6 +23389,7 @@ define('Core/OrthographicOffCenterFrustum',[
         defined,
         defineProperties,
         DeveloperError,
+        CesiumMath,
         Matrix4) {
     'use strict';
 
@@ -23678,6 +23699,28 @@ define('Core/OrthographicOffCenterFrustum',[
                 this.far === other.far);
     };
 
+    /**
+     * Compares the provided OrthographicOffCenterFrustum componentwise and returns
+     * <code>true</code> if they pass an absolute or relative tolerance test,
+     * <code>false</code> otherwise.
+     *
+     * @param {OrthographicOffCenterFrustum} other The right hand side OrthographicOffCenterFrustum.
+     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
+     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
+     * @returns {Boolean} <code>true</code> if this and other are within the provided epsilon, <code>false</code> otherwise.
+     */
+    OrthographicOffCenterFrustum.prototype.equalsEpsilon = function(other, relativeEpsilon, absoluteEpsilon) {
+        return (other === this) ||
+               (defined(other) &&
+                other instanceof OrthographicOffCenterFrustum &&
+                CesiumMath.equalsEpsilon(this.right, other.right, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(this.left, other.left, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(this.top, other.top, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(this.bottom, other.bottom, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(this.near, other.near, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(this.far, other.far, relativeEpsilon, absoluteEpsilon));
+    };
+
     return OrthographicOffCenterFrustum;
 });
 
@@ -23687,6 +23730,7 @@ define('Core/OrthographicFrustum',[
         './defined',
         './defineProperties',
         './DeveloperError',
+        './Math',
         './OrthographicOffCenterFrustum'
     ], function(
         Check,
@@ -23694,6 +23738,7 @@ define('Core/OrthographicFrustum',[
         defined,
         defineProperties,
         DeveloperError,
+        CesiumMath,
         OrthographicOffCenterFrustum) {
     'use strict';
 
@@ -23931,9 +23976,30 @@ define('Core/OrthographicFrustum',[
 
         return (this.width === other.width &&
                 this.aspectRatio === other.aspectRatio &&
-                this.near === other.near &&
-                this.far === other.far &&
                 this._offCenterFrustum.equals(other._offCenterFrustum));
+    };
+
+    /**
+     * Compares the provided OrthographicFrustum componentwise and returns
+     * <code>true</code> if they pass an absolute or relative tolerance test,
+     * <code>false</code> otherwise.
+     *
+     * @param {OrthographicFrustum} other The right hand side OrthographicFrustum.
+     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
+     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
+     * @returns {Boolean} <code>true</code> if this and other are within the provided epsilon, <code>false</code> otherwise.
+     */
+    OrthographicFrustum.prototype.equalsEpsilon = function(other, relativeEpsilon, absoluteEpsilon) {
+        if (!defined(other) || !(other instanceof OrthographicFrustum)) {
+            return false;
+        }
+
+        update(this);
+        update(other);
+
+        return (CesiumMath.equalsEpsilon(this.width, other.width, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(this.aspectRatio, other.aspectRatio, relativeEpsilon, absoluteEpsilon) &&
+                this._offCenterFrustum.equalsEpsilon(other._offCenterFrustum, relativeEpsilon, absoluteEpsilon));
     };
 
     return OrthographicFrustum;
@@ -23947,6 +24013,7 @@ define('Core/PerspectiveOffCenterFrustum',[
         './defined',
         './defineProperties',
         './DeveloperError',
+        './Math',
         './Matrix4'
     ], function(
         Cartesian3,
@@ -23956,6 +24023,7 @@ define('Core/PerspectiveOffCenterFrustum',[
         defined,
         defineProperties,
         DeveloperError,
+        CesiumMath,
         Matrix4) {
     'use strict';
 
@@ -24320,6 +24388,28 @@ define('Core/PerspectiveOffCenterFrustum',[
                 this.far === other.far);
     };
 
+    /**
+     * Compares the provided PerspectiveOffCenterFrustum componentwise and returns
+     * <code>true</code> if they pass an absolute or relative tolerance test,
+     * <code>false</code> otherwise.
+     *
+     * @param {PerspectiveOffCenterFrustum} other The right hand side PerspectiveOffCenterFrustum.
+     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
+     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
+     * @returns {Boolean} <code>true</code> if this and other are within the provided epsilon, <code>false</code> otherwise.
+     */
+    PerspectiveOffCenterFrustum.prototype.equalsEpsilon = function(other, relativeEpsilon, absoluteEpsilon) {
+        return (other === this) ||
+               (defined(other) &&
+                other instanceof PerspectiveOffCenterFrustum &&
+                CesiumMath.equalsEpsilon(this.right, other.right, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(this.left, other.left, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(this.top, other.top, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(this.bottom, other.bottom, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(this.near, other.near, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(this.far, other.far, relativeEpsilon, absoluteEpsilon));
+    };
+
     return PerspectiveOffCenterFrustum;
 });
 
@@ -24329,6 +24419,7 @@ define('Core/PerspectiveFrustum',[
         './defined',
         './defineProperties',
         './DeveloperError',
+        './Math',
         './PerspectiveOffCenterFrustum'
     ], function(
         Check,
@@ -24336,6 +24427,7 @@ define('Core/PerspectiveFrustum',[
         defined,
         defineProperties,
         DeveloperError,
+        CesiumMath,
         PerspectiveOffCenterFrustum) {
     'use strict';
 
@@ -24663,9 +24755,30 @@ define('Core/PerspectiveFrustum',[
 
         return (this.fov === other.fov &&
                 this.aspectRatio === other.aspectRatio &&
-                this.near === other.near &&
-                this.far === other.far &&
                 this._offCenterFrustum.equals(other._offCenterFrustum));
+    };
+
+    /**
+     * Compares the provided PerspectiveFrustum componentwise and returns
+     * <code>true</code> if they pass an absolute or relative tolerance test,
+     * <code>false</code> otherwise.
+     *
+     * @param {PerspectiveFrustum} other The right hand side PerspectiveFrustum.
+     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
+     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
+     * @returns {Boolean} <code>true</code> if this and other are within the provided epsilon, <code>false</code> otherwise.
+     */
+    PerspectiveFrustum.prototype.equalsEpsilon = function(other, relativeEpsilon, absoluteEpsilon) {
+        if (!defined(other) || !(other instanceof PerspectiveFrustum)) {
+            return false;
+        }
+
+        update(this);
+        update(other);
+
+        return (CesiumMath.equalsEpsilon(this.fov, other.fov, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(this.aspectRatio, other.aspectRatio, relativeEpsilon, absoluteEpsilon) &&
+                this._offCenterFrustum.equalsEpsilon(other._offCenterFrustum, relativeEpsilon, absoluteEpsilon));
     };
 
     return PerspectiveFrustum;
