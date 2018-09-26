@@ -134,7 +134,7 @@ describe('ga_main_controller', function() {
 
       it('set map properties', function() {
         var spy = sinon.spy(ol, 'Map');
-        var spy2 = sinon.spy(ol.control, 'defaults');
+        var spy2 = sinon.spy(ol.control.util, 'defaults');
         var spy3 = sinon.spy(ol.interaction, 'defaults');
         loadController();
         expect(scope.map).to.be.an(ol.Map);
