@@ -108,7 +108,7 @@ goog.require('ga_urlutils_service');
         // Sanitize the feature.
         this.sanitizeFeature = function(feature) {
           var geom = feature.getGeometry();
-          var styles = feature.getStyleFunction().call(null, feature);
+          var styles = feature.getStyleFunction()(feature);
 
           // The use of clone is part of the scale fix line 156
           var style = styles[0].clone();
