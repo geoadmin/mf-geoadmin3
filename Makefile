@@ -852,7 +852,9 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	java -jar ${CLOSURE_COMPILER} $(SRC_JS_FILES_FOR_COMPILER) \
 	    --compilation_level WHITESPACE_ONLY \
 	    --formatting PRETTY_PRINT \
-	    --js_output_file $@
+	    --js_output_file tmp
+	cat node_modules/google-closure-library/closure/goog/base.js tmp > $@
+	rm -f tmp
 
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
 # add lib/closure as a root. When compiling we remove base.js from the js files
