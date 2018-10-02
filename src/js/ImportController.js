@@ -129,6 +129,8 @@ goog.require('ga_wmts_service');
       'https://wms.geo.gr.ch/wildschutzgebiete',
       'https://wms.geo.gr.ch/richtplan',
       'https://wms.geo.gr.ch/uebersichtsplan',
+      'https://map.geo.sz.ch/main/wsgi/mapserv_proxy',
+      'http://geoshop.sz.ch/WMSSZ',
       'https://map.geo.tg.ch/proxy/geofy_chsdi3/gefaehrdung_wasser?access_key=YoW2syIQ4xe0ccJA',
       'https://map.geo.tg.ch/proxy/geofy_chsdi3/grundwasserkarte-fassung?access_key=YoW2syIQ4xe0ccJA',
       'https://map.geo.tg.ch/proxy/geofy_chsdi3/gewaesserschutzkarte-gewaesserschutzbereiche?access_key=YoW2syIQ4xe0ccJA',
