@@ -224,6 +224,36 @@ describe('ga_previewfeatures_service', function() {
               expect(layer).to.be.an(ol.layer.Vector);
               expect(layer.getSource().getFeatures().length).to.be(4);
               expect(spy.calledWith(map)).to.be(true);
+              expect(map.getView().getZoom() === 8);
+              done();
+            });
+            stub.restore();
+            $httpBackend.flush();
+          });
+
+      it('Loads Features and assures zoom is enforced when specified',
+          function(done) {
+            var stub = sinon.stub(gaLayers, 'getLayerProperty');
+            stub.withArgs('somelayer').returns(layerBodTypeWMTS);
+            stub.withArgs('somelayer2').returns(layerBodTypeWMTS);
+            var forceZoom = 2;
+            var ids = {
+              'somelayer': ['id1', 'id2'],
+              'somelayer2': ['id1', 'id2']
+            }
+            var spy = sinon.spy(gaPreviewFeatures, 'zoom');
+            expectGET(ids);
+            gaPreviewFeatures.addBodFeatures(map, ids, null, forceZoom).then(function(feats) {
+              expect(feats.length).to.be(4);
+              feats.forEach(function(item) {
+                expect(item.properties.layerId).to.equal(item.layerBodId);
+              });
+              var layer = map.getLayers().item(0);
+              expect(layer).to.be.an(ol.layer.Vector);
+              expect(layer.getSource().getFeatures().length).to.be(4);
+              expect(spy.calledWith(map)).to.be(true);
+              expect(spy.args[0][3] === forceZoom);
+              expect(map.getView().getZoom() === forceZoom);
               done();
             });
             stub.restore();
