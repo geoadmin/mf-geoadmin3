@@ -25,6 +25,12 @@ goog.require('ga_previewfeatures_service');
           var featureIdsByBodId = {};
           var paramKey;
           var listenerKey;
+          var forceZoom;
+
+          if (queryParams.zoom !== undefined && isFinite(queryParams.zoom)) {
+            forceZoom = parseInt(queryParams.zoom);
+          }
+
           for (paramKey in queryParams) {
             if (gaLayers.getLayer(paramKey)) {
               var bodId = paramKey;
@@ -63,7 +69,7 @@ goog.require('ga_previewfeatures_service');
 
           if (featureIdsCount > 0) {
             var featuresShown = gaPreviewFeatures.addBodFeatures(map,
-                featureIdsByBodId, removeParamsFromPL);
+                featureIdsByBodId, removeParamsFromPL, forceZoom);
 
             if (queryParams.showTooltip === 'true') {
               featuresShown.then(function(features) {

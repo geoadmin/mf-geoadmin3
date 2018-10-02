@@ -145,7 +145,8 @@ goog.require('ga_styles_service');
         // Add features from an array<layerBodId,array<featureIds>>.
         // Param onNextClear is a function to call on the next execution of
         // clear function.
-        this.addBodFeatures = function(map, featureIdsByBodId, onNextClear) {
+        this.addBodFeatures = function(map, featureIdsByBodId, onNextClear,
+            forceZoom) {
           var defer = $q.defer();
           this.clear(map);
           var that = this;
@@ -164,7 +165,7 @@ goog.require('ga_styles_service');
                 that.add(map, geojson.readFeature(result.data.feature));
               }
             });
-            that.zoom(map);
+            that.zoom(map, null, null, forceZoom);
             defer.resolve(features);
           });
 
@@ -208,10 +209,13 @@ goog.require('ga_styles_service');
 
         // Zoom on a feature (if defined) or zoom on the entire source
         // extent.
-        this.zoom = function(map, ol3d, feature) {
+        this.zoom = function(map, ol3d, feature, forceZoom) {
           var extent = getMinimalExtent((feature) ?
             feature.getGeometry().getExtent() : source.getExtent());
           gaMapUtils.zoomToExtent(map, ol3d, extent);
+          if (forceZoom) {
+            map.getView().setZoom(forceZoom);
+          }
         };
       };
       return new PreviewFeatures();
