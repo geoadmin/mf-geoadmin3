@@ -199,7 +199,7 @@ goog.require('ga_urlutils_service');
                 }
               });
 
-              // Ad diemo layer
+              // Add diemo layer
               response.data['ch.bfe.ladestellen-elektromobilitaet'] = {
                 attribution: 'BFE',
                 chargeable: false,
@@ -214,7 +214,7 @@ goog.require('ga_urlutils_service');
                     'ch.bfe.ladestellen-elektromobilitaet.json',
                 highlightable: true,
                 background: false,
-                updateDelay: 60000,
+                updateDelay: 5000, // every 5sec!
                 topics: 'api,bfe,dev,ech,gewiss,inspire,kgs',
                 hasLegend: false,
                 type: 'geojson',
