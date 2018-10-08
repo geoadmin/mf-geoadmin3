@@ -76,9 +76,10 @@ goog.require('ga_vector_service');
         map = inMap;
         var scope = $rootScope.$new();
         scope.layers = map.getLayers().getArray();
-        scope.layerFilter = gaLayerFilters.realtime;
+        scope.realtime = gaLayerFilters.realtime;
+        scope.selectedAndVisible = gaLayerFilters.selectedAndVisible;
 
-        scope.$watchCollection('layers | filter:layerFilter',
+        scope.$watchCollection('layers | filter:realtime | filter:selectedAndVisible',
             function(newLayers, oldLayers) {
 
               // Layer Removed
