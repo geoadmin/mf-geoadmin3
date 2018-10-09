@@ -57,7 +57,7 @@ goog.require('ga_window_service');
 
       var map = new ol.Map({
         moveTolerance: 5,
-        controls: ol.control.defaults({
+        controls: ol.control.util.defaults({
           attribution: false,
           rotate: false,
           zoomOptions: {

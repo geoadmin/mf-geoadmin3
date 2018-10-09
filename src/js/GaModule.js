@@ -147,6 +147,8 @@ goog.require('ga_waitcursor_service');
     var dflt = ['0', '1', '2', '3', '4'];
     var hundred = ['100', '101', '102', '103', '104'];
 
+    ol.proj.proj4.register(window.proj4);
+
     // Domains
     gaLayersProvider.wmsSubdomains = dflt;
     gaLayersProvider.wmtsSubdomains = hundred;

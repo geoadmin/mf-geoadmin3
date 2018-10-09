@@ -122,7 +122,7 @@
           var resolutions = gaGlobalOptions.resolutions;
 
           var map = new ol.Map({
-            controls: ol.control.defaults({
+            controls: ol.control.util.defaults({
               attribution: false
             }),
             renderer: 'canvas',

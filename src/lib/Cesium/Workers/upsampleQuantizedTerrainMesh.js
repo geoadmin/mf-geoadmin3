@@ -27,7 +27,7 @@ define('Core/defined',[],function() {
     /**
      * @exports defined
      *
-     * @param {Object} value The object.
+     * @param {*} value The object.
      * @returns {Boolean} Returns true if the object is defined, returns false otherwise.
      *
      * @example
@@ -364,6 +364,7 @@ define('Core/defaultValue',[
     /**
      * A frozen empty object that can be used as the default value for options passed as
      * an object literal.
+     * @type {Object}
      */
     defaultValue.EMPTY_OBJECT = freezeObject({});
 
@@ -576,11 +577,13 @@ return MersenneTwister;
 
 define('Core/Math',[
         '../ThirdParty/mersenne-twister',
+        './Check',
         './defaultValue',
         './defined',
         './DeveloperError'
     ], function(
         MersenneTwister,
+        Check,
         defaultValue,
         defined,
         DeveloperError) {
@@ -735,7 +738,15 @@ define('Core/Math',[
     CesiumMath.EPSILON20 = 0.00000000000000000001;
 
     /**
-     * 3.986004418e14
+     * 0.000000000000000000001
+     * @type {Number}
+     * @constant
+     */
+    CesiumMath.EPSILON21 = 0.000000000000000000001;
+
+    /**
+     * The gravitational parameter of the Earth in meters cubed
+     * per second squared as defined by the WGS84 model: 3.986004418e14
      * @type {Number}
      * @constant
      */
@@ -768,19 +779,18 @@ define('Core/Math',[
      * Returns the sign of the value; 1 if the value is positive, -1 if the value is
      * negative, or 0 if the value is 0.
      *
+     * @function
      * @param {Number} value The value to return the sign of.
      * @returns {Number} The sign of value.
      */
-    CesiumMath.sign = function(value) {
-        if (value > 0) {
-            return 1;
+    CesiumMath.sign = defaultValue(Math.sign, function sign(value) {
+        value = +value; // coerce to number
+        if (value === 0 || value !== value) {
+            // zero or NaN
+            return value;
         }
-        if (value < 0) {
-            return -1;
-        }
-
-        return 0;
-    };
+        return value > 0 ? 1 : -1;
+    });
 
     /**
      * Returns 1.0 if the given value is positive or zero, and -1.0 if it is negative.
@@ -837,15 +847,13 @@ define('Core/Math',[
      *   </ul>
      *</p>
      *
+     * @function
      * @param {Number} value The number whose hyperbolic sine is to be returned.
      * @returns {Number} The hyperbolic sine of <code>value</code>.
      */
-    CesiumMath.sinh = function(value) {
-        var part1 = Math.pow(Math.E, value);
-        var part2 = Math.pow(Math.E, -1.0 * value);
-
-        return (part1 - part2) * 0.5;
-    };
+    CesiumMath.sinh = defaultValue(Math.sinh, function sinh(value) {
+        return (Math.exp(value) - Math.exp(-value)) / 2.0;
+    });
 
     /**
      * Returns the hyperbolic cosine of a number.
@@ -863,15 +871,13 @@ define('Core/Math',[
      *   </ul>
      *</p>
      *
+     * @function
      * @param {Number} value The number whose hyperbolic cosine is to be returned.
      * @returns {Number} The hyperbolic cosine of <code>value</code>.
      */
-    CesiumMath.cosh = function(value) {
-        var part1 = Math.pow(Math.E, value);
-        var part2 = Math.pow(Math.E, -1.0 * value);
-
-        return (part1 + part2) * 0.5;
-    };
+    CesiumMath.cosh = defaultValue(Math.cosh, function cosh(value) {
+        return (Math.exp(value) + Math.exp(-value)) / 2.0;
+    });
 
     /**
      * Computes the linear interpolation of two values.
@@ -910,7 +916,7 @@ define('Core/Math',[
      * @type {Number}
      * @constant
      */
-    CesiumMath.PI_OVER_TWO = Math.PI * 0.5;
+    CesiumMath.PI_OVER_TWO = Math.PI / 2.0;
 
     /**
      * pi/3
@@ -942,7 +948,7 @@ define('Core/Math',[
      * @type {Number}
      * @constant
      */
-    CesiumMath.THREE_PI_OVER_TWO = (3.0 * Math.PI) * 0.5;
+    CesiumMath.THREE_PI_OVER_TWO = 3.0 * Math.PI / 2.0;
 
     /**
      * 2pi
@@ -1297,19 +1303,29 @@ define('Core/Math',[
                 return Math.log(number) / Math.log(base);
     };
 
-    function cbrt(number) {
-        var result = Math.pow(Math.abs(number), 1.0 / 3.0);
-        return number < 0.0 ? -result : result;
-    }
-
     /**
      * Finds the cube root of a number.
      * Returns NaN if <code>number</code> is not provided.
      *
+     * @function
      * @param {Number} [number] The number.
      * @returns {Number} The result.
      */
-    CesiumMath.cbrt = defined(Math.cbrt) ? Math.cbrt : cbrt;
+    CesiumMath.cbrt = defaultValue(Math.cbrt, function cbrt(number) {
+        var result = Math.pow(Math.abs(number), 1.0 / 3.0);
+        return number < 0.0 ? -result : result;
+    });
+
+    /**
+     * Finds the base 2 logarithm of a number.
+     *
+     * @function
+     * @param {Number} number The number.
+     * @returns {Number} The result.
+     */
+    CesiumMath.log2 = defaultValue(Math.log2, function log2(number) {
+        return Math.log(number) * Math.LOG2E;
+    });
 
     /**
      * @private
@@ -1317,6 +1333,52 @@ define('Core/Math',[
     CesiumMath.fog = function(distanceToCamera, density) {
         var scalar = distanceToCamera * density;
         return 1.0 - Math.exp(-(scalar * scalar));
+    };
+
+    /**
+     * Computes a fast approximation of Atan for input in the range [-1, 1].
+     *
+     * Based on Michal Drobot's approximation from ShaderFastLibs,
+     * which in turn is based on "Efficient approximations for the arctangent function,"
+     * Rajan, S. Sichun Wang Inkol, R. Joyal, A., May 2006.
+     * Adapted from ShaderFastLibs under MIT License.
+     *
+     * @param {Number} x An input number in the range [-1, 1]
+     * @returns {Number} An approximation of atan(x)
+     */
+    CesiumMath.fastApproximateAtan = function(x) {
+        
+        return x * (-0.1784 * Math.abs(x) - 0.0663 * x * x + 1.0301);
+    };
+
+    /**
+     * Computes a fast approximation of Atan2(x, y) for arbitrary input scalars.
+     *
+     * Range reduction math based on nvidia's cg reference implementation: http://developer.download.nvidia.com/cg/atan2.html
+     *
+     * @param {Number} x An input number that isn't zero if y is zero.
+     * @param {Number} y An input number that isn't zero if x is zero.
+     * @returns {Number} An approximation of atan2(x, y)
+     */
+    CesiumMath.fastApproximateAtan2 = function(x, y) {
+        
+        // atan approximations are usually only reliable over [-1, 1]
+        // So reduce the range by flipping whether x or y is on top based on which is bigger.
+        var opposite;
+        var adjacent;
+        var t = Math.abs(x); // t used as swap and atan result.
+        opposite = Math.abs(y);
+        adjacent = Math.max(t, opposite);
+        opposite = Math.min(t, opposite);
+
+        var oppositeOverAdjacent = opposite / adjacent;
+                t = CesiumMath.fastApproximateAtan(oppositeOverAdjacent);
+
+        // Undo range reduction
+        t = Math.abs(y) > Math.abs(x) ? CesiumMath.PI_OVER_TWO - t : t;
+        t = x < 0.0 ?  CesiumMath.PI - t : t;
+        t = y < 0.0 ? -t : t;
+        return t;
     };
 
     return CesiumMath;
@@ -2619,6 +2681,22 @@ define('Core/Cartesian3',[
         result.x = x;
         result.y = y;
         result.z = z;
+        return result;
+    };
+
+    /**
+     * Computes the midpoint between the right and left Cartesian.
+     * @param {Cartesian3} left The first Cartesian.
+     * @param {Cartesian3} right The second Cartesian.
+     * @param {Cartesian3} result The object onto which to store the result.
+     * @returns {Cartesian3} The midpoint.
+     */
+    Cartesian3.midpoint = function(left, right, result) {
+        
+        result.x = (left.x + right.x) * 0.5;
+        result.y = (left.y + right.y) * 0.5;
+        result.z = (left.z + right.z) * 0.5;
+
         return result;
     };
 
@@ -7654,7 +7732,7 @@ define('Core/Matrix4',[
      *
      * @param {Matrix4} matrix The matrix to use.
      * @param {Cartesian3} translation The translation that replaces the translation of the provided matrix.
-     * @param {Cartesian4} result The object onto which to store the result.
+     * @param {Matrix4} result The object onto which to store the result.
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.setTranslation = function(matrix, translation, result) {
@@ -7680,6 +7758,22 @@ define('Core/Matrix4',[
         result[15] = matrix[15];
 
         return result;
+    };
+
+    var scaleScratch = new Cartesian3();
+    /**
+     * Computes a new matrix that replaces the scale with the provided scale.  This assumes the matrix is an affine transformation
+     *
+     * @param {Matrix4} matrix The matrix to use.
+     * @param {Cartesian3} scale The scale that replaces the scale of the provided matrix.
+     * @param {Matrix4} result The object onto which to store the result.
+     * @returns {Matrix4} The modified result parameter.
+     */
+    Matrix4.setScale = function(matrix, scale, result) {
+        
+        var existingScale = Matrix4.getScale(matrix, scaleScratch);
+        var newScale = Cartesian3.divideComponents(scale, existingScale, scaleScratch);
+        return Matrix4.multiplyByScale(matrix, newScale, result);
     };
 
     /**
@@ -8641,32 +8735,7 @@ define('Core/Matrix4',[
       * @exception {RuntimeError} matrix is not invertible because its determinate is zero.
       */
     Matrix4.inverse = function(matrix, result) {
-        
-        // Special case for a zero scale matrix that can occur, for example,
-        // when a model's node has a [0, 0, 0] scale.
-        if (Matrix3.equalsEpsilon(Matrix4.getRotation(matrix, scratchInverseRotation), scratchMatrix3Zero, CesiumMath.EPSILON7) &&
-            Cartesian4.equals(Matrix4.getRow(matrix, 3, scratchBottomRow), scratchExpectedBottomRow)) {
-
-            result[0] = 0.0;
-            result[1] = 0.0;
-            result[2] = 0.0;
-            result[3] = 0.0;
-            result[4] = 0.0;
-            result[5] = 0.0;
-            result[6] = 0.0;
-            result[7] = 0.0;
-            result[8] = 0.0;
-            result[9] = 0.0;
-            result[10] = 0.0;
-            result[11] = 0.0;
-            result[12] = -matrix[12];
-            result[13] = -matrix[13];
-            result[14] = -matrix[14];
-            result[15] = 1.0;
-            return result;
-        }
-
-        //
+                //
         // Ported from:
         //   ftp://download.intel.com/design/PentiumIII/sml/24504301.pdf
         //
@@ -8738,7 +8807,31 @@ define('Core/Matrix4',[
         // calculate determinant
         var det = src0 * dst0 + src1 * dst1 + src2 * dst2 + src3 * dst3;
 
-        if (Math.abs(det) < CesiumMath.EPSILON20) {
+        if (Math.abs(det) < CesiumMath.EPSILON21) {
+                // Special case for a zero scale matrix that can occur, for example,
+                // when a model's node has a [0, 0, 0] scale.
+                if (Matrix3.equalsEpsilon(Matrix4.getRotation(matrix, scratchInverseRotation), scratchMatrix3Zero, CesiumMath.EPSILON7) &&
+                Cartesian4.equals(Matrix4.getRow(matrix, 3, scratchBottomRow), scratchExpectedBottomRow)) {
+
+                result[0] = 0.0;
+                result[1] = 0.0;
+                result[2] = 0.0;
+                result[3] = 0.0;
+                result[4] = 0.0;
+                result[5] = 0.0;
+                result[6] = 0.0;
+                result[7] = 0.0;
+                result[8] = 0.0;
+                result[9] = 0.0;
+                result[10] = 0.0;
+                result[11] = 0.0;
+                result[12] = -matrix[12];
+                result[13] = -matrix[13];
+                result[14] = -matrix[14];
+                result[15] = 1.0;
+                return result;
+            }
+
             throw new RuntimeError('matrix is not invertible because its determinate is zero.');
         }
 
@@ -9407,6 +9500,27 @@ define('Core/Rectangle',[
     };
 
     /**
+     * Compares the provided Rectangles componentwise and returns
+     * <code>true</code> if they pass an absolute or relative tolerance test,
+     * <code>false</code> otherwise.
+     *
+     * @param {Rectangle} [left] The first Rectangle.
+     * @param {Rectangle} [right] The second Rectangle.
+     * @param {Number} absoluteEpsilon The absolute epsilon tolerance to use for equality testing.
+     * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
+     */
+    Rectangle.equalsEpsilon = function(left, right, absoluteEpsilon) {
+        
+        return (left === right) ||
+               (defined(left) &&
+                defined(right) &&
+                (Math.abs(left.west - right.west) <= absoluteEpsilon) &&
+                (Math.abs(left.south - right.south) <= absoluteEpsilon) &&
+                (Math.abs(left.east - right.east) <= absoluteEpsilon) &&
+                (Math.abs(left.north - right.north) <= absoluteEpsilon));
+    };
+
+    /**
      * Duplicates this Rectangle.
      *
      * @param {Rectangle} [result] The object onto which to store the result.
@@ -9456,11 +9570,7 @@ define('Core/Rectangle',[
      */
     Rectangle.prototype.equalsEpsilon = function(other, epsilon) {
         
-        return defined(other) &&
-               (Math.abs(this.west - other.west) <= epsilon) &&
-               (Math.abs(this.south - other.south) <= epsilon) &&
-               (Math.abs(this.east - other.east) <= epsilon) &&
-               (Math.abs(this.north - other.north) <= epsilon);
+        return Rectangle.equalsEpsilon(this, other, epsilon);
     };
 
     /**
@@ -10024,7 +10134,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -10294,7 +10404,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -10452,7 +10562,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -10512,9 +10622,7 @@ define('Core/BoundingSphere',[
             result = new BoundingSphere();
         }
 
-        var center = result.center;
-        Cartesian3.add(corner, oppositeCorner, center);
-        Cartesian3.multiplyByScalar(center, 0.5, center);
+        var center = Cartesian3.midpoint(corner, oppositeCorner, result.center);
         result.radius = Cartesian3.distance(center, oppositeCorner);
         return result;
     };
@@ -11726,6 +11834,9 @@ define('Core/WebGLConstants',[
         // WEBGL_compressed_texture_etc1
         COMPRESSED_RGB_ETC1_WEBGL : 0x8D64,
 
+        // EXT_color_buffer_half_float
+        HALF_FLOAT_OES : 0x8D61,
+
         // Desktop OpenGL
         DOUBLE : 0x140A,
 
@@ -12103,7 +12214,7 @@ define('Core/IndexDatatype',[
      * or <code>Uint32Array</code> depending on the number of vertices.
      *
      * @param {Number} numberOfVertices Number of vertices that the indices will reference.
-     * @param {*} indicesLengthOrArray Passed through to the typed array constructor.
+     * @param {Number|Array} indicesLengthOrArray Passed through to the typed array constructor.
      * @returns {Uint16Array|Uint32Array} A <code>Uint16Array</code> or <code>Uint32Array</code> constructed with <code>indicesLengthOrArray</code>.
      *
      * @example
@@ -12424,8 +12535,7 @@ define('Core/AxisAlignedBoundingBox',[
 
         //If center was not defined, compute it.
         if (!defined(center)) {
-            center = Cartesian3.add(this.minimum, this.maximum, new Cartesian3());
-            Cartesian3.multiplyByScalar(center, 0.5, center);
+            center = Cartesian3.midpoint(this.minimum, this.maximum, new Cartesian3());
         } else {
             center = Cartesian3.clone(center);
         }
@@ -12494,8 +12604,7 @@ define('Core/AxisAlignedBoundingBox',[
         maximum.y = maximumY;
         maximum.z = maximumZ;
 
-        var center = Cartesian3.add(minimum, maximum, result.center);
-        Cartesian3.multiplyByScalar(center, 0.5, center);
+        result.center = Cartesian3.midpoint(minimum, maximum, result.center);
 
         return result;
     };
@@ -15104,7 +15213,7 @@ define('Core/binarySearch',[
      * @exports binarySearch
      *
      * @param {Array} array The sorted array to search.
-     * @param {Object} itemToFind The item to find in the array.
+     * @param {*} itemToFind The item to find in the array.
      * @param {binarySearch~Comparator} comparator The function to use to compare the item to
      *        elements in the array.
      * @returns {Number} The index of <code>itemToFind</code> in the array, if it exists.  If <code>itemToFind</code>
@@ -15147,8 +15256,8 @@ define('Core/binarySearch',[
      * A function used to compare two items while performing a binary search.
      * @callback binarySearch~Comparator
      *
-     * @param {Object} a An item in the array.
-     * @param {Object} b The item being searched for.
+     * @param {*} a An item in the array.
+     * @param {*} b The item being searched for.
      * @returns {Number} Returns a negative value if <code>a</code> is less than <code>b</code>,
      *          a positive value if <code>a</code> is greater than <code>b</code>, or
      *          0 if <code>a</code> is equal to <code>b</code>.
@@ -16352,22 +16461,39 @@ define('Core/JulianDate',[
     JulianDate.toIso8601 = function(julianDate, precision) {
         
         var gDate = JulianDate.toGregorianDate(julianDate, gregorianDateScratch);
+        var year = gDate.year;
+        var month = gDate.month;
+        var day = gDate.day;
+        var hour = gDate.hour;
+        var minute = gDate.minute;
+        var second = gDate.second;
+        var millisecond = gDate.millisecond;
+
+        // special case - Iso8601.MAXIMUM_VALUE produces a string which we can't parse unless we adjust.
+        // 10000-01-01T00:00:00 is the same instant as 9999-12-31T24:00:00
+        if (year === 10000 && month === 1 && day === 1 && hour === 0 && minute === 0 && second === 0 && millisecond === 0) {
+            year = 9999;
+            month = 12;
+            day = 31;
+            hour = 24;
+        }
+
         var millisecondStr;
 
-        if (!defined(precision) && gDate.millisecond !== 0) {
+        if (!defined(precision) && millisecond !== 0) {
             //Forces milliseconds into a number with at least 3 digits to whatever the default toString() precision is.
-            millisecondStr = (gDate.millisecond * 0.01).toString().replace('.', '');
-            return sprintf('%04d-%02d-%02dT%02d:%02d:%02d.%sZ', gDate.year, gDate.month, gDate.day, gDate.hour, gDate.minute, gDate.second, millisecondStr);
+            millisecondStr = (millisecond * 0.01).toString().replace('.', '');
+            return sprintf('%04d-%02d-%02dT%02d:%02d:%02d.%sZ', year, month, day, hour, minute, second, millisecondStr);
         }
 
         //Precision is either 0 or milliseconds is 0 with undefined precision, in either case, leave off milliseconds entirely
         if (!defined(precision) || precision === 0) {
-            return sprintf('%04d-%02d-%02dT%02d:%02d:%02dZ', gDate.year, gDate.month, gDate.day, gDate.hour, gDate.minute, gDate.second);
+            return sprintf('%04d-%02d-%02dT%02d:%02d:%02dZ', year, month, day, hour, minute, second);
         }
 
         //Forces milliseconds into a number with at least 3 digits to whatever the specified precision is.
-        millisecondStr = (gDate.millisecond * 0.01).toFixed(precision).replace('.', '').slice(0, precision);
-        return sprintf('%04d-%02d-%02dT%02d:%02d:%02d.%sZ', gDate.year, gDate.month, gDate.day, gDate.hour, gDate.minute, gDate.second, millisecondStr);
+        millisecondStr = (millisecond * 0.01).toFixed(precision).replace('.', '').slice(0, precision);
+        return sprintf('%04d-%02d-%02dT%02d:%02d:%02d.%sZ', year, month, day, hour, minute, second, millisecondStr);
     };
 
     /**
@@ -17132,6 +17258,8 @@ define('Core/oneTimeWarning',[
 
     oneTimeWarning.geometryOutlines = 'Entity geometry outlines are unsupported on terrain. Outlines will be disabled. To enable outlines, disable geometry terrain clamping by explicitly setting height to 0.';
 
+    oneTimeWarning.geometryZIndex = 'Entity geometry with zIndex are unsupported when height or extrudedHeight are defined.  zIndex will be ignored';
+
     return oneTimeWarning;
 });
 
@@ -17192,6 +17320,550 @@ define('Core/deprecationWarning',[
     return deprecationWarning;
 });
 
+define('Core/Fullscreen',[
+        './defined',
+        './defineProperties'
+    ], function(
+        defined,
+        defineProperties) {
+    'use strict';
+
+    var _supportsFullscreen;
+    var _names = {
+        requestFullscreen : undefined,
+        exitFullscreen : undefined,
+        fullscreenEnabled : undefined,
+        fullscreenElement : undefined,
+        fullscreenchange : undefined,
+        fullscreenerror : undefined
+    };
+
+    /**
+     * Browser-independent functions for working with the standard fullscreen API.
+     *
+     * @exports Fullscreen
+     *
+     * @see {@link http://dvcs.w3.org/hg/fullscreen/raw-file/tip/Overview.html|W3C Fullscreen Living Specification}
+     */
+    var Fullscreen = {};
+
+    defineProperties(Fullscreen, {
+        /**
+         * The element that is currently fullscreen, if any.  To simply check if the
+         * browser is in fullscreen mode or not, use {@link Fullscreen#fullscreen}.
+         * @memberof Fullscreen
+         * @type {Object}
+         * @readonly
+         */
+        element : {
+            get : function() {
+                if (!Fullscreen.supportsFullscreen()) {
+                    return undefined;
+                }
+
+                return document[_names.fullscreenElement];
+            }
+        },
+
+        /**
+         * The name of the event on the document that is fired when fullscreen is
+         * entered or exited.  This event name is intended for use with addEventListener.
+         * In your event handler, to determine if the browser is in fullscreen mode or not,
+         * use {@link Fullscreen#fullscreen}.
+         * @memberof Fullscreen
+         * @type {String}
+         * @readonly
+         */
+        changeEventName : {
+            get : function() {
+                if (!Fullscreen.supportsFullscreen()) {
+                    return undefined;
+                }
+
+                return _names.fullscreenchange;
+            }
+        },
+
+        /**
+         * The name of the event that is fired when a fullscreen error
+         * occurs.  This event name is intended for use with addEventListener.
+         * @memberof Fullscreen
+         * @type {String}
+         * @readonly
+         */
+        errorEventName : {
+            get : function() {
+                if (!Fullscreen.supportsFullscreen()) {
+                    return undefined;
+                }
+
+                return _names.fullscreenerror;
+            }
+        },
+
+        /**
+         * Determine whether the browser will allow an element to be made fullscreen, or not.
+         * For example, by default, iframes cannot go fullscreen unless the containing page
+         * adds an "allowfullscreen" attribute (or prefixed equivalent).
+         * @memberof Fullscreen
+         * @type {Boolean}
+         * @readonly
+         */
+        enabled : {
+            get : function() {
+                if (!Fullscreen.supportsFullscreen()) {
+                    return undefined;
+                }
+
+                return document[_names.fullscreenEnabled];
+            }
+        },
+
+        /**
+         * Determines if the browser is currently in fullscreen mode.
+         * @memberof Fullscreen
+         * @type {Boolean}
+         * @readonly
+         */
+        fullscreen : {
+            get : function() {
+                if (!Fullscreen.supportsFullscreen()) {
+                    return undefined;
+                }
+
+                return Fullscreen.element !== null;
+            }
+        }
+    });
+
+    /**
+     * Detects whether the browser supports the standard fullscreen API.
+     *
+     * @returns {Boolean} <code>true</code> if the browser supports the standard fullscreen API,
+     * <code>false</code> otherwise.
+     */
+    Fullscreen.supportsFullscreen = function() {
+        if (defined(_supportsFullscreen)) {
+            return _supportsFullscreen;
+        }
+
+        _supportsFullscreen = false;
+
+        var body = document.body;
+        if (typeof body.requestFullscreen === 'function') {
+            // go with the unprefixed, standard set of names
+            _names.requestFullscreen = 'requestFullscreen';
+            _names.exitFullscreen = 'exitFullscreen';
+            _names.fullscreenEnabled = 'fullscreenEnabled';
+            _names.fullscreenElement = 'fullscreenElement';
+            _names.fullscreenchange = 'fullscreenchange';
+            _names.fullscreenerror = 'fullscreenerror';
+            _supportsFullscreen = true;
+            return _supportsFullscreen;
+        }
+
+        //check for the correct combination of prefix plus the various names that browsers use
+        var prefixes = ['webkit', 'moz', 'o', 'ms', 'khtml'];
+        var name;
+        for (var i = 0, len = prefixes.length; i < len; ++i) {
+            var prefix = prefixes[i];
+
+            // casing of Fullscreen differs across browsers
+            name = prefix + 'RequestFullscreen';
+            if (typeof body[name] === 'function') {
+                _names.requestFullscreen = name;
+                _supportsFullscreen = true;
+            } else {
+                name = prefix + 'RequestFullScreen';
+                if (typeof body[name] === 'function') {
+                    _names.requestFullscreen = name;
+                    _supportsFullscreen = true;
+                }
+            }
+
+            // disagreement about whether it's "exit" as per spec, or "cancel"
+            name = prefix + 'ExitFullscreen';
+            if (typeof document[name] === 'function') {
+                _names.exitFullscreen = name;
+            } else {
+                name = prefix + 'CancelFullScreen';
+                if (typeof document[name] === 'function') {
+                    _names.exitFullscreen = name;
+                }
+            }
+
+            // casing of Fullscreen differs across browsers
+            name = prefix + 'FullscreenEnabled';
+            if (document[name] !== undefined) {
+                _names.fullscreenEnabled = name;
+            } else {
+                name = prefix + 'FullScreenEnabled';
+                if (document[name] !== undefined) {
+                    _names.fullscreenEnabled = name;
+                }
+            }
+
+            // casing of Fullscreen differs across browsers
+            name = prefix + 'FullscreenElement';
+            if (document[name] !== undefined) {
+                _names.fullscreenElement = name;
+            } else {
+                name = prefix + 'FullScreenElement';
+                if (document[name] !== undefined) {
+                    _names.fullscreenElement = name;
+                }
+            }
+
+            // thankfully, event names are all lowercase per spec
+            name = prefix + 'fullscreenchange';
+            // event names do not have 'on' in the front, but the property on the document does
+            if (document['on' + name] !== undefined) {
+                //except on IE
+                if (prefix === 'ms') {
+                    name = 'MSFullscreenChange';
+                }
+                _names.fullscreenchange = name;
+            }
+
+            name = prefix + 'fullscreenerror';
+            if (document['on' + name] !== undefined) {
+                //except on IE
+                if (prefix === 'ms') {
+                    name = 'MSFullscreenError';
+                }
+                _names.fullscreenerror = name;
+            }
+        }
+
+        return _supportsFullscreen;
+    };
+
+    /**
+     * Asynchronously requests the browser to enter fullscreen mode on the given element.
+     * If fullscreen mode is not supported by the browser, does nothing.
+     *
+     * @param {Object} element The HTML element which will be placed into fullscreen mode.
+     * @param {HMDVRDevice} [vrDevice] The VR device.
+     *
+     * @example
+     * // Put the entire page into fullscreen.
+     * Cesium.Fullscreen.requestFullscreen(document.body)
+     *
+     * // Place only the Cesium canvas into fullscreen.
+     * Cesium.Fullscreen.requestFullscreen(scene.canvas)
+     */
+    Fullscreen.requestFullscreen = function(element, vrDevice) {
+        if (!Fullscreen.supportsFullscreen()) {
+            return;
+        }
+
+        element[_names.requestFullscreen]({ vrDisplay: vrDevice });
+    };
+
+    /**
+     * Asynchronously exits fullscreen mode.  If the browser is not currently
+     * in fullscreen, or if fullscreen mode is not supported by the browser, does nothing.
+     */
+    Fullscreen.exitFullscreen = function() {
+        if (!Fullscreen.supportsFullscreen()) {
+            return;
+        }
+
+        document[_names.exitFullscreen]();
+    };
+
+    return Fullscreen;
+});
+
+define('Core/FeatureDetection',[
+        './defaultValue',
+        './defined',
+        './Fullscreen'
+    ], function(
+        defaultValue,
+        defined,
+        Fullscreen) {
+    'use strict';
+    /*global CanvasPixelArray*/
+
+    var theNavigator;
+    if (typeof navigator !== 'undefined') {
+        theNavigator = navigator;
+    } else {
+        theNavigator = {};
+    }
+
+    function extractVersion(versionString) {
+        var parts = versionString.split('.');
+        for (var i = 0, len = parts.length; i < len; ++i) {
+            parts[i] = parseInt(parts[i], 10);
+        }
+        return parts;
+    }
+
+    var isChromeResult;
+    var chromeVersionResult;
+    function isChrome() {
+        if (!defined(isChromeResult)) {
+            isChromeResult = false;
+            // Edge contains Chrome in the user agent too
+            if (!isEdge()) {
+                var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
+                if (fields !== null) {
+                    isChromeResult = true;
+                    chromeVersionResult = extractVersion(fields[1]);
+                }
+            }
+        }
+
+        return isChromeResult;
+    }
+
+    function chromeVersion() {
+        return isChrome() && chromeVersionResult;
+    }
+
+    var isSafariResult;
+    var safariVersionResult;
+    function isSafari() {
+        if (!defined(isSafariResult)) {
+            isSafariResult = false;
+
+            // Chrome and Edge contain Safari in the user agent too
+            if (!isChrome() && !isEdge() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
+                var fields = (/ Version\/([\.0-9]+)/).exec(theNavigator.userAgent);
+                if (fields !== null) {
+                    isSafariResult = true;
+                    safariVersionResult = extractVersion(fields[1]);
+                }
+            }
+        }
+
+        return isSafariResult;
+    }
+
+    function safariVersion() {
+        return isSafari() && safariVersionResult;
+    }
+
+    var isWebkitResult;
+    var webkitVersionResult;
+    function isWebkit() {
+        if (!defined(isWebkitResult)) {
+            isWebkitResult = false;
+
+            var fields = (/ AppleWebKit\/([\.0-9]+)(\+?)/).exec(theNavigator.userAgent);
+            if (fields !== null) {
+                isWebkitResult = true;
+                webkitVersionResult = extractVersion(fields[1]);
+                webkitVersionResult.isNightly = !!fields[2];
+            }
+        }
+
+        return isWebkitResult;
+    }
+
+    function webkitVersion() {
+        return isWebkit() && webkitVersionResult;
+    }
+
+    var isInternetExplorerResult;
+    var internetExplorerVersionResult;
+    function isInternetExplorer() {
+        if (!defined(isInternetExplorerResult)) {
+            isInternetExplorerResult = false;
+
+            var fields;
+            if (theNavigator.appName === 'Microsoft Internet Explorer') {
+                fields = /MSIE ([0-9]{1,}[\.0-9]{0,})/.exec(theNavigator.userAgent);
+                if (fields !== null) {
+                    isInternetExplorerResult = true;
+                    internetExplorerVersionResult = extractVersion(fields[1]);
+                }
+            } else if (theNavigator.appName === 'Netscape') {
+                fields = /Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.exec(theNavigator.userAgent);
+                if (fields !== null) {
+                    isInternetExplorerResult = true;
+                    internetExplorerVersionResult = extractVersion(fields[1]);
+                }
+            }
+        }
+        return isInternetExplorerResult;
+    }
+
+    function internetExplorerVersion() {
+        return isInternetExplorer() && internetExplorerVersionResult;
+    }
+
+    var isEdgeResult;
+    var edgeVersionResult;
+    function isEdge() {
+        if (!defined(isEdgeResult)) {
+            isEdgeResult = false;
+            var fields = (/ Edge\/([\.0-9]+)/).exec(theNavigator.userAgent);
+            if (fields !== null) {
+                isEdgeResult = true;
+                edgeVersionResult = extractVersion(fields[1]);
+            }
+        }
+        return isEdgeResult;
+    }
+
+    function edgeVersion() {
+        return isEdge() && edgeVersionResult;
+    }
+
+    var isFirefoxResult;
+    var firefoxVersionResult;
+    function isFirefox() {
+        if (!defined(isFirefoxResult)) {
+            isFirefoxResult = false;
+
+            var fields = /Firefox\/([\.0-9]+)/.exec(theNavigator.userAgent);
+            if (fields !== null) {
+                isFirefoxResult = true;
+                firefoxVersionResult = extractVersion(fields[1]);
+            }
+        }
+        return isFirefoxResult;
+    }
+
+    var isWindowsResult;
+    function isWindows() {
+        if (!defined(isWindowsResult)) {
+            isWindowsResult = /Windows/i.test(theNavigator.appVersion);
+        }
+        return isWindowsResult;
+    }
+
+    function firefoxVersion() {
+        return isFirefox() && firefoxVersionResult;
+    }
+
+    var hasPointerEvents;
+    function supportsPointerEvents() {
+        if (!defined(hasPointerEvents)) {
+            //While navigator.pointerEnabled is deprecated in the W3C specification
+            //we still need to use it if it exists in order to support browsers
+            //that rely on it, such as the Windows WebBrowser control which defines
+            //PointerEvent but sets navigator.pointerEnabled to false.
+
+            //Firefox disabled because of https://github.com/AnalyticalGraphicsInc/cesium/issues/6372
+            hasPointerEvents = !isFirefox() && typeof PointerEvent !== 'undefined' && (!defined(theNavigator.pointerEnabled) || theNavigator.pointerEnabled);
+        }
+        return hasPointerEvents;
+    }
+
+    var imageRenderingValueResult;
+    var supportsImageRenderingPixelatedResult;
+    function supportsImageRenderingPixelated() {
+        if (!defined(supportsImageRenderingPixelatedResult)) {
+            var canvas = document.createElement('canvas');
+            canvas.setAttribute('style',
+                                'image-rendering: -moz-crisp-edges;' +
+                                'image-rendering: pixelated;');
+            //canvas.style.imageRendering will be undefined, null or an empty string on unsupported browsers.
+            var tmp = canvas.style.imageRendering;
+            supportsImageRenderingPixelatedResult = defined(tmp) && tmp !== '';
+            if (supportsImageRenderingPixelatedResult) {
+                imageRenderingValueResult = tmp;
+            }
+        }
+        return supportsImageRenderingPixelatedResult;
+    }
+
+    function imageRenderingValue() {
+        return supportsImageRenderingPixelated() ? imageRenderingValueResult : undefined;
+    }
+
+    var typedArrayTypes = [];
+    if (typeof ArrayBuffer !== 'undefined') {
+        typedArrayTypes.push(Int8Array, Uint8Array, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array);
+
+        if (typeof Uint8ClampedArray !== 'undefined') {
+            typedArrayTypes.push(Uint8ClampedArray);
+        }
+
+        if (typeof CanvasPixelArray !== 'undefined') {
+            typedArrayTypes.push(CanvasPixelArray);
+        }
+    }
+
+    /**
+     * A set of functions to detect whether the current browser supports
+     * various features.
+     *
+     * @exports FeatureDetection
+     */
+    var FeatureDetection = {
+        isChrome : isChrome,
+        chromeVersion : chromeVersion,
+        isSafari : isSafari,
+        safariVersion : safariVersion,
+        isWebkit : isWebkit,
+        webkitVersion : webkitVersion,
+        isInternetExplorer : isInternetExplorer,
+        internetExplorerVersion : internetExplorerVersion,
+        isEdge : isEdge,
+        edgeVersion : edgeVersion,
+        isFirefox : isFirefox,
+        firefoxVersion : firefoxVersion,
+        isWindows : isWindows,
+        hardwareConcurrency : defaultValue(theNavigator.hardwareConcurrency, 3),
+        supportsPointerEvents : supportsPointerEvents,
+        supportsImageRenderingPixelated: supportsImageRenderingPixelated,
+        imageRenderingValue: imageRenderingValue,
+        typedArrayTypes: typedArrayTypes
+    };
+
+    /**
+     * Detects whether the current browser supports the full screen standard.
+     *
+     * @returns {Boolean} true if the browser supports the full screen standard, false if not.
+     *
+     * @see Fullscreen
+     * @see {@link http://dvcs.w3.org/hg/fullscreen/raw-file/tip/Overview.html|W3C Fullscreen Living Specification}
+     */
+    FeatureDetection.supportsFullscreen = function() {
+        return Fullscreen.supportsFullscreen();
+    };
+
+    /**
+     * Detects whether the current browser supports typed arrays.
+     *
+     * @returns {Boolean} true if the browser supports typed arrays, false if not.
+     *
+     * @see {@link http://www.khronos.org/registry/typedarray/specs/latest/|Typed Array Specification}
+     */
+    FeatureDetection.supportsTypedArrays = function() {
+        return typeof ArrayBuffer !== 'undefined';
+    };
+
+    /**
+     * Detects whether the current browser supports Web Workers.
+     *
+     * @returns {Boolean} true if the browsers supports Web Workers, false if not.
+     *
+     * @see {@link http://www.w3.org/TR/workers/}
+     */
+    FeatureDetection.supportsWebWorkers = function() {
+        return typeof Worker !== 'undefined';
+    };
+
+    /**
+     * Detects whether the current browser supports Web Assembly.
+     *
+     * @returns {Boolean} true if the browsers supports Web Assembly, false if not.
+     *
+     * @see {@link https://developer.mozilla.org/en-US/docs/WebAssembly}
+     */
+    FeatureDetection.supportsWebAssembly = function() {
+        return typeof WebAssembly !== 'undefined' && !FeatureDetection.isEdge();
+    };
+
+    return FeatureDetection;
+});
+
 define('Core/getAbsoluteUri',[
         '../ThirdParty/Uri',
         './defaultValue',
@@ -17217,11 +17889,23 @@ define('Core/getAbsoluteUri',[
      * var absoluteUri = Cesium.getAbsoluteUri('awesome.png', 'https://test.com');
      */
     function getAbsoluteUri(relative, base) {
-        return getAbsoluteUri._implementation(relative, base, document);
+        var documentObject;
+        if (typeof document !== 'undefined') {
+            documentObject = document;
+        }
+
+        return getAbsoluteUri._implementation(relative, base, documentObject);
     }
 
     getAbsoluteUri._implementation = function(relative, base, documentObject) {
-                base = defaultValue(base, defaultValue(documentObject.baseURI, documentObject.location.href));
+        
+        if (!defined(base)) {
+            if (typeof documentObject === 'undefined') {
+                return relative;
+            }
+            base = defaultValue(documentObject.baseURI, documentObject.location.href);
+        }
+
         var baseUri = new Uri(base);
         var relativeUri = new Uri(relative);
         return relativeUri.resolve(baseUri).toString();
@@ -17376,7 +18060,8 @@ define('Core/isCrossOriginUrl',[
         var protocol = a.protocol;
 
         a.href = url;
-        a.href = a.href; // IE only absolutizes href on get, not set
+        // IE only absolutizes href on get, not set
+        a.href = a.href; // eslint-disable-line no-self-assign
 
         return protocol !== a.protocol || host !== a.host;
     }
@@ -17420,7 +18105,7 @@ define('Core/isArray',[
      * Tests an object to see if it is an array.
      * @exports isArray
      *
-     * @param {Object} value The value to test.
+     * @param {*} value The value to test.
      * @returns {Boolean} true if the value is an array, false otherwise.
      */
     var isArray = Array.isArray;
@@ -18379,6 +19064,7 @@ define('Core/RequestScheduler',[
         '../ThirdParty/Uri',
         '../ThirdParty/when',
         './Check',
+        './defaultValue',
         './defined',
         './defineProperties',
         './Event',
@@ -18390,6 +19076,7 @@ define('Core/RequestScheduler',[
         Uri,
         when,
         Check,
+        defaultValue,
         defined,
         defineProperties,
         Event,
@@ -18444,11 +19131,20 @@ define('Core/RequestScheduler',[
     RequestScheduler.maximumRequests = 50;
 
     /**
-     * The maximum number of simultaneous active requests per server. Un-throttled requests do not observe this limit.
+     * The maximum number of simultaneous active requests per server. Un-throttled requests or servers specifically
+     * listed in requestsByServer do not observe this limit.
      * @type {Number}
      * @default 6
      */
     RequestScheduler.maximumRequestsPerServer = 6;
+
+    /**
+     * A per serverKey list of overrides to use for throttling instead of maximumRequestsPerServer
+     */
+    RequestScheduler.requestsByServer = {
+        'api.cesium.com:443': 18,
+        'assets.cesium.com:443': 18
+    };
 
     /**
      * Specifies if the request scheduler should throttle incoming requests, or let the browser queue requests under its control.
@@ -18523,7 +19219,8 @@ define('Core/RequestScheduler',[
     }
 
     function serverHasOpenSlots(serverKey) {
-        return numberOfActiveRequestsByServer[serverKey] < RequestScheduler.maximumRequestsPerServer;
+        var maxRequests = defaultValue(RequestScheduler.requestsByServer[serverKey], RequestScheduler.maximumRequestsPerServer);
+        return numberOfActiveRequestsByServer[serverKey] < maxRequests;
     }
 
     function issueRequest(request) {
@@ -18950,6 +19647,7 @@ define('Core/Resource',[
         './defineProperties',
         './deprecationWarning',
         './DeveloperError',
+        './FeatureDetection',
         './freezeObject',
         './getAbsoluteUri',
         './getBaseUri',
@@ -18977,6 +19675,7 @@ define('Core/Resource',[
         defineProperties,
         deprecationWarning,
         DeveloperError,
+        FeatureDetection,
         freezeObject,
         getAbsoluteUri,
         getBaseUri,
@@ -20362,6 +21061,7 @@ define('Core/Resource',[
      *
      * @param {String|Object} options A url or an object with the following properties
      * @param {String} options.url The url of the resource.
+     * @param {Object} [options.data] Data that is posted with the resource.
      * @param {Object} [options.queryParameters] An object containing query parameters that will be sent when retrieving the resource.
      * @param {Object} [options.templateValues] Key/Value pairs that are used to replace template values (eg. {x}).
      * @param {Object} [options.headers={}] Additional HTTP headers that will be sent.
@@ -20378,7 +21078,8 @@ define('Core/Resource',[
         return resource.delete({
             // Make copy of just the needed fields because headers can be passed to both the constructor and to fetch
             responseType: options.responseType,
-            overrideMimeType: options.overrideMimeType
+            overrideMimeType: options.overrideMimeType,
+            data: options.data
         });
     };
 
@@ -20502,6 +21203,7 @@ define('Core/Resource',[
      *
      * @param {Object} data Data that is posted with the resource.
      * @param {Object} [options] Object with the following properties:
+     * @param {Object} [options.data] Data that is posted with the resource.
      * @param {String} [options.responseType] The type of response.  This controls the type of item returned.
      * @param {Object} [options.headers] Additional HTTP headers to send with the request, if any.
      * @param {String} [options.overrideMimeType] Overrides the MIME type returned by the server.
@@ -20706,10 +21408,73 @@ define('Core/Resource',[
         image.src = url;
     };
 
+    function decodeResponse(loadWithHttpResponse, responseType) {
+        switch (responseType) {
+          case 'text':
+              return loadWithHttpResponse.toString('utf8');
+          case 'json':
+              return JSON.parse(loadWithHttpResponse.toString('utf8'));
+          default:
+              return new Uint8Array(loadWithHttpResponse).buffer;
+        }
+    }
+
+    function loadWithHttpRequest(url, responseType, method, data, headers, deferred, overrideMimeType) {
+        // Note: only the 'json' and 'text' responseTypes transforms the loaded buffer
+        var URL = require('url').parse(url);
+        var http = URL.protocol === 'https:' ? require('https') : require('http');
+        var zlib = require('zlib');
+        var options = {
+            protocol : URL.protocol,
+            hostname : URL.hostname,
+            port : URL.port,
+            path : URL.path,
+            query : URL.query,
+            method : method,
+            headers : headers
+        };
+
+        http.request(options)
+            .on('response', function(res) {
+                if (res.statusCode < 200 || res.statusCode >= 300) {
+                    deferred.reject(new RequestErrorEvent(res.statusCode, res, res.headers));
+                    return;
+                }
+
+                var chunkArray = [];
+                res.on('data', function(chunk) {
+                    chunkArray.push(chunk);
+                });
+
+                res.on('end', function() {
+                    var result = Buffer.concat(chunkArray); // eslint-disable-line
+                    if (res.headers['content-encoding'] === 'gzip') {
+                        zlib.gunzip(result, function(error, resultUnzipped) {
+                            if (error) {
+                                deferred.reject(new RuntimeError('Error decompressing response.'));
+                            } else {
+                                deferred.resolve(decodeResponse(resultUnzipped, responseType));
+                            }
+                        });
+                    } else {
+                        deferred.resolve(decodeResponse(result, responseType));
+                    }
+                });
+            }).on('error', function(e) {
+                deferred.reject(new RequestErrorEvent());
+            }).end();
+    }
+
+    var noXMLHttpRequest = typeof XMLHttpRequest === 'undefined';
     Resource._Implementations.loadWithXhr = function(url, responseType, method, data, headers, deferred, overrideMimeType) {
         var dataUriRegexResult = dataUriRegex.exec(url);
         if (dataUriRegexResult !== null) {
             deferred.resolve(decodeDataUri(dataUriRegexResult, responseType));
+            return;
+        }
+
+        if (noXMLHttpRequest) {
+            loadWithHttpRequest(url, responseType, method, data, headers, deferred, overrideMimeType);
             return;
         }
 
@@ -20719,11 +21484,11 @@ define('Core/Resource',[
             xhr.withCredentials = true;
         }
 
+        xhr.open(method, url, true);
+
         if (defined(overrideMimeType) && defined(xhr.overrideMimeType)) {
             xhr.overrideMimeType(overrideMimeType);
         }
-
-        xhr.open(method, url, true);
 
         if (defined(headers)) {
             for (var key in headers) {
@@ -20740,7 +21505,7 @@ define('Core/Resource',[
         // While non-standard, file protocol always returns a status of 0 on success
         var localFile = false;
         if (typeof url === 'string') {
-            localFile = (url.indexOf('file://') === 0) || window.location.origin === 'file://';
+            localFile = (url.indexOf('file://') === 0) || (typeof window !== 'undefined' && window.location.origin === 'file://');
         }
 
         xhr.onload = function() {
@@ -21234,15 +21999,15 @@ define('Core/EarthOrientationParameters',[
 });
 
 define('Core/buildModuleUrl',[
-        '../ThirdParty/Uri',
         './defined',
         './DeveloperError',
+        './getAbsoluteUri',
         './Resource',
         'require'
     ], function(
-        Uri,
         defined,
         DeveloperError,
+        getAbsoluteUri,
         Resource,
         require) {
     'use strict';
@@ -21261,6 +22026,23 @@ define('Core/buildModuleUrl',[
         return undefined;
     }
 
+    var a;
+    function tryMakeAbsolute(url) {
+        if (typeof document === 'undefined') {
+            //Node.js and Web Workers. In both cases, the URL will already be absolute.
+            return url;
+        }
+
+        if (!defined(a)) {
+            a = document.createElement('a');
+        }
+        a.href = url;
+
+        // IE only absolutizes href on get, not set
+        a.href = a.href; // eslint-disable-line no-self-assign
+        return a.href;
+    }
+
     var baseResource;
     function getCesiumBaseUrl() {
         if (defined(baseResource)) {
@@ -21270,13 +22052,15 @@ define('Core/buildModuleUrl',[
         var baseUrlString;
         if (typeof CESIUM_BASE_URL !== 'undefined') {
             baseUrlString = CESIUM_BASE_URL;
+        } else if (defined(define.amd) && !define.amd.toUrlUndefined && defined(require.toUrl)) {
+            baseUrlString = getAbsoluteUri('..', buildModuleUrl('Core/buildModuleUrl.js'));
         } else {
             baseUrlString = getBaseUrlFromCesiumScript();
         }
 
         
         baseResource = new Resource({
-            url: baseUrlString
+            url: tryMakeAbsolute(baseUrlString)
         });
         baseResource.appendForwardSlash();
 
@@ -21285,7 +22069,7 @@ define('Core/buildModuleUrl',[
 
     function buildModuleUrlFromRequireToUrl(moduleID) {
         //moduleID will be non-relative, so require it relative to this module, in Core.
-        return require.toUrl('../' + moduleID);
+        return tryMakeAbsolute(require.toUrl('../' + moduleID));
     }
 
     function buildModuleUrlFromBaseUrl(moduleID) {
@@ -21296,7 +22080,6 @@ define('Core/buildModuleUrl',[
     }
 
     var implementation;
-    var a;
 
     /**
      * Given a non-relative moduleID, returns an absolute URL to the file represented by that module ID,
@@ -21306,10 +22089,6 @@ define('Core/buildModuleUrl',[
      * @private
      */
     function buildModuleUrl(moduleID) {
-        if (typeof document === 'undefined') {
-            //document is undefined in node
-            return moduleID;
-        }
         if (!defined(implementation)) {
             //select implementation
             if (defined(define.amd) && !define.amd.toUrlUndefined && defined(require.toUrl)) {
@@ -21319,16 +22098,8 @@ define('Core/buildModuleUrl',[
             }
         }
 
-        if (!defined(a)) {
-            a = document.createElement('a');
-        }
-
         var url = implementation(moduleID);
-
-        a.href = url;
-        a.href = a.href; // IE only absolutizes href on get, not set
-
-        return a.href;
+        return url;
     }
 
     // exposed for testing
@@ -21347,6 +22118,11 @@ define('Core/buildModuleUrl',[
             url: value
         });
     };
+
+    /**
+     * Gets the base URL for resolving modules.
+     */
+    buildModuleUrl.getCesiumBaseUrl = getCesiumBaseUrl;
 
     return buildModuleUrl;
 });
@@ -21658,522 +22434,6 @@ define('Core/Iau2006XysData',[
     }
 
     return Iau2006XysData;
-});
-
-define('Core/Fullscreen',[
-        './defined',
-        './defineProperties'
-    ], function(
-        defined,
-        defineProperties) {
-    'use strict';
-
-    var _supportsFullscreen;
-    var _names = {
-        requestFullscreen : undefined,
-        exitFullscreen : undefined,
-        fullscreenEnabled : undefined,
-        fullscreenElement : undefined,
-        fullscreenchange : undefined,
-        fullscreenerror : undefined
-    };
-
-    /**
-     * Browser-independent functions for working with the standard fullscreen API.
-     *
-     * @exports Fullscreen
-     *
-     * @see {@link http://dvcs.w3.org/hg/fullscreen/raw-file/tip/Overview.html|W3C Fullscreen Living Specification}
-     */
-    var Fullscreen = {};
-
-    defineProperties(Fullscreen, {
-        /**
-         * The element that is currently fullscreen, if any.  To simply check if the
-         * browser is in fullscreen mode or not, use {@link Fullscreen#fullscreen}.
-         * @memberof Fullscreen
-         * @type {Object}
-         * @readonly
-         */
-        element : {
-            get : function() {
-                if (!Fullscreen.supportsFullscreen()) {
-                    return undefined;
-                }
-
-                return document[_names.fullscreenElement];
-            }
-        },
-
-        /**
-         * The name of the event on the document that is fired when fullscreen is
-         * entered or exited.  This event name is intended for use with addEventListener.
-         * In your event handler, to determine if the browser is in fullscreen mode or not,
-         * use {@link Fullscreen#fullscreen}.
-         * @memberof Fullscreen
-         * @type {String}
-         * @readonly
-         */
-        changeEventName : {
-            get : function() {
-                if (!Fullscreen.supportsFullscreen()) {
-                    return undefined;
-                }
-
-                return _names.fullscreenchange;
-            }
-        },
-
-        /**
-         * The name of the event that is fired when a fullscreen error
-         * occurs.  This event name is intended for use with addEventListener.
-         * @memberof Fullscreen
-         * @type {String}
-         * @readonly
-         */
-        errorEventName : {
-            get : function() {
-                if (!Fullscreen.supportsFullscreen()) {
-                    return undefined;
-                }
-
-                return _names.fullscreenerror;
-            }
-        },
-
-        /**
-         * Determine whether the browser will allow an element to be made fullscreen, or not.
-         * For example, by default, iframes cannot go fullscreen unless the containing page
-         * adds an "allowfullscreen" attribute (or prefixed equivalent).
-         * @memberof Fullscreen
-         * @type {Boolean}
-         * @readonly
-         */
-        enabled : {
-            get : function() {
-                if (!Fullscreen.supportsFullscreen()) {
-                    return undefined;
-                }
-
-                return document[_names.fullscreenEnabled];
-            }
-        },
-
-        /**
-         * Determines if the browser is currently in fullscreen mode.
-         * @memberof Fullscreen
-         * @type {Boolean}
-         * @readonly
-         */
-        fullscreen : {
-            get : function() {
-                if (!Fullscreen.supportsFullscreen()) {
-                    return undefined;
-                }
-
-                return Fullscreen.element !== null;
-            }
-        }
-    });
-
-    /**
-     * Detects whether the browser supports the standard fullscreen API.
-     *
-     * @returns {Boolean} <code>true</code> if the browser supports the standard fullscreen API,
-     * <code>false</code> otherwise.
-     */
-    Fullscreen.supportsFullscreen = function() {
-        if (defined(_supportsFullscreen)) {
-            return _supportsFullscreen;
-        }
-
-        _supportsFullscreen = false;
-
-        var body = document.body;
-        if (typeof body.requestFullscreen === 'function') {
-            // go with the unprefixed, standard set of names
-            _names.requestFullscreen = 'requestFullscreen';
-            _names.exitFullscreen = 'exitFullscreen';
-            _names.fullscreenEnabled = 'fullscreenEnabled';
-            _names.fullscreenElement = 'fullscreenElement';
-            _names.fullscreenchange = 'fullscreenchange';
-            _names.fullscreenerror = 'fullscreenerror';
-            _supportsFullscreen = true;
-            return _supportsFullscreen;
-        }
-
-        //check for the correct combination of prefix plus the various names that browsers use
-        var prefixes = ['webkit', 'moz', 'o', 'ms', 'khtml'];
-        var name;
-        for (var i = 0, len = prefixes.length; i < len; ++i) {
-            var prefix = prefixes[i];
-
-            // casing of Fullscreen differs across browsers
-            name = prefix + 'RequestFullscreen';
-            if (typeof body[name] === 'function') {
-                _names.requestFullscreen = name;
-                _supportsFullscreen = true;
-            } else {
-                name = prefix + 'RequestFullScreen';
-                if (typeof body[name] === 'function') {
-                    _names.requestFullscreen = name;
-                    _supportsFullscreen = true;
-                }
-            }
-
-            // disagreement about whether it's "exit" as per spec, or "cancel"
-            name = prefix + 'ExitFullscreen';
-            if (typeof document[name] === 'function') {
-                _names.exitFullscreen = name;
-            } else {
-                name = prefix + 'CancelFullScreen';
-                if (typeof document[name] === 'function') {
-                    _names.exitFullscreen = name;
-                }
-            }
-
-            // casing of Fullscreen differs across browsers
-            name = prefix + 'FullscreenEnabled';
-            if (document[name] !== undefined) {
-                _names.fullscreenEnabled = name;
-            } else {
-                name = prefix + 'FullScreenEnabled';
-                if (document[name] !== undefined) {
-                    _names.fullscreenEnabled = name;
-                }
-            }
-
-            // casing of Fullscreen differs across browsers
-            name = prefix + 'FullscreenElement';
-            if (document[name] !== undefined) {
-                _names.fullscreenElement = name;
-            } else {
-                name = prefix + 'FullScreenElement';
-                if (document[name] !== undefined) {
-                    _names.fullscreenElement = name;
-                }
-            }
-
-            // thankfully, event names are all lowercase per spec
-            name = prefix + 'fullscreenchange';
-            // event names do not have 'on' in the front, but the property on the document does
-            if (document['on' + name] !== undefined) {
-                //except on IE
-                if (prefix === 'ms') {
-                    name = 'MSFullscreenChange';
-                }
-                _names.fullscreenchange = name;
-            }
-
-            name = prefix + 'fullscreenerror';
-            if (document['on' + name] !== undefined) {
-                //except on IE
-                if (prefix === 'ms') {
-                    name = 'MSFullscreenError';
-                }
-                _names.fullscreenerror = name;
-            }
-        }
-
-        return _supportsFullscreen;
-    };
-
-    /**
-     * Asynchronously requests the browser to enter fullscreen mode on the given element.
-     * If fullscreen mode is not supported by the browser, does nothing.
-     *
-     * @param {Object} element The HTML element which will be placed into fullscreen mode.
-     * @param {HMDVRDevice} [vrDevice] The VR device.
-     *
-     * @example
-     * // Put the entire page into fullscreen.
-     * Cesium.Fullscreen.requestFullscreen(document.body)
-     *
-     * // Place only the Cesium canvas into fullscreen.
-     * Cesium.Fullscreen.requestFullscreen(scene.canvas)
-     */
-    Fullscreen.requestFullscreen = function(element, vrDevice) {
-        if (!Fullscreen.supportsFullscreen()) {
-            return;
-        }
-
-        element[_names.requestFullscreen]({ vrDisplay: vrDevice });
-    };
-
-    /**
-     * Asynchronously exits fullscreen mode.  If the browser is not currently
-     * in fullscreen, or if fullscreen mode is not supported by the browser, does nothing.
-     */
-    Fullscreen.exitFullscreen = function() {
-        if (!Fullscreen.supportsFullscreen()) {
-            return;
-        }
-
-        document[_names.exitFullscreen]();
-    };
-
-    return Fullscreen;
-});
-
-define('Core/FeatureDetection',[
-        './defaultValue',
-        './defined',
-        './Fullscreen'
-    ], function(
-        defaultValue,
-        defined,
-        Fullscreen) {
-    'use strict';
-
-    var theNavigator;
-    if (typeof navigator !== 'undefined') {
-        theNavigator = navigator;
-    } else {
-        theNavigator = {};
-    }
-
-    function extractVersion(versionString) {
-        var parts = versionString.split('.');
-        for (var i = 0, len = parts.length; i < len; ++i) {
-            parts[i] = parseInt(parts[i], 10);
-        }
-        return parts;
-    }
-
-    var isChromeResult;
-    var chromeVersionResult;
-    function isChrome() {
-        if (!defined(isChromeResult)) {
-            isChromeResult = false;
-            // Edge contains Chrome in the user agent too
-            if (!isEdge()) {
-                var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
-                if (fields !== null) {
-                    isChromeResult = true;
-                    chromeVersionResult = extractVersion(fields[1]);
-                }
-            }
-        }
-
-        return isChromeResult;
-    }
-
-    function chromeVersion() {
-        return isChrome() && chromeVersionResult;
-    }
-
-    var isSafariResult;
-    var safariVersionResult;
-    function isSafari() {
-        if (!defined(isSafariResult)) {
-            isSafariResult = false;
-
-            // Chrome and Edge contain Safari in the user agent too
-            if (!isChrome() && !isEdge() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
-                var fields = (/ Version\/([\.0-9]+)/).exec(theNavigator.userAgent);
-                if (fields !== null) {
-                    isSafariResult = true;
-                    safariVersionResult = extractVersion(fields[1]);
-                }
-            }
-        }
-
-        return isSafariResult;
-    }
-
-    function safariVersion() {
-        return isSafari() && safariVersionResult;
-    }
-
-    var isWebkitResult;
-    var webkitVersionResult;
-    function isWebkit() {
-        if (!defined(isWebkitResult)) {
-            isWebkitResult = false;
-
-            var fields = (/ AppleWebKit\/([\.0-9]+)(\+?)/).exec(theNavigator.userAgent);
-            if (fields !== null) {
-                isWebkitResult = true;
-                webkitVersionResult = extractVersion(fields[1]);
-                webkitVersionResult.isNightly = !!fields[2];
-            }
-        }
-
-        return isWebkitResult;
-    }
-
-    function webkitVersion() {
-        return isWebkit() && webkitVersionResult;
-    }
-
-    var isInternetExplorerResult;
-    var internetExplorerVersionResult;
-    function isInternetExplorer() {
-        if (!defined(isInternetExplorerResult)) {
-            isInternetExplorerResult = false;
-
-            var fields;
-            if (theNavigator.appName === 'Microsoft Internet Explorer') {
-                fields = /MSIE ([0-9]{1,}[\.0-9]{0,})/.exec(theNavigator.userAgent);
-                if (fields !== null) {
-                    isInternetExplorerResult = true;
-                    internetExplorerVersionResult = extractVersion(fields[1]);
-                }
-            } else if (theNavigator.appName === 'Netscape') {
-                fields = /Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.exec(theNavigator.userAgent);
-                if (fields !== null) {
-                    isInternetExplorerResult = true;
-                    internetExplorerVersionResult = extractVersion(fields[1]);
-                }
-            }
-        }
-        return isInternetExplorerResult;
-    }
-
-    function internetExplorerVersion() {
-        return isInternetExplorer() && internetExplorerVersionResult;
-    }
-
-    var isEdgeResult;
-    var edgeVersionResult;
-    function isEdge() {
-        if (!defined(isEdgeResult)) {
-            isEdgeResult = false;
-            var fields = (/ Edge\/([\.0-9]+)/).exec(theNavigator.userAgent);
-            if (fields !== null) {
-                isEdgeResult = true;
-                edgeVersionResult = extractVersion(fields[1]);
-            }
-        }
-        return isEdgeResult;
-    }
-
-    function edgeVersion() {
-        return isEdge() && edgeVersionResult;
-    }
-
-    var isFirefoxResult;
-    var firefoxVersionResult;
-    function isFirefox() {
-        if (!defined(isFirefoxResult)) {
-            isFirefoxResult = false;
-
-            var fields = /Firefox\/([\.0-9]+)/.exec(theNavigator.userAgent);
-            if (fields !== null) {
-                isFirefoxResult = true;
-                firefoxVersionResult = extractVersion(fields[1]);
-            }
-        }
-        return isFirefoxResult;
-    }
-
-    var isWindowsResult;
-    function isWindows() {
-        if (!defined(isWindowsResult)) {
-            isWindowsResult = /Windows/i.test(theNavigator.appVersion);
-        }
-        return isWindowsResult;
-    }
-
-    function firefoxVersion() {
-        return isFirefox() && firefoxVersionResult;
-    }
-
-    var hasPointerEvents;
-    function supportsPointerEvents() {
-        if (!defined(hasPointerEvents)) {
-            //While navigator.pointerEnabled is deprecated in the W3C specification
-            //we still need to use it if it exists in order to support browsers
-            //that rely on it, such as the Windows WebBrowser control which defines
-            //PointerEvent but sets navigator.pointerEnabled to false.
-            hasPointerEvents = typeof PointerEvent !== 'undefined' && (!defined(theNavigator.pointerEnabled) || theNavigator.pointerEnabled);
-        }
-        return hasPointerEvents;
-    }
-
-    var imageRenderingValueResult;
-    var supportsImageRenderingPixelatedResult;
-    function supportsImageRenderingPixelated() {
-        if (!defined(supportsImageRenderingPixelatedResult)) {
-            var canvas = document.createElement('canvas');
-            canvas.setAttribute('style',
-                                'image-rendering: -moz-crisp-edges;' +
-                                'image-rendering: pixelated;');
-            //canvas.style.imageRendering will be undefined, null or an empty string on unsupported browsers.
-            var tmp = canvas.style.imageRendering;
-            supportsImageRenderingPixelatedResult = defined(tmp) && tmp !== '';
-            if (supportsImageRenderingPixelatedResult) {
-                imageRenderingValueResult = tmp;
-            }
-        }
-        return supportsImageRenderingPixelatedResult;
-    }
-
-    function imageRenderingValue() {
-        return supportsImageRenderingPixelated() ? imageRenderingValueResult : undefined;
-    }
-
-    /**
-     * A set of functions to detect whether the current browser supports
-     * various features.
-     *
-     * @exports FeatureDetection
-     */
-    var FeatureDetection = {
-        isChrome : isChrome,
-        chromeVersion : chromeVersion,
-        isSafari : isSafari,
-        safariVersion : safariVersion,
-        isWebkit : isWebkit,
-        webkitVersion : webkitVersion,
-        isInternetExplorer : isInternetExplorer,
-        internetExplorerVersion : internetExplorerVersion,
-        isEdge : isEdge,
-        edgeVersion : edgeVersion,
-        isFirefox : isFirefox,
-        firefoxVersion : firefoxVersion,
-        isWindows : isWindows,
-        hardwareConcurrency : defaultValue(theNavigator.hardwareConcurrency, 3),
-        supportsPointerEvents : supportsPointerEvents,
-        supportsImageRenderingPixelated: supportsImageRenderingPixelated,
-        imageRenderingValue: imageRenderingValue
-    };
-
-    /**
-     * Detects whether the current browser supports the full screen standard.
-     *
-     * @returns {Boolean} true if the browser supports the full screen standard, false if not.
-     *
-     * @see Fullscreen
-     * @see {@link http://dvcs.w3.org/hg/fullscreen/raw-file/tip/Overview.html|W3C Fullscreen Living Specification}
-     */
-    FeatureDetection.supportsFullscreen = function() {
-        return Fullscreen.supportsFullscreen();
-    };
-
-    /**
-     * Detects whether the current browser supports typed arrays.
-     *
-     * @returns {Boolean} true if the browser supports typed arrays, false if not.
-     *
-     * @see {@link http://www.khronos.org/registry/typedarray/specs/latest/|Typed Array Specification}
-     */
-    FeatureDetection.supportsTypedArrays = function() {
-        return typeof ArrayBuffer !== 'undefined';
-    };
-
-    /**
-     * Detects whether the current browser supports Web Workers.
-     *
-     * @returns {Boolean} true if the browsers supports Web Workers, false if not.
-     *
-     * @see {@link http://www.w3.org/TR/workers/}
-     */
-    FeatureDetection.supportsWebWorkers = function() {
-        return typeof Worker !== 'undefined';
-    };
-
-    return FeatureDetection;
 });
 
 define('Core/Quaternion',[
@@ -23477,7 +23737,7 @@ define('Core/Transforms',[
      * @returns {Matrix3} The modified result parameter or a new Matrix3 instance if none was provided.
      *
      * @example
-     * //Set the view to in the inertial frame.
+     * //Set the view to the inertial frame.
      * scene.postUpdate.addEventListener(function(scene, time) {
      *    var now = Cesium.JulianDate.now();
      *    var offset = Cesium.Matrix4.multiplyByPoint(camera.transform, camera.position, new Cesium.Cartesian3());
@@ -23606,12 +23866,11 @@ define('Core/Transforms',[
      *
      * @example
      * scene.postUpdate.addEventListener(function(scene, time) {
+     *   // View in ICRF.
      *   var icrfToFixed = Cesium.Transforms.computeIcrfToFixedMatrix(time);
      *   if (Cesium.defined(icrfToFixed)) {
-     *     var offset = Cesium.Matrix4.multiplyByPoint(camera.transform, camera.position, new Cesium.Cartesian3());
-     *     var transform = Cesium.Matrix4.fromRotationTranslation(icrfToFixed)
-     *     var inverseTransform = Cesium.Matrix4.inverseTransformation(transform, new Cesium.Matrix4());
-     *     Cesium.Matrix4.multiplyByPoint(inverseTransform, offset, offset);
+     *     var offset = Cesium.Cartesian3.clone(camera.position);
+     *     var transform = Cesium.Matrix4.fromRotationTranslation(icrfToFixed);
      *     camera.lookAtTransform(transform, offset);
      *   }
      * });
@@ -23897,6 +24156,7 @@ define('Core/EllipsoidTangentPlane',[
         './Cartesian2',
         './Cartesian3',
         './Cartesian4',
+        './Check',
         './defaultValue',
         './defined',
         './defineProperties',
@@ -23912,6 +24172,7 @@ define('Core/EllipsoidTangentPlane',[
         Cartesian2,
         Cartesian3,
         Cartesian4,
+        Check,
         defaultValue,
         defined,
         defineProperties,
@@ -24030,8 +24291,8 @@ define('Core/EllipsoidTangentPlane',[
      * Creates a new instance from the provided ellipsoid and the center
      * point of the provided Cartesians.
      *
-     * @param {Ellipsoid} ellipsoid The ellipsoid to use.
      * @param {Cartesian3} cartesians The list of positions surrounding the center point.
+     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid to use.
      */
     EllipsoidTangentPlane.fromPoints = function(cartesians, ellipsoid) {
         
@@ -24162,6 +24423,34 @@ define('Core/EllipsoidTangentPlane',[
 
     var projectPointsOntoEllipsoidScratch = new Cartesian3();
     /**
+     * Computes the projection of the provided 2D position onto the 3D ellipsoid.
+     *
+     * @param {Cartesian2} cartesian The points to project.
+     * @param {Cartesian3} [result] The Cartesian3 instance to store result.
+     * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if none was provided.
+     */
+    EllipsoidTangentPlane.prototype.projectPointOntoEllipsoid = function(cartesian, result) {
+        
+        if (!defined(result)) {
+            result = new Cartesian3();
+        }
+
+        var ellipsoid = this._ellipsoid;
+        var origin = this._origin;
+        var xAxis = this._xAxis;
+        var yAxis = this._yAxis;
+        var tmp = projectPointsOntoEllipsoidScratch;
+
+        Cartesian3.multiplyByScalar(xAxis, cartesian.x, tmp);
+        result = Cartesian3.add(origin, tmp, result);
+        Cartesian3.multiplyByScalar(yAxis, cartesian.y, tmp);
+        Cartesian3.add(result, tmp, result);
+        ellipsoid.scaleToGeocentricSurface(result, result);
+
+        return result;
+    };
+
+    /**
      * Computes the projection of the provided 2D positions onto the 3D ellipsoid.
      *
      * @param {Cartesian2[]} cartesians The array of points to project.
@@ -24177,22 +24466,8 @@ define('Core/EllipsoidTangentPlane',[
             result.length = length;
         }
 
-        var ellipsoid = this._ellipsoid;
-        var origin = this._origin;
-        var xAxis = this._xAxis;
-        var yAxis = this._yAxis;
-        var tmp = projectPointsOntoEllipsoidScratch;
-
         for ( var i = 0; i < length; ++i) {
-            var position = cartesians[i];
-            Cartesian3.multiplyByScalar(xAxis, position.x, tmp);
-            if (!defined(result[i])) {
-                result[i] = new Cartesian3();
-            }
-            var point = Cartesian3.add(origin, tmp, result[i]);
-            Cartesian3.multiplyByScalar(yAxis, position.y, tmp);
-            Cartesian3.add(point, tmp, point);
-            ellipsoid.scaleToGeocentricSurface(point, point);
+            result[i] = this.projectPointOntoEllipsoid(cartesians[i], result[i]);
         }
 
         return result;
@@ -25669,7 +25944,7 @@ define('Core/formatError',[
      *
      * @exports formatError
      *
-     * @param {Object} object The item to find in the array.
+     * @param {*} object The item to find in the array.
      * @returns {String} A string containing the formatted error.
      */
     function formatError(object) {
@@ -25695,14 +25970,30 @@ define('Core/formatError',[
 });
 
 define('Workers/createTaskProcessorWorker',[
+        '../ThirdParty/when',
         '../Core/defaultValue',
         '../Core/defined',
         '../Core/formatError'
     ], function(
+        when,
         defaultValue,
         defined,
         formatError) {
     'use strict';
+
+    // createXXXGeometry functions may return Geometry or a Promise that resolves to Geometry
+    // if the function requires access to ApproximateTerrainHeights.
+    // For fully synchronous functions, just wrapping the function call in a `when` Promise doesn't
+    // handle errors correctly, hence try-catch
+    function callAndWrap(workerFunction, parameters, transferableObjects) {
+        var resultOrPromise;
+        try {
+            resultOrPromise = workerFunction(parameters, transferableObjects);
+            return resultOrPromise; // errors handled by Promise
+        } catch (e) {
+            return when.reject(e);
+        }
+    }
 
     /**
      * Creates an adapter function to allow a calculation function to operate as a Web Worker,
@@ -25731,54 +26022,53 @@ define('Workers/createTaskProcessorWorker',[
      */
     function createTaskProcessorWorker(workerFunction) {
         var postMessage;
-        var transferableObjects = [];
-        var responseMessage = {
-            id : undefined,
-            result : undefined,
-            error : undefined
-        };
 
         return function(event) {
             /*global self*/
             var data = event.data;
 
-            transferableObjects.length = 0;
-            responseMessage.id = data.id;
-            responseMessage.error = undefined;
-            responseMessage.result = undefined;
+            var transferableObjects = [];
+            var responseMessage = {
+                id : data.id,
+                result : undefined,
+                error : undefined
+            };
 
-            try {
-                responseMessage.result = workerFunction(data.parameters, transferableObjects);
-            } catch (e) {
-                if (e instanceof Error) {
-                    // Errors can't be posted in a message, copy the properties
-                    responseMessage.error = {
-                        name : e.name,
-                        message : e.message,
-                        stack : e.stack
-                    };
-                } else {
-                    responseMessage.error = e;
-                }
-            }
+            return when(callAndWrap(workerFunction, data.parameters, transferableObjects))
+                .then(function(result) {
+                    responseMessage.result = result;
+                })
+                .otherwise(function(e) {
+                    if (e instanceof Error) {
+                        // Errors can't be posted in a message, copy the properties
+                        responseMessage.error = {
+                            name : e.name,
+                            message : e.message,
+                            stack : e.stack
+                        };
+                    } else {
+                        responseMessage.error = e;
+                    }
+                })
+                .always(function() {
+                    if (!defined(postMessage)) {
+                        postMessage = defaultValue(self.webkitPostMessage, self.postMessage);
+                    }
 
-            if (!defined(postMessage)) {
-                postMessage = defaultValue(self.webkitPostMessage, self.postMessage);
-            }
+                    if (!data.canTransferArrayBuffer) {
+                        transferableObjects.length = 0;
+                    }
 
-            if (!data.canTransferArrayBuffer) {
-                transferableObjects.length = 0;
-            }
-
-            try {
-                postMessage(responseMessage, transferableObjects);
-            } catch (e) {
-                // something went wrong trying to post the message, post a simpler
-                // error that we can be sure will be cloneable
-                responseMessage.result = undefined;
-                responseMessage.error = 'postMessage failed with error: ' + formatError(e) + '\n  with responseMessage: ' + JSON.stringify(responseMessage);
-                postMessage(responseMessage);
-            }
+                    try {
+                        postMessage(responseMessage, transferableObjects);
+                    } catch (e) {
+                        // something went wrong trying to post the message, post a simpler
+                        // error that we can be sure will be cloneable
+                        responseMessage.result = undefined;
+                        responseMessage.error = 'postMessage failed with error: ' + formatError(e) + '\n  with responseMessage: ' + JSON.stringify(responseMessage);
+                        postMessage(responseMessage);
+                    }
+                });
         };
     }
 

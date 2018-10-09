@@ -91,9 +91,10 @@ LESS_PARAMETERS ?= -ru
 
 
 # Map libs variables
-OL_VERSION ?= v4.6.5 # v4.6.5, March 20 2018
-OL_CESIUM_VERSION ?= v1.37 # v1.37, May 2 2018
-CESIUM_VERSION ?= 54d850855346610fde9b7aa8262a03d27e71c663 # c2c/c2c_patches (Cesium 1.44), April 23 2018
+OL_VERSION ?= be12573# September 25 2018 (mind the absence of a space character after the version)
+OL_CESIUM_VERSION ?= 1987399 # September 24 2018
+CESIUM_VERSION ?= 6f738f8 # c2c/c2c_patches (Cesium 1.50), October 1 2018
+GEOBLOCKS_LEGACYLIB_VERSION ?= 0101a217be1b7525be8d590910fb8f70295194be # September 24 2018
 
 
 # App variables
@@ -306,6 +307,10 @@ release: showVariables \
 	prd/embed.html \
 	prd/404.html \
 	prd/img/ \
+	prd/img/Cesium144/ \
+	prd/img/Cesium144/Cesium/ \
+	prd/img/Cesium144/Cesium/Workers/ \
+	prd/img/Cesium144/Cesium/ThirdParty/Workers/ \
 	prd/style/font-awesome-4.5.0/font/ \
 	prd/locales/ \
 	prd/checker \
@@ -477,7 +482,6 @@ flushvarnishinternal: guard-API_URL guard-E2E_TARGETURL
 .PHONY: cesium
 cesium: .build-artefacts/cesium
 	cd .build-artefacts/cesium; \
-	git remote add c2c https://github.com/camptocamp/cesium; \
 	git fetch --all; \
 	git checkout $(CESIUM_VERSION); \
 	npm install; \
@@ -490,30 +494,28 @@ cesium: .build-artefacts/cesium
 	$(call moveto,Build/Cesium/ThirdParty/Workers/*.js,../../src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js')
 
 openlayers: .build-artefacts/openlayers
-	cd .build-artefacts/openlayers; \
-	git fetch --all; \
-	git checkout $(OL_VERSION); \
+	cd .build-artefacts/openlayers/; \
+	npm i; cd ol5; \
+	git fetch; git reset --hard; \
+	git checkout $(GEOBLOCKS_LEGACYLIB_VERSION); \
+	sed -i 'sY"ol": ".*"Y"ol": "https://api.github.com/repos/openlayers/openlayers/tarball/$(OL_VERSION)"Y' package.json; \
 	npm install; \
-	make build
+	npm run build  # having tons of jsdoc parsing errors is normal
 
 .PHONY: olcesium
-olcesium:  .build-artefacts/cesium openlayers .build-artefacts/olcesium
+olcesium:  openlayers .build-artefacts/olcesium
 	if ! [ -f ".build-artefacts/cesium/Build/Cesium/Cesium.js" ]; then make cesium; else echo 'Cesium already built'; fi; \
 	cd .build-artefacts/olcesium; \
-	git fetch --all; \
+	git fetch --all; git reset --hard; \
 	git checkout $(OL_CESIUM_VERSION); \
-	mkdir -p src/olcs/plugins/geoadmin; \
-	cp -r ../../olcesium-plugin src/olcs/plugins/geoadmin/; \
+	cp -r ../../olcesium-plugin/Ga* src/olcs/; \
+	cp ../../olcesium-plugin/index.library.js src/; \
 	npm install; \
-	npm link ../cesium; \
-	npm link ../openlayers; \
-	sed -i "1 s/^{\$$/{root: true,/" .eslintrc.yaml; \
-	node build/generate-exports.js dist/exports.js; \
-	node build/build.js ../../scripts/olcesium-debug-geoadmin.json dist/olcesium-debug.js; \
-	node build/build.js ../../scripts/olcesium-geoadmin.json dist/olcesium.js; \
-	cp dist/olcesium-debug.js ../../src/lib/; \
-	cp dist/olcesium.js ../../src/lib/olcesium.js; \
-	cp Cesium.externs.js ../../externs/Cesium.externs.js; \
+	npm run build-library; \
+	cat ../openlayers/ol5/build/ol.js dist/olcesium.js > ../../src/lib/olcesium.js; \
+	npm run build-library-debug; \
+	cat ../openlayers/ol5/build/ol-debug.js dist/olcesium-debug.js > ../../src/lib/olcesium-debug.js; \
+
 
 .PHONY: filesaver
 filesaver: .build-artefacts/filesaver
@@ -573,6 +575,10 @@ prd/lib/: src/lib/d3.min.js \
 	mkdir -p $@
 	cp -rf  $^ $@
 
+prd/img/Cesium144/: src/img/Cesium144/Cesium.min.js
+	mkdir -p $@
+	cp -rf $^ $@
+
 prd/lib/Cesium/: src/lib/Cesium/Assets
 	mkdir -p $@
 	cp -rf  $^ $@
@@ -582,6 +588,18 @@ prd/lib/Cesium/Workers/: src/lib/Cesium/Workers/*.min.js
 	$(call moveto,$^,$@,'.min.js','.js')
 
 prd/lib/Cesium/ThirdParty/Workers/: src/lib/Cesium/ThirdParty/Workers/*.min.js
+	mkdir -p $@; \
+	$(call moveto,$^,$@,'.min.js','.js')
+
+prd/img/Cesium144/Cesium/: src/img/Cesium144/Cesium/Assets
+	mkdir -p $@
+	cp -rf  $^ $@
+
+prd/img/Cesium144/Cesium/Workers/: src/img/Cesium144/Cesium/Workers/*.min.js
+	mkdir -p $@; \
+	$(call moveto,$^,$@,'.min.js','.js')
+
+prd/img/Cesium144/Cesium/ThirdParty/Workers/: src/img/Cesium144/Cesium/ThirdParty/Workers/*.min.js
 	mkdir -p $@; \
 	$(call moveto,$^,$@,'.min.js','.js')
 
@@ -606,7 +624,7 @@ prd/lib/build.js: src/lib/polyfill.min.js \
 	    src/lib/gyronorm.complete.min.js \
 	    .build-artefacts/app.js
 	mkdir -p $(dir $@)
-	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
+	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*\.map//' > $@
 
 prd/style/app.css: $(SRC_LESS_FILES)
 	mkdir -p $(dir $@)
@@ -753,7 +771,9 @@ src/deps.js: $(SRC_JS_FILES) ${PYTHON_VENV}
 	${PYTHON_CMD} node_modules/google-closure-library/closure/bin/build/depswriter.py \
 	    --root_with_prefix="src/components components" \
 	    --root_with_prefix="src/js js" \
-	    --output_file=$@
+	    --output_file=tmp
+	cat node_modules/google-closure-library/closure/goog/base.js tmp > $@
+	rm -f tmp
 
 src/style/app.css: $(SRC_LESS_FILES)
 	${LESSC} $(LESS_PARAMETERS) src/style/app.less $@
@@ -852,7 +872,9 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	java -jar ${CLOSURE_COMPILER} $(SRC_JS_FILES_FOR_COMPILER) \
 	    --compilation_level WHITESPACE_ONLY \
 	    --formatting PRETTY_PRINT \
-	    --js_output_file $@
+	    --js_output_file tmp
+	cat node_modules/google-closure-library/closure/goog/base.js tmp > $@
+	rm -f tmp
 
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
 # add lib/closure as a root. When compiling we remove base.js from the js files
@@ -928,15 +950,14 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 	$(call cachelastvariable,$@,$(PYPI_URL),$(LAST_PYPI_URL),pypi-url)
 
 
-.build-artefacts/cesium:
-	git clone https://github.com/AnalyticalGraphicsInc/cesium.git $@
-
 .build-artefacts/openlayers:
-	git clone https://github.com/openlayers/openlayers.git $@
+	git clone https://github.com/geoblocks/legacylib.git $@
 
 .build-artefacts/olcesium:
 	git clone https://github.com/openlayers/ol-cesium.git $@
 
+.build-artefacts/cesium:
+	git clone https://github.com/camptocamp/cesium.git $@
 
 # No npm module
 .build-artefacts/filesaver:

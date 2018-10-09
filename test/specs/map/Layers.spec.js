@@ -84,7 +84,7 @@ describe('ga_layers_service', function() {
     var terrainTpl = '//3d.geo.admin.ch/1.0.0/{layer}/default/{Time}/4326';
     var wmtsLV03Tpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{Time}/4326/{z}/{y}/{x}.{format}';
     var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{Time}/4326/{z}/{x}/{y}.{format}';
-    var vectorTilesTpl = '//vectortiles100.geo.admin.ch/{layer}/{Time}/';
+    var vectorTilesTpl = '//vectortiles100.geo.admin.ch/{layer}/{Time}/tileset.json';
     var wmsTpl = '//wms{s}.geo.admin.ch/?layers={layer}&format=image%2F{format}&service=WMS&version=1.3.0&request=GetMap&crs=CRS:84&bbox={westProjected},{southProjected},{eastProjected},{northProjected}&width=512&height=512&styles=';
     var wmsTplTime = wmsTpl + '&time={Time}';
 
