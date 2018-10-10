@@ -115,10 +115,16 @@ goog.require('ga_urlutils_service');
           if (cpt === undefined || cpt >= subdomains.length) {
             cpt = 0;
           }
+          var tilesetjson = 'tileset.json';
+          // Edge 41 and lower does not support Cesium 1.45 or bigger.
+          // So tilesets need to be loaded differently
+          if (gaBrowserSniffer.msie && gaBrowserSniffer.msie <= 16) {
+            tilesetjson = '';
+          }
           return vectorTilesUrl.
               replace('{s}', subdomains[cpt++]).
               replace('{Layer}', layer).
-              replace('{Time}', time);
+              replace('{Time}', time) + tilesetjson;
         };
 
         var getLayersConfigUrl = function(lang) {
