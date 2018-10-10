@@ -193,9 +193,9 @@ goog.require('ga_urlutils_service');
       function($scope, $http, $q, $sce, gaUrlUtils, gaSearchLabels,
           gaMarkerOverlay, gaDebounce) {
 
-      // This value is used to block blur/mouseleave event, when a value
-      // is selected. See #2284. It's reinitialized when a new search is
-      // triggered.
+        // This value is used to block blur/mouseleave event, when a value
+        // is selected. See #2284. It's reinitialized when a new search is
+        // triggered.
         var blockEvent = false;
         var canceler;
 
