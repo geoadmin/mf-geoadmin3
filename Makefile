@@ -93,7 +93,7 @@ LESS_PARAMETERS ?= -ru
 # Map libs variables
 OL_VERSION ?= be12573# September 25 2018 (mind the absence of a space character after the version)
 OL_CESIUM_VERSION ?= 1987399 # September 24 2018
-CESIUM_VERSION ?= 6f738f8 # c2c/c2c_patches (Cesium 1.50), October 1 2018
+CESIUM_VERSION ?= 54d850855346610fde9b7aa8262a03d27e71c663 # c2c/c2c_patches (Cesium 1.44), April 23 2018
 GEOBLOCKS_LEGACYLIB_VERSION ?= 0101a217be1b7525be8d590910fb8f70295194be # September 24 2018
 
 
