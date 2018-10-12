@@ -79063,7 +79063,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var CLAMP_TO_GROUND = Cesium.HeightReference.CLAMP_TO_GROUND;
 
 var FeatureConverter =
 /*#__PURE__*/
@@ -79198,7 +79197,7 @@ function () {
     var heightReference = this.getHeightReference(layer, feature, olGeometry);
     var primitive;
 
-    if (heightReference === CLAMP_TO_GROUND) {
+    if (heightReference === Cesium.HeightReference.CLAMP_TO_GROUND) {
       var ctor = instances.geometry.constructor;
 
       if (ctor && !ctor['createShadowVolume']) {
@@ -79409,7 +79408,7 @@ function () {
     });
     var outlinePrimitive, outlineGeometry;
 
-    if (this.getHeightReference(layer, feature, olGeometry) === CLAMP_TO_GROUND) {
+    if (this.getHeightReference(layer, feature, olGeometry) === Cesium.HeightReference.CLAMP_TO_GROUND) {
       var width = this.extractLineWidthFromOlStyle(olStyle);
 
       if (width) {
@@ -79543,7 +79542,7 @@ function () {
     var outlinePrimitive;
     var heightReference = this.getHeightReference(layer, feature, olGeometry);
 
-    if (heightReference === CLAMP_TO_GROUND && !Object(_util_js__WEBPACK_IMPORTED_MODULE_9__["isGroundPolylinePrimitiveSupported"])(this.scene)) {
+    if (heightReference === Cesium.HeightReference.CLAMP_TO_GROUND && !Object(_util_js__WEBPACK_IMPORTED_MODULE_9__["isGroundPolylinePrimitiveSupported"])(this.scene)) {
       var color = this.extractColorFromOlStyle(olStyle, true);
       outlinePrimitive = this.createStackedGroundCorridors(layer, feature, width, color, positions);
     } else {
@@ -79561,7 +79560,7 @@ function () {
         appearance: appearance
       };
 
-      if (heightReference === CLAMP_TO_GROUND) {
+      if (heightReference === Cesium.HeightReference.CLAMP_TO_GROUND) {
         var geometry = new Cesium.GroundPolylineGeometry(geometryOptions);
         primitiveOptions.geometryInstances = new Cesium.GeometryInstance({
           geometry: geometry
@@ -79663,7 +79662,7 @@ function () {
       // for each ring. Most of this code should be removeable when Cesium adds
       // support for Polygon outlines on terrain.
 
-      if (heightReference === CLAMP_TO_GROUND) {
+      if (heightReference === Cesium.HeightReference.CLAMP_TO_GROUND) {
         var width = this.extractLineWidthFromOlStyle(olStyle);
 
         if (width > 0) {
@@ -79751,7 +79750,7 @@ function () {
     var heightReference = Cesium.HeightReference.NONE;
 
     if (altitudeMode === 'clampToGround') {
-      heightReference = CLAMP_TO_GROUND;
+      heightReference = Cesium.HeightReference.CLAMP_TO_GROUND;
     } else if (altitudeMode === 'relativeToGround') {
       heightReference = Cesium.HeightReference.RELATIVE_TO_GROUND;
     }
