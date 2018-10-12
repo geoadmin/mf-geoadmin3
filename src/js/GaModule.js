@@ -63,6 +63,8 @@ goog.require('ga_tooltip_controller');
 goog.require('ga_topic');
 goog.require('ga_translation');
 goog.require('ga_translation_controller');
+goog.require('ga_vector_feedback');
+goog.require('ga_vector_feedback_controller');
 goog.require('ga_waitcursor_service');
 (function() {
 
@@ -102,6 +104,7 @@ goog.require('ga_waitcursor_service');
     'ga_shop',
     'ga_tabs',
     'ga_tilt3d',
+    'ga_vector_feedback',
     'ga_modal_directive',
     'ga_draggable_directive',
     'ga_placeholder_directive',
@@ -130,7 +133,8 @@ goog.require('ga_waitcursor_service');
     'ga_draw_controller',
     'ga_drawstyle_controller',
     'ga_drawstylepopup_controller',
-    'ga_gl_style_service'
+    'ga_gl_style_service',
+    'ga_vector_feedback_controller'
   ]);
 
   module.config(function($translateProvider, gaGlobalOptions) {
