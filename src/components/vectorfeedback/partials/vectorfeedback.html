@@ -1,0 +1,63 @@
+<div class="ga-vector-feedback-panel col-xs-12 col-sm-6 col-md-5 col-lg-5">
+    <h1>Vector Tiles Alpha Viewer</h1>
+    <p>
+        Lorem ipsum dolor sit amet, nam an veritus adipiscing, mutat habemus sea an. Ne decore nemore scaevola mel,
+        vim at qualisque consulatu. Pro ponderum molestiae dignissim et. Est id ferri meliore atomorum, in mei
+        primindoctum. Ea sint dolore nec, ea dicam propriae verterem est.
+    </p>
+    <h4>Select a layer</h4>
+    <select class="form-control">
+        <option>Light base map</option>
+        <option>Hybrid base map</option>
+    </select>
+    <h4>Select items in the map</h4>
+    <select class="form-control">
+        <option>Background</option>
+        <option>Lakes</option>
+        <option>Rivers</option>
+        <option>Built area</option>
+        <option>Highways</option>
+        <option>Forests</option>
+    </select>
+    <h4>Change selected item color</h4>
+    <select class="form-control ga-vector-feedback-colors">
+        <option class="ga-vector-feedback-default">Default</option>
+        <option class="ga-vector-feedback-light-green">Light Green</option>
+        <option class="ga-vector-feedback-green">Green</option>
+        <option class="ga-vector-feedback-light-blue">Light Blue</option>
+        <option class="ga-vector-feedback-blue">Blue</option>
+        <option class="ga-vector-feedback-light-yellow">Light Yellow</option>
+        <option class="ga-vector-feedback-yellow">Yellow</option>
+        <option class="ga-vector-feedback-organe">Orange</option>
+        <option class="ga-vector-feedback-red">Red</option>
+        <option class="ga-vector-feedback-purple">Purple</option>
+        <option class="ga-vector-feedback-black">Black</option>
+        <option class="ga-vector-feedback-white">White</option>
+    </select>
+    <h4>Technical documentation</h4>
+    <a class="btn btn-default" href="{{options.serviceDocUrl}}">Link to services</a>
+    <h4>Give us a feedback</h4>
+    <form ng-submit="submit()">
+        <div class="form-group">
+            <label for="ga-vector-feedback-like">Do you like it?</label>
+            <select class="form-control"
+                    id="ga-vector-feedback-like"
+                    ng-model="options.likeSelect">
+                <option value="dislike">Dislike</option>
+                <option value="rather_dislike">Rather dislike</option>
+                <option value="no_opinion">No opinion</option>
+                <option value="rather_like">Rather like</option>
+                <option value="like">Like</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="ga-vector-feedback-comment">Comment</label>
+            <textarea class="form-control" 
+                      id="ga-vector-feedback-comment"
+                      rows="3"
+                      ng-model="options.comment"></textarea>
+        </div>
+        <button type="submit" class="btn btn-default">Send</button>
+    </form>
+    <br />
+</div>
