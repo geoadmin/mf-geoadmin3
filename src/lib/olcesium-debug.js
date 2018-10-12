@@ -78416,6 +78416,7 @@ function () {
 
   _proto.enable = function enable() {
     this.scene_.requestRenderMode = true;
+    this.scene_.maximumRenderTimeChange = 1000;
 
     for (var _iterator = this.repaintEventNames_, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
       var _ref;
@@ -79062,6 +79063,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+var CLAMP_TO_GROUND = Cesium.HeightReference.CLAMP_TO_GROUND;
 
 var FeatureConverter =
 /*#__PURE__*/
@@ -79087,6 +79089,12 @@ function () {
      */
 
     this.boundOnRemoveOrClearFeatureListener_ = this.onRemoveOrClearFeature_.bind(this);
+    /**
+     * @type {Cesium.Cartesian3}
+     * @private
+     */
+
+    this.defaultBillboardEyeOffset_ = new Cesium.Cartesian3(0, 0, 10);
   }
   /**
    * @param {ol.source.Vector.Event} evt
@@ -79153,13 +79161,18 @@ function () {
 
   _proto.createColoredPrimitive = function createColoredPrimitive(layer, feature, olGeometry, geometry, color, opt_lineWidth) {
     var createInstance = function createInstance(geometry, color) {
-      return new Cesium.GeometryInstance({
+      var instance = new Cesium.GeometryInstance({
         // always update Cesium externs before adding a property
-        geometry: geometry,
-        attributes: {
-          color: Cesium.ColorGeometryInstanceAttribute.fromColor(color)
-        }
+        geometry: geometry
       });
+
+      if (color && !(color instanceof Cesium.ImageMaterialProperty)) {
+        instance.attributes = {
+          color: Cesium.ColorGeometryInstanceAttribute.fromColor(color)
+        };
+      }
+
+      return instance;
     };
 
     var options = {
@@ -79185,7 +79198,7 @@ function () {
     var heightReference = this.getHeightReference(layer, feature, olGeometry);
     var primitive;
 
-    if (heightReference === Cesium.HeightReference.CLAMP_TO_GROUND) {
+    if (heightReference === CLAMP_TO_GROUND) {
       var ctor = instances.geometry.constructor;
 
       if (ctor && !ctor['createShadowVolume']) {
@@ -79193,16 +79206,34 @@ function () {
       }
 
       primitive = new Cesium.GroundPrimitive({
-        // always update Cesium externs before adding a property
         geometryInstances: instances
       });
     } else {
-      var appearance = new Cesium.PerInstanceColorAppearance(options);
       primitive = new Cesium.Primitive({
-        // always update Cesium externs before adding a property
-        geometryInstances: instances,
-        appearance: appearance
+        geometryInstances: instances
       });
+    }
+
+    if (color instanceof Cesium.ImageMaterialProperty) {
+      var dataUri = color.image.getValue().toDataURL();
+      primitive.appearance = new Cesium.MaterialAppearance({
+        flat: true,
+        renderState: {
+          depthTest: {
+            enabled: true
+          }
+        },
+        material: new Cesium.Material({
+          fabric: {
+            type: 'Image',
+            uniforms: {
+              image: dataUri
+            }
+          }
+        })
+      });
+    } else {
+      primitive.appearance = new Cesium.PerInstanceColorAppearance(options);
     }
 
     this.setReferenceForPicking(layer, feature, primitive);
@@ -79335,6 +79366,10 @@ function () {
 
 
   _proto.csAddBillboard = function csAddBillboard(billboards, bbOptions, layer, feature, geometry, style) {
+    if (!bbOptions.eyeOffset) {
+      bbOptions.eyeOffset = this.defaultBillboardEyeOffset_;
+    }
+
     var bb = billboards.add(bbOptions);
     this.setReferenceForPicking(layer, feature, bb);
     return bb;
@@ -79374,14 +79409,14 @@ function () {
     });
     var outlinePrimitive, outlineGeometry;
 
-    if (this.getHeightReference(layer, feature, olGeometry) === Cesium.HeightReference.CLAMP_TO_GROUND) {
+    if (this.getHeightReference(layer, feature, olGeometry) === CLAMP_TO_GROUND) {
       var width = this.extractLineWidthFromOlStyle(olStyle);
 
       if (width) {
         var circlePolygon = Object(ol_geom_Polygon_js__WEBPACK_IMPORTED_MODULE_4__["circular"])(olGeometry.getCenter(), radius);
         var positions = _core_js__WEBPACK_IMPORTED_MODULE_7__["default"].ol4326CoordinateArrayToCsCartesians(circlePolygon.getLinearRing(0).getCoordinates());
 
-        if (!Cesium.GroundPolylinePrimitive.isSupported(this.scene)) {
+        if (!Object(_util_js__WEBPACK_IMPORTED_MODULE_9__["isGroundPolylinePrimitiveSupported"])(this.scene)) {
           var color = this.extractColorFromOlStyle(olStyle, true);
           outlinePrimitive = this.createStackedGroundCorridors(layer, feature, width, color, positions);
         } else {
@@ -79508,7 +79543,7 @@ function () {
     var outlinePrimitive;
     var heightReference = this.getHeightReference(layer, feature, olGeometry);
 
-    if (heightReference === Cesium.HeightReference.CLAMP_TO_GROUND && !Cesium.GroundPolylinePrimitive.isSupported(this.scene)) {
+    if (heightReference === CLAMP_TO_GROUND && !Object(_util_js__WEBPACK_IMPORTED_MODULE_9__["isGroundPolylinePrimitiveSupported"])(this.scene)) {
       var color = this.extractColorFromOlStyle(olStyle, true);
       outlinePrimitive = this.createStackedGroundCorridors(layer, feature, width, color, positions);
     } else {
@@ -79526,7 +79561,7 @@ function () {
         appearance: appearance
       };
 
-      if (heightReference === Cesium.HeightReference.CLAMP_TO_GROUND) {
+      if (heightReference === CLAMP_TO_GROUND) {
         var geometry = new Cesium.GroundPolylineGeometry(geometryOptions);
         primitiveOptions.geometryInstances = new Cesium.GeometryInstance({
           geometry: geometry
@@ -79628,7 +79663,7 @@ function () {
       // for each ring. Most of this code should be removeable when Cesium adds
       // support for Polygon outlines on terrain.
 
-      if (heightReference === Cesium.HeightReference.CLAMP_TO_GROUND) {
+      if (heightReference === CLAMP_TO_GROUND) {
         var width = this.extractLineWidthFromOlStyle(olStyle);
 
         if (width > 0) {
@@ -79640,7 +79675,7 @@ function () {
             }
           }
 
-          if (!Cesium.GroundPolylinePrimitive.isSupported(this.scene)) {
+          if (!Object(_util_js__WEBPACK_IMPORTED_MODULE_9__["isGroundPolylinePrimitiveSupported"])(this.scene)) {
             var color = this.extractColorFromOlStyle(olStyle, true);
             outlinePrimitive = this.createStackedGroundCorridors(layer, feature, width, color, _positions);
           } else {
@@ -79716,7 +79751,7 @@ function () {
     var heightReference = Cesium.HeightReference.NONE;
 
     if (altitudeMode === 'clampToGround') {
-      heightReference = Cesium.HeightReference.CLAMP_TO_GROUND;
+      heightReference = CLAMP_TO_GROUND;
     } else if (altitudeMode === 'relativeToGround') {
       heightReference = Cesium.HeightReference.RELATIVE_TO_GROUND;
     }
@@ -79776,9 +79811,13 @@ function () {
         color: color,
         scale: imageStyle.getScale(),
         heightReference: heightReference,
-        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
         position: position
       };
+
+      if (imageStyle instanceof ol_style_Icon_js__WEBPACK_IMPORTED_MODULE_1___default.a) {
+        bbOptions.pixelOffset = new Cesium.Cartesian2(image.width / 2 - imageStyle.getAnchor()[0], image.height / 2 - imageStyle.getAnchor()[1]);
+      }
+
       var bb = this.csAddBillboard(billboards, bbOptions, layer, feature, olGeometry, style);
 
       if (opt_newBillboardCallback) {
@@ -83176,6 +83215,16 @@ exports.convertColorToCesium = function (olColor) {
     return new Cesium.Color(Cesium.Color.byteToFloat(olColor[0]), Cesium.Color.byteToFloat(olColor[1]), Cesium.Color.byteToFloat(olColor[2]), olColor[3]);
   } else if (typeof olColor == 'string') {
     return Cesium.Color.fromCssColorString(olColor);
+  } else if (olColor instanceof CanvasPattern || olColor instanceof CanvasGradient) {
+    // Render the CanvasPattern/CanvasGradient into a canvas that will be sent to Cesium as material
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+    canvas.width = canvas.height = 256;
+    ctx.fillStyle = olColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    return new Cesium.ImageMaterialProperty({
+      image: canvas
+    });
   }
 
   console.assert(false, 'impossible');
@@ -83711,7 +83760,7 @@ function toRadians(angleInDegrees) {
 /*!**************************!*\
   !*** ./src/olcs/util.js ***!
   \**************************/
-/*! exports provided: olcsListen, getUid, stableSort, removeNode, removeChildren, default */
+/*! exports provided: olcsListen, getUid, stableSort, removeNode, removeChildren, isGroundPolylinePrimitiveSupported, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83721,6 +83770,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "stableSort", function() { return stableSort; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeNode", function() { return removeNode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeChildren", function() { return removeChildren; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isGroundPolylinePrimitiveSupported", function() { return isGroundPolylinePrimitiveSupported; });
 /**
  * @module olcs.util
  */
@@ -83869,6 +83919,14 @@ function removeChildren(node) {
   while (node.lastChild) {
     node.removeChild(node.lastChild);
   }
+}
+/**
+ * @param {Cesium.Scene} scene The scene.
+ */
+
+function isGroundPolylinePrimitiveSupported(scene) {
+  var obj = Cesium.GroundPolylinePrimitive;
+  return obj && obj.isSupported(scene);
 }
 /* harmony default export */ __webpack_exports__["default"] = (exports);
 
