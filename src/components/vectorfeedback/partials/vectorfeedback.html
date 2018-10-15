@@ -3,8 +3,11 @@
     <div class="ga-vector-feedback-header">
         <div class="ga-vector-feedback-title pull-left">Vector Tiles Alpha Viewer</div>
         <div class="ga-vector-feedback-btn-wrapper">
-            <button class="pull-right ga-icon ga-btn fa fa-remove-sign" data-toggle="collapse" data-target="#ga-feedback-vector"
-                aria-expanded="true"></button>
+            <button class="pull-right ga-icon ga-btn fa fa-remove-sign"
+                    data-toggle="collapse"
+                    data-target="#ga-feedback-vector"
+                    aria-expanded="true">
+            </button>
         </div>
     </div>
     <p>
@@ -13,33 +16,19 @@
         primindoctum. Ea sint dolore nec, ea dicam propriae verterem est.
     </p>
     <h4>Select a layer</h4>
-    <select class="form-control">
-        <option>Light base map</option>
-        <option>Hybrid base map</option>
+    <select class="form-control"
+            ng-model="options.backgroundLayer"
+            ng-options="c.label for c in options.backgroundLayers track by c.id">
     </select>
     <h4>Select items in the map</h4>
-    <select class="form-control">
-        <option>Background</option>
-        <option>Lakes</option>
-        <option>Rivers</option>
-        <option>Built area</option>
-        <option>Highways</option>
-        <option>Forests</option>
+    <select class="form-control"
+            ng-model="options.selectedLayer"
+            ng-options="c.label for c in options.layers[options.backgroundLayer.id].selectableLayers track by c.value">
     </select>
     <h4>Change selected item color</h4>
-    <select class="form-control ga-vector-feedback-colors">
-        <option class="ga-vector-feedback-default">Default</option>
-        <option class="ga-vector-feedback-light-green">Light Green</option>
-        <option class="ga-vector-feedback-green">Green</option>
-        <option class="ga-vector-feedback-light-blue">Light Blue</option>
-        <option class="ga-vector-feedback-blue">Blue</option>
-        <option class="ga-vector-feedback-light-yellow">Light Yellow</option>
-        <option class="ga-vector-feedback-yellow">Yellow</option>
-        <option class="ga-vector-feedback-organe">Orange</option>
-        <option class="ga-vector-feedback-red">Red</option>
-        <option class="ga-vector-feedback-purple">Purple</option>
-        <option class="ga-vector-feedback-black">Black</option>
-        <option class="ga-vector-feedback-white">White</option>
+    <select class="form-control ga-vector-feedback-colors"
+            ng-model="options.color"
+            ng-options="c.label for c in options.colors track by c.value">
     </select>
     <h4>Technical documentation</h4>
     <a class="btn btn-default" href="{{options.serviceDocUrl}}" target_="_blank">Link to services</a>
