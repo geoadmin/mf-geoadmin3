@@ -1,5 +1,12 @@
-<div class="ga-vector-feedback-panel col-xs-12 col-sm-6 col-md-5 col-lg-5">
-    <h1>Vector Tiles Alpha Viewer</h1>
+<div id="ga-feedback-vector" class="ga-vector-feedback-panel col-xs-12 col-sm-6 col-md-5 col-lg-5 collapse in"
+    aria-expanded="true">
+    <div class="ga-vector-feedback-header">
+        <div class="ga-vector-feedback-title pull-left">Vector Tiles Alpha Viewer</div>
+        <div class="ga-vector-feedback-btn-wrapper">
+            <button class="pull-right ga-icon ga-btn fa fa-remove-sign" data-toggle="collapse" data-target="#ga-feedback-vector"
+                aria-expanded="true"></button>
+        </div>
+    </div>
     <p>
         Lorem ipsum dolor sit amet, nam an veritus adipiscing, mutat habemus sea an. Ne decore nemore scaevola mel,
         vim at qualisque consulatu. Pro ponderum molestiae dignissim et. Est id ferri meliore atomorum, in mei
@@ -35,14 +42,12 @@
         <option class="ga-vector-feedback-white">White</option>
     </select>
     <h4>Technical documentation</h4>
-    <a class="btn btn-default" href="{{options.serviceDocUrl}}">Link to services</a>
+    <a class="btn btn-default" href="{{options.serviceDocUrl}}" target_="_blank">Link to services</a>
     <h4>Give us a feedback</h4>
     <form ng-submit="submit()">
         <div class="form-group">
             <label for="ga-vector-feedback-like">Do you like it?</label>
-            <select class="form-control"
-                    id="ga-vector-feedback-like"
-                    ng-model="options.likeSelect">
+            <select class="form-control" id="ga-vector-feedback-like" ng-model="options.likeSelect">
                 <option value="dislike">Dislike</option>
                 <option value="rather_dislike">Rather dislike</option>
                 <option value="no_opinion">No opinion</option>
@@ -52,10 +57,7 @@
         </div>
         <div class="form-group">
             <label for="ga-vector-feedback-comment">Comment</label>
-            <textarea class="form-control" 
-                      id="ga-vector-feedback-comment"
-                      rows="3"
-                      ng-model="options.comment"></textarea>
+            <textarea class="form-control" id="ga-vector-feedback-comment" rows="3" ng-model="options.comment"></textarea>
         </div>
         <button type="submit" class="btn btn-default">Send</button>
     </form>

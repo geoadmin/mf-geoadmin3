@@ -1,3 +1,19 @@
+.ga-vector-feedback-header {
+  width: 100%;
+  display: table;
+  padding: 10px 0;
+}
+
+.ga-vector-feedback-title {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.ga-vector-feedback-btn-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
 .ga-vector-feedback-panel {
   z-index: 2000;
   position: absolute;
@@ -5,56 +21,68 @@
   right: 115px;
   background-color: rgba(0, 0, 0, 0.65);
   color: white;
-  transition: top 1s ease;
   overflow-y: auto;
-  max-height: 720px;
+  max-height: 725px;
   @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
     top: unit(@small-header-height + 5, px);
   }
   @media (max-width: @screen-sm), (max-width: @screen-xs) {
-    left: 5px;
-    top: 5px;
-    right: 5px;
-    bottom: 5px;
+    left: 0;
+    top: 0;
   }
 }
-.ga-vector-feedback-colors option {
-  color: white;
+
+.ga-vector-feedback-panel.collapse.in {
+  transition: top 1s ease;
 }
-.ga-vector-feedback-default {
-  background-color: grey;
-}
-.ga-vector-feedback-light-green {
-  background-color: #acc864;
-}
-.ga-vector-feedback-green {
-  background-color: #3a8841;
-}
-.ga-vector-feedback-light-blue {
-  background-color: #40b5bc;
-}
-.ga-vector-feedback-blue {
-  background-color: #483df6;
-}
-.ga-vector-feedback-light-yellow {
-  background-color: #ffff99;
-}
-.ga-vector-feedback-yellow {
-  background-color: #ffca00;
-}
-.ga-vector-feedback-organe {
-  background-color: #f28500;
-}
-.ga-vector-feedback-red {
-  background-color: #dc0f0f;
-}
-.ga-vector-feedback-purple {
-  background-color: #80379c;
-}
-.ga-vector-feedback-black {
-  background-color: black;
-}
-.ga-vector-feedback-white option {
-  background-color: white;
-  color: black;
+
+.ga-vector-feedback-colors {
+  .ga-vector-feedback-default {
+    background-color: grey;
+    color: white;
+  }
+  .ga-vector-feedback-light-green {
+    background-color: #acc864;
+    color: black;
+  }
+  .ga-vector-feedback-green {
+    background-color: #3a8841;
+    color: white;
+  }
+  .ga-vector-feedback-light-blue {
+    background-color: #40b5bc;
+    color: black;
+  }
+  .ga-vector-feedback-blue {
+    background-color: #483df6;
+    color: white;
+  }
+  .ga-vector-feedback-light-yellow {
+    background-color: #ffff99;
+    color: black;
+  }
+  .ga-vector-feedback-yellow {
+    background-color: #ffca00;
+    color: black;
+  }
+  .ga-vector-feedback-organe {
+    background-color: #f28500;
+    color: white;
+  }
+  .ga-vector-feedback-red {
+    background-color: #dc0f0f;
+    color: white;
+  }
+  .ga-vector-feedback-purple {
+    background-color: #80379c;
+    color: white;
+  }
+  .ga-vector-feedback-black {
+    background-color: black;
+    color: white;
+  }
+  .ga-vector-feedback-white {
+    background-color: white;
+    color: black;
+  }
 }
