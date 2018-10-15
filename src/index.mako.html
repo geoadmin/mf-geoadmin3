@@ -174,6 +174,10 @@ itemscope itemtype="http://schema.org/WebApplication"
 
 % endif
     <div id="loader"></div>
+    <div tabindex="1" ga-map ga-map-map="map" ga-map-ol3d="::ol3d">
+
+    <!-- TEST Ribbon -->
+    <div class="corner-ribbon">TEST</div>
 
     <!-- Vector feedback -->
     <div ng-controller="GaVectorFeedbackController">
@@ -184,7 +188,6 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div>
 
-    <div tabindex="1" ga-map ga-map-map="map" ga-map-ol3d="::ol3d">
   % if device == 'embed':
       <a ng-cloak translate-cloak id="bigMapLink" target="_blank" href="{{toMainHref}}">
         <div>
