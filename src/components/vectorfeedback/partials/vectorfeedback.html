@@ -15,38 +15,61 @@
         vim at qualisque consulatu. Pro ponderum molestiae dignissim et. Est id ferri meliore atomorum, in mei
         primindoctum. Ea sint dolore nec, ea dicam propriae verterem est.
     </p>
-    <h4>Select a layer</h4>
-    <select class="form-control"
-            ng-model="options.backgroundLayer"
-            ng-options="c.label for c in options.backgroundLayers track by c.id">
-    </select>
-    <h4>Select items in the map</h4>
-    <select class="form-control"
-            ng-model="options.selectedLayer"
-            ng-options="c.label for c in options.layers[options.backgroundLayer.id].selectableLayers track by c.value">
-    </select>
-    <h4>Change selected item color</h4>
-    <select class="form-control ga-vector-feedback-colors"
-            ng-model="options.color"
-            ng-options="c.label for c in options.colors track by c.value">
-    </select>
-    <h4>Technical documentation</h4>
-    <a class="btn btn-default" href="{{options.serviceDocUrl}}" target_="_blank">Link to services</a>
-    <h4>Give us a feedback</h4>
-    <form ng-submit="submit()">
-        <div class="form-group">
-            <label for="ga-vector-feedback-like">Do you like it?</label>
-            <select class="form-control" id="ga-vector-feedback-like" ng-model="options.likeSelect">
-                <option value="dislike">Dislike</option>
-                <option value="rather_dislike">Rather dislike</option>
-                <option value="no_opinion">No opinion</option>
-                <option value="rather_like">Rather like</option>
-                <option value="like">Like</option>
+    <hr>
+    <div class="ga-vector-feedback-item">
+        <h4 class="pull-left">Select a layer</h4>
+        <div class="ga-vector-feedback-item-select-wrapper">
+            <select class="form-control"
+                    ng-model="options.backgroundLayer"
+                    ng-options="c.label for c in options.backgroundLayers track by c.id">
             </select>
         </div>
+    </div>
+    <div class="ga-vector-feedback-item">
+        <h4 class="pull-left">Select items in the map</h4>
+        <div class="ga-vector-feedback-item-select-wrapper">
+            <select class="form-control"
+                    ng-model="options.selectedLayer"
+                    ng-options="c.label for c in options.layers[options.backgroundLayer.id].selectableLayers track by c.value">
+            </select>
+        </div>
+    </div>
+    <div class="ga-vector-feedback-item">
+        <h4 class="pull-left">Change selected item color</h4>
+        <div class="ga-vector-feedback-item-select-wrapper">
+            <select class="form-control ga-vector-feedback-colors"
+                    ng-model="options.color"
+                    ng-options="c.label for c in options.colors track by c.value">
+            </select>
+        </div>
+    </div>
+    <hr>
+    <div class="ga-vector-feedback-item">
+        <h4 class="pull-left">Technical documentation</h4>
+        <a class="btn btn-default pull-right" href="{{options.serviceDocUrl}}" target_="_blank">Link to services</a>
+    </div>
+    <hr>
+    <form ng-submit="submit()">
         <div class="form-group">
-            <label for="ga-vector-feedback-comment">Comment</label>
-            <textarea class="form-control" id="ga-vector-feedback-comment" rows="3" ng-model="options.comment"></textarea>
+            <div class="ga-vector-feedback-item">
+                <h4 class="pull-left">Do you like it?</h4>
+                <div class="ga-vector-feedback-item-select-wrapper">
+                    <select class="form-control" ng-model="options.likeSelect">
+                        <option value="dislike">Dislike</option>
+                        <option value="rather_dislike">Rather dislike</option>
+                        <option value="no_opinion">No opinion</option>
+                        <option value="rather_like">Rather like</option>
+                        <option value="like">Like</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <h4>Comment</h4>
+            <textarea class="form-control"
+                      rows="3"
+                      ng-model="options.comment"
+                      placeholder="Give use a feedback..."></textarea>
         </div>
         <button type="submit" class="btn btn-default">Send</button>
     </form>
