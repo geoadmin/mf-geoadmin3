@@ -613,6 +613,7 @@ goog.require('ga_urlutils_service');
             olLayer = new ol.layer.Vector({
               minResolution: config.minResolution,
               maxResolution: config.maxResolution,
+              opacity: config.opacity || 1,
               source: olSource,
               extent: extent
             });
