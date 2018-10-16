@@ -45,6 +45,16 @@
     </div>
     <hr>
     <div class="ga-vector-feedback-item">
+        <h4 class="pull-left">Map Labels</h4>
+        <div class="ga-vector-feedback-item-select-wrapper">
+            <select class="form-control ga-vector-feedback-colors"
+                    ng-model="options.showLabel"
+                    ng-options="c.label for c in options.showLabels track by c.value">
+            </select>
+        </div>
+    </div>
+    <hr>
+    <div class="ga-vector-feedback-item">
         <h4 class="pull-left">Technical documentation</h4>
         <a class="btn btn-default pull-right" href="{{options.serviceDocUrl}}" target_="_blank">Link to services</a>
     </div>

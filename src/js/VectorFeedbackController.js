@@ -88,12 +88,23 @@ goog.provide('ga_vector_feedback_controller');
           value: 'white',
           label: 'White'
         }
+      ],
+      showLabels: [
+        {
+          value: true,
+          label: 'Show'
+        },
+        {
+          value: false,
+          label: 'Hide'
+        }
       ]
     };
 
     // Initialize to the first layer
     $scope.options.backgroundLayer = $scope.options.backgroundLayers[0];
     $scope.options.color = $scope.options.colors[0];
+    $scope.options.showLabel = $scope.options.showLabels[0];
 
     // Always use the firest selectable layer in the list
     $scope.$watch('options.backgroundLayer', function(newVal) {
@@ -104,6 +115,14 @@ goog.provide('ga_vector_feedback_controller');
     $scope.$watch('options.color', function(newVal) {
       console.log('Should apply new color');
       console.log(newVal);
+    });
+
+    $scope.$watch('options.showLabel', function(newVal) {
+      if (newVal.value) {
+        console.log('Show labels on map');
+      } else {
+        console.log('Hide labels on map');
+      }
     });
 
     $scope.submit = function() {
