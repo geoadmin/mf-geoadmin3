@@ -168,7 +168,7 @@ goog.require('ga_urlutils_service');
           return;
         }
         var noCacheUrl = url;
-        if (gaBrowserSniffer.msie === 9) {
+        if ([9, 10, 11].indexOf(gaBrowserSniffer.msie) !== -1) {
           // #3937: Avoid caching of the request by IE9
           noCacheUrl += '&' + (new Date()).getTime();
         }
