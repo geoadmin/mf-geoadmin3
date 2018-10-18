@@ -75,7 +75,7 @@ goog.provide('ga_gl_style_service');
         };
 
         // Hide / show layers base on layers props
-        // [[propertyName, operator, propertyValue], ...]
+        // [[propertyName, comparator, propertyValue], ...]
         this.filter = function(filters) {
           var that = this;
           var layers = [];
@@ -85,13 +85,13 @@ goog.provide('ga_gl_style_service');
             var addLayer = true;
             that.filters.forEach(function(filter) {
               var propertyName = filter[0];
-              var operator = filter[1];
+              var comparator = filter[1];
               var propertyValue = filter[2];
               var layerProperty = layer[propertyName];
               if (layerProperty) {
-                if (operator === '==') {
+                if (comparator === '==') {
                   addLayer = addLayer && layerProperty !== propertyValue;
-                } else if (operator === '!=') {
+                } else if (comparator === '!=') {
                   addLayer = addLayer && layerProperty === propertyValue;
                 }
               }
