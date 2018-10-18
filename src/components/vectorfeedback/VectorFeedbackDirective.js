@@ -15,11 +15,8 @@ goog.provide('ga_vector_feedback_directive');
         submit: '=gaVectorFeedbackSubmit'
       },
       link: function(scope, element, attrs) {
-        var map = scope.map;
-        var parentEl = element.parent();
-        console.log(element);
-        console.log(parentEl);
-        console.log(map);
+        // var map = scope.map;
+        // var parentEl = element.parent();
       }
     };
   });
