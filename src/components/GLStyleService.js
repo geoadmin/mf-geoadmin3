@@ -42,8 +42,8 @@ goog.provide('ga_gl_style_service');
                       $window.console.error(
                         'Unable to load ' +
                         spriteUrl +
-                        ' because ' +
-                        reason
+                        ' because '
+                        + reason
                       );
                       // failing to load sprite is ok for now...
                       defer.resolve({
@@ -75,16 +75,36 @@ goog.provide('ga_gl_style_service');
         };
 
         // Hide / show layers base on layers props
+        // [[propertyName, operator, propertyValue], ...]
         this.filter = function(filters) {
+          var that = this;
+          var layers = [];
           var newStyleJSON = this.cloneStyle();
-          this.filters.concat(filters);
-          // TODO apply filters and edits logic here and return a new object
+          this.filters = this.filters.concat(filters);
+          newStyleJSON.layers.forEach(function (layer) {
+            var addLayer = true;
+            that.filters.forEach(function(filter) {
+              var propertyName = filter[0];
+              var operator = filter[1];
+              var propertyValue = filter[2];
+              var layerProperty = layer[propertyName];
+              if (layerProperty) {
+                if (operator === '==') {
+                  addLayer = addLayer && layerProperty !== propertyValue;
+                } else if (operator === '!=') {
+                  addLayer = addLayer && layerProperty === propertyValue;
+                }
+              }
+            });
+            if (addLayer) layers.push(layer);
+          });
+          newStyleJSON.layers = layers;
           return newStyleJSON;
         };
 
         this.edit = function(edits) {
           var newStyleJSON = this.cloneStyle();
-          this.edits.concat(edits);
+          this.edits = this.edits.concat(edits);
           // TODO apply filters and edits logic here and return a new object
           return newStyleJSON;
         };
