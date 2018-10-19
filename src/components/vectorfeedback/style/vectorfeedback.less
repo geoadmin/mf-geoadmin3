@@ -1,3 +1,36 @@
+.ga-vector-feedback-panel {
+  z-index: 2000;
+  position: absolute;
+  top: unit(@header-height + 5, px);
+  right: 115px;
+  background-color: rgba(0, 0, 0, 0.65);
+  color: white;
+  overflow-y: auto;
+  max-height: 730px;
+  max-width: 650px;
+  padding: 0 15px;
+  width: 41%;
+  @media (max-width: @screen-tablet) {
+    width: 50%;
+  }
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
+    top: unit(@small-header-height + 5, px);
+    max-height: 565px;
+  }
+  @media (max-width: @screen-sm), (max-width: @screen-xs) {
+    max-width: 100%;
+    width: auto;
+    left: 0;
+    right: 55px;
+  }
+  .in {
+    transition: top 1s ease;
+  }
+  &.collapsing {
+    overflow-y: hidden;
+  }
+}
+
 .ga-vector-feedback-header {
   width: 100%;
   display: table;
@@ -10,7 +43,7 @@
   .fa-caret-down {
     color: white;
     float: right;
-    margin-top: 20px;
+    margin-top: 18px;
     transform: rotate(180deg);
     transition: transform 0.2s ease, -webkit-transform 0.2s ease;
   }
@@ -23,9 +56,12 @@
 
 .ga-vector-feedback-title {
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 500;
   padding: 10px 0;
   color: white;
+  @media (max-width: @screen-sm), (max-width: @screen-xs) {
+    font-size: 18px;
+  }
 }
 
 .ga-vector-feedback-item {
@@ -34,6 +70,9 @@
   padding: 2px 0;
   a {
     width: 40%;
+    @media (max-width: @screen-sm), (max-width: @screen-xs) {
+      width: 100%;
+    }
   }
 }
 
@@ -48,41 +87,17 @@
 .ga-vector-feedback-item-select-wrapper {
   width: 40%;
   float: right;
-}
-
-.ga-vector-feedback-panel {
-  z-index: 2000;
-  position: absolute;
-  top: unit(@header-height + 5, px);
-  right: 115px;
-  background-color: rgba(0, 0, 0, 0.65);
-  color: white;
-  overflow-y: auto;
-  max-height: 730px;
-  max-width: 650px;
-  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
-    top: unit(@small-header-height + 5, px);
-  }
   @media (max-width: @screen-sm), (max-width: @screen-xs) {
-    max-width: 100%;
-    left: 0;
-    right: 0;
-    .in {
-      top: 0;
-      bottom: 0;
-    }
-  }
-  &.in {
-    transition: top 1s ease;
-  }
-  &.collapsing {
-    overflow-y: hidden;
+    width: 100%;
   }
 }
 
 .ga-vector-feedback-submit {
   margin-bottom: 15px;
   float: right;
+  @media (max-width: @screen-sm), (max-width: @screen-xs) {
+    width: 100%;
+  }
 }
 
 .ga-vector-feedback-colors {
