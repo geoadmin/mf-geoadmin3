@@ -25,18 +25,26 @@ goog.require('ga_urlutils_service');
     return $.map(extent, parseFloat);
   };
 
-  var addOverlay = function(gaMarkerOverlay, map, res) {
-    var visible = /^(address|parcel|gazetteer)$/.test(res.attrs.origin);
-    var center = [res.attrs.y, res.attrs.x];
+  var getCenter = function(gaMapUtils, map, res) {
+    var center;
     if (!res.attrs.y || !res.attrs.x) {
       center = ol.proj.transform([res.attrs.lon, res.attrs.lat],
           'EPSG:4326', map.getView().getProjection());
+    } else {
+      center = gaMapUtils.transformBack(
+          new ol.geom.Point([res.attrs.y, res.attrs.x])
+      ).getCoordinates();
     }
+    return center;
+  };
+
+  var addOverlay = function(gaMarkerOverlay, gaMapUtils, map, res, extent) {
+    var visible = /^(address|parcel|gazetteer)$/.test(res.attrs.origin);
+    var center = getCenter(gaMapUtils, map, res);
     gaMarkerOverlay.add(map,
         center,
         visible,
-        parseExtent(res.attrs.geom_st_box2d));
-
+        extent);
   };
 
   var removeOverlay = function(gaMarkerOverlay, map) {
@@ -191,7 +199,7 @@ goog.require('ga_urlutils_service');
 
   module.controller('GaSearchTypesController',
       function($scope, $http, $q, $sce, gaUrlUtils, gaSearchLabels,
-          gaMarkerOverlay, gaDebounce) {
+          gaMapUtils, gaMarkerOverlay, gaDebounce) {
 
         // This value is used to block blur/mouseleave event, when a value
         // is selected. See #2284. It's reinitialized when a new search is
@@ -277,7 +285,11 @@ goog.require('ga_urlutils_service');
         };
 
         $scope.preview = function(res) {
-          addOverlay(gaMarkerOverlay, $scope.map, res);
+          var e = parseExtent(res.attrs.geom_st_box2d);
+          e = gaMapUtils.transformBack(
+              ol.geom.Polygon.fromExtent(e)
+          ).getExtent();
+          addOverlay(gaMarkerOverlay, gaMapUtils, $scope.map, res, e);
         };
 
         $scope.removePreview = function() {
@@ -309,7 +321,7 @@ goog.require('ga_urlutils_service');
   );
 
   module.directive('gaSearchLocations',
-      function($http, $q, $sce, $translate, gaUrlUtils, gaMarkerOverlay,
+      function($sce, $translate, gaMarkerOverlay,
           gaSearchLabels, gaMapUtils, gaDebounce) {
         return {
           restrict: 'A',
@@ -332,6 +344,9 @@ goog.require('ga_urlutils_service');
             $scope.select = function(res) {
               var isGazetteerPoly = false;
               var e = parseExtent(res.attrs.geom_st_box2d);
+              e = gaMapUtils.transformBack(
+                  ol.geom.Polygon.fromExtent(e)
+              ).getExtent();
               unregisterMove();
               // Gazetteer results that are not points zoom to full bbox extent
               if (res.attrs.origin === 'gazetteer') {
@@ -341,13 +356,16 @@ goog.require('ga_urlutils_service');
               }
               if (res.attrs.zoomlevel < ZOOM_LIMIT &&
                   !isGazetteerPoly) {
-                gaMapUtils.moveTo($scope.map, $scope.ol3d,
-                    res.attrs.zoomlevel,
-                    [res.attrs.y, res.attrs.x]);
+                gaMapUtils.moveTo(
+                    $scope.map,
+                    $scope.ol3d,
+                    gaMapUtils.swissZoomToMercator(res.attrs.zoomlevel),
+                    getCenter(gaMapUtils, $scope.map, res)
+                );
               } else {
                 gaMapUtils.zoomToExtent($scope.map, $scope.ol3d, e);
               }
-              addOverlay(gaMarkerOverlay, $scope.map, res);
+              addOverlay(gaMarkerOverlay, gaMapUtils, $scope.map, res, e);
               $scope.options.valueSelected(
                   gaSearchLabels.cleanLabel(res.attrs.label));
 
@@ -378,9 +396,9 @@ goog.require('ga_urlutils_service');
       });
 
   module.directive('gaSearchFeatures',
-      function($rootScope, $http, $q, $sce, $timeout, gaUrlUtils,
+      function($rootScope, $http, $sce, $timeout, gaUrlUtils,
           gaLayerFilters, gaSearchLabels, gaLayers,
-          gaMarkerOverlay, gaPreviewFeatures, gaTopic) {
+          gaPreviewFeatures, gaTopic) {
 
         var selectedFeatures = {};
         var loadGeometry = function(layerId, featureId, topic, urlbase, cb) {
@@ -490,7 +508,7 @@ goog.require('ga_urlutils_service');
       });
 
   module.directive('gaSearchLayers',
-      function($http, $q, $sce, gaUrlUtils, gaSearchLabels, gaPreviewLayers,
+      function(gaSearchLabels, gaPreviewLayers,
           gaMapUtils, gaLayers, gaLayerMetadataPopup) {
         return {
           restrict: 'A',
@@ -540,5 +558,4 @@ goog.require('ga_urlutils_service');
           }
         };
       });
-
 })();

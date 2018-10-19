@@ -8,8 +8,8 @@ goog.provide('ga_search_controller');
     // Set sr param if possible
     var sr = '?';
     if ($scope.map) {
-      var epsgCode = $scope.map.getView().getProjection().getCode();
-      sr += 'sr=' + epsgCode.split(':')[1] + '&';
+      // No support for web mercator for the search
+      sr += 'sr=2056&';
     }
 
     $scope.options = {
