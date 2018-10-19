@@ -17,7 +17,7 @@
     </p>
     <hr>
     <div class="ga-vector-feedback-item">
-        <h4 class="pull-left">Select a layer</h4>
+        <h4 class="ga-vector-feedback-item-title pull-left">Select a layer</h4>
         <div class="ga-vector-feedback-item-select-wrapper">
             <select class="form-control"
                     ng-model="options.backgroundLayer"
@@ -26,7 +26,7 @@
         </div>
     </div>
     <div class="ga-vector-feedback-item">
-        <h4 class="pull-left">Select items in the map</h4>
+        <h4 class="ga-vector-feedback-item-title pull-left">Select items in the map</h4>
         <div class="ga-vector-feedback-item-select-wrapper">
             <select class="form-control"
                     ng-model="options.selectedLayer"
@@ -35,7 +35,7 @@
         </div>
     </div>
     <div class="ga-vector-feedback-item">
-        <h4 class="pull-left">Change selected item color</h4>
+        <h4 class="ga-vector-feedback-item-title pull-left">Change selected item color</h4>
         <div class="ga-vector-feedback-item-select-wrapper">
             <select class="form-control ga-vector-feedback-colors"
                     ng-model="options.color"
@@ -45,7 +45,7 @@
     </div>
     <hr>
     <div class="ga-vector-feedback-item">
-        <h4 class="pull-left">Map Labels</h4>
+        <h4 class="ga-vector-feedback-item-title pull-left">Map labels</h4>
         <div class="ga-vector-feedback-item-select-wrapper">
             <select class="form-control ga-vector-feedback-colors"
                     ng-model="options.showLabel"
@@ -55,14 +55,14 @@
     </div>
     <hr>
     <div class="ga-vector-feedback-item">
-        <h4 class="pull-left">Technical documentation</h4>
+        <h4 class="ga-vector-feedback-item-title pull-left">Technical documentation</h4>
         <a class="btn btn-default pull-right" href="{{options.serviceDocUrl}}" target_="_blank">Link to services</a>
     </div>
     <hr>
     <form ng-submit="submit()">
         <div class="form-group">
             <div class="ga-vector-feedback-item">
-                <h4 class="pull-left">Do you like it?</h4>
+                <h4 class="ga-vector-feedback-item-title pull-left">Do you like it?</h4>
                 <div class="ga-vector-feedback-item-select-wrapper">
                     <select class="form-control" ng-model="options.likeSelect">
                         <option value="dislike">Dislike</option>
@@ -75,13 +75,12 @@
             </div>
         </div>
         <div class="form-group">
-            <h4>Comment</h4>
+            <h4 class="ga-vector-feedback-item-title">Comment</h4>
             <textarea class="form-control"
                       rows="3"
                       ng-model="options.comment"
                       placeholder="Give use a feedback..."></textarea>
         </div>
-        <button type="submit" class="btn btn-default">Send</button>
+        <button type="submit" class="btn btn-default ga-vector-feedback-submit">Send</button>
     </form>
-    <br />
 </div>
