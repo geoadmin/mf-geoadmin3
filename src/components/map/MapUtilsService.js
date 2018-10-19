@@ -486,6 +486,7 @@ goog.require('ga_urlutils_service');
               ol.proj.get('EPSG:2056')
           );
         },
+
         /**
          * Transform a geometry from swissprojection to map's proj.
          * Used to have a better measurement.
@@ -495,6 +496,31 @@ goog.require('ga_urlutils_service');
               ol.proj.get('EPSG:2056'),
               ol.proj.get(gaGlobalOptions.defaultEpsg)
           );
+        },
+
+        /**
+         * Mapping between Swiss zooms and Web Mercator zooms.
+        */
+        swissZoomToMercator: function(zoom) {
+          var gridZoom = zoom + 14;
+          var mapping = {
+            14: 8,
+            15: 8,
+            16: 9,
+            17: 11,
+            18: 12,
+            19: 13,
+            20: 14,
+            21: 15,
+            22: 16,
+            23: 16,
+            24: 17,
+            25: 17,
+            26: 18,
+            27: 19,
+            28: 21
+          };
+          return mapping[gridZoom];
         }
       };
     };
