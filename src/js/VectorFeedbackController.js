@@ -6,9 +6,9 @@ goog.provide('ga_vector_feedback_controller');
   ]);
 
   module.controller('GaVectorFeedbackController', function(
-    $scope,
-    gaGlobalOptions,
-    gaBrowserSniffer
+      $scope,
+      gaGlobalOptions,
+      gaBrowserSniffer
   ) {
     $scope.options = {
       serviceDocUrl: gaGlobalOptions.apiUrl + '/services/sdiservices.html',

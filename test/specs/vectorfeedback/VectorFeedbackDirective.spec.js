@@ -46,7 +46,9 @@ describe('ga_vector_feedback_directive', function() {
   it('creates the vector feedback directive', function() {
     loadDirective(map, options, submit);
     var submitBtn = el.find('button[type=submit]');
-    expect(el.find('a:nth-child(2)').attr('href')).to.be('https://service-doc.html');
+    expect(el.find('.ga-vector-feeback-service-link').attr('href')).to.be(
+        'https://service-doc.html'
+    );
     expect(el.find('textarea').length).to.be(1);
     expect(submit.callCount).to.be(0);
     submitBtn.click();
