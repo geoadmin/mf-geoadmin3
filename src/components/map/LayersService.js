@@ -276,47 +276,49 @@ goog.require('ga_urlutils_service');
                 }
               }
 
+              /* eslint-disable max-len */
               // VectorTile
-              var tk = '?access_token=pk.eyJ1IjoidmliMmQiLCJhIjoiY2l5eTlqcG' +
-                  'toMDAwZzJ3cG56emF6YmRoOCJ9.lP3KfJVHrUHp7DXIQrZYMw';
+              // Each object simulates a definition in LayersConfig file and
+              // represents a source in a glStyle file.
+              // Possible properties:
+              //     type:            The type of the layer, always 'vectortile'.
+              //     serverLayerName: The id of the layer in the layers config.
+              //     sourceId:        The source's id  in the glStyle.
+              //                      By default, it takes the serverLayername value.
+              //     url:             Template of the url where to get the vectortiles.
+              //                      Overrides the source's url property of the glStyle.
+              //     styleUrl:        Url's a the glStyle to apply to this layer. It will apply styles associated to the sourceId value.
+              //                      Overrides the styleUrl property defined in the parent layer (see background layers).
               var vts = [{
-                serverLayerName: 'SWISSNAMES-LV03-mbtiles',
-                sourceId: 'composite',
-                styleUrl: 'https://api.mapbox.com/styles/v1/vib2d/' +
-                    'cj168d2g500482rqm988ycycc' + tk,
-                tilePixelRatio: 4,
-                tileSize: 1024
-              }, {
-                serverLayerName: 'swissbasemap',
-                sourceId: 'swissbasemap', // id of the source to use
-                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissbasemap-osm-integrated/style.json'
-              }, {
-                serverLayerName: 'osm',
-                sourceId: 'osm',
-                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissbasemap-osm-integrated/style.json'
-              }, {
-                serverLayerName: 'relief-osm',
-                sourceId: 'relief-osm',
-                sourceType: 'raster',
-                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissbasemap-osm-integrated/style.json',
-                opacity: 0.3
-              }, {
-                serverLayerName: 'relief',
-                sourceId: 'relief',
-                sourceType: 'raster',
-                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissbasemap-osm-integrated/style.json',
-                opacity: 1
-              }, {
                 serverLayerName: 'openmaptiles',
-                sourceId: 'openmaptiles',
                 url: 'https://free.tilehosting.com/data/v3/{z}/{x}/{y}.pbf.pict?key=Og58UhhtiiTaLVlPtPgs',
-                styleUrl: 'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json',
                 maxZoom: 14
+              }, {
+                serverLayerName: 'ch.swissnames3d.vt',
+                sourceId: 'ch.swissnames3d'
+              }, {
+                serverLayerName: 'ch.swisstopo.amtliches-strassenverzeichnis_validiert'
+              }, {
+                serverLayerName: 'ch.bav.haltestellen-oev.vt',
+                sourceId: 'ch.bav.haltestellen-oev'
+              }, {
+                serverLayerName: 'ch.vereinfachte-hintergrundkarte_vektorkacheln.mbtiles'
+              }, {
+                serverLayerName: 'ch.swisstopo.swisstlm3d-wanderwege.vt',
+                sourceId: 'ch.swisstopo.swisstlm3d-wanderwege'
+              }, {
+                serverLayerName: 'ch.astra.wanderland.vt',
+                sourceId: 'ch.astra.wanderland'
+              }, {
+                serverLayerName: 'ch.bak.bundesinventar-schuetzenswerte-ortsbilder.vt',
+                sourceId: 'ch.bak.bundesinventar-schuetzenswerte-ortsbilder'
               }];
+              /* eslint-enable max-len */
 
               vts.forEach(function(vt, idx) {
                 response.data[vt.serverLayerName] = angular.extend(vt, {
-                  type: 'vectortile'
+                  type: 'vectortile',
+                  sourceId: vt.sourceId || vt.serverLayerName
                 });
               });
 
@@ -325,34 +327,54 @@ goog.require('ga_urlutils_service');
               if (response.data[relief]) {
                 response.data[relief + '-custom'] = response.data[relief];
                 response.data[relief + '-custom'].opacity = 0.4;
-                response.data['sbm'] = {
+                response.data['omt.vt'] = {
                   type: 'aggregate',
                   background: true,
-                  serverLayerName: 'sbm',
-                  subLayersIds: [
-                    'swissbasemap'
-                  ]
-                };
-                response.data['sbm-osm'] = {
-                  type: 'aggregate',
-                  background: true,
-                  serverLayerName: 'sbm-osm',
-                  subLayersIds: [
-                    'relief-osm',
-                    'osm',
-                    'relief',
-                    'swissbasemap'
-                  ]
-                };
-                response.data['omt'] = {
-                  type: 'aggregate',
-                  background: true,
-                  serverLayerName: 'omt',
+                  serverLayerName: 'omt.vt',
                   subLayersIds: [
                     relief + '-custom',
                     'openmaptiles'
-                  ]
+                  ],
+                  styleUrl: 'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json'
                 };
+                response.data['ch.swisstopo.hybridkarte.vt'] = {
+                  type: 'aggregate',
+                  background: true,
+                  serverLayerName: 'ch.swisstopo.hybridkarte.vt',
+                  subLayersIds: [
+                    'ch.swisstopo.swissimage',
+                    'ch.bav.haltestellen-oev.vt',
+                    'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
+                    'ch.swissnames3d.vt'
+                  ],
+                  styleUrl: 'https://tileserver.dev.bgdi.ch/styles/ch.swisstopo.hybridkarte.vt_1539954688_e92c5b623257c5fafe1594ce4a0a72e0c08b0d80/style.json'
+
+                };
+                response.data['ch.swisstopo.leichte-basiskarte.vt'] = {
+                  type: 'aggregate',
+                  background: true,
+                  serverLayerName: 'ch.swisstopo.leichte-basiskarte.vt',
+                  subLayersIds: [
+                    'ch.swisstopo.swissalti3d-reliefschattierung',
+                    'ch.vereinfachte-hintergrundkarte_vektorkacheln.mbtiles',
+                    'ch.bav.haltestellen-oev.vt',
+                    'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
+                    'ch.swissnames3d.vt'
+                  ],
+                  styleUrl: 'https://tileserver.dev.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_1539776348_8bdaf0a51d53ba3e109563680710cb372fb42fe1/style.json'
+                };
+                response.data['ch.swisstopo.wandern.vt'] = {
+                  type: 'aggregate',
+                  background: true,
+                  serverLayerName: 'ch.swisstopo.wandern.vt',
+                  subLayersIds: [
+                    'ch.bak.bundesinventar-schuetzenswerte-ortsbilder.vt',
+                    'ch.astra.wanderland.vt',
+                    'ch.swisstopo.swisstlm3d-wanderwege.vt'
+                  ],
+                  styleUrl: 'https://tileserver.dev.bgdi.ch/styles/ch.swisstopo.wandern.vt_1539954688_e92c5b623257c5fafe1594ce4a0a72e0c08b0d80/style.json'
+                };
+
               }
 
             }
@@ -679,6 +701,10 @@ goog.require('ga_urlutils_service');
             var i, len = subLayersIds.length;
             var subLayers = new Array(len);
             for (i = 0; i < len; i++) {
+              var subLayerConf = layers[subLayersIds[i]];
+              if (config.styleUrl && subLayerConf && !subLayerConf.styleUrl) {
+                layers[subLayersIds[i]].styleUrl = config.styleUrl;
+              }
               subLayers[i] = this.getOlLayerById(subLayersIds[i]);
             }
             olLayer = new ol.layer.Group({
@@ -766,18 +792,22 @@ goog.require('ga_urlutils_service');
                   // For vector source we parse then apply the style after
                   // loading the sprite image.
                   var spriteConfigUrl = glStyle.sprite + '.json';
+                  var spriteUrl = glStyle.sprite + '.png';
 
                   // Load the style for a specific source
                   $http.get(spriteConfigUrl, {
                     cache: true
                   }).then(function(response) {
+                    return response.data;
+                  }, function(reason) {
+                    $window.console.error('Loading sprite failed. Reason: "' +
+                        reason.data + '"');
+                    return {};
+                  }).then(function(spriteData) {
                     $window.olms.stylefunction(olLayer, glStyle,
                         config.sourceId,
-                        undefined, response.data, glStyle.sprite + '.png',
+                        undefined, spriteData, spriteUrl,
                         ['Helvetica']);
-                  }, function(reason) {
-                    $window.console.error('Apply style failed. Reason: "' +
-                        reason + '"');
                   });
                 } else {
                   glStyle.layers.forEach(function(style, idx) {

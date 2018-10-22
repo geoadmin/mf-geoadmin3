@@ -21,26 +21,38 @@ goog.require('ga_urlutils_service');
       var bg; // The current background
       var bgs = []; // The list of backgrounds available
       var bgsP; // Promise resolved when the background service is initialized.
-      var labels, voidLayer = {id: 'voidLayer', label: 'void_layer'};
+      var labels; // , voidLayer = {id: 'voidLayer', label: 'void_layer'};
 
       // Bgs with vector tiles tileset.
       var vtBgs = {
-        'sbm': {
-          id: 'sbm-osm',
-          label: 'SwissBaseMap',
-          disable3d: true,
-          labels: false
-        }/*,
-        'omt': {
-          id: 'omt',
+        'omt.vt': {
+          id: 'omt.vt',
           label: 'OpenMapTiles',
           disable3d: true,
           labels: false
-        } */
+        },
+        'ch.swisstopo.wandern.vt': {
+          id: 'ch.swisstopo.wandern.vt',
+          label: 'wandern',
+          disable3d: true,
+          labels: false
+        },
+        'ch.swisstopo.leichte-basiskarte.vt': {
+          id: 'ch.swisstopo.leichte-basiskarte.vt',
+          label: 'basis',
+          disable3d: true,
+          labels: false
+        },
+        'ch.swisstopo.hybridkarte.vt': {
+          id: 'ch.swisstopo.hybridkarte.vt',
+          label: 'hybrid',
+          disable3d: true,
+          labels: false
+        }
       };
 
       var predefinedBgs = {
-        'voidLayer': voidLayer,
+        /* 'voidLayer': voidLayer,
         'ch.swisstopo.swissimage': {
           id: 'ch.swisstopo.swissimage',
           label: 'bg_luftbild',
@@ -50,7 +62,7 @@ goog.require('ga_urlutils_service');
         'ch.swisstopo.pixelkarte-farbe': {
           id: 'ch.swisstopo.pixelkarte-farbe',
           label: 'bg_pixel_color'
-        }/*,
+        } ,
         'ch.swisstopo.pixelkarte-grau': {
           id: 'ch.swisstopo.pixelkarte-grau',
           label: 'bg_pixel_grey'
@@ -96,9 +108,10 @@ goog.require('ga_urlutils_service');
           }
         });
 
-        if (bgs.indexOf(voidLayer) === -1) {
+        // Deactivate auto-add of voidLayer
+        /* if (bgs.indexOf(voidLayer) === -1) {
           bgs.push(voidLayer);
-        }
+        } */
       };
 
       var Background = function() {
@@ -156,6 +169,8 @@ goog.require('ga_urlutils_service');
 
                 }
               }
+
+              // Add a vectortile layer with labels on top of all layers
               if (labels) {
                 layers.remove(labels);
               }

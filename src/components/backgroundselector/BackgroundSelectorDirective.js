@@ -48,7 +48,7 @@ goog.require('ga_background_service');
                   layer.id === scope.currentLayer.id);
                 var splitLayer = layer.id.split('.');
                 return (selected ? 'ga-bg-highlight ' : '') +
-                'ga-' + splitLayer[splitLayer.length - 1] +
+                'ga-' + splitLayer[splitLayer.length - 2] +
                 ' ' + (layer.disable3d ? 'ga-disable3d' : '');
               }
             };

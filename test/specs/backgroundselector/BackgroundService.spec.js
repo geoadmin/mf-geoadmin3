@@ -4,6 +4,9 @@ describe('ga_background_service', function() {
   describe('gaBackground', function() {
     var gaBg, gaPermalink, gaTopic, deferGaLayers, deferGaTopic, map, $rootScope,
       gaPermalinkMock, $rootScopeMock, $q;
+
+    var nbBgs = 4;
+    var firstBgId = 'omt.vt';
     var topic1 = {
       'defaultBackground': 'bg1',
       'backgroundLayers': [
@@ -128,13 +131,15 @@ describe('ga_background_service', function() {
         it('initializes the list of background layers', function(done) {
           gaBg.init(map).then(function() {
             var bgs = gaBg.getBackgrounds();
-            expect(bgs.length).to.equal(5);
-            expect(bgs[0].id).to.equal('bg2');
-            expect(bgs[0].label).to.equal('label');
-            expect(bgs[1].id).to.equal('bg1');
-            expect(bgs[1].label).to.equal('label');
-            expect(bgs[2].id).to.equal('voidLayer');
-            expect(bgs[2].label).to.equal('void_layer');
+            expect(bgs.length).to.equal(nbBgs);
+            expect(bgs[0].id).to.equal(firstBgId);
+            expect(bgs[0].label).to.equal('OpenMapTiles');
+            expect(bgs[1].id).to.equal('ch.swisstopo.wandern.vt');
+            expect(bgs[1].label).to.equal('wandern');
+            expect(bgs[2].id).to.equal('ch.swisstopo.leichte-basiskarte.vt');
+            expect(bgs[2].label).to.equal('basis');
+            expect(bgs[3].id).to.equal('ch.swisstopo.hybridkarte.vt');
+            expect(bgs[3].label).to.equal('hybrid');
             done();
           });
           deferGaTopic.resolve();
@@ -145,7 +150,7 @@ describe('ga_background_service', function() {
         it('initializes the default background from topic', function(done) {
           gaBg.init(map).then(function() {
             var bg = gaBg.get();
-            expect(bg.id).to.equal('bg1');
+            expect(bg.id).to.equal(firstBgId);
             done();
           });
           deferGaTopic.resolve();
@@ -156,7 +161,7 @@ describe('ga_background_service', function() {
         it('adds a bg layer to the map', function(done) {
           gaBg.init(map).then(function() {
             var bg = gaBg.get();
-            expect(bg.id).to.equal('bg1');
+            expect(bg.id).to.equal(firstBgId);
 
             var layer = map.getLayers().item(0);
             expect(layer.background).to.be.ok();
@@ -175,10 +180,10 @@ describe('ga_background_service', function() {
           };
           gaBg.init(map).then(function() {
             var bg = gaBg.get();
-            expect(bg.id).to.equal('voidLayer');
+            expect(bg.id).to.equal(firstBgId);
 
             var length = map.getLayers().getLength();
-            expect(length).to.be(0);
+            expect(length).to.be(1);
             done();
           });
           deferGaTopic.resolve();
@@ -187,7 +192,7 @@ describe('ga_background_service', function() {
         });
 
         it('updates permalink', function(done) {
-          var upParams = gaPermalinkMock.expects('updateParams').withArgs({bgLayer: 'bg1'}).once();
+          var upParams = gaPermalinkMock.expects('updateParams').withArgs({bgLayer: firstBgId}).once();
           gaBg.init(map).then(function() {
             upParams.verify();
             done();
@@ -222,19 +227,19 @@ describe('ga_background_service', function() {
         it('changes bg on gaTopicChange event', function(done) {
           gaBg.init(map).then(function() {
             var layers = map.getLayers();
-            expect(gaBg.get().id).to.equal('bg1');
-            expect(gaBg.getBackgrounds().length).to.equal(5);
+            expect(gaBg.get().id).to.equal(firstBgId);
+            expect(gaBg.getBackgrounds().length).to.equal(nbBgs);
             expect(layers.getLength()).to.equal(1);
 
             $rootScope.$broadcast('gaTopicChange', topic2);
-            expect(gaBg.get().id).to.equal('bg3');
-            expect(gaBg.getBackgrounds().length).to.equal(6);
+            expect(gaBg.get().id).to.equal(firstBgId);
+            expect(gaBg.getBackgrounds().length).to.equal(nbBgs);
             expect(layers.getLength()).to.equal(1);
 
             $rootScope.$broadcast('gaTopicChange', topicVoidLayer);
-            expect(gaBg.get().id).to.equal('voidLayer');
-            expect(gaBg.getBackgrounds().length).to.equal(6);
-            expect(layers.getLength()).to.equal(0);
+            expect(gaBg.get().id).to.equal(firstBgId);
+            expect(gaBg.getBackgrounds().length).to.equal(nbBgs);
+            expect(layers.getLength()).to.equal(1);
 
             done();
           });
@@ -255,7 +260,7 @@ describe('ga_background_service', function() {
         it('uses default bg from plConfig (priority over defaultBackground property)', function(done) {
           gaBg.init(map).then(function() {
             var bg = gaBg.get();
-            expect(bg.id).to.equal('bg3');
+            expect(bg.id).to.equal(firstBgId);
             done();
           });
           deferGaTopic.resolve();
@@ -268,7 +273,7 @@ describe('ga_background_service', function() {
           gaBg.init(map).then(function() {
             getParams.verify();
             var bg = gaBg.get();
-            expect(bg.id).to.equal('voidLayer');
+            expect(bg.id).to.equal(firstBgId);
             done();
           });
           deferGaTopic.resolve();

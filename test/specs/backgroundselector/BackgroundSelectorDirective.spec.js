@@ -87,15 +87,15 @@ describe('ga_backgroundselector_directive', function() {
         element.find('.ga-bg-layer-bt').click();
         expect(element.hasClass('ga-open')).to.be(true);
 
-        element.find('.ga-swissimage').click();
+        element.find('.ga-hybridkarte').click();
         $rootScope.$digest();
         expect(element.hasClass('ga-open')).to.be(false);
-        expect(element.find('.ga-swissimage').hasClass('ga-bg-highlight')).to.be(true);
+        expect(element.find('.ga-hybridkarte').hasClass('ga-bg-highlight')).to.be(true);
       });
 
       it('creates 4 layer bgselectors div', function() {
         var divsBg = element.find('.ga-bg-layer');
-        expect(divsBg.length).to.equal(6);
+        expect(divsBg.length).to.equal(4);
       });
     });
   });
@@ -171,10 +171,10 @@ describe('ga_backgroundselector_directive', function() {
       $rootScope.$digest();
     });
 
-    it('voidLayer is only added once', function() {
+    /* it('voidLayer is only added once', function() {
       var divsBg = element.find('.ga-bg-layer');
-      expect(divsBg.length).to.equal(6);
+      expect(divsBg.length).to.equal(4);
       expect(divsBg[1].className).to.contain('ga-voidLayer');
-    });
+    }); */
   });
 });
