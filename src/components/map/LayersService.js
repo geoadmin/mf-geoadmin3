@@ -288,7 +288,7 @@ goog.require('ga_urlutils_service');
               //     url:             Template of the url where to get the vectortiles.
               //                      Overrides the source's url property of the glStyle.
               //     styleUrl:        Url's a the glStyle to apply to this layer. It will apply styles associated to the sourceId value.
-              //                      Overrides the styleUrl property defined in the parent layer (see background layers).
+              //                      Used only if the parent has no styleUrl defined (see background layers).
               var vts = [{
                 serverLayerName: 'openmaptiles',
                 url: 'https://free.tilehosting.com/data/v3/{z}/{x}/{y}.pbf.pict?key=Og58UhhtiiTaLVlPtPgs',
@@ -702,7 +702,7 @@ goog.require('ga_urlutils_service');
             var subLayers = new Array(len);
             for (i = 0; i < len; i++) {
               var subLayerConf = layers[subLayersIds[i]];
-              if (config.styleUrl && subLayerConf && !subLayerConf.styleUrl) {
+              if (config.styleUrl && subLayerConf) {
                 layers[subLayersIds[i]].styleUrl = config.styleUrl;
               }
               subLayers[i] = this.getOlLayerById(subLayersIds[i]);
