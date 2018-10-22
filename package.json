@@ -9,6 +9,9 @@
     "type": "git",
     "url": "git://github.com/geoadmin/mf-geoadmin3"
   },
+  "engine": {
+    "node": ">=6.13.1"
+  },
   "author": "Swisstopo",
   "readmeFileName": "README.md",
   "//": "http://browserl.ist/?q=IE+9%2C+IE+10%2C+Android+%3E%3D+4%2C+%3E+0.5%25+in+CH",
