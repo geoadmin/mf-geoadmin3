@@ -1,16 +1,21 @@
 goog.provide('ga_vector_feedback_controller');
 
 (function() {
-  var module = angular.module('ga_vector_feedback_controller', []);
+  var module = angular.module('ga_vector_feedback_controller', [
+    'ga_browsersniffer_service'
+  ]);
 
   module.controller('GaVectorFeedbackController', function(
-      $scope,
-      gaGlobalOptions
+    $scope,
+    gaGlobalOptions,
+    gaBrowserSniffer
   ) {
     $scope.options = {
       serviceDocUrl: gaGlobalOptions.apiUrl + '/services/sdiservices.html',
+      mobile: gaBrowserSniffer.mobile,
       comment: '',
       likeSelect: '',
+      activeColor: '',
       backgroundLayers: [
         {
           id: 'ch.swisstopo.lightmap.vt',
@@ -41,8 +46,8 @@ goog.provide('ga_vector_feedback_controller');
       },
       colors: [
         {
-          value: 'default',
-          label: 'Default'
+          value: 'lightgray',
+          label: 'Light Gray'
         },
         {
           value: '#acc864',
@@ -103,8 +108,16 @@ goog.provide('ga_vector_feedback_controller');
 
     // Initialize to the first layer
     $scope.options.backgroundLayer = $scope.options.backgroundLayers[0];
-    $scope.options.color = $scope.options.colors[0];
     $scope.options.showLabel = $scope.options.showLabels[0];
+
+    $scope.submit = function() {
+      console.log($scope.options.comment);
+      console.log($scope.options.likeSelect);
+    };
+
+    $scope.applyColor = function(color) {
+      $scope.options.activeColor = color;
+    };
 
     // Always use the firest selectable layer in the list
     $scope.$watch('options.backgroundLayer', function(newVal) {
@@ -112,10 +125,11 @@ goog.provide('ga_vector_feedback_controller');
         $scope.options.layers[newVal.id].selectableLayers[0];
     });
 
-    $scope.$watch('options.color', function(newVal) {
-      console.log('Should apply new color');
-      console.log(newVal);
-    });
+    if (gaBrowserSniffer.mobile) {
+      $scope.$watch('options.color', function(newVal) {
+        $scope.applyColor(newVal);
+      });
+    }
 
     $scope.$watch('options.showLabel', function(newVal) {
       if (newVal.value) {
@@ -124,10 +138,5 @@ goog.provide('ga_vector_feedback_controller');
         console.log('Hide labels on map');
       }
     });
-
-    $scope.submit = function() {
-      console.log($scope.options.comment);
-      console.log($scope.options.likeSelect);
-    };
   });
 })();
