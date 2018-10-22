@@ -1,7 +1,6 @@
 goog.provide('ga_vector_feedback_directive');
 
 (function() {
-
   var module = angular.module('ga_vector_feedback_directive', []);
 
   module.directive('gaVectorFeedback', function() {
@@ -12,12 +11,10 @@ goog.provide('ga_vector_feedback_directive');
       scope: {
         map: '=gaVectorFeedbackMap',
         options: '=gaVectorFeedbackOptions',
-        submit: '=gaVectorFeedbackSubmit'
+        submit: '=gaVectorFeedbackSubmit',
+        applyColor: '=gaVectorFeedbackApplycolor'
       },
-      link: function(scope, element, attrs) {
-        // var map = scope.map;
-        // var parentEl = element.parent();
-      }
+      link: function(scope, element, attrs) {}
     };
   });
 })();
