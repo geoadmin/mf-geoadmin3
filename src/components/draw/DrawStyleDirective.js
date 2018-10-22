@@ -15,16 +15,46 @@ goog.require('ga_window_service');
   module.directive('gaDrawStyle', function($document, $window, $translate,
       gaGlobalOptions, gaStyleFactory, gaUrlUtils, gaWindow) {
 
+    var findCategoryBySource = function(src, categories) {
+      for (var i = 0; i < categories.length; i++) {
+        var c = categories[i];
+        var regex = (c.type === 'img') ?
+          new RegExp('^(.*)' + c.id) :
+          c.regex();
+        if (regex.test(src)) {
+          return c;
+        }
+      }
+      console.error('No category found for source ' + src);
+    };
+
+    var getCategoryById = function(id, categories) {
+      for (var i = 0; i < categories.length; i++) {
+        var c = categories[i];
+        for (var j = 0; j < c.icons.length; j++) {
+          var icon = c.icons[j];
+          if (icon.id === id) {
+            return c;
+          }
+        }
+      }
+      console.error('No category found for id ' + id);
+    }
+
     // Find the corresponding style
-    var findIcon = function(olIcon, icons) {
+    var findIcon = function(olIcon, category) {
       var id = olIcon.getSrc();
+      var icons = category.icons;
       for (var i = 0; i < icons.length; i++) {
-        var regex = new RegExp('/' + icons[i].id + '-24');
+        var icon = icons[i];
+        var regex = (category.type === 'img') ?
+          new RegExp(category.id + '-' + icon.id + '.png') :
+          category.regex(icon.id);
         if (regex.test(id)) {
           return icons[i];
         }
       }
-      return icons[0];
+      return null;
     };
 
     var findSize = function(olStyle, sizes, dflt) {
@@ -77,7 +107,10 @@ goog.require('ga_window_service');
           useIconStyle = true;
           useTextStyle = true;
           var img = featStyle.getImage();
-          scope.options.icon = findIcon(img, scope.options.icons);
+          scope.options.iconCategory = findCategoryBySource(img.getSrc(),
+              scope.options.iconCategories);
+          scope.options.icon = findIcon(img, scope.options.iconCategory) ||
+            scope.options.iconCategories[0].icons[0];
           scope.options.iconSize = findSize(img, scope.options.iconSizes);
           scope.options.iconColor = findIconColor(img, scope.options.colors);
         }
@@ -113,6 +146,12 @@ goog.require('ga_window_service');
           olColor.toString() + '/' + icon.id +
           '-24@2x.png';
     };
+
+    var getUrl = function(options) {
+      var icon = options.icon;
+      var color = options.iconColor.fill;
+      return icon.url || getIconUrl(icon, color)
+    }
 
     // Get the current style defined by the properties object
     var updateStylesFromProperties = function(feature, properties) {
@@ -159,8 +198,9 @@ goog.require('ga_window_service');
       var icon = oldStyle.getImage();
       if (icon instanceof ol.style.Icon &&
           angular.isDefined(properties.icon)) {
+        var url = getUrl(properties);
         icon = new ol.style.Icon({
-          src: getIconUrl(properties.icon, properties.iconColor.fill),
+          src: url,
           scale: properties.iconSize.scale,
           anchor: properties.icon.anchor
         });
@@ -181,12 +221,15 @@ goog.require('ga_window_service');
       var feature = scope.feature;
       if (feature) {
         var text = (newValues[0]) ? newValues[1] : undefined;
+        var category = getCategoryById(newValues[4].id,
+            scope.options.iconCategories)
         // Update the style of the feature with the current style
         var styles = updateStylesFromProperties(feature, {
           font: scope.options.font,
           description: newValues[2],
           color: newValues[3],
           icon: newValues[4],
+          iconCategory: category,
           iconColor: newValues[5],
           iconSize: newValues[6],
           text: text,

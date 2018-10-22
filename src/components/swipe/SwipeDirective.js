@@ -14,11 +14,11 @@ goog.require('ga_layerfilters_service');
       function($window, $document, $translate, gaBrowserSniffer, gaPermalink,
           gaDebounce, gaLayerFilters) {
 
-      // Move swipe element on resize.
-      // We use a debounce function because map.render() is
-      // already called by the map itself on each resize so we want to
-      // trigger only a map.render() when the user has
-      // finished to resize.
+        // Move swipe element on resize.
+        // We use a debounce function because map.render() is
+        // already called by the map itself on each resize so we want to
+        // trigger only a map.render() when the user has
+        // finished to resize.
         var requestRenderFrame = function(map, layer) {
           if (layer) {
             map.render();
@@ -122,7 +122,7 @@ goog.require('ga_layerfilters_service');
             // the map.
             var refreshComp = function(olLayers) {
 
-            // Unset the layer and remove its listeners
+              // Unset the layer and remove its listeners
               if (scope.layer) {
                 if (scope.layer instanceof ol.layer.Group) {
                   scope.layer.getLayers().forEach(function(olLayer, idx, arr) {

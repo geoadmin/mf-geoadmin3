@@ -375,12 +375,11 @@ goog.require('ga_measure_service');
         },
 
         getFeatureStyleFunction: function(type) {
-          return function(resolution) {
-            // In a featureStyleFunction this is the current feature
-            return stylesFunction[type](this, resolution) ||
+          return function(feature, resolution) {
+            return stylesFunction[type](feature, resolution) ||
                 (function(feature, resolution) {
                   return styles[type];
-                }(this, resolution));
+                }(feature, resolution));
           };
         },
 

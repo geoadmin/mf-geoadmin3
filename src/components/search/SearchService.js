@@ -13,7 +13,7 @@ goog.require('ga_reframe_service');
    * DMSXXX: Match Degrees Minutes Seconds coordinates
    *         (ex: 6° 58' 12.11'' E 46° 58' 12.12'' N)
    */
-  var D = '([\\d.,]{2,})[°\\sNSWEO]*[ ,/]+([\\d.,]{3,})[\\s°NSWEO]*';
+  var D = '([\\d.,]{2,})[°\\sNSWEO]*[\\s,/]+([\\d.,]{3,})[\\s°NSWEO]*';
   var DM = '([\\d]{1,2})[°\\s]*([\\d.,]+)[\\s\',NSEWO/]*';
   var DMSDegree = '\\b0{0,2}[0-9]{1,2}\\s*[°|º]\\s*';
   var DMSMinute = '[0-9]{1,2}\\s*[\'|′]';
@@ -51,7 +51,7 @@ goog.require('ga_reframe_service');
   };
 
   var sanitizeCoordinate = function(str) {
-    return parseFloat(str.replace(/[ \t' ]/g, ''));
+    return parseFloat(str.replace(/[ \s' ]/g, ''));
   }
 
   // Reorder coordinates.

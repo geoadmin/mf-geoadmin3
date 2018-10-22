@@ -58,7 +58,7 @@ module.exports = function(config) {
     'test/specs/Loader.spec.js',
     'test/specs/**/*.js',
     {
-      pattern: 'test/data/*.xml',
+      pattern: 'test/data/*',
       watched: true,
       served:  true,
       included: false

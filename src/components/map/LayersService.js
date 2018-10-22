@@ -218,7 +218,7 @@ goog.require('ga_urlutils_service');
               response.data['ch.swisstopo.terrain.3d'] = {
                 type: 'terrain',
                 serverLayerName: 'ch.swisstopo.terrain.3d',
-                timestamps: ['20160115'],
+                timestamps: ['20180601'],
                 attribution: 'swisstopo',
                 attributionUrl: 'https://www.swisstopo.admin.ch/' + lang +
                     '/home.html'
@@ -231,9 +231,9 @@ goog.require('ga_urlutils_service');
                 'ch.swisstopo.vegetation.3d'
               ];
               var tilesetTs = [
-                '20170425',
-                '20170814-3.0.2',
-                '20170630'
+                '20180716',
+                '20180716',
+                '20180716'
               ];
               var tilesetStyle = [
                 undefined,
@@ -335,9 +335,11 @@ goog.require('ga_urlutils_service');
           var timestamp = this.getLayerTimestampFromYear(config3d,
               gaTime.get());
           var requestedLayer = config3d.serverLayerName || bodId;
+          var url = getVectorTilesUrl(requestedLayer, timestamp,
+              h2(vectorTilesSubdomains));
+          url += 'tileset.json';
           var tileset = new Cesium.Cesium3DTileset({
-            url: getVectorTilesUrl(requestedLayer, timestamp,
-                h2(vectorTilesSubdomains)),
+            url: url,
             maximumNumberOfLoadedTiles: 3
           });
           tileset.bodId = bodId;
@@ -465,10 +467,12 @@ goog.require('ga_urlutils_service');
           if (!/^kml$/.test(config3d.type)) {
             return;
           }
-          var dsP = Cesium.KmlDataSource.load(config3d.url, {
-            camera: scene.camera,
-            canvas: scene.canvas,
+          var dsP = Cesium.KmlDataSource.load(new Cesium.Resource({
+            url: config3d.url,
             proxy: gaUrlUtils.getCesiumProxy()
+          }), {
+            camera: scene.camera,
+            canvas: scene.canvas
           });
           return dsP;
         };
@@ -488,7 +492,7 @@ goog.require('ga_urlutils_service');
           // value at which the layer stop being displayed.
           var tileGridMinRes = config.tileGridMinRes;
           if (config.resolutions) {
-            tileGridMinRes = config.resolutions.pop();
+            tileGridMinRes = config.resolutions.slice(-1)[0];
           }
 
           // For some obscure reasons, on iOS, displaying a base 64 image

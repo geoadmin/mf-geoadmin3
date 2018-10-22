@@ -90,9 +90,11 @@ goog.require('ga_urlutils_service');
 
         return new Cesium.UrlTemplateImageryProvider({
           minimumRetrievingLevel: gaGlobalOptions.minimumRetrievingLevel,
-          url: tpl,
+          url: new Cesium.Resource({
+            url: tpl,
+            proxy: gaUrlUtils.getCesiumProxy()
+          }),
           rectangle: gaMapUtils.extentToRectangle(layer.getExtent()),
-          proxy: gaUrlUtils.getCesiumProxy(),
           tilingScheme: tilingScheme,
           hasAlphaChannel: !/jp/i.test(source.getFormat()),
           availableLevels: gaGlobalOptions.imageryAvailableLevels

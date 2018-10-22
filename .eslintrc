@@ -14,7 +14,8 @@
         body: 1,
         parameters: 2
       },
-      MemberExpression: 2
+      MemberExpression: 2,
+      SwitchCase: 1
     }],
     max-len: ["error", {
       code: 80,
@@ -22,6 +23,7 @@
       ignoreRegExpLiterals: true
     }],
     no-template-curly-in-string: ["off"], // rule for ES6 only
+    object-curly-spacing: ["off"],
     one-var: ["off"],
     operator-linebreak: ["error", "after"],
     padded-blocks: ["off"],

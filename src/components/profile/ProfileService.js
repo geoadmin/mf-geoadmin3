@@ -202,44 +202,52 @@ goog.require('ga_urlutils_service');
         // Hiking time
         // Official formula: http://www.wandern.ch/download.php?id=4574_62003b89
         // Reference link: http://www.wandern.ch
+        // But we use a slightly modified version from schweizmobil
         this.hikingTime = function() {
           var wayTime = 0;
+
+          // Constants of the formula (schweizmobil)
+          var arrConstants = [
+            14.271, 3.6991, 2.5922, -1.4384,
+            0.32105, 0.81542, -0.090261, -0.20757,
+            0.010192, 0.028588, -0.00057466, -0.0021842,
+            1.5176e-5, 8.6894e-5, -1.3584e-7, -1.4026e-6
+          ];
+
           if (this.data.length) {
             for (var i = 1; i < this.data.length; i++) {
-              // for (data.length - 1) line segments the time is calculated
-              var distance = (this.data[i].dist - this.data[i - 1].dist) || 0;
-              if (distance !== 0) {
-                var dH = (this.data[i].alts[elevationModel] -
-                    this.data[i - 1].alts[elevationModel]) || 0;
+              var data = this.data[i];
+              var dataBefore = this.data[i - 1];
 
-                // Constants of the formula
-                var arrConstants = [
-                  14.271, 3.6992, 2.5922, -1.4384,
-                  0.32105, 0.81542, -0.090261, -0.20757,
-                  0.010192, 0.028588, -0.00057466, -0.0021842,
-                  1.5176e-5, 8.6894e-5, -1.3584e-7, 1.4026e-6
-                ];
+              // Distance betwen 2 points
+              var distance = data.dist - dataBefore.dist;
 
-                // 10ths instead of %
-                var s = (dH * 10.0) / distance;
-
-                // The swiss hiking formula is used between -25% and +25%
-                // (used to be -40% to +40%, which leads to a strange behaviour)
-                if (s > -2.5 && s < 2.5) {
-                  var minutesPerKilometer = 0.0;
-                  for (var j = 0; j < 15; j++) {
-                    minutesPerKilometer += arrConstants[j] * Math.pow(s, j);
-                  }
-                } else {
-                  // outside the -25% to +25% range, we use a linear formula
-                  if (s > 0) {
-                    minutesPerKilometer = (17 * s);
-                  } else {
-                    minutesPerKilometer = (-9 * s);
-                  }
-                }
+              if (!distance) {
+                continue;
               }
-              wayTime += (distance * minutesPerKilometer / 1000);
+
+              // Difference of elevation between 2 points
+              var elevDiff = data.alts[elevationModel] -
+                  dataBefore.alts[elevationModel];
+
+              // Slope value between the 2 points
+              // 10ths (schweizmobil formula) instead of % (official formula)
+              var s = (elevDiff * 10.0) / distance;
+
+              // The swiss hiking formula is used between -25% and +25%
+              // but schweiz mobil use -40% and +40%
+              var minutesPerKilometer = 0;
+              if (s > -4 && s < 4) {
+                for (var j = 0; j < arrConstants.length; j++) {
+                  minutesPerKilometer += arrConstants[j] * Math.pow(s, j);
+                }
+              // outside the -40% to +40% range, we use a linear formula
+              } else if (s > 0) {
+                minutesPerKilometer = (17 * s);
+              } else {
+                minutesPerKilometer = (-9 * s);
+              }
+              wayTime += distance * minutesPerKilometer / 1000;
             }
             return Math.round(wayTime);
           }
@@ -293,7 +301,7 @@ goog.require('ga_urlutils_service');
           var data = $.param({
             geom: wkt,
             elevation_models: elevationModel,
-            offset: 0
+            offset: 1
           });
 
           var config = {

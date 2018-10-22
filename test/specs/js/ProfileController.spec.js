@@ -38,7 +38,6 @@ describe('ga_profile_controller', function() {
         inject(function($injector) {
           injectServices($injector);
         });
-        loadController();
       });
 
       afterEach(function() {
@@ -46,6 +45,7 @@ describe('ga_profile_controller', function() {
       });
 
       it('set scope values', function() {
+        loadController();
         expect(scope.options.xLabel).to.be('profile_x_label');
         expect(scope.options.yLabel).to.be('profile_y_label');
         expect(scope.options.margin.top).to.be(6);
@@ -56,7 +56,22 @@ describe('ga_profile_controller', function() {
         expect(scope.print).to.be.a(Function);
       });
 
+      it('set scope values keeping options values from parent', function() {
+        $rootScope.options = {
+          foo: 'bar'
+        };
+        loadController();
+        expect(scope.options.foo).to.be('bar');
+        expect(scope.options.yLabel).to.be('profile_y_label');
+        expect(scope.options.margin.top).to.be(6);
+        expect(scope.options.margin.right).to.be(20);
+        expect(scope.options.margin.bottom).to.be(30);
+        expect(scope.options.margin.left).to.be(60);
+        expect(scope.options.elevationModel).to.be(gaGlobalOptions.defaultElevationModel);
+      });
+
       it('set scope values on gaProfileActive event', function() {
+        loadController();
         var feat = {};
         var layer = {};
         expect(scope.feature).to.be(undefined);

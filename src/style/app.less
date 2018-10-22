@@ -1700,6 +1700,14 @@ body:not(.embed) {
   }
 }
 
+/* Mobile page */
+.mobile {
+
+  .ga-pegman {
+    display: none;
+  }
+}
+
 /* Embed page */
 .embed, .ga-full-screen {
   #buttonGroup {
@@ -1774,41 +1782,21 @@ body:not(.embed) {
   .ol-scale-line-inner {
     background: rgba(255,255,255,.7);
   }
-
+  
   @media (max-width: 350px) {
     #buttonGroup {
       display: none;
     }
   }
-}
 
-/* Corner ribbons, from http://codepen.io/eode9/pen/twkKm */
-.corner-ribbon{
-  position: absolute;
-  /* bottom-left */
-  top: auto;
-  bottom: 50px; /* Under cesium inspectors */
-  left: -100px;
-  z-index: 40;
-  width: 300px;
-  background: red;
-  color: white;
-  text-align: center;
-  line-height: 50px;
-  letter-spacing: 1px;
-  transform: rotate(45deg);
-
-  @media (max-width: @screen-tablet) {
-    /* top-left */
-    top: 108px;
-    bottom: auto;
-    left: -50px;
-    width: 200px;
-    transform: rotate(-45deg);
-  }
-
-  @media (max-width: @screen-phone) {
-    top: 70px;
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
+    .ga-inc, .ga-dec {
+      display: inline-block;
+      width: 22px;
+      height: 23px;
+      font-size: 22px;
+      margin: -4px 0;
+    }
   }
 }
 
@@ -1835,6 +1823,20 @@ body:not(.embed) {
     z-index: 3000;
     height: auto;
     white-space: normal;
+  }
+}
+
+/* fps is active */
+.ga-fps-active {
+  #header, #drawModeHeader, #footer, #pulldown, #buttonGroup, [ga-popup],
+  [ga-attribution-warning], [ga-background-selector], [ga-controls3d] .ga-tilt,
+  [ga-controls3d] .ga-rotate,
+  [ga-controls3d] .ga-pegman, [ga-controls3d] [ga-help] {
+    display: none !important;
+  }
+
+  [ga-attribution] {
+    bottom: 0;
   }
 }
 

@@ -2,7 +2,7 @@
 describe('ga_wms_service', function() {
 
   describe('gaWms', function() {
-    var gaWms, map, gaGlobalOptions, $rootScope, gaLang, gaLayers;
+    var gaWms, map, gaGlobalOptions, $rootScope, gaLang, gaLayers, gaTileGrid;
 
     var getExternalWmsLayer = function(params) {
       var layer = new ol.layer.Image({
@@ -49,16 +49,17 @@ describe('ga_wms_service', function() {
       // Tests WMS params
       var params = source.getParams();
       expect(params.LAYERS).to.be(options.LAYERS);
-      expect(params.VERSION).to.be(options.VERSION);
+      expect(params.VERSION).to.be(options.VERSION || '1.3.0');
 
       // Tests Cesium provider
-      var srsStr = '', crsStr = '&crs=EPSG:4326';
+      var srsStr = '', crsStr = '&crs=' + 'EPSG%3A4326';
       options.bbox = '{southProjected},{westProjected},{northProjected},{eastProjected}';
       if (options.VERSION === '1.1.1') {
         options.bbox = '{westProjected},{southProjected},{eastProjected},{northProjected}';
-        srsStr = '&srs=EPSG:4326';
+        srsStr = '&srs=EPSG%3A4326';
         crsStr = '';
       }
+      options.bbox = options.bbox.replace(/,/g, '%2C');
       var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
       var prov = layer.getCesiumImageryProvider();
       expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
@@ -75,7 +76,7 @@ describe('ga_wms_service', function() {
           '&transparent=true' +
           srsStr;
       var p = spy.args[0][0];
-      expect(p.url).to.be(url);
+      expect(p.url).to.be.a(Cesium.Resource);
       expect(p.minimumRetrievingLevel).to.be(gaGlobalOptions.minimumRetrievingLevel);
       expect(p.rectangle).to.be.an(Cesium.Rectangle);
       expect(p.rectangle.west).to.be(-0.2944229317425553);
@@ -84,10 +85,12 @@ describe('ga_wms_service', function() {
       expect(p.rectangle.north).to.be(0.6536247392283254);
 
       if (options.useThirdPartyData) {
-        expect(p.proxy.getURL('http://wms.ch')).to.be(
+        expect(p.url.url).to.be(gaGlobalOptions.proxyUrl + encodeURIComponent(url).replace('https%3A%2F%2F', 'https/'));
+        expect(p.url.proxy.getURL('http://wms.ch')).to.be(
             gaGlobalOptions.proxyUrl + 'http/wms.ch');
       } else {
-        expect(p.proxy.getURL('https://wms.geo.admin.ch')).to.be(
+        expect(p.url.url).to.be(url);
+        expect(p.url.proxy.getURL('https://wms.geo.admin.ch')).to.be(
             'https://wms.geo.admin.ch');
       }
       expect(p.tilingScheme).to.be.an(Cesium.GeographicTilingScheme);
@@ -104,6 +107,7 @@ describe('ga_wms_service', function() {
         gaGlobalOptions = $injector.get('gaGlobalOptions');
         gaLang = $injector.get('gaLang');
         gaLayers = $injector.get('gaLayers');
+        gaTileGrid = $injector.get('gaTileGrid');
         $rootScope = $injector.get('$rootScope');
       });
       map = new ol.Map({});
@@ -268,6 +272,48 @@ describe('ga_wms_service', function() {
           var g = map.getLayers().item(0).getSource().getGutterInternal();
           expect(g).to.be('123');
         }
+      });
+
+      it('use the tilegridMinRes from layersConfig if it exists', function() {
+        var params = {
+          LAYERS: 'some'
+        };
+        var config = {
+          type: 'wms',
+          url: 'https://wms{s}.ch',
+          tileGridMinRes: 500
+        };
+        var tg = new ol.tilegrid.TileGrid({origin: [0, 0], resolutions: [10000, 5000, 1000, 545, 490, 120]});
+        var stub = sinon.stub(gaLayers, 'getLayer').withArgs(params.LAYERS).returns(config);
+        var stub2 = sinon.stub(gaTileGrid, 'get').withArgs(500, 'wms').returns(tg);
+        gaWms.addWmsToMap(map, params, {
+          url: 'https://wms{s}.ch'
+        });
+        expect(stub.callCount).to.be(1);
+        expect(stub2.callCount).to.be(1);
+        expect(map.getLayers().getLength()).to.be(1);
+        expect(map.getLayers().item(0).getSource().getTileGrid()).to.be(tg);
+      });
+
+      it('use the resolutions from layersConfig if it exists', function() {
+        var params = {
+          LAYERS: 'some'
+        };
+        var config = {
+          type: 'wms',
+          url: 'https://wms{s}.ch',
+          resolutions: [1000, 500, 488]
+        };
+        var tg = new ol.tilegrid.TileGrid({origin: [0, 0], resolutions: [10000, 5000]});
+        var stub = sinon.stub(gaLayers, 'getLayer').withArgs(params.LAYERS).returns(config);
+        var stub2 = sinon.stub(gaTileGrid, 'get').withArgs(488, 'wms').returns(tg);
+        gaWms.addWmsToMap(map, params, {
+          url: 'https://wms{s}.ch'
+        });
+        expect(stub.callCount).to.be(1);
+        expect(stub2.callCount).to.be(1);
+        expect(map.getLayers().getLength()).to.be(1);
+        expect(map.getLayers().item(0).getSource().getTileGrid()).to.be(tg);
       });
     });
 

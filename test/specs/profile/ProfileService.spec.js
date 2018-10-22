@@ -88,10 +88,10 @@ describe('ga_profile_service', function() {
       it('returns empty profile if feature\'s geometry can\'t be handle', function(done) {
         var p = [];
         [
-          new ol.geom.Point(),
+          new ol.geom.Point([]),
           new ol.geom.MultiPoint([[0, 0]]),
-          new ol.geom.MultiLineString(),
-          new ol.geom.MultiPolygon(),
+          new ol.geom.MultiLineString([]),
+          new ol.geom.MultiPolygon([]),
           new ol.geom.MultiLineString([[[0, 0]], [[1, 1]]]),
           new ol.geom.GeometryCollection([new ol.geom.Point([0, 0])])
         ].forEach(function(geom) {
@@ -130,12 +130,35 @@ describe('ga_profile_service', function() {
         $httpBackend.flush();
       });
 
+      it('creates a chart using complex results', function(done) {
+        $.get('base/test/data/profile.json', function(response) {
+          $httpBackend.expectPOST(profileUrl).respond(response);
+          var spy = sinon.spy(gaGeomUtils, 'simplify');
+          gaProfile.create(feature).then(function(profile) {
+            expect(spy.callCount).to.be(1);
+            expect(profile).to.be.an(Object);
+            expect(profile.create).to.be.a(Function);
+            expect(profile.update).to.be.a(Function);
+
+            // Test properties
+            expect(profile.elevDiff()).to.be(767.3000000000001);
+            expect(profile.twoElevDiff()).to.eql([12132.300000000001, 11365.000000000002]);
+            expect(profile.slopeDistance()).to.be(227034.6111158946);
+            expect(profile.elPoints()).to.eql([3424.7, 403.5]);
+            expect(profile.distance()).to.be(224261.2);
+            expect(profile.hikingTime()).to.be(4603);
+            done();
+          });
+          $httpBackend.flush();
+        });
+      });
+
       it('send correct POST parameters', function() {
         $httpBackend.expectPOST(profileUrl).respond(goodResultToFormat);
         var spy = sinon.spy($http, 'post');
         gaProfile.create(feature);
         expect(spy.callCount).to.be(1);
-        expect(spy.args[0][1]).to.be('geom=%7B%22type%22%3A%22LineString%22%2C%22coordinates%22%3A%5B%5B0.0%2C0.0%5D%2C%5B1.0%2C0.0%5D%2C%5B1.0%2C1.0%5D%5D%7D&elevation_models=COMB&offset=0');
+        expect(spy.args[0][1]).to.be('geom=%7B%22type%22%3A%22LineString%22%2C%22coordinates%22%3A%5B%5B0.0%2C0.0%5D%2C%5B1.0%2C0.0%5D%2C%5B1.0%2C1.0%5D%5D%7D&elevation_models=COMB&offset=1');
         var config = spy.args[0][2];
         expect(config.cache).to.be(true);
         expect(config.timeout).to.be.a(Object);

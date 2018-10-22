@@ -203,7 +203,7 @@ goog.require('ga_urlutils_service');
             duration: 0
           }, function(success) {
             defer.resolve();
-            $rootScope.$applyAsync();
+            $rootScope.$apply();
           });
           return defer.promise;
         },

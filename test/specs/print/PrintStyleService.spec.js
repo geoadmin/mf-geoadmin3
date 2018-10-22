@@ -18,7 +18,7 @@ describe('ga_printstyle_service', function() {
         expect(poly).to.be(undefined);
         poly = gaPrintStyle.olPointToPolygon(pt, 100);
         expect(poly).to.be(undefined);
-        poly = gaPrintStyle.olPointToPolygon(new ol.geom.Polygon(), 100, 100);
+        poly = gaPrintStyle.olPointToPolygon(new ol.geom.Polygon([[[0, 0], [0, 1], [1, 1], [0, 0]]]), 100, 100);
         expect(poly).to.be(undefined);
       });
 
@@ -61,7 +61,7 @@ describe('ga_printstyle_service', function() {
       it('returns nothing if mandatory values are not defined', function() {
         var poly = gaPrintStyle.olCircleToPolygon();
         expect(poly).to.be(undefined);
-        poly = gaPrintStyle.olCircleToPolygon(new ol.geom.Point());
+        poly = gaPrintStyle.olCircleToPolygon(new ol.geom.Point([0, 0]));
         expect(poly).to.be(undefined);
       });
 
@@ -173,6 +173,8 @@ describe('ga_printstyle_service', function() {
           stroke: dfltStroke,
           text: new ol.style.Text({
             text: 'test',
+            offsetX: 15,
+            offsetY: -89,
             textAlign: 'center',
             fill: new ol.style.Fill({
               color: [27, 28, 29, 0.3]
@@ -205,7 +207,9 @@ describe('ga_printstyle_service', function() {
           strokeLinejoin: 'bevel',
           strokeDashstyle: 'dash',
           label: 'test',
-          labelAlign: 'center',
+          labelXOffset: 15,
+          labelYOffset: 89,
+          labelAlign: 'cm',
           fontColor: '#1b1c1d',
           fontFamily: 'ARIAL',
           fontSize: 14,
@@ -329,6 +333,49 @@ describe('ga_printstyle_service', function() {
           });
         });
       });
+
+      it('uses the default alignement', function() {
+        var allStyle = new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'test',
+            textAlign: 'fdgfg',
+            textBaseline: 'dfgfd'
+          })
+        });
+        var literal = gaPrintStyle.olStyleToPrintLiteral(allStyle, 96);
+        expect(literal.labelAlign).to.eql('cm');
+
+        allStyle = new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'test'
+          })
+        });
+        literal = gaPrintStyle.olStyleToPrintLiteral(allStyle, 96);
+        expect(literal.labelAlign).to.eql('cm');
+      });
+
+      it('transforms correctly a text alignment', function() {
+        var allStyle = new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'test',
+            textAlign: 'left',
+            textBaseline: 'bottom'
+          })
+        });
+        var literal = gaPrintStyle.olStyleToPrintLiteral(allStyle, 96);
+        expect(literal.labelAlign).to.eql('lb');
+
+        allStyle = new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'test',
+            textAlign: 'right',
+            textBaseline: 'top'
+          })
+        });
+        literal = gaPrintStyle.olStyleToPrintLiteral(allStyle, 96);
+        expect(literal.labelAlign).to.eql('rt');
+      });
+
     });
   });
 });

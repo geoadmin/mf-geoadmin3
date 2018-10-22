@@ -31,17 +31,17 @@ goog.provide('ga_measure_filter');
       var measure = floatInMeter.toFixed(precision || 2);
 
       switch (type) {
-      case 'volume': units = units || [' km&sup3', ' m&sup3'];
-        factor = Math.pow(factor, 3);
-        break;
-      case 'area': units = units || [' km&sup2', ' m&sup2'];
-        factor = Math.pow(factor, 2);
-        break;
-      case 'angle': units = units || ['&deg'];
-        break;
-      case 'distance':
-      default: units = units || [' km', ' m'];
-        break;
+        case 'volume': units = units || [' km&sup3', ' m&sup3'];
+          factor = Math.pow(factor, 3);
+          break;
+        case 'area': units = units || [' km&sup2', ' m&sup2'];
+          factor = Math.pow(factor, 2);
+          break;
+        case 'angle': units = units || ['&deg'];
+          break;
+        case 'distance':
+        default: units = units || [' km', ' m'];
+          break;
       }
 
       // Having only one unit means we don't want to transform the measure.

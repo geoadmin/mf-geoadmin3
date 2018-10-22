@@ -398,13 +398,9 @@ def activate_version(s3_path, bucket_name, deploy_target):
         sys.exit(1)
 
 
-def init_connection(bucket_name, profile_name):
+def init_connection(bucket_name):
     try:
-        session = boto3.session.Session(profile_name=profile_name)
-    except botocore.exceptions.ProfileNotFound as e:
-        print('You need to set PROFILE_NAME to a valid profile name in $HOME/.aws/credentials')
-        print(e)
-        sys.exit(1)
+        session = boto3.session.Session()
     except botocore.exceptions.BotoCoreError as e:
         print('Cannot establish connection. Check you credentials %s.' % profile_name)
         print(e)
@@ -485,21 +481,22 @@ def parse_arguments(argv):
             sys.exit(1)
 
     bucket_name = 'mf-geoadmin3-%s-dublin' % deploy_target.lower()
-    user = os.environ.get('USER')
-    profile_name = None
-    if user is not None:
-        profile_name = '{}_aws_admin'.format(user)
 
     return (cmd_type, deploy_target, base_dir, named_branch, git_branch,
-            bucket_name, s3_path, profile_name)
+            bucket_name, s3_path)
 
 
 def main():
     global s3, s3client, bucket
     print(parse_arguments(sys.argv))
-    cmd_type, deploy_target, base_dir, named_branch, git_branch, bucket_name, s3_path, profile_name = \
+    cmd_type, deploy_target, base_dir, named_branch, git_branch, bucket_name, s3_path = \
         parse_arguments(sys.argv)
-    s3, s3client, bucket = init_connection(bucket_name, profile_name)
+    for var in ('AWS_PROFILE', 'AWS_ACCESS_KEY_ID'):
+        val = os.environ.get(var)
+        if val is not None:
+            print('Please unset: {}. We use instance roles'.format(var))
+            sys.exit(2)
+    s3, s3client, bucket = init_connection(bucket_name)
 
     if cmd_type == 'upload':
         print('Uploading %s to s3' % base_dir)
