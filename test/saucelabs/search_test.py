@@ -169,7 +169,7 @@ searchLocationTests = [
     {
         'searchText': u'basel',
         'resultTitle': u'Basel (BS)',
-        'resultLocation': 'E=26117[0-9]{2}.[0-9]{2}&N=12671[0-9]{2}.[0-9]{2}&zoom=14'
+        'resultLocation': 'E=26117[0-9]{2}.[0-9]{2}&N=12671[0-9]{2}.[0-9]{2}&zoom=13'
     },
     {
         'searchText': u'bern',
