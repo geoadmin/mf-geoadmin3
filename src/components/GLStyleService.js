@@ -16,55 +16,55 @@ goog.provide('ga_gl_style_service');
         this.get = function(styleUrl) {
           var that = this;
           var defer = $q.defer();
-          $http
-            .get(styleUrl, {
-              cache: true
-            })
-            .then(
-              function(response) {
-                that.styleJSONCache = response.data;
-                // load sprite
-                var spriteUrl = that.styleJSONCache.sprite + '.json';
-                $http
-                  .get(spriteUrl, {
-                    cache: true
-                  })
-                  .then(
-                    function(res) {
-                      that.spriteJSONCache = res.data;
-                      defer.resolve({
-                        styleJSON: that.styleJSONCache,
-                        spriteJSON: that.spriteJSONCache
-                      });
-                    },
-                    function(reason) {
-                      that.spriteJSON = null;
-                      $window.console.error(
-                        'Unable to load ' +
+          $http.
+              get(styleUrl, {
+                cache: true
+              }).
+              then(
+                  function(response) {
+                    that.styleJSONCache = response.data;
+                    // load sprite
+                    var spriteUrl = that.styleJSONCache.sprite + '.json';
+                    $http.
+                        get(spriteUrl, {
+                          cache: true
+                        }).
+                        then(
+                            function(res) {
+                              that.spriteJSONCache = res.data;
+                              defer.resolve({
+                                styleJSON: that.styleJSONCache,
+                                spriteJSON: that.spriteJSONCache
+                              });
+                            },
+                            function(reason) {
+                              that.spriteJSON = null;
+                              $window.console.error(
+                                  'Unable to load ' +
                         spriteUrl +
-                        ' because '
-                        + reason
-                      );
-                      // failing to load sprite is ok for now...
-                      defer.resolve({
-                        styleJSON: that.styleJSONCache,
-                        spriteJSON: that.spriteJSONCache
-                      });
-                    }
-                  );
-              },
-              function(reason) {
-                that.styleJSONCache = null;
-                that.spriteJSONCache = null;
-                var msg =
+                        ' because ' +
+                        reason
+                              );
+                              // failing to load sprite is ok for now...
+                              defer.resolve({
+                                styleJSON: that.styleJSONCache,
+                                spriteJSON: that.spriteJSONCache
+                              });
+                            }
+                        );
+                  },
+                  function(reason) {
+                    that.styleJSONCache = null;
+                    that.spriteJSONCache = null;
+                    var msg =
                   'Unable to load the style from ' +
                   styleUrl +
                   ' because ' +
                   reason;
-                $window.console.error(msg);
-                defer.reject(msg);
-              }
-            );
+                    $window.console.error(msg);
+                    defer.reject(msg);
+                  }
+              );
           return defer.promise;
         };
 
@@ -81,7 +81,7 @@ goog.provide('ga_gl_style_service');
           var layers = [];
           var newStyleJSON = this.cloneStyle();
           this.filters = this.filters.concat(filters);
-          newStyleJSON.layers.forEach(function (layer) {
+          newStyleJSON.layers.forEach(function(layer) {
             var addLayer = true;
             that.filters.forEach(function(filter) {
               var propertyName = filter[0];

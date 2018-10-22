@@ -1,6 +1,7 @@
 goog.provide('ga_layers_service');
 
 goog.require('ga_definepropertiesforlayer_service');
+goog.require('ga_gl_style_service');
 goog.require('ga_maputils_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_permalink_service');
@@ -22,6 +23,7 @@ goog.require('ga_urlutils_service');
     'ga_time_service',
     'ga_urlutils_service',
     'ga_permalink_service',
+    'ga_gl_style_service',
     'ga_translation_service',
     'pascalprecht.translate'
   ]);
@@ -35,7 +37,7 @@ goog.require('ga_urlutils_service');
         gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapUtils,
         gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils,
         gaStylesFromLiterals, gaGlobalOptions, gaPermalink,
-        gaLang, gaTime, gaStyleFactory) {
+        gaLang, gaTime, gaStyleFactory, gaGLStyle) {
 
       var h2 = function(domainsArray) {
         if (gaBrowserSniffer.h2) {
@@ -776,50 +778,21 @@ goog.require('ga_urlutils_service');
             }
             if (config.sourceId && config.styleUrl) {
               var sourceId = config.sourceId;
-              $http.get(config.styleUrl, {
-                cache: true
-              }).then(function(response) {
-                var glStyle = response.data;
+              gaGLStyle.get(config.styleUrl).then((data) => {
+                var glStyle = data.styleJSON;
+                var spriteData = data.spriteJSON;
+                var spriteUrl = glStyle.sprite + '.png';
+                $window.olms.stylefunction(olLayer, glStyle,
+                  config.sourceId,
+                  undefined, spriteData, spriteUrl,
+                  ['Helvetica']);
+                // HACK: Make the Swiss style transparent to see the relief
+                glStyle.layers.forEach(function(style, idx) {
+                  if (style.id === 'Schweiz') {
+                    style.paint['fill-opacity'] = 0.8;
+                  }
+                });
 
-                if (config.sourceType !== 'raster') {
-
-                  // HACK: Make the Swiss style transparent to see the relief
-                  glStyle.layers.forEach(function(style, idx) {
-                    if (style.id === 'Schweiz') {
-                      style.paint['fill-opacity'] = 0.8;
-                    }
-                  });
-
-                  // For vector source we parse then apply the style after
-                  // loading the sprite image.
-                  var spriteConfigUrl = glStyle.sprite + '.json';
-                  var spriteUrl = glStyle.sprite + '.png';
-
-                  // Load the style for a specific source
-                  $http.get(spriteConfigUrl, {
-                    cache: true
-                  }).then(function(response) {
-                    return response.data;
-                  }, function(reason) {
-                    $window.console.error('Loading sprite failed. Reason: "' +
-                        reason.data + '"');
-                    return {};
-                  }).then(function(spriteData) {
-                    $window.olms.stylefunction(olLayer, glStyle,
-                        config.sourceId,
-                        undefined, spriteData, spriteUrl,
-                        ['Helvetica']);
-                  });
-                } else {
-                  glStyle.layers.forEach(function(style, idx) {
-                    if (style.source === config.sourceId) {
-                      // TODO: We should be able to parse the style for raster.
-                      // Verify if it exists or not in mb2olstyle library
-                    }
-                  });
-                }
-
-                // Load the tileset config
                 if (!config.url) {
                   var sourceConfigUrl = glStyle.sources[sourceId].url;
                   $http.get(sourceConfigUrl, {
@@ -855,13 +828,6 @@ goog.require('ga_urlutils_service');
                   });
                 }
               });
-              /* $http.get(config.styleUrl, {
-                cache: true
-              }).then(function(response) {
-                var data = response.data;
-                // Sprit url are not managed correctly by olms
-                olms.applyStyle(olLayer, data, config.styleSource);
-              }); */
             }
           }
 
