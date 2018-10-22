@@ -99,6 +99,9 @@ goog.require('ga_styles_service');
                 [420000, 30000, 900000, 350000], position)) {
               position = ol.proj.transform([easting, northing],
                   'EPSG:21781', view.getProjection().getCode());
+            } else {
+              position = new ol.geom.Point(position);
+              position = gaMapUtils.transformBack(position).getCoordinates();
             }
             view.setCenter(position);
           }
@@ -138,8 +141,11 @@ goog.require('ga_styles_service');
             // when the directive is instantiated the view may not
             // be defined yet.
             if (center && zoom !== undefined) {
+              center = new ol.geom.Point(center);
+              center = gaMapUtils.transform(center).getCoordinates();
               var e = center[0].toFixed(2);
               var n = center[1].toFixed(2);
+
               gaPermalink.updateParams({E: e, N: n, zoom: zoom});
               gaPermalink.deleteParam('X');
               gaPermalink.deleteParam('Y');
