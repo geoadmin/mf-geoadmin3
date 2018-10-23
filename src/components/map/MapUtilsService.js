@@ -119,6 +119,20 @@ goog.require('ga_urlutils_service');
           return layer;
         },
 
+        /**
+         * Search for a background layer in the map. If not found (voidLayer),
+         * returns undefined.
+         */
+        getMapBackgroundLayer: function(map) {
+          var layer;
+          map.getLayers().forEach(function(l) {
+            if (l.background) {
+              layer = l;
+            }
+          });
+          return layer;
+        },
+
         flyToAnimation: function(ol3d, center, extent) {
           var dest;
           var scene = ol3d.getCesiumScene();
@@ -474,6 +488,17 @@ goog.require('ga_urlutils_service');
               olLayer.getSource &&
               (olLayer.getSource() instanceof ol.source.ImageWMS ||
               olLayer.getSource() instanceof ol.source.TileWMS));
+        },
+
+        /**
+         * Applies a gl style to an ol layer
+         */
+        applyGLStyleToOlLayer: function(olLayer, style, sprite) {
+          var spriteUrl = style.sprite + '.png';
+          $window.olms.stylefunction(olLayer, style,
+              olLayer.sourceId,
+              undefined, sprite, spriteUrl,
+              ['Helvetica']);
         },
 
         /**

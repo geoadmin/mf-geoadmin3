@@ -119,6 +119,7 @@ if __name__ == '__main__':
             sys.exit(1)
 
     for br in browsers:
+        driver = None
         try:
             print "+--> Start test with " + br['platform'] + \
                 " " + br['browserName'] + " (" + br['version'] + ")"
@@ -141,8 +142,11 @@ if __name__ == '__main__':
                     doTests[elt](driver, url)
                     tf = time.time()
                     print 'It took %.2f to execute %s...' % ((tf - t1), elt)
+        except Exception as e:
+            print(e)
         finally:
-            driver.quit()
+            if driver:
+                driver.quit()
 
         print "--- end test for this browser"
     print "End full tests"

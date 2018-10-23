@@ -176,15 +176,15 @@ describe('ga_gl_style_service', function() {
     $httpBackend.expectGET(styleJSON.sprite + '.json').respond({ id: 'dummy' });
     gaGLStyle.get(styleUrl).then(function() {
       var newStyle = gaGLStyle.filter([['id', '==', 'labels_watercourse']]);
-      expect(newStyle.layers.length).to.equal(3);
-      expect(newStyle.layers[2].id).to.equal('labels_settlement_100-999');
+      expect(newStyle.style.layers.length).to.equal(3);
+      expect(newStyle.style.layers[2].id).to.equal('labels_settlement_100-999');
 
       newStyle = gaGLStyle.filter([['type', '!=', 'background']]);
-      expect(newStyle.layers.length).to.equal(1);
-      expect(newStyle.layers[0].type).to.equal('background');
+      expect(newStyle.style.layers.length).to.equal(1);
+      expect(newStyle.style.layers[0].type).to.equal('background');
 
       newStyle = gaGLStyle.reset();
-      expect(newStyle.layers.length).to.equal(4);
+      expect(newStyle.style.layers.length).to.equal(4);
       done();
     });
     $httpBackend.flush();

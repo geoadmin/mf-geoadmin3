@@ -107,14 +107,20 @@ goog.provide('ga_gl_style_service');
             if (addLayer) layers.push(layer);
           });
           newStyle.layers = layers;
-          return newStyle;
+          return {
+            style: newStyle,
+            sprite: this.spriteCache_
+          };
         };
 
         this.edit = function(edits) {
           var newStyle = this.cloneStyle();
           this.edits_ = this.edits_.concat(edits);
           // TODO apply filters and edits logic here and return a new object
-          return newStyle;
+          return {
+            style: newStyle,
+            sprite: this.spriteCache_
+          };
         };
 
         /**
@@ -123,7 +129,10 @@ goog.provide('ga_gl_style_service');
         this.reset = function() {
           this.filters_ = [];
           this.edits_ = [];
-          return this.styleCache_;
+          return {
+            style: this.styleCache_,
+            sprite: this.spriteCache_
+          };
         };
       };
       return new GLStyle();

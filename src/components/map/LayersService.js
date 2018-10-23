@@ -838,6 +838,9 @@ goog.require('ga_urlutils_service');
             olLayer.externalStyleUrl = opts && opts.externalStyleUrl ?
               opts.externalStyleUrl : null;
             olLayer.useThirdPartyData = !(!opts) && !(!opts.externalStyleUrl);
+            olLayer.background = config.background || false;
+            // For MVT only
+            olLayer.sourceId = config.sourceId || null;
             var that = this;
             olLayer.getCesiumImageryProvider = function() {
               return that.getCesiumImageryProviderById(bodId, olLayer);
