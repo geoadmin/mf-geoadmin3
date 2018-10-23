@@ -402,7 +402,7 @@ def init_connection(bucket_name):
     try:
         session = boto3.session.Session()
     except botocore.exceptions.BotoCoreError as e:
-        print('Cannot establish connection. Check you credentials %s.' % profile_name)
+        print('Cannot establish connection to bucket "%s". Check you credentials.' % bucket_name)
         print(e)
         sys.exit(1)
 

@@ -20,6 +20,7 @@ goog.require('ga_feedback');
 goog.require('ga_feedback_controller');
 goog.require('ga_fullscreen');
 goog.require('ga_geolocation');
+goog.require('ga_gl_style_service');
 goog.require('ga_help');
 goog.require('ga_height_service');
 goog.require('ga_identify_service');
@@ -128,7 +129,8 @@ goog.require('ga_waitcursor_service');
     'ga_featuretree_controller',
     'ga_draw_controller',
     'ga_drawstyle_controller',
-    'ga_drawstylepopup_controller'
+    'ga_drawstylepopup_controller',
+    'ga_gl_style_service'
   ]);
 
   module.config(function($translateProvider, gaGlobalOptions) {
