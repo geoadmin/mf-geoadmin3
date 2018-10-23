@@ -25,7 +25,7 @@ goog.provide('ga_gl_style_service');
          */
         this.filters_ = [];
 
-        /**
+        /** 
          * A list of style editions such as layout
          * or paint properties on the layers
          * @private
@@ -66,7 +66,7 @@ goog.provide('ga_gl_style_service');
           }, function(reason) {
             that.spriteCache_ = null;
             $window.console.error(
-                'Unable to load ' + spriteUrl + ' because ' + reason
+              'Unable to load ' + spriteUrl + ' because ' + reason
             );
             // failing to load sprite is ok for now...
             return {
@@ -77,17 +77,17 @@ goog.provide('ga_gl_style_service');
         };
 
         this.cloneStyle = function() {
-          var newStyleJSON = {};
-          angular.copy(this.styleCache_, newStyleJSON);
-          return newStyleJSON;
+          var newStyle = {};
+          angular.copy(this.styleCache_, newStyle);
+          return newStyle;
         };
 
         this.filter = function(filters) {
           var that = this;
           var layers = [];
-          var newStyleJSON = this.cloneStyle();
+          var newStyle = this.cloneStyle();
           this.filters_ = this.filters_.concat(filters);
-          newStyleJSON.layers.forEach(function(layer) {
+          newStyle.layers.forEach(function(layer) {
             var addLayer = true;
             that.filters_.forEach(function(filter) {
               var propertyName = filter[0];
@@ -104,15 +104,15 @@ goog.provide('ga_gl_style_service');
             });
             if (addLayer) layers.push(layer);
           });
-          newStyleJSON.layers = layers;
-          return newStyleJSON;
+          newStyle.layers = layers;
+          return newStyle;
         };
 
         this.edit = function(edits) {
-          var newStyleJSON = this.cloneStyle();
+          var newStyle = this.cloneStyle();
           this.edits_ = this.edits_.concat(edits);
           // TODO apply filters and edits logic here and return a new object
-          return newStyleJSON;
+          return newStyle;
         };
 
         /**
