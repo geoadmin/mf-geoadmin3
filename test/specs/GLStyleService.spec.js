@@ -189,4 +189,24 @@ describe('ga_gl_style_service', function() {
     });
     $httpBackend.flush();
   });
+
+  it('should reject the promise if the style is not found', function(done) {
+    $httpBackend.expectGET(styleUrl).respond(404);
+    gaGLStyle.get(styleUrl).then(function() {}, function(res) {
+      expect(res.status).to.equal(404);
+      done();
+    });
+    $httpBackend.flush();
+  });
+
+  it('should set the sprite to null if the sprite is not found', function(done) {
+    $httpBackend.expectGET(styleUrl).respond(styleJSON);
+    $httpBackend.expectGET(styleJSON.sprite + '.json').respond(404);
+    gaGLStyle.get(styleUrl).then(function(data) {
+      expect(data.style.name).to.equal('ch.swisstopo.leichte-basiskarte.vt');
+      expect(data.sprite).to.equal(null);
+      done();
+    });
+    $httpBackend.flush();
+  });
 });

@@ -25,7 +25,7 @@ goog.provide('ga_gl_style_service');
          */
         this.filters_ = [];
 
-        /** 
+        /**
          * A list of style editions such as layout
          * or paint properties on the layers
          * @private
@@ -41,16 +41,16 @@ goog.provide('ga_gl_style_service');
             that.getSprite(spriteUrl).then(function(styleData) {
               defer.resolve(styleData);
             });
-          }, function(reason) {
+          }, function(res) {
             that.styleCache_ = null;
             that.spriteCache_ = null;
             var msg =
               'Unable to load the style from ' +
               styleUrl +
-              ' because ' +
-              reason;
+              ' response status is ' +
+              res.status;
             $window.console.error(msg);
-            defer.reject(msg);
+            defer.reject(res);
           });
           return defer.promise;
         };
@@ -63,11 +63,13 @@ goog.provide('ga_gl_style_service');
               style: that.styleCache_,
               sprite: that.spriteCache_
             };
-          }, function(reason) {
+          }, function(res) {
             that.spriteCache_ = null;
             $window.console.error(
-              'Unable to load ' + spriteUrl + ' because ' + reason
-            );
+                'Unable to load ' +
+                spriteUrl +
+                ' response status is ' +
+                res.status);
             // failing to load sprite is ok for now...
             return {
               style: that.styleCache_,
