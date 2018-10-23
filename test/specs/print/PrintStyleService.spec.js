@@ -18,7 +18,7 @@ describe('ga_printstyle_service', function() {
         expect(poly).to.be(undefined);
         poly = gaPrintStyle.olPointToPolygon(pt, 100);
         expect(poly).to.be(undefined);
-        poly = gaPrintStyle.olPointToPolygon(new ol.geom.Polygon(), 100, 100);
+        poly = gaPrintStyle.olPointToPolygon(new ol.geom.Polygon([[[0, 0], [0, 1], [1, 1], [0, 0]]]), 100, 100);
         expect(poly).to.be(undefined);
       });
 
@@ -61,7 +61,7 @@ describe('ga_printstyle_service', function() {
       it('returns nothing if mandatory values are not defined', function() {
         var poly = gaPrintStyle.olCircleToPolygon();
         expect(poly).to.be(undefined);
-        poly = gaPrintStyle.olCircleToPolygon(new ol.geom.Point());
+        poly = gaPrintStyle.olCircleToPolygon(new ol.geom.Point([0, 0]));
         expect(poly).to.be(undefined);
       });
 

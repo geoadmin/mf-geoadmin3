@@ -535,7 +535,6 @@ describe('ga_maputils_service', function() {
           expect(map.getView().getCenter()).to.eql([0, 1]);
           done();
         });
-        $rootScope.$digest();
       });
     });
 

@@ -60,12 +60,14 @@ describe('ga_shop_service', function() {
       var closeSpy, openStub, clock, $window;
       var dispatchUrl;
       var dfltDispatchUrl;
-      var proj = ol.proj.get('EPSG:2056');
+      var proj;
       var fakeWindow = {
         close: function() {}
       };
 
       beforeEach(function() {
+        proj = ol.proj.get('EPSG:2056');
+        sinon.assert.pass(proj);
         inject(function($injector) {
           $window = $injector.get('$window');
         });
@@ -184,9 +186,11 @@ describe('ga_shop_service', function() {
     describe('#getPrice()', function() {
       var $httpBackend, $rootScope;
       var priceUrl;
-      var proj = ol.proj.get('EPSG:2056');
+      var proj;
 
       beforeEach(function() {
+        proj = ol.proj.get('EPSG:2056');
+        sinon.assert.pass(proj);
         inject(function($injector) {
           $httpBackend = $injector.get('$httpBackend');
           $rootScope = $injector.get('$rootScope');

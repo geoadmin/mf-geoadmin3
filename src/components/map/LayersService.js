@@ -335,9 +335,11 @@ goog.require('ga_urlutils_service');
           var timestamp = this.getLayerTimestampFromYear(config3d,
               gaTime.get());
           var requestedLayer = config3d.serverLayerName || bodId;
+          var url = getVectorTilesUrl(requestedLayer, timestamp,
+              h2(vectorTilesSubdomains));
+          url += 'tileset.json';
           var tileset = new Cesium.Cesium3DTileset({
-            url: getVectorTilesUrl(requestedLayer, timestamp,
-                h2(vectorTilesSubdomains)),
+            url: url,
             maximumNumberOfLoadedTiles: 3
           });
           tileset.bodId = bodId;
