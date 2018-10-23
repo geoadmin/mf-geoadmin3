@@ -18,7 +18,11 @@ goog.provide('ga_vector_feedback_controller');
       activeColor: '',
       backgroundLayers: [
         {
-          id: 'ch.swisstopo.lightmap.vt',
+          id: 'omt.vt',
+          label: 'Openmaptiles'
+        },
+        {
+          id: 'ch.swisstopo.leichte-basiskarte.vt',
           label: 'Light Map'
         },
         {
@@ -27,7 +31,18 @@ goog.provide('ga_vector_feedback_controller');
         }
       ],
       layers: {
-        'ch.swisstopo.lightmap.vt': {
+        'omt.vt': {
+          selectableLayers: [
+            { value: 'background', label: 'Background' }
+          ],
+          labelsFilters: [
+            ['source-layer', '==', 'place'],
+            ['source-layer', '==', 'transportation_name'],
+            ['source-layer', '==', 'aerodrome_label'],
+            ['source-layer', '==', 'poi']
+          ]
+        },
+        'ch.swisstopo.leichte-basiskarte.vt': {
           selectableLayers: [
             { value: 'background', label: 'Background' },
             { value: 'lakes', label: 'Lakes' },
@@ -35,12 +50,18 @@ goog.provide('ga_vector_feedback_controller');
             { value: 'build_area', label: 'Built area' },
             { value: 'highways', label: 'Highways' },
             { value: 'forests', label: 'Forests' }
+          ],
+          labelsFilters: [
+            ['source', '==', 'ch.swissnames3d']
           ]
         },
-        'ch.swisstopo.hybridmap.vt': {
+        'ch.swisstopo.hybridkarte.vt': {
           selectableLayers: [
             { value: 'cities', label: 'Cities' },
             { value: 'highways', label: 'Highways' }
+          ],
+          labelsFilters: [
+            ['source', '==', 'ch.swissnames3d']
           ]
         }
       },
@@ -130,13 +151,5 @@ goog.provide('ga_vector_feedback_controller');
         $scope.applyColor(newVal);
       });
     }
-
-    $scope.$watch('options.showLabel', function(newVal) {
-      if (newVal.value) {
-        console.log('Show labels on map');
-      } else {
-        console.log('Hide labels on map');
-      }
-    });
   });
 })();
