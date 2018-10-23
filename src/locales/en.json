@@ -257,6 +257,7 @@
 "modify_existing_vertex_linepolygon": "Click to delete the point (2 points min.)<br/>Click then drag to move the point",
 "modify_existing_vertex_marker": "Click then drag to move the marker",
 "modify_existing_vertex_measure": "Click to delete the point (2 points min.)<br/>Click then drag to move the point",
+"modify_icon_category_label": "default / Civil symbols", 
 "modify_icon_label": "Symbol",
 "modify_icon_size_label": "Size",
 "modify_new_vertex_linepolygon": "Click to add a point<br/>Click then drag to move the point",

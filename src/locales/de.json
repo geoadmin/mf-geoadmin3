@@ -257,6 +257,7 @@
 "modify_existing_vertex_linepolygon": "Klicke, um den Punkt zu löschen (mind. 2 Punkte).<br/> Punkt verschieben: klicken und ziehen ",
 "modify_existing_vertex_marker": "Verschieben des Symbols: klicken und ziehen ",
 "modify_existing_vertex_measure": "Klicke, um den Punkt zu löschen (mind. 2 Punkte).<br/> Punkt verschieben: klicken und ziehen ",
+"modify_icon_category_label": "Standard / Zivile Signaturen",
 "modify_icon_label": "Symbol",
 "modify_icon_size_label": "Grösse",
 "modify_new_vertex_linepolygon": "Klicke, um einen Punkt hinzuzufügen.<br/> Punkt verschieben: klicken und ziehen ",
