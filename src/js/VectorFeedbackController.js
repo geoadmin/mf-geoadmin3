@@ -26,7 +26,7 @@ goog.provide('ga_vector_feedback_controller');
           label: 'Light Map'
         },
         {
-          id: 'ch.swisstopo.hybridmap.vt',
+          id: 'ch.swisstopo.hybridkarte.vt',
           label: 'Hybrid Map'
         }
       ],
@@ -128,7 +128,6 @@ goog.provide('ga_vector_feedback_controller');
     };
 
     // Initialize to the first layer
-    $scope.options.backgroundLayer = $scope.options.backgroundLayers[0];
     $scope.options.showLabel = $scope.options.showLabels[0];
 
     $scope.submit = function() {
@@ -139,12 +138,6 @@ goog.provide('ga_vector_feedback_controller');
     $scope.applyColor = function(color) {
       $scope.options.activeColor = color;
     };
-
-    // Always use the firest selectable layer in the list
-    $scope.$watch('options.backgroundLayer', function(newVal) {
-      $scope.options.selectedLayer =
-        $scope.options.layers[newVal.id].selectableLayers[0];
-    });
 
     if (gaBrowserSniffer.mobile) {
       $scope.$watch('options.color', function(newVal) {
