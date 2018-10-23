@@ -779,19 +779,13 @@ goog.require('ga_urlutils_service');
             if (config.sourceId && config.styleUrl) {
               var sourceId = config.sourceId;
               gaGLStyle.get(config.styleUrl).then((data) => {
-                var glStyle = data.styleJSON;
-                var spriteData = data.spriteJSON;
+                var glStyle = data.style;
+                var spriteData = data.sprite;
                 var spriteUrl = glStyle.sprite + '.png';
                 $window.olms.stylefunction(olLayer, glStyle,
                     config.sourceId,
                     undefined, spriteData, spriteUrl,
                     ['Helvetica']);
-                // HACK: Make the Swiss style transparent to see the relief
-                glStyle.layers.forEach(function(style, idx) {
-                  if (style.id === 'Schweiz') {
-                    style.paint['fill-opacity'] = 0.8;
-                  }
-                });
 
                 if (!config.url) {
                   var sourceConfigUrl = glStyle.sources[sourceId].url;

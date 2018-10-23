@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-describe.only('ga_gl_style_service', function() {
+describe('ga_gl_style_service', function() {
   var gaGLStyle, $httpBackend, styleUrl, styleJSON;
 
   var injectServices = function($injector) {
@@ -164,8 +164,8 @@ describe.only('ga_gl_style_service', function() {
     $httpBackend.expectGET(styleUrl).respond(styleJSON);
     $httpBackend.expectGET(styleJSON.sprite + '.json').respond({ id: 'dummy' });
     gaGLStyle.get(styleUrl).then(function(data) {
-      expect(data.styleJSON.name).to.equal('ch.swisstopo.leichte-basiskarte.vt');
-      expect(data.spriteJSON.id).to.equal('dummy');
+      expect(data.style.name).to.equal('ch.swisstopo.leichte-basiskarte.vt');
+      expect(data.sprite.id).to.equal('dummy');
       done();
     });
     $httpBackend.flush();

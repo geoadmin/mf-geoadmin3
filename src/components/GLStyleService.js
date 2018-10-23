@@ -5,41 +5,45 @@ goog.provide('ga_gl_style_service');
   module.provider('gaGLStyle', function() {
     this.$get = function($http, $q, $window) {
       var GLStyle = function() {
-        this.styleJSONCache = null;
 
-        this.spriteJSONCache = null;
+        /**
+          * Stores the original style
+          * @private {Object}
+          */
+        this.styleCache_ = null;
 
-        this.filters = [];
+        /**
+         * Stores the original sprites
+         * @private {Object}
+         */
+        this.spriteCache_ = null;
 
-        this.edits = [];
+        /**
+         * A list of mutually inclusive active filters on the layers
+         * Example: [['propName', 'comparator', 'propVal']]
+         * @private {Array<Array<string, string, string>>}
+         */
+        this.filters_ = [];
+
+        /**
+         * A list of style editions such as layout
+         * or paint properties on the layers
+         * @private
+         */
+        this.edits_ = [];
 
         this.get = function(styleUrl) {
           var that = this;
           var defer = $q.defer();
           $http.get(styleUrl, { cache: true }).then(function(response) {
-            that.styleJSONCache = response.data;
-            // load sprite
-            var spriteUrl = that.styleJSONCache.sprite + '.json';
-            $http.get(spriteUrl, { cache: true }).then(function(res) {
-              that.spriteJSONCache = res.data;
-              defer.resolve({
-                styleJSON: that.styleJSONCache,
-                spriteJSON: that.spriteJSONCache
-              });
-            }, function(reason) {
-              that.spriteJSON = null;
-              $window.console.error(
-                'Unable to load ' + spriteUrl + ' because ' + reason
-              );
-              // failing to load sprite is ok for now...
-              defer.resolve({
-                styleJSON: that.styleJSONCache,
-                spriteJSON: that.spriteJSONCache
-              });
+            that.styleCache_ = response.data;
+            var spriteUrl = that.styleCache_.sprite + '.json';
+            that.getSprite(spriteUrl).then(function(styleData) {
+              defer.resolve(styleData);
             });
           }, function(reason) {
-            that.styleJSONCache = null;
-            that.spriteJSONCache = null;
+            that.styleCache_ = null;
+            that.spriteCache_ = null;
             var msg =
               'Unable to load the style from ' +
               styleUrl +
@@ -51,22 +55,41 @@ goog.provide('ga_gl_style_service');
           return defer.promise;
         };
 
+        this.getSprite = function(spriteUrl) {
+          var that = this;
+          return $http.get(spriteUrl, { cache: true }).then(function(res) {
+            that.spriteCache_ = res.data;
+            return {
+              style: that.styleCache_,
+              sprite: that.spriteCache_
+            };
+          }, function(reason) {
+            that.spriteCache_ = null;
+            $window.console.error(
+                'Unable to load ' + spriteUrl + ' because ' + reason
+            );
+            // failing to load sprite is ok for now...
+            return {
+              style: that.styleCache_,
+              sprite: that.spriteCache_
+            };
+          });
+        };
+
         this.cloneStyle = function() {
           var newStyleJSON = {};
-          angular.copy(this.styleJSONCache, newStyleJSON);
+          angular.copy(this.styleCache_, newStyleJSON);
           return newStyleJSON;
         };
 
-        // Hide / show layers base on layers props
-        // [[propertyName, comparator, propertyValue], ...]
         this.filter = function(filters) {
           var that = this;
           var layers = [];
           var newStyleJSON = this.cloneStyle();
-          this.filters = this.filters.concat(filters);
+          this.filters_ = this.filters_.concat(filters);
           newStyleJSON.layers.forEach(function(layer) {
             var addLayer = true;
-            that.filters.forEach(function(filter) {
+            that.filters_.forEach(function(filter) {
               var propertyName = filter[0];
               var comparator = filter[1];
               var propertyValue = filter[2];
@@ -87,16 +110,18 @@ goog.provide('ga_gl_style_service');
 
         this.edit = function(edits) {
           var newStyleJSON = this.cloneStyle();
-          this.edits = this.edits.concat(edits);
+          this.edits_ = this.edits_.concat(edits);
           // TODO apply filters and edits logic here and return a new object
           return newStyleJSON;
         };
 
-        // Remove all filters and edits
+        /**
+         * Remove all filters and edits
+         */
         this.reset = function() {
-          this.filters = [];
-          this.edits = [];
-          return this.styleJSONCache;
+          this.filters_ = [];
+          this.edits_ = [];
+          return this.styleCache_;
         };
       };
       return new GLStyle();
