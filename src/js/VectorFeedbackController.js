@@ -15,25 +15,19 @@ goog.provide('ga_vector_feedback_controller');
       mobile: gaBrowserSniffer.mobile,
       comment: '',
       likeSelect: '',
-      activeColor: '',
-      backgroundLayers: [
-        {
-          id: 'omt.vt',
-          label: 'Openmaptiles'
-        },
-        {
-          id: 'ch.swisstopo.leichte-basiskarte.vt',
-          label: 'Light Map'
-        },
-        {
-          id: 'ch.swisstopo.hybridkarte.vt',
-          label: 'Hybrid Map'
-        }
-      ],
       layers: {
         'omt.vt': {
           selectableLayers: [
-            { value: 'background', label: 'Background' }
+            {
+              value: 'landuse-residential',
+              label: 'Landuse Residential',
+              edit: ['id', 'landuse-residential', 'paint|fill-color|{color}']
+            },
+            {
+              value: 'landcover_grass',
+              label: 'Landcover Grass',
+              edit: ['id', 'landcover_grass', 'paint|fill-color|{color}']
+            }
           ],
           labelsFilters: [
             ['source-layer', '==', 'place'],
@@ -51,98 +45,53 @@ goog.provide('ga_vector_feedback_controller');
             { value: 'highways', label: 'Highways' },
             { value: 'forests', label: 'Forests' }
           ],
-          labelsFilters: [
-            ['source', '==', 'ch.swissnames3d']
-          ]
+          labelsFilters: [['source', '==', 'ch.swissnames3d']]
         },
         'ch.swisstopo.hybridkarte.vt': {
           selectableLayers: [
             { value: 'cities', label: 'Cities' },
             { value: 'highways', label: 'Highways' }
           ],
-          labelsFilters: [
-            ['source', '==', 'ch.swissnames3d']
-          ]
+          labelsFilters: [['source', '==', 'ch.swissnames3d']]
         }
       },
-      colors: [
+      backgroundLayers: [
         {
-          value: 'lightgray',
-          label: 'Light Gray'
+          id: 'omt.vt',
+          label: 'Openmaptiles'
         },
         {
-          value: '#acc864',
-          label: 'Light Green'
+          id: 'ch.swisstopo.leichte-basiskarte.vt',
+          label: 'Light Map'
         },
         {
-          value: '#3a8841',
-          label: 'Green'
-        },
-        {
-          value: '#40b5bc',
-          label: 'Light Blue'
-        },
-        {
-          value: '#483df6',
-          label: 'Blue'
-        },
-        {
-          value: '#ffff99',
-          label: 'Light Yellow'
-        },
-        {
-          value: '#ffca00',
-          label: 'Yellow'
-        },
-        {
-          value: '#f28500',
-          label: 'Orange'
-        },
-        {
-          value: '#dc0f0f',
-          label: 'Red'
-        },
-        {
-          value: '#80379c',
-          label: 'Purple'
-        },
-        {
-          value: 'black',
-          label: 'Black'
-        },
-        {
-          value: 'white',
-          label: 'White'
+          id: 'ch.swisstopo.hybridkarte.vt',
+          label: 'Hybrid Map'
         }
       ],
+      colors: [
+        { value: 'lightgray', label: 'Light Gray' },
+        { value: '#acc864', label: 'Light Green' },
+        { value: '#3a8841', label: 'Green' },
+        { value: '#40b5bc', label: 'Light Blue' },
+        { value: '#483df6', label: 'Blue' },
+        { value: '#ffff99', label: 'Light Yellow' },
+        { value: '#ffca00', label: 'Yellow' },
+        { value: '#f28500', label: 'Orange' },
+        { value: '#dc0f0f', label: 'Red' },
+        { value: '#80379c', label: 'Purple' },
+        { value: 'black', label: 'Black' },
+        { value: 'white', label: 'White' }
+      ],
       showLabels: [
-        {
-          value: true,
-          label: 'Show'
-        },
-        {
-          value: false,
-          label: 'Hide'
-        }
+        { value: true, label: 'Show' },
+        { value: false, label: 'Hide' }
       ]
     };
-
-    // Initialize to the first layer
-    $scope.options.showLabel = $scope.options.showLabels[0];
 
     $scope.submit = function() {
       console.log($scope.options.comment);
       console.log($scope.options.likeSelect);
     };
-
-    $scope.applyColor = function(color) {
-      $scope.options.activeColor = color;
-    };
-
-    if (gaBrowserSniffer.mobile) {
-      $scope.$watch('options.color', function(newVal) {
-        $scope.applyColor(newVal);
-      });
-    }
   });
 })();

@@ -171,7 +171,7 @@ describe('ga_gl_style_service', function() {
     $httpBackend.flush();
   });
 
-  it('filters a GL style #filter and resests the style via #resest', function(done) {
+  it('filters a GL style #filter and resets the style via #resest', function(done) {
     $httpBackend.expectGET(styleUrl).respond(styleJSON);
     $httpBackend.expectGET(styleJSON.sprite + '.json').respond({ id: 'dummy' });
     gaGLStyle.get(styleUrl).then(function() {
@@ -185,6 +185,19 @@ describe('ga_gl_style_service', function() {
 
       newStyle = gaGLStyle.reset();
       expect(newStyle.style.layers.length).to.equal(4);
+      done();
+    });
+    $httpBackend.flush();
+  });
+
+  it('edits a GL style #edit', function(done) {
+    $httpBackend.expectGET(styleUrl).respond(styleJSON);
+    $httpBackend.expectGET(styleJSON.sprite + '.json').respond({ id: 'dummy' });
+    gaGLStyle.get(styleUrl).then(function() {
+      var newStyle = gaGLStyle.edit([['id', 'background', 'paint|background-color|blue']])
+      expect(newStyle.style.layers[0].id).to.equal('background');
+      expect(newStyle.style.layers[0].paint['background-color']).to.equal('blue');
+      expect(newStyle.style.layers[1].paint['background-color']).to.be(undefined);
       done();
     });
     $httpBackend.flush();

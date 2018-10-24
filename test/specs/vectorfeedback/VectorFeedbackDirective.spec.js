@@ -94,7 +94,7 @@ describe('ga_vector_feedback_directive', function() {
     loadDirective(map, options, submit);
     var submitBtn = el.find('button[type=submit]');
     expect(el.find('.ga-vector-feeback-service-link').attr('href')).to.equal(
-      'https://service-doc.html'
+        'https://service-doc.html'
     );
     expect(el.find('textarea').length).to.equal(1);
     expect(submit.callCount).to.equal(0);
