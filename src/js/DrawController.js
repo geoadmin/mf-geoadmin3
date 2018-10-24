@@ -191,11 +191,11 @@ goog.require('ga_styles_service');
       });
 
       return function(feature, resolution) {
-        if (!feature.getStyleFunction() ||
-            !feature.getStyleFunction().call(feature, resolution)) {
+        var styleFunction = feature.getStyleFunction();
+        if (!styleFunction || !styleFunction(feature, resolution)) {
           return [newVertexStyle];
         }
-        var styles = feature.getStyleFunction().call(feature, resolution);
+        var styles = styleFunction(feature, resolution);
         // When a feature is selected we apply its current style and the
         // vertex style.
         return styles.concat([

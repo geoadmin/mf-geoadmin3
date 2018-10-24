@@ -473,7 +473,10 @@ goog.require('ga_window_service');
                 }
                 var url = layerToQuery.getSource().getGetFeatureInfoUrl(
                     coordinate, mapRes, mapProj,
-                    {'INFO_FORMAT': 'text/plain', 'LANG': gaLang.get()});
+                      {'FEATURE_COUNT': 10,
+                       'INFO_FORMAT': 'text/plain',
+                       'LANG': gaLang.get()}
+                    );
                 if (!is3dActive() && url) {
                   gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {
                     all.push($http.get(proxyUrl, {
