@@ -3,13 +3,15 @@ goog.provide('ga_background_service');
 goog.require('ga_layers_service');
 goog.require('ga_permalink');
 goog.require('ga_urlutils_service');
+goog.require('ga_layerfilters_service');
 
 (function() {
 
   var module = angular.module('ga_background_service', [
     'ga_permalink',
     'ga_layers_service',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'ga_layerfilters_service'
   ]);
 
   /**
@@ -17,7 +19,7 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaBackground', function() {
     this.$get = function($rootScope, $q, gaTopic, gaLayers, gaPermalink,
-        gaUrlUtils) {
+        gaUrlUtils, gaLayerFilters) {
       var bg; // The current background
       var bgs = []; // The list of backgrounds available
       var bgsP; // Promise resolved when the background service is initialized.
@@ -114,9 +116,49 @@ goog.require('ga_urlutils_service');
         } */
       };
 
+      function updateBgLayerStyleUrlParam(bgLayer) {
+        var styleUrlValue = bgLayer.externalStyleUrl;
+        if (styleUrlValue) {
+          // Save the url in the bg config to get it
+          // when we switch back.
+          getBgById(bgLayer.id).styleUrl = styleUrlValue;
+          gaPermalink.updateParams({
+            bgLayer_styleUrl: styleUrlValue
+          });
+        } else {
+          gaPermalink.deleteParam('bgLayer_styleUrl');
+        }
+      }
+
+      // Update permalink on bgLayer's modification
+      var registerBgLayerStyleUrlPermalink = function(scope, map) {
+        var deregFns = [];
+        scope.layers = map.getLayers().getArray();
+        scope.layerFilter = gaLayerFilters.background;
+        scope.$watchCollection('layers | filter:layerFilter',
+            function(layers) {
+
+              // deregister the listeners we have on each layer and register
+              // new ones for the new set of layers.
+              angular.forEach(deregFns, function(deregFn) {
+                deregFn();
+              });
+              deregFns.length = 0;
+
+              angular.forEach(layers, function(layer) {
+                deregFns.push(scope.$watch(function() {
+                  return layer.externalStyleUrl;
+                }, function() {
+                  updateBgLayerStyleUrlParam(layer);
+                }));
+              });
+            });
+      }
+
       var Background = function() {
 
         this.init = function(map) {
+          var scope = $rootScope.$new();
           var that = this;
           // Initialize the service when topics and layers config are
           // loaded
@@ -127,11 +169,14 @@ goog.require('ga_urlutils_service');
                 if (!initBg) {
                   initBg = getBgByTopic(gaTopic.get());
                 }
+                var styleUrl = gaPermalink.getParams().bgLayer_styleUrl;
+                initBg.styleUrl = styleUrl;
                 that.set(map, initBg);
                 $rootScope.$on('gaTopicChange', function(evt, newTopic) {
                   updateDefaultBgOrder(newTopic.backgroundLayers);
                   that.set(map, getBgByTopic(newTopic));
                 });
+                registerBgLayerStyleUrlPermalink(scope, map);
               });
 
           return bgsP;
@@ -159,7 +204,9 @@ goog.require('ga_urlutils_service');
                   layers.removeAt(0);
                 }
               } else {
-                var layer = gaLayers.getOlLayerById(bg.id);
+                var layer = gaLayers.getOlLayerById(bg.id, {
+                  externalStyleUrl: bg.styleUrl
+                });
                 layer.background = true;
                 layer.displayInLayerManager = false;
                 if (layers.item(0) && layers.item(0).background) {

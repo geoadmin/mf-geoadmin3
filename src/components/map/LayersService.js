@@ -778,17 +778,17 @@ goog.require('ga_urlutils_service');
               });
             }
 
-            var styleUrl = config.styleUrl;
+            var styleUrl2 = config.styleUrl;
             if (opts && opts.externalStyleUrl &&
                 gaUrlUtils.isValid(opts.externalStyleUrl)) {
-              styleUrl = opts.externalStyleUrl;
-            } else if (/^\/\//.test(styleUrl)) {
-              styleUrl = $window.location.protocol + config.styleUrl;
+              styleUrl2 = opts.externalStyleUrl;
+            } else if (/^\/\//.test(styleUrl2)) {
+              styleUrl2 = $window.location.protocol + config.styleUrl;
             }
 
-            if (config.sourceId && styleUrl) {
+            if (config.sourceId && styleUrl2) {
               var sourceId = config.sourceId;
-              gaGLStyle.get(styleUrl).then((data) => {
+              gaGLStyle.get(styleUrl2).then((data) => {
                 var glStyle = data.style;
                 var spriteData = data.sprite;
                 var spriteUrl = glStyle.sprite + '.png';
