@@ -3,7 +3,7 @@ describe('ga_background_service', function() {
 
   describe('gaBackground', function() {
     var gaBg, gaPermalink, gaTopic, deferGaLayers, deferGaTopic, map, $rootScope,
-      gaPermalinkMock, $rootScopeMock, $q;
+      gaPermalinkMock, $rootScopeMock, $q, $timeout;
 
     var nbBgs = 4;
     var firstBgId = 'omt.vt';
@@ -49,8 +49,11 @@ describe('ga_background_service', function() {
           getLayerProperty: function() {
             return 'label';
           },
-          getOlLayerById: function() {
-            return new ol.layer.Layer({});
+          getOlLayerById: function(id, opts) {
+            var l = new ol.layer.Layer({});
+            l.id = id;
+            l.externalStyleUrl = opts && opts.externalStyleUrl;
+            return l;
           }
         });
 
@@ -65,7 +68,10 @@ describe('ga_background_service', function() {
           getParams: function() {
             return {};
           },
-          updateParams: function() {}
+          updateParams: function() {
+          },
+          deleteParam: function() {
+          }
         });
 
       });
@@ -78,6 +84,7 @@ describe('ga_background_service', function() {
         gaPermalink = $injector.get('gaPermalink');
         gaPermalinkMock = sinon.mock(gaPermalink);
         $rootScopeMock = sinon.mock($rootScope);
+        $timeout = $injector.get('$timeout');
       });
       deferGaLayers = $q.defer();
       deferGaTopic = $q.defer();
@@ -202,6 +209,35 @@ describe('ga_background_service', function() {
           $rootScope.$digest();
         });
 
+        it('deletes/updates permalink if externalStyleUrl property change', function() {
+          gaBg.init(map);
+          deferGaTopic.resolve();
+          deferGaLayers.resolve();
+          var upParams = gaPermalinkMock.expects('deleteParam').withArgs('bgLayer_styleUrl').once();
+          $rootScope.$digest();
+          upParams.verify();
+          var upParams2 = gaPermalinkMock.expects('updateParams').withArgs({'bgLayer_styleUrl': 'myStyleFoo'}).atLeast(1);
+          map.getLayers().getArray()[0].externalStyleUrl = 'myStyleFoo';
+          $rootScope.$digest();
+          upParams2.verify();
+          upParams = gaPermalinkMock.expects('deleteParam').withArgs('bgLayer_styleUrl').once();
+          map.getLayers().getArray()[0].externalStyleUrl = null;
+          $rootScope.$digest();
+          upParams.verify();
+        });
+
+        it('uses bgLayer_styleUrl permalink on load', function() {
+          var p = gaPermalinkMock.expects('getParams').thrice().returns({
+            bgLayer: firstBgId, bgLayer_styleUrl: 'http://myStyleBar'
+          });
+          gaBg.init(map);
+          deferGaTopic.resolve();
+          deferGaLayers.resolve();
+          $rootScope.$digest();
+          p.verify();
+          expect(map.getLayers().getArray()[0].externalStyleUrl).to.be('http://myStyleBar');
+        });
+
         it('broadcast gaBgChange event', function(done) {
           var bcast = $rootScopeMock.expects('$broadcast').withArgs('gaBgChange').once();
           gaBg.init(map).then(function() {
@@ -269,7 +305,7 @@ describe('ga_background_service', function() {
         });
 
         it('initializes the default background from permalink (priority over plConfig)', function(done) {
-          var getParams = gaPermalinkMock.expects('getParams').twice().returns({bgLayer: 'voidLayer'});
+          var getParams = gaPermalinkMock.expects('getParams').thrice().returns({bgLayer: 'voidLayer'});
           gaBg.init(map).then(function() {
             getParams.verify();
             var bg = gaBg.get();
