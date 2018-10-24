@@ -121,7 +121,7 @@ goog.require('ga_urlutils_service');
 
         /**
          * Search for a background layer in the map. If not found (voidLayer),
-         * returns undefined.
+         * it returns undefined.
          */
         getMapBackgroundLayer: function(map) {
           var layer;
@@ -131,6 +131,22 @@ goog.require('ga_urlutils_service');
             }
           });
           return layer;
+        },
+
+        /**
+         * Search for a background layer in the map and return a list of
+         * all the layers composing the background in an array.
+         * If not found it returns undefined.
+         */
+        getMapBackgroundLayersArray: function(map) {
+          var olLayers;
+          var olLayer = this.getMapBackgroundLayer(map);
+          if (olLayer instanceof ol.layer.Group) {
+            olLayers = olLayer.getLayers().getArray();
+          } else if (olLayer instanceof ol.layer.Base) {
+            olLayers = [olLayer];
+          }
+          return olLayers;
         },
 
         flyToAnimation: function(ol3d, center, extent) {
@@ -499,6 +515,21 @@ goog.require('ga_urlutils_service');
               olLayer.sourceId,
               undefined, sprite, spriteUrl,
               ['Helvetica']);
+        },
+
+        /**
+         * Applies a gl style to a list of ol layers
+         */
+        applyGLStyleToOlLayers: function(olLayers, style, sprite) {
+          for (var i = 0; i < olLayers.length; i++) {
+            if (olLayers[i].sourceId) {
+              this.applyGLStyleToOlLayer(
+                  olLayers[i],
+                  style,
+                  sprite
+              );
+            }
+          }
         },
 
         /**
