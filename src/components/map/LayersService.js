@@ -707,7 +707,7 @@ goog.require('ga_urlutils_service');
               if (config.styleUrl && subLayerConf) {
                 layers[subLayersIds[i]].styleUrl = config.styleUrl;
               }
-              subLayers[i] = this.getOlLayerById(subLayersIds[i]);
+              subLayers[i] = this.getOlLayerById(subLayersIds[i], opts);
             }
             olLayer = new ol.layer.Group({
               minResolution: config.minResolution,
@@ -766,6 +766,7 @@ goog.require('ga_urlutils_service');
             if (config.sourceType === 'raster') {
               olLayer = new ol.layer.Tile();
             } else {
+
               olLayer = new ol.layer.VectorTile({
                 declutter: true,
                 style: new ol.style.Style(),
@@ -776,9 +777,18 @@ goog.require('ga_urlutils_service');
                 })
               });
             }
-            if (config.sourceId && config.styleUrl) {
+
+            var styleUrl = config.styleUrl;
+            if (opts && opts.externalStyleUrl &&
+                gaUrlUtils.isValid(opts.externalStyleUrl)) {
+              styleUrl = opts.externalStyleUrl;
+            } else if (/^\/\//.test(styleUrl)) {
+              styleUrl = $window.location.protocol + config.styleUrl;
+            }
+
+            if (config.sourceId && styleUrl) {
               var sourceId = config.sourceId;
-              gaGLStyle.get(config.styleUrl).then((data) => {
+              gaGLStyle.get(styleUrl).then((data) => {
                 var glStyle = data.style;
                 var spriteData = data.sprite;
                 var spriteUrl = glStyle.sprite + '.png';
