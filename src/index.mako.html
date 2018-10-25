@@ -98,6 +98,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           'mobile': globals.mobile,
           'embed': globals.embed,
           'ga-draw-active': globals.isDrawActive,
+          'ga-edit-active': globals.isEditActive,
           'ga-3d-active': globals.is3dActive,
           'ga-fps-active': globals.isFpsActive,
           'ios': globals.ios
@@ -171,6 +172,18 @@ itemscope itemtype="http://schema.org/WebApplication"
       ## css animation doesnt work on pseudo element, let use this instead
       <div class="ga-offline-msg alert-danger" translate>offline_sorry</div>
     </div><!-- #drawModeHeader -->
+
+    <div id="editModeHeader" class="navbar navbar-fixed-top">
+      <div class="ga-centered ga-title" translate>edit_mode_title</div>
+      <button class="btn btn-primary pull-left" ng-click="globals.isEditActive = false">
+        <i class="fa fa-arrow-left"></i>
+        <span translate>edit_back</span>
+      </button>
+      <span ga-help="66"></span>
+      <button class="btn ga-menu-bt" ng-click="globals.pulldownShown=true" translate>menu</button>
+      ## css animation doesnt work on pseudo element, let use this instead
+      <div class="ga-offline-msg alert-danger" translate>offline_sorry</div>
+    </div><!-- #editModeHeader -->
 
 % endif
     <div id="loader"></div>
@@ -275,7 +288,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div ga-context-popup
            ga-context-popup-map="::map"
            ga-context-popup-options="::options"
-           ga-context-popup-active="!globals.is3dActive && !globals.isDrawActive">
+           ga-context-popup-active="!globals.is3dActive && !globals.isDrawActive && !globals.isEditActive">
       </div>
     </div>
 % endif
@@ -300,7 +313,7 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-tooltip-map="::map"
            ga-tooltip-ol3d="::ol3d"
            ga-tooltip-options="options"
-           ga-tooltip-active="!globals.feedbackPopupShown && !globals.isDrawActive">
+           ga-tooltip-active="!globals.feedbackPopupShown && !globals.isDrawActive && !globals.isEditActive">
       </div>
     </div>
 
@@ -364,6 +377,26 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div> <!-- .panel -->
 
+        <!-- Edit -->
+        <div class="panel" ng-show="!globals.is3dActive">
+          <a id="editHeading" class="panel-heading accordion-toggle collapsed"
+             data-toggle="collapse" data-parent="#pulldown-content" href="#edit"
+             ga-collapsible-show="globals.isEditActive" accesskey="r">
+            <i class="fa fa-caret-down"></i>
+            <span translate>edit_panel_title</span>
+          </a>
+          <div id="edit" class="panel-collapse collapse">
+            <div class="panel-body" ng-controller="GaEditController">
+              <div ga-edit
+                   ga-edit-map="map"
+                   ga-edit-options="options"
+                   ga-edit-layer="layer"
+                   ga-edit-active="globals.isEditActive">
+              </div>
+            </div>
+          </div>
+        </div> <!-- .panel -->
+
         <!-- Tools -->
         <div class="panel">
           <a id="toolsHeading" class="panel-heading accordion-toggle collapsed"
@@ -401,7 +434,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
 
         <!-- Catalog -->
-        <div class="panel" ng-hide="globals.isDrawActive">
+        <div class="panel" ng-hide="globals.isDrawActive || globals.isEditActive">
           <div class="theme-toggle">
             <a class="topic-modal-toggle" data-toggle="modal" data-target="#topicSelector .modal" href="#">
               <span translate>choose_theme</span>
@@ -423,7 +456,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
 
         <!-- Selection -->
-        <div class="panel" ng-hide="globals.isDrawActive">
+        <div class="panel" ng-hide="globals.isDrawActive || globals.isEditActive">
           <a id="selectionHeading" class="panel-heading accordion-toggle light collapsed"
              data-toggle="collapse" href="#selection"
              ga-collapsible-show="globals.selectionShown">

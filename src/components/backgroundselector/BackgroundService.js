@@ -118,10 +118,12 @@ goog.require('ga_urlutils_service');
 
       function updateBgLayerStyleUrlParam(bgLayer) {
         var styleUrlValue = bgLayer.externalStyleUrl;
+        if (bgLayer.id) {
+          getBgById(bgLayer.id).styleUrl = styleUrlValue;
+        }
         if (styleUrlValue) {
           // Save the url in the bg config to get it
           // when we switch back.
-          getBgById(bgLayer.id).styleUrl = styleUrlValue;
           gaPermalink.updateParams({
             bgLayer_styleUrl: styleUrlValue
           });
@@ -205,7 +207,7 @@ goog.require('ga_urlutils_service');
                 }
               } else {
                 var layer = gaLayers.getOlLayerById(bg.id, {
-                  externalStyleUrl: bg.styleUrl
+                  externalStyleUrl: gaPermalink.getParams().bgLayer_styleUrl
                 });
                 layer.background = true;
                 layer.displayInLayerManager = false;
@@ -213,8 +215,8 @@ goog.require('ga_urlutils_service');
                   layers.setAt(0, layer);
                 } else {
                   layers.insertAt(0, layer);
-
                 }
+                bg.olLayer = layer;
               }
 
               // Add a vectortile layer with labels on top of all layers

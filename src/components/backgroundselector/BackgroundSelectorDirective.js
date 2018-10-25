@@ -14,6 +14,7 @@ goog.require('ga_event_service');
   module.directive('gaBackgroundSelector', function(
       $window,
       $translate,
+      $rootScope,
       gaBackground,
       gaEvent,
       gaBrowserSniffer
@@ -24,7 +25,8 @@ goog.require('ga_event_service');
         'components/backgroundselector/partials/backgroundselector.html',
       scope: {
         map: '=gaBackgroundSelectorMap',
-        ol3d: '=gaBackgroundSelectorOl3d'
+        ol3d: '=gaBackgroundSelectorOl3d',
+        globals: '=gaBackgroundSelectorGlobals'
       },
       link: function(scope, elt, attrs) {
         scope.isBackgroundSelectorClosed = true;
@@ -51,6 +53,10 @@ goog.require('ga_event_service');
 
         scope.toggleMenu = function() {
           elt.toggleClass('ga-open');
+        };
+
+        scope.activeEdit = function(bg) {
+          $rootScope.$broadcast('gaActiveEdit', bg.olLayer);
         };
 
         scope.getClass = function(layer) {
@@ -108,8 +114,8 @@ goog.require('ga_event_service');
             },
             template:
               '<div class="tooltip ga-red-tooltip">' +
-              '<div class="tooltip-arrow"></div>' +
-              '<div class="tooltip-inner"></div>' +
+                '<div class="tooltip-arrow"></div>' +
+                '<div class="tooltip-inner"></div>' +
               '</div>'
           };
           gaEvent.onMouseOverOut(elt, function(evt) {

@@ -14,6 +14,8 @@ goog.require('ga_draw');
 goog.require('ga_draw_controller');
 goog.require('ga_drawstyle_controller');
 goog.require('ga_drawstylepopup_controller');
+goog.require('ga_edit');
+goog.require('ga_edit_controller');
 goog.require('ga_featuretree');
 goog.require('ga_featuretree_controller');
 goog.require('ga_feedback');
@@ -99,6 +101,7 @@ goog.require('ga_waitcursor_service');
     'ga_stylesfromliterals_service',
     'ga_seo',
     'ga_draw',
+    'ga_edit',
     'ga_query',
     'ga_print',
     'ga_shop',
@@ -130,6 +133,7 @@ goog.require('ga_waitcursor_service');
     'ga_timeselector_controller',
     'ga_tooltip_controller',
     'ga_featuretree_controller',
+    'ga_edit_controller',
     'ga_draw_controller',
     'ga_drawstyle_controller',
     'ga_drawstylepopup_controller',
@@ -194,6 +198,11 @@ goog.require('ga_waitcursor_service');
 
   module.config(function(gaExportKmlProvider, gaGlobalOptions) {
     gaExportKmlProvider.downloadKmlUrl = gaGlobalOptions.apiUrl +
+        '/downloadkml';
+  });
+
+  module.config(function(gaExportGlStyleProvider, gaGlobalOptions) {
+    gaExportGlStyleProvider.downloadUrl = gaGlobalOptions.apiUrl +
         '/downloadkml';
   });
 

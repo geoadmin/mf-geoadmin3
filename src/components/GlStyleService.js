@@ -1,4 +1,5 @@
 goog.provide('ga_glstyle_service');
+
 (function() {
   var module = angular.module('ga_glstyle_service', []);
 
@@ -36,6 +37,12 @@ goog.provide('ga_glstyle_service');
           var defer = $q.defer();
           $http.get(styleUrl, { cache: true }).then(function(response) {
             that.styleCache_ = response.data;
+            if (!that.styleCache_.sprite) {
+              defer.resolve({
+                style: that.styleCache_
+              });
+              return;
+            }
             var spriteUrl = that.styleCache_.sprite + '.json';
             that.getSprite(spriteUrl).then(function(styleData) {
               defer.resolve(styleData);

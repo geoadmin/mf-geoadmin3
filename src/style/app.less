@@ -337,9 +337,6 @@ button.ga-btn,
 }
 
 .ga-draw-active {
-  #header {
-    top: unit(-@header-height, px);
-  }
 
   #draw .panel-body {
     @media (max-width: @screen-phone) {
@@ -350,6 +347,27 @@ button.ga-btn,
 
   #drawModeHeader {
     top: 0px;
+  }
+}
+.ga-edit-active {
+
+  #edit .panel-body {
+
+    @media (max-width: @screen-phone) {
+      padding-top: 0;
+      padding-bottom: 5px;
+    }
+  }
+
+  #editModeHeader {
+    top: 0px;
+  }
+}
+
+.ga-draw-active, .ga-edit-active {
+
+  #header {
+    top: unit(-@header-height, px);
   }
 
   #buttonGroup,
@@ -664,7 +682,7 @@ input[type="text"][readonly] {
 }
 
 // ***** DRAW MODE HEADER
-#drawModeHeader {
+#drawModeHeader, #editModeHeader {
   top: unit(-15-@small-header-height, px); //-15 for the shadow
   height: unit(@small-header-height, px);
   font-weight: bold;
@@ -698,11 +716,11 @@ input[type="text"][readonly] {
       right: 5px;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
 
-      @media (max-width: @screen-phone) {
-        left: 50px;
-        right: 50px;
-      }
+    @media (max-width: @screen-phone) {
+      left: 50px;
+      right: 50px;
     }
   }
 
@@ -1105,8 +1123,7 @@ a .ga-icon-separator {
   max-width: 770px;
   overflow: visible; /*Only for typeahead*/
 
-  .popover-content {
-    /*Only for typeahead*/
+  .popover-content { /*Only for typeahead*/
     overflow: visible;
 
     @media (max-width: @screen-phone) {
@@ -1910,6 +1927,7 @@ body:not(.embed) {
 .ga-fps-active {
   #header,
   #drawModeHeader,
+  #editModeHeader,
   #footer,
   #pulldown,
   #buttonGroup,

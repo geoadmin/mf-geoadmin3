@@ -780,7 +780,7 @@ goog.require('ga_urlutils_service');
               gaGlStyle.get(styleUrl).then((data) => {
                 var glStyle = data.style;
                 var spriteData = data.sprite;
-                var spriteUrl = glStyle.sprite + '.png';
+                var spriteUrl = glStyle.sprite && glStyle.sprite + '.png';
                 $window.olms.stylefunction(olLayer, glStyle,
                     config.sourceId,
                     undefined, spriteData, spriteUrl,
