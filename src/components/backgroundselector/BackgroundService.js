@@ -1,9 +1,9 @@
 goog.provide('ga_background_service');
 
+goog.require('ga_layerfilters_service');
 goog.require('ga_layers_service');
 goog.require('ga_permalink');
 goog.require('ga_urlutils_service');
-goog.require('ga_layerfilters_service');
 
 (function() {
 
