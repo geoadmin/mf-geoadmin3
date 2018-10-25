@@ -188,6 +188,9 @@ goog.require('ga_wmts_service');
       'https://geodienste.ch/db/npl_waldabstandslinien/fra',
       'https://geodienste.ch/db/npl_waldgrenzen/deu',
       'https://geodienste.ch/db/npl_waldgrenzen/fra',
+      'https://geodienste.ch/db/waldreservate/deu',
+      'https://geodienste.ch/db/waldreservate/fra',
+      'https://geodienste.ch/db/waldreservate/ita',
       // non-SwissProjected test urls
       'http://wms.ga.admin.ch/1GE',
       'http://wms.ga.admin.ch/LG_DE_Geologie_und_Tektonik/wms',
