@@ -3,7 +3,7 @@ describe('ga_background_service', function() {
 
   describe('gaBackground', function() {
     var gaBg, gaPermalink, gaTopic, deferGaLayers, deferGaTopic, map, $rootScope,
-      gaPermalinkMock, $rootScopeMock, $q, $timeout;
+      gaPermalinkMock, $rootScopeMock, $q;
 
     var nbBgs = 4;
     var firstBgId = 'omt.vt';
@@ -84,7 +84,6 @@ describe('ga_background_service', function() {
         gaPermalink = $injector.get('gaPermalink');
         gaPermalinkMock = sinon.mock(gaPermalink);
         $rootScopeMock = sinon.mock($rootScope);
-        $timeout = $injector.get('$timeout');
       });
       deferGaLayers = $q.defer();
       deferGaTopic = $q.defer();
