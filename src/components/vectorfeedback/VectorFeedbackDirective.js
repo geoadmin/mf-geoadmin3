@@ -142,7 +142,7 @@ goog.require('ga_maputils_service');
             scope.options.selectedLayer = layer.selectableLayers[0];
             // Reset labels filters
             scope.options.showLabel = scope.options.showLabels[0];
-            // Rest any color that was applied
+            // Reset any color that was applied
             scope.options.activeColor = null;
             reg();
           }
