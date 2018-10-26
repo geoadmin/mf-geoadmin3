@@ -399,5 +399,42 @@ describe('ga_urlutils_service', function() {
         expect(urls[3]).to.be('wms3.geo.admin.ch');
       });
     });
+
+    describe('#resolveStyleUrl', function() {
+      it('uses the external style url if valid', function() {
+        var styleUrl = 'https://toto.admin.ch/style.json';
+        var externalUrl = 'https://externalstyle.json';
+        var url = gaUrlUtils.resolveStyleUrl(styleUrl, externalUrl);
+        expect(url).to.equal(externalUrl);
+      });
+
+      it('adds protocol to agnostic external style url', function() {
+        var styleUrl = 'https://toto.admin.ch/style.json';
+        var externalUrl = '//externalstyle.json';
+        var url = gaUrlUtils.resolveStyleUrl(styleUrl, externalUrl);
+        expect(url).to.equal('http:' + externalUrl);
+      });
+
+      it('uses the base style url if external style is undefined', function() {
+        var styleUrl = 'https://toto.admin.ch/style.json';
+        var externalUrl = undefined;
+        var url = gaUrlUtils.resolveStyleUrl(styleUrl, externalUrl);
+        expect(url).to.equal(styleUrl);
+      });
+
+      it('uses the base style url if external style is not valid', function() {
+        var styleUrl = 'https://toto.admin.ch/style.json';
+        var externalUrl = 'invalid_url';
+        var url = gaUrlUtils.resolveStyleUrl(styleUrl, externalUrl);
+        expect(url).to.equal(styleUrl);
+      });
+
+      it('adds to protocol to base style url if agnostic', function() {
+        var styleUrl = '//toto.admin.ch/style.json';
+        var externalUrl = undefined;
+        var url = gaUrlUtils.resolveStyleUrl(styleUrl, externalUrl);
+        expect(url).to.equal('http:' + styleUrl);
+      });
+    });
   });
 });

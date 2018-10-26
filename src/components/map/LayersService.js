@@ -350,7 +350,6 @@ goog.require('ga_urlutils_service');
                     'ch.swissnames3d.vt'
                   ],
                   styleUrl: 'https://tileserver.dev.bgdi.ch/styles/ch.swisstopo.hybridkarte.vt_1539954688_e92c5b623257c5fafe1594ce4a0a72e0c08b0d80/style.json'
-
                 };
                 response.data['ch.swisstopo.leichte-basiskarte.vt'] = {
                   type: 'aggregate',
@@ -376,7 +375,6 @@ goog.require('ga_urlutils_service');
                   ],
                   styleUrl: 'https://tileserver.dev.bgdi.ch/styles/ch.swisstopo.wandern.vt_1539954688_e92c5b623257c5fafe1594ce4a0a72e0c08b0d80/style.json'
                 };
-
               }
 
             }
@@ -585,11 +583,12 @@ goog.require('ga_urlutils_service');
          * Return an ol.layer.Layer object for a layer id.
          */
         this.getOlLayerById = function(bodId, opts) {
+          var olLayer, styleUrl;
           var config = layers[bodId];
-          var olLayer;
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var crossOrigin = 'anonymous';
           var extent = config.extent || gaMapUtils.defaultExtent;
+          opts = opts || {};
 
           // The tileGridMinRes is the resolution at which the client
           // zoom is activated. It's different from the config.minResolution
@@ -742,13 +741,9 @@ goog.require('ga_urlutils_service');
                     return olSource.getFeatures();
                   });
                 });
-            var styleUrl;
-            if (opts && opts.externalStyleUrl &&
-                gaUrlUtils.isValid(opts.externalStyleUrl)) {
-              styleUrl = opts.externalStyleUrl;
-            } else {
-              styleUrl = $window.location.protocol + config.styleUrl;
-            }
+
+            styleUrl = gaUrlUtils.resolveStyleUrl(
+                config.styleUrl, opts.externalStyleUrl);
             // IE doesn't understand agnostic URLs
             stylePromises[bodId] = gaUrlUtils.proxifyUrl(styleUrl).
                 then(function(proxyStyleUrl) {
@@ -778,17 +773,11 @@ goog.require('ga_urlutils_service');
               });
             }
 
-            var styleUrl2 = config.styleUrl;
-            if (opts && opts.externalStyleUrl &&
-                gaUrlUtils.isValid(opts.externalStyleUrl)) {
-              styleUrl2 = opts.externalStyleUrl;
-            } else if (/^\/\//.test(styleUrl2)) {
-              styleUrl2 = $window.location.protocol + config.styleUrl;
-            }
-
-            if (config.sourceId && styleUrl2) {
+            styleUrl = gaUrlUtils.resolveStyleUrl(
+                config.styleUrl, opts.externalStyleUrl);
+            if (config.sourceId && styleUrl) {
               var sourceId = config.sourceId;
-              gaGLStyle.get(styleUrl2).then((data) => {
+              gaGLStyle.get(styleUrl).then((data) => {
                 var glStyle = data.style;
                 var spriteData = data.sprite;
                 var spriteUrl = glStyle.sprite + '.png';

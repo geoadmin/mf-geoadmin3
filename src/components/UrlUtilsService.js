@@ -20,6 +20,8 @@ goog.provide('ga_urlutils_service');
 
         var SUBDOMAINS_REGEXP = /\{s(:(([\w,]?)+))?\}/;
 
+        var AGNOSTIC_REGEXP = /^\/\//;
+
         // Test validity of a URL
         this.isValid = function(url) {
           return (!!url && url.length > 0 && URL_REGEXP.test(url));
@@ -54,6 +56,19 @@ goog.provide('ga_urlutils_service');
         // Test using a head request if the remote resource enables CORS
         this.isCorsEnabled = function(url) {
           return $http.head(url, { timeout: 1500 });
+        };
+
+        this.resolveStyleUrl = function(styleUrl, externalStyleUrl) {
+          var url = styleUrl;
+          if (AGNOSTIC_REGEXP.test(externalStyleUrl)) {
+            externalStyleUrl = $window.location.protocol + externalStyleUrl;
+          }
+          if (externalStyleUrl && this.isValid(externalStyleUrl)) {
+            url = externalStyleUrl;
+          } else if (AGNOSTIC_REGEXP.test(styleUrl)) {
+            url = $window.location.protocol + styleUrl;
+          }
+          return url;
         };
 
         this.buildProxyUrl = function(url) {
