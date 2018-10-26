@@ -483,5 +483,17 @@
   "layer_cant_be_displayed_in_3d": "",
   "layer_cant_be_printed": "",
   "print_request_too_large": "",
-  "whatsapp_tooltip": ""
+  "whatsapp_tooltip": "",
+  "vector_feedback_description_title": "",
+  "vector_feedback_description_text": "",
+  "vector_feedback_select_style": "",
+  "vector_feedback_choose_layer": "",
+  "vector_feedback_choose_color": "",
+  "vector_feedback_labels_on_off": "",
+  "vector_feedback_getting_started_title": "",
+  "vector_feedback_getting_started_1": "",
+  "vector_feedback_getting_started_2": "",
+  "vector_feedback_getting_started_3": "",
+  "vector_feedback_survey_title": "",
+  "vector_feedback_survey_btn_text": ""
 }

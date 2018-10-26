@@ -79,7 +79,7 @@ goog.provide('ga_vector_feedback_controller');
         },
         {
           id: 'ch.swisstopo.leichte-basiskarte.vt',
-          label: 'Light Map'
+          label: 'Basemap light'
         },
         {
           id: 'ch.swisstopo.hybridkarte.vt',
@@ -91,11 +91,6 @@ goog.provide('ga_vector_feedback_controller');
         { value: true, label: 'Show' },
         { value: false, label: 'Hide' }
       ]
-    };
-
-    $scope.submit = function() {
-      console.log($scope.options.comment);
-      console.log($scope.options.likeSelect);
     };
   });
 })();

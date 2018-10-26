@@ -22,8 +22,7 @@ goog.require('ga_maputils_service');
       templateUrl: 'components/vectorfeedback/partials/vectorfeedback.html',
       scope: {
         map: '=gaVectorFeedbackMap',
-        options: '=gaVectorFeedbackOptions',
-        submit: '=gaVectorFeedbackSubmit'
+        options: '=gaVectorFeedbackOptions'
       },
       link: function(scope, element, attrs) {
         var map = scope.map;

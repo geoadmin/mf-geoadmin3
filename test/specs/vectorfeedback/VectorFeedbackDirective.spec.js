@@ -1,17 +1,15 @@
 /* eslint-disable max-len */
 describe('ga_vector_feedback_directive', function() {
-  var $rootScope, $compile, el, map, options, submit, spySetById;
+  var $rootScope, $compile, el, map, options, spySetById;
 
-  var loadDirective = function(map, options, submit) {
+  var loadDirective = function(map, options) {
     var scope = $rootScope.$new();
     scope.map = map;
     scope.options = options;
-    scope.submit = submit;
     var tpl =
       '<div ga-vector-feedback ' +
       'ga-vector-feedback-map="::map"' +
-      'ga-vector-feedback-options="options"' +
-      'ga-vector-feedback-submit="::submit">' +
+      'ga-vector-feedback-options="options">' +
       '</div>';
     el = $compile(tpl)(scope);
     $rootScope.$digest();
@@ -87,18 +85,12 @@ describe('ga_vector_feedback_directive', function() {
         }
       ]
     };
-    submit = sinon.spy(function() {});
   });
 
   it('creates the vector feedback directive', function() {
-    loadDirective(map, options, submit);
-    var submitBtn = el.find('button[type=submit]');
+    loadDirective(map, options);
     expect(el.find('.ga-vector-feeback-service-link').attr('href')).to.equal(
         'https://service-doc.html'
     );
-    expect(el.find('textarea').length).to.equal(1);
-    expect(submit.callCount).to.equal(0);
-    submitBtn.click();
-    expect(submit.callCount).to.equal(1);
   });
 });
