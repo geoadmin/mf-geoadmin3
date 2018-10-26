@@ -417,7 +417,7 @@ describe('ga_urlutils_service', function() {
 
       it('uses the base style url if external style is undefined', function() {
         var styleUrl = 'https://toto.admin.ch/style.json';
-        var externalUrl = undefined;
+        var externalUrl;
         var url = gaUrlUtils.resolveStyleUrl(styleUrl, externalUrl);
         expect(url).to.equal(styleUrl);
       });
@@ -431,7 +431,7 @@ describe('ga_urlutils_service', function() {
 
       it('adds to protocol to base style url if agnostic', function() {
         var styleUrl = '//toto.admin.ch/style.json';
-        var externalUrl = undefined;
+        var externalUrl;
         var url = gaUrlUtils.resolveStyleUrl(styleUrl, externalUrl);
         expect(url).to.equal('http:' + styleUrl);
       });
