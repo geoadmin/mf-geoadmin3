@@ -5,11 +5,12 @@ goog.require('ga_background_service');
 (function() {
 
   var module = angular.module('ga_backgroundselector_directive', [
-    'ga_background_service'
+    'ga_background_service',
+    'pascalprecht.translate'
   ]);
 
   module.directive('gaBackgroundSelector',
-      function(gaBackground) {
+      function($window, $translate, gaBackground) {
         return {
           restrict: 'A',
           templateUrl:
@@ -21,6 +22,7 @@ goog.require('ga_background_service');
           link: function(scope, elt, attrs) {
             scope.isBackgroundSelectorClosed = true;
             scope.backgroundLayers = [];
+            scope.styleUrl = false;
 
             scope.$watch('currentLayer', function(newVal, oldVal) {
               if (oldVal !== newVal) {
@@ -33,6 +35,7 @@ goog.require('ga_background_service');
                 var ol3dEnabled = scope.ol3d && scope.ol3d.getEnabled();
                 if (!(bgLayer.disable3d && ol3dEnabled)) {
                   scope.currentLayer = bgLayer;
+                  scope.styleUrl = !!scope.currentLayer.styleUrl;
                 }
               }
               scope.toggleMenu();
@@ -58,12 +61,17 @@ goog.require('ga_background_service');
             gaBackground.loadConfig().then(function() {
               scope.backgroundLayers = gaBackground.getBackgrounds();
               scope.currentLayer = gaBackground.get();
+              scope.styleUrl = !!scope.currentLayer.styleUrl;
             });
             scope.$on('gaBgChange', function(evt, newBg) {
               if (!scope.currentLayer || newBg.id !== scope.currentLayer.id) {
                 scope.currentLayer = newBg;
               }
             });
+
+            scope.showWarning = function() {
+              $window.alert($translate.instant('custom_style'));
+            };
 
             elt.find('.ga-bg-layer-bt').on('click', scope.toggleMenu);
           }
