@@ -50,6 +50,9 @@
   &.collapsed {
     .fa-caret-down {
       transform: rotate(360deg);
+      @media (max-width: @screen-sm), (max-width: @screen-xs) {
+        margin-top: 13px;
+      }
     }
   }
 }
@@ -129,4 +132,12 @@
   &.active-color {
     border: 3px solid @red;
   }
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
+    width: 37px;
+  }
+}
+
+a.ga-feedback-survey-link {
+  text-decoration: none;
+  color: @brand-primary;
 }
