@@ -1,6 +1,7 @@
 goog.provide('ga_backgroundselector_directive');
 
 goog.require('ga_background_service');
+goog.require('ga_browsersniffer_service');
 goog.require('ga_event_service');
 
 (function() {
@@ -14,7 +15,8 @@ goog.require('ga_event_service');
       $window,
       $translate,
       gaBackground,
-      gaEvent
+      gaEvent,
+      gaBrowserSniffer
   ) {
     return {
       restrict: 'A',
@@ -28,6 +30,7 @@ goog.require('ga_event_service');
         scope.isBackgroundSelectorClosed = true;
         scope.backgroundLayers = [];
         scope.styleUrl = false;
+        scope.mobile = gaBrowserSniffer.mobile;
 
         scope.$watch('currentLayer', function(newVal, oldVal) {
           if (oldVal !== newVal) {
@@ -78,7 +81,7 @@ goog.require('ga_event_service');
           }
         });
 
-        scope.showWarning = function(layer) {
+        var showWarning = function(layer) {
           var url =
             layer && layer.styleUrl ?
               layer.styleUrl :
@@ -88,31 +91,46 @@ goog.require('ga_event_service');
                   'external_data_warning').replace('--URL--', url)
           );
         };
-        // Display the third party data tooltip, only on mouse events
-        var tooltipOptions = {
-          trigger: 'manual',
-          selector: '.fa-user',
-          container: 'body',
-          placement: 'top',
-          title: function() {
-            return $translate.instant('external_data_tooltip');
-          },
-          template:
-            '<div class="tooltip ga-red-tooltip">' +
-            '<div class="tooltip-arrow"></div>' +
-            '<div class="tooltip-inner"></div>' +
-            '</div>'
+
+        scope.showWarning = function(layer) {
+          if (scope.mobile) return
+          showWarning(layer);
         };
 
-        gaEvent.onMouseOverOut(elt, function(evt) {
-          var link = $(evt.target);
-          if (!link.data('bs.tooltip')) {
-            link.tooltip(tooltipOptions);
-          }
-          link.tooltip('show');
-        }, function(evt) {
-          $(evt.target).tooltip('hide');
-        }, tooltipOptions.selector);
+        if (!scope.mobile) {
+          var tooltipOptions = {
+            trigger: 'manual',
+            selector: '.fa-user',
+            container: 'body',
+            placement: 'top',
+            title: function() {
+              return $translate.instant('external_data_tooltip');
+            },
+            template:
+              '<div class="tooltip ga-red-tooltip">' +
+              '<div class="tooltip-arrow"></div>' +
+              '<div class="tooltip-inner"></div>' +
+              '</div>'
+          };
+          gaEvent.onMouseOverOut(elt, function(evt) {
+            var link = $(evt.target);
+            if (!link.data('bs.tooltip')) {
+              link.tooltip(tooltipOptions);
+            }
+            link.tooltip('show');
+          }, function(evt) {
+            $(evt.target).tooltip('hide');
+          }, tooltipOptions.selector);
+        }
+
+        // alert message only on long press on mobile
+        if (scope.mobile) {
+          elt.parent().find('button').on('contextmenu', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showWarning();
+          });
+        }
 
         elt.find('.ga-bg-layer-bt').on('click', scope.toggleMenu);
       }
