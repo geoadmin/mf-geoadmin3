@@ -4,7 +4,7 @@ goog.require('ga_translation_service');
 
 (function() {
   var module = angular.module('ga_vector_feedback_modal_directive', [
-      'ga_translation_service'
+    'ga_translation_service'
   ]);
 
   module.directive('gaVectorFeedbackModal', function($rootScope, gaLang) {

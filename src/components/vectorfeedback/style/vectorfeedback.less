@@ -13,9 +13,17 @@
   @media (max-width: @screen-tablet) {
     width: 50%;
   }
+  @media (max-height: @screen-m-height) {
+    max-height: 575px;
+  }
+  @media (max-height: @screen-ms-height) {
+    max-height: 543px;
+  }
+  @media (max-height: @screen-s-height) {
+    max-height: unit(@screen-xs-height - @small-header-height, px);
+  }
   @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
     top: unit(@small-header-height + 5, px);
-    max-height: 565px;
   }
   @media (max-width: @screen-sm), (max-width: @screen-xs) {
     max-width: 100%;
@@ -43,27 +51,25 @@
   .fa-caret-down {
     color: white;
     float: right;
-    margin-top: 18px;
+    margin-top: 14px;
+    margin-right: 8px;
     transform: rotate(180deg);
     transition: transform 0.2s ease, -webkit-transform 0.2s ease;
   }
   &.collapsed {
     .fa-caret-down {
       transform: rotate(360deg);
-      @media (max-width: @screen-sm), (max-width: @screen-xs) {
-        margin-top: 13px;
-      }
     }
   }
 }
 
 .ga-vector-feedback-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   padding: 10px 0;
   color: white;
   @media (max-width: @screen-sm), (max-width: @screen-xs) {
-    font-size: 16px;
+    font-size: 13px;
   }
 }
 
@@ -93,11 +99,11 @@
 }
 
 .ga-vector-feedback-item-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 300;
   width: 60%;
   @media (max-width: @screen-sm), (max-width: @screen-xs) {
-    font-size: 15px;
+    font-size: 12px;
     width: 100%;
   }
 }
@@ -105,10 +111,6 @@
 .ga-vector-feedback-item-select-wrapper {
   width: 40%;
   float: right;
-  a {
-    color: white;
-    text-decoration: underline;
-  }
   @media (max-width: @screen-sm), (max-width: @screen-xs) {
     width: 100%;
   }
@@ -124,6 +126,15 @@
   }
 }
 
+.ga-vector-feedback-item-text-wrapper {
+  width: 100%;
+  float: right;
+  a {
+    color: white;
+    text-decoration: underline;
+  }
+}
+
 .ga-vector-feedback-color-button {
   width: 39px;
   height: 25px;
@@ -132,7 +143,7 @@
   &.active-color {
     border: 3px solid @red;
   }
-  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
+  @media (max-width: @screen-tablet), (max-height: @screen-m-height) {
     width: 37px;
   }
 }
