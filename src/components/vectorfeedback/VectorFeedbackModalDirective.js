@@ -15,6 +15,8 @@ goog.require('ga_translation_service');
           '/vectorfeedbackmodal.html',
       scope: {},
       link: function(scope) {
+        scope.url = 'https://findmind.ch/c/vectorsimple';
+        // Need permalink enabled url
         scope.lang = gaLang.getNoRm();
         $rootScope.$on('$translateChangeEnd', function() {
           scope.lang = gaLang.getNoRm();
