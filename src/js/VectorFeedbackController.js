@@ -30,8 +30,6 @@ goog.provide('ga_vector_feedback_controller');
     $scope.options = {
       serviceDocUrl: apiUrl + '/services/sdiservices.html',
       mobile: mobile,
-      comment: '',
-      likeSelect: '',
       layers: {
         'omt.vt': {
           selectableLayers: [

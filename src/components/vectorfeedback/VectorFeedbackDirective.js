@@ -34,14 +34,17 @@ goog.require('ga_maputils_service');
             scope.options.activeColor = color;
           }
           var olLayers = gaMapUtils.getMapBackgroundLayersArray(map);
-          var edit = scope.options.selectedLayer.edit.slice();
-          edit[2] = edit[2].replace('{color}', color);
-          var glStyle = gaGLStyle.edit([edit]);
-          gaMapUtils.applyGLStyleToOlLayers(
-              olLayers,
-              glStyle.style,
-              glStyle.sprite
-          );
+          var edit = scope.options.selectedLayer.edit;
+          if (edit) {
+            edit = edit.slice();
+            edit[2] = edit[2].replace('{color}', color);
+            var glStyle = gaGLStyle.edit([edit]);
+            gaMapUtils.applyGLStyleToOlLayers(
+                olLayers,
+                glStyle.style,
+                glStyle.sprite
+            );
+          }
         };
 
         var registerSelectedLayerWatcher = function() {
