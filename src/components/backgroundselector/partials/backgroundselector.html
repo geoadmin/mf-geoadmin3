@@ -3,8 +3,10 @@
      class="ga-bg-layer ga-bg-layer-{{$index}} {{getClass(layer)}}"
      translate-attr="{title: layer.label}">
   <div class="ga-bg-layer-text" translate>{{layer.label}}</div>
+  <button class="ga-icon ga-btn fa fa-user" ng-click="showWarning(layer)" ng-show="!!layer.styleUrl"></button>
 </div>
 <div class="ga-bg-layer-bt" translate-attr="{title: 'bg_toggle'}">
   <div class="ga-bg-layer-bt-text" translate>bg_chooser_label</div>
+  <button class="ga-icon ga-btn fa fa-user" ng-click="showWarning()" ng-show="!!styleUrl"></button>
   <i class="fa fa-chevron-sign-right"></i>
-</div> 
+</div>

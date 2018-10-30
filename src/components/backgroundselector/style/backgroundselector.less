@@ -153,6 +153,25 @@
       .transformHorizontal(0);
     }
   }
+
+  &.ga-open .ga-bg-layer-bt {
+    button.fa-user {
+      display: none;
+      @media (max-width: @screen-tablet) {
+        display: block;
+      }
+    }
+  }
+  .fa-user {
+    float: right;
+    color: red;
+    top: 3px;
+    font-size: 1.8em;
+    @media (max-width: @screen-tablet) {
+      font-size: 1.1rem;
+      right:  3px;
+    }
+  }
 }
 
 .ga-3d-active {
