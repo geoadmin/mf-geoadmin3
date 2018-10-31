@@ -1,22 +1,22 @@
-goog.provide('ga_filestorage_service');
+goog.provide('ga_glstylestorage_service');
 
 goog.require('ga_publicstorage_service');
 
 (function() {
 
-  var module = angular.module('ga_filestorage_service', [
+  var module = angular.module('ga_glstylestorage_service', [
     'ga_publicstorage_service'
   ]);
 
   /**
-   * This service can create/read/write/delete a KML on public s3 bucket.
+   * This service can create/read/write/delete a glStyle on public s3 bucket.
    */
-  module.provider('gaFileStorage', function() {
+  module.provider('gaGlStyleStorage', function() {
     this.$get = function($http, $q, gaPublicStorage) {
-      var endPoint = '/files';
-      var contentType = 'application/vnd.google-earth.kml+xml';
+      var endPoint = '/gl-styles';
+      var contentType = 'application/json';
 
-      var FileStorage = function() {
+      var GlStyleStorage = function() {
 
         this.get = function(fileId) {
           return gaPublicStorage.get(endPoint, fileId);
@@ -39,7 +39,7 @@ goog.require('ga_publicstorage_service');
         };
 
       };
-      return new FileStorage();
+      return new GlStyleStorage();
     };
   });
 })();

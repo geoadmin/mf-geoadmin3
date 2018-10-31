@@ -73,7 +73,7 @@ goog.provide('ga_definepropertiesforlayer_service');
           },
           adminId: {
             get: function() {
-              return this.get('adminId') || this.bodId;
+              return this.get('adminId');
             },
             set: function(val) {
               this.set('adminId', val);
@@ -212,6 +212,10 @@ goog.provide('ga_definepropertiesforlayer_service');
             value: null
           },
           externalStyleUrl: {
+            writable: true,
+            value: null
+          },
+          glStyle: {
             writable: true,
             value: null
           },

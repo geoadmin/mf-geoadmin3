@@ -19,42 +19,47 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaMvt', function() {
 
-    this.$get = function($http, $window, gaGlStyle, gaLayers, gaMapUtils,
+    this.$get = function($http, $window, $q, gaGlStyle, gaLayers, gaMapUtils,
         gaUrlUtils) {
 
       var Mvt = function() {
 
-        // This function will load the style to apply then aplly it.
+        // This function will load the gl style of a layer.
         this.reload = function(olLayer) {
           if (!olLayer || (!(olLayer instanceof ol.layer.Group) &&
               !olLayer.sourceId)) {
-            return;
+            return $q.when();
           }
 
           var config = gaLayers.getLayer(olLayer.id);
           if (!config) {
-            return;
+            return $q.when();
           }
 
-          var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl, olLayer);
+          var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl,
+              olLayer.externalStyleUrl);
+
           if (!styleUrl) {
-            return;
+            return $q.when();
           }
 
           if (olLayer instanceof ol.layer.Group) {
             var that = this;
-            olLayer.getLayers().forEach(function(sublayer) {
+            var children = olLayer.getLayers().getArray();
+            for (var i = 0; i < children.length; i++) {
+              var sublayer = children[i];
               if (!sublayer.sourceId) {
-                return;
+                continue;
               }
               sublayer.externalStyleUrl = olLayer.externalStyleUrl;
-              that.reload(sublayer);
-            });
-            return;
+              return that.reload(sublayer);
+            }
+            return $q.when();
           }
 
-          gaGlStyle.get(styleUrl).then(function(glStyle) {
+          return gaGlStyle.get(styleUrl).then(function(glStyle) {
             gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
+            return glStyle;
           });
         };
       };

@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-describe('ga_filestorage_service', function() {
+describe('ga_glstylestorage_service', function() {
 
-  describe('gaFileStorage', function() {
-    var gaFileStorage, $httpBackend,
+  describe('gaGlStyleStorage', function() {
+    var gaGlStyleStorage, $httpBackend,
       adminId = 'aaaaaaaaaaaaaaaaaaaaa', // length must > 20
       fileId = 'fffffffffffffffffffff', // length must > 20
       fileContent = '<kml></kml>',
@@ -20,7 +20,7 @@ describe('ga_filestorage_service', function() {
 
     beforeEach(function() {
       inject(function($injector, gaGlobalOptions) {
-        gaFileStorage = $injector.get('gaFileStorage');
+        gaGlStyleStorage = $injector.get('gaGlStyleStorage');
         $httpBackend = $injector.get('$httpBackend');
         serviceUrl = gaGlobalOptions.apiUrl;
         publicUrl = gaGlobalOptions.publicUrl;
@@ -34,44 +34,44 @@ describe('ga_filestorage_service', function() {
 
     describe('#getFilIdFromFileUrl', function() {
       it('gets file\'s id from file\'s url', inject(function() {
-        var res = gaFileStorage.getFileIdFromFileUrl(fileInfo.fileUrl);
+        var res = gaGlStyleStorage.getFileIdFromFileUrl(fileInfo.fileUrl);
         expect(res).to.equal(fileId);
-        res = gaFileStorage.getFileIdFromFileUrl(fileInfoHttps.fileUrl);
+        res = gaGlStyleStorage.getFileIdFromFileUrl(fileInfoHttps.fileUrl);
         expect(res).to.equal(fileId);
       }));
     });
 
     describe('#get()', function() {
       it('gets a file', function() {
-        var expectedUrl = publicUrl + '/files/' + fileId;
+        var expectedUrl = publicUrl + '/gl-styles/' + fileId;
         $httpBackend.expectGET(expectedUrl).respond(fileContent);
-        gaFileStorage.get(fileId);
+        gaGlStyleStorage.get(fileId);
         $httpBackend.flush();
       });
     });
 
     describe('#save()', function() {
       it('creates a file', inject(function($timeout, gaGlobalOptions) {
-        $httpBackend.expectPOST(serviceUrl + '/files', fileContent).respond(fileInfo);
-        gaFileStorage.save(null, fileContent);
+        $httpBackend.expectPOST(serviceUrl + '/gl-styles', fileContent).respond(fileInfo);
+        gaGlStyleStorage.save(null, fileContent);
         $httpBackend.flush();
       }));
 
       it('updates a file', inject(function($timeout) {
-        var expectedUrl = serviceUrl + '/files/' + adminId;
+        var expectedUrl = serviceUrl + '/gl-styles/' + adminId;
         $httpBackend.expectPOST(expectedUrl, fileContent, function(headers) {
-          return headers['Content-Type'] === 'application/vnd.google-earth.kml+xml';
+          return headers['Content-Type'] === 'application/json';
         }).respond(fileInfo);
-        gaFileStorage.save(adminId, fileContent);
+        gaGlStyleStorage.save(adminId, fileContent);
         $httpBackend.flush();
       }));
     });
 
     describe('#del()', function() {
       it('deletes a file', inject(function($timeout) {
-        var expectedUrl = serviceUrl + '/files/' + adminId;
+        var expectedUrl = serviceUrl + '/gl-styles/' + adminId;
         $httpBackend.expectDELETE(expectedUrl).respond({success: true});
-        gaFileStorage.del(adminId);
+        gaGlStyleStorage.del(adminId);
         $httpBackend.flush();
       }));
     });

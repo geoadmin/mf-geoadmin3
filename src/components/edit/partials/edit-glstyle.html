@@ -1,0 +1,21 @@
+<!-- List of modifyable layers -->
+<label>
+  <span translate>edit_glstyle_choose_layer</span>:
+  <select ng-model="selectedLayer"
+          ng-options="(s.id | translate) for s in selectableLayers">
+  </select>
+</label>
+
+<div ng-repeat="e in config[selectedLayer.id]">
+  <label ng-if="useColorSelector(e)">
+    <span translate>edit_glstyle_choose_color</span>:
+    <select ng-show="!useInputColorSelector()"
+            ng-model="selectedLayer[e.split('|')[0]][e.split('|')[1]]"
+            ng-change="save()">
+        <option ng-repeat="c in options.colors" value="{{c.value}}" translate>{{c.label}}</option>
+    </select>
+    <input type="color" ng-show="useInputColorSelector()"
+           ng-model="selectedLayer[e.split('|')[0]][e.split('|')[1]]"
+           ng-change="save()" />
+  </label>
+</div>

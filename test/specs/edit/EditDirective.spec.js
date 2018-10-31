@@ -2,8 +2,8 @@
 describe('ga_edit_directive', function() {
 
   var map, elt, parentScope, $timeout, $httpBackend, $rootScope,
-    $compile, gaDebounce, gaExportGlStyle, gaFileStorage, gaGlStyle, gaLayers,
-    $window, scope, $q;
+    $compile, gaDebounce, gaExportGlStyle, gaGlStyleStorage, gaGlStyle, gaLayers,
+    $window, scope, $q, gaMapUtils;
 
   var loadDirective = function(map, layer, active) {
     parentScope = $rootScope.$new();
@@ -45,10 +45,11 @@ describe('ga_edit_directive', function() {
     $httpBackend = $injector.get('$httpBackend');
     $window = $injector.get('$window');
     gaDebounce = $injector.get('gaDebounce');
-    gaFileStorage = $injector.get('gaFileStorage');
+    gaGlStyleStorage = $injector.get('gaGlStyleStorage');
     gaExportGlStyle = $injector.get('gaExportGlStyle');
     gaGlStyle = $injector.get('gaGlStyle');
     gaLayers = $injector.get('gaLayers');
+    gaMapUtils = $injector.get('gaMapUtils');
   };
 
   beforeEach(function() {
@@ -101,6 +102,7 @@ describe('ga_edit_directive', function() {
 
     it('display html elements', function() {
       loadDirective(map);
+      expect(elt.find('[ng-if="!layer.glStyle"]').length).to.be(1);
       expect(elt.find('.ga-more').length).to.be(1);
       expect(elt.find('.ga-edit-info-save').length).to.be(1);
       expect(elt.find('.ga-edit-disclaimer').length).to.be(1);
@@ -123,9 +125,8 @@ describe('ga_edit_directive', function() {
     */
   });
 
-  describe('when a layer specified', function() {
+  describe('when a layer without style is specified', function() {
     var sublayer, layer;
-    var dataStr = '{data: "value"}';
 
     beforeEach(function() {
       sublayer = new ol.layer.Layer({});
@@ -143,13 +144,40 @@ describe('ga_edit_directive', function() {
       loadDirective(map, layer);
       expect(scope.map).to.be(map);
       expect(scope.layer).to.be(layer);
+      expect(elt.find('[ng-if="!layer.glStyle"]').length).to.be(1);
+    });
+  });
+
+  describe('when a layer with a style is specified', function() {
+    var sublayer, layer;
+    var glStyle = {data: 'value'};
+    var dataStr = '{data: "value"}';
+
+    beforeEach(function() {
+      sublayer = new ol.layer.Layer({});
+      sublayer.id = 'subfoo';
+      sublayer.sourceId = 'fooSource';
+      layer = new ol.layer.Group({
+        layers: [
+          sublayer
+        ]
+      });
+      layer.id = 'foo';
+      layer.glStyle = glStyle;
+    });
+
+    it('set scope values', function() {
+      loadDirective(map, layer);
+      expect(scope.map).to.be(map);
+      expect(scope.layer).to.be(layer);
+      expect(elt.find('[ng-if="!layer.glStyle"]').length).to.be(0);
     });
 
     describe('#saveDebounced', function() {
 
-      it('does nothing if ne adminId or an externalStyleUrl are specifed', function() {
+      it('does nothing if an glStylesAdminId or an externalStyleUrl are specifed', function() {
         loadDirective(map, layer);
-        var stub = sinon.stub(gaExportGlStyle, 'create');
+        var stub = sinon.stub(gaExportGlStyle, 'create').returns($q.when());
         scope.saveDebounced(null, layer);
         expect(stub.callCount).to.be(0);
       });
@@ -157,14 +185,16 @@ describe('ga_edit_directive', function() {
       it('saves a file in the file storage from the adminId', function() {
         loadDirective(map, layer);
         layer.adminId = 'foo';
-        var stub = sinon.stub(gaExportGlStyle, 'create').withArgs(layer).
+        var glStyle = { data: 'value' };
+
+        var stub = sinon.stub(gaExportGlStyle, 'create').withArgs(glStyle).
             returns($q.when(dataStr));
-        var stub2 = sinon.stub(gaFileStorage, 'save').withArgs(layer.adminId, dataStr).
+        var stub2 = sinon.stub(gaGlStyleStorage, 'save').withArgs(layer.adminId, dataStr).
             returns($q.when({
               adminId: 'bar',
               fileUrl: 'groot'
             }));
-        scope.saveDebounced(null, layer);
+        scope.saveDebounced(null, layer, glStyle);
         $timeout.flush(2000);
         expect(stub.callCount).to.be(1);
         expect(stub2.callCount).to.be(1);
@@ -173,23 +203,20 @@ describe('ga_edit_directive', function() {
         expect(layer.externalStyleUrl).to.be('groot');
       });
 
-      it('saves a file in the file storage from the externalStyleUrl', function() {
+      it('saves a file in the file storage from a  glStyle', function() {
         loadDirective(map, layer);
-        layer.externalStyleUrl = 'foo';
-        var stub = sinon.stub(gaExportGlStyle, 'create').withArgs(layer).
+        layer.externalStyleUrl = undefined;
+        var stub = sinon.stub(gaExportGlStyle, 'create').withArgs(glStyle).
             returns($q.when(dataStr));
-        var stub2 = sinon.stub(gaFileStorage, 'save').withArgs('groot', dataStr).
+        var stub2 = sinon.stub(gaGlStyleStorage, 'save').withArgs(undefined, dataStr).
             returns($q.when({
               adminId: 'bar',
               fileUrl: 'groot'
             }));
-        var stub3 = sinon.stub(gaFileStorage, 'getFileIdFromFileUrl').withArgs('foo').
-            returns('groot');
-        scope.saveDebounced(null, layer);
+        scope.saveDebounced(null, layer, glStyle);
         $timeout.flush(2000);
         expect(stub.callCount).to.be(1);
         expect(stub2.callCount).to.be(1);
-        expect(stub3.callCount).to.be(1);
         expect(scope.statusMsgId).to.be('edit_file_saved');
         expect(layer.adminId).to.be('bar');
         expect(layer.externalStyleUrl).to.be('groot');
@@ -200,13 +227,14 @@ describe('ga_edit_directive', function() {
 
       it('returns true', function() {
         loadDirective(map, layer);
-        layer.externalStyleUrl = 'foo';
+        layer.glStyle = 'foo';
         expect(scope.canExport(layer)).to.be(true);
       });
 
       it('returns false', function() {
         loadDirective(map, layer);
         expect(scope.canExport()).to.be(false);
+        layer.glStyle = undefined;
         expect(scope.canExport(layer)).to.be(false);
       });
     });
@@ -223,9 +251,10 @@ describe('ga_edit_directive', function() {
 
       beforeEach(function() {
         loadDirective(map, layer);
+        layer.glStyle = glStyle;
         spy = sinon.stub(evt, 'preventDefault');
         stub = sinon.stub(gaExportGlStyle, 'createAndDownload').
-            withArgs(layer);
+            withArgs(glStyle);
       });
 
       afterEach(function() {
@@ -269,10 +298,7 @@ describe('ga_edit_directive', function() {
       it('resets the style of the layer with the config.styleUrl value', function() {
         layer.id = 'foo';
         layer.externalStyleUrl = 'fooExt';
-        var glStyle = {
-          style: { sprite: 'value' },
-          sprite: {}
-        };
+        var glStyle = { sprite: 'value' };
 
         sinon.stub(gaLayers, 'getLayer').
             withArgs('foo').returns({
@@ -284,15 +310,15 @@ describe('ga_edit_directive', function() {
             });
         sinon.stub(gaGlStyle, 'get').withArgs('http://bar').returns($q.when(glStyle));
 
-        var stub2 = sinon.stub($window.olms, 'stylefunction').withArgs(
-            sublayer, glStyle.style, 'fooSource', undefined, glStyle.sprite, 'value.png',
-            ['Helvetica']
-        );
+        var stub3 = sinon.stub(gaMapUtils, 'applyGlStyleToOlLayer').withArgs(layer.getLayers().item(0), glStyle).returns();
         scope.reset(evt, layer);
         expect(sublayer.externalStyleUrl).to.be(layer.externalStyleUrl);
         $rootScope.$digest();
-        expect(stub2.callCount).to.be(1);
-        $window.olms.stylefunction.restore();
+        $rootScope.$digest();
+        expect(stub3.callCount).to.be(1);
+
+        gaGlStyle.get.restore();
+        gaMapUtils.applyGlStyleToOlLayer.restore();
       });
 
       it('doesn\'t reset the style', function() {

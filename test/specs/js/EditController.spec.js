@@ -14,6 +14,15 @@ describe('ga_edit_controller', function() {
       scope = elt.scope();
     };
 
+    var provideServices = function($provide) {
+      // block loading of layersConfig
+      $provide.value('gaLayers', {
+        getLayer: function() {
+          return {}
+        }
+      });
+    };
+
     var injectServices = function($injector) {
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
@@ -34,6 +43,11 @@ describe('ga_edit_controller', function() {
 
     describe('using default options', function() {
       beforeEach(function() {
+
+        module(function($provide) {
+          provideServices($provide);
+        });
+
         inject(function($injector) {
           injectServices($injector);
         });
@@ -60,6 +74,24 @@ describe('ga_edit_controller', function() {
         expect(scope.layer).to.be(layer);
         expect(scope.globals.isEditActive).to.be(false);
         expect(scope.globals.pulldownShown).to.be(false);
+        expect(scope.globals.pulldownShown).to.be(false);
+      });
+
+      it('set scope values on gaBgChange event', function() {
+        var layer = new ol.layer.Layer({});
+        expect(scope.layer).to.be(undefined);
+        $rootScope.$broadcast('gaBgChange', {olLayer: layer});
+        $rootScope.$digest();
+        expect(scope.layer).to.be(layer);
+        $rootScope.$broadcast('gaBgChange', {});
+        $rootScope.$digest();
+        expect(scope.layer).to.be(undefined);
+        $rootScope.$broadcast('gaBgChange', {olLayer: layer});
+        $rootScope.$digest();
+        expect(scope.layer).to.be(layer);
+        $rootScope.$broadcast('gaBgChange');
+        $rootScope.$digest();
+        expect(scope.layer).to.be(undefined);
       });
     });
   });

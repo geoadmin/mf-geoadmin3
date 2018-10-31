@@ -17,7 +17,7 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaMapUtils', function() {
     this.$get = function($window, gaGlobalOptions, gaUrlUtils, $q,
-        gaDefinePropertiesForLayer, $http, $rootScope, gaHeight) {
+        gaDefinePropertiesForLayer, $http, $rootScope, gaHeight, gaGlStyle) {
       var resolutions = gaGlobalOptions.resolutions;
       var lodsForRes = gaGlobalOptions.lods;
       var isExtentEmpty = function(extent) {
@@ -494,7 +494,7 @@ goog.require('ga_urlutils_service');
          * Applies a gl style to an ol layer
          */
         applyGlStyleToOlLayer: function(olLayer, glStyle) {
-          if (!olLayer || !glStyle || !glStyle.style) {
+          if (!olLayer || !glStyle) {
             return;
           }
 
@@ -504,6 +504,7 @@ goog.require('ga_urlutils_service');
             layers.forEach(function(subOlLayer) {
               that.applyGlStyleToOlLayer(subOlLayer, glStyle);
             })
+            olLayer.glStyle = glStyle;
             return;
           }
 
@@ -511,13 +512,19 @@ goog.require('ga_urlutils_service');
             return;
           }
 
-          var style = glStyle.style;
-          var sprite = glStyle.sprite;
-          var spriteUrl = style.sprite + '.png';
-          $window.olms.stylefunction(olLayer, style,
-              olLayer.sourceId,
-              undefined, sprite, spriteUrl,
-              ['Helvetica']);
+          gaGlStyle.getSpriteDataFromGlStyle(glStyle).then(
+              function(spriteData) {
+                $window.olms.stylefunction(
+                    olLayer,
+                    glStyle,
+                    olLayer.sourceId,
+                    undefined,
+                    spriteData,
+                    glStyle.sprite + '.png',
+                    ['Helvetica']);
+                olLayer.glStyle = glStyle;
+              }
+          );
         },
 
         // This function creates  an ol source and set it to the layer from the

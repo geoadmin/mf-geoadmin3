@@ -16,7 +16,7 @@ goog.require('ga_glstyle_service');
    * features on an ol map
    */
   module.provider('gaExportGlStyle', function() {
-    this.$get = function($translate, $window, $document, $http,
+    this.$get = function($translate, $window, $document, $http, $q,
         gaBrowserSniffer, gaGlStyle) {
 
       var downloadUrl = this.downloadUrl;
@@ -29,19 +29,23 @@ goog.require('ga_glstyle_service');
 
       var Export = function() {
 
-        this.create = function(layer) {
-          return gaGlStyle.get(layer.externalStyleUrl).then(function(data) {
-            return JSON.stringify(data.style);
-          });
+        this.create = function(glStyle) {
+          if (!glStyle) {
+            return $q.when();
+          }
+          return $q.when(JSON.stringify(glStyle));
         };
 
-        this.createAndDownload = function(layer) {
+        this.createAndDownload = function(glStyle) {
+          if (!glStyle) {
+            return;
+          }
           var now = $window.moment().format('YYYYMMDDhhmmss');
           var saveAs = $window.saveAs;
           var fileName = 'map.geo.admin.ch_GLSTYLE_' + now + '.json';
           var charset = $document.characterSet || 'UTF-8';
           var type = 'application/json' + charset;
-          this.create(layer).then(function(dataString) {
+          this.create(glStyle).then(function(dataString) {
 
             if (!dataString) {
               return;

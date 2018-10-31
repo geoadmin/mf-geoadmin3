@@ -504,5 +504,9 @@
   "open_edit_bt_title": "",
   "edit_file_saving": "",
   "edit_file_saved": "",
-  "edit_confirm_reset_style?": ""
+  "edit_confirm_reset_style": "",
+  "edit_glstyle_choose_layer": "",
+  "edit_glstyle_choose_color": "",
+  "landuse-residential": "",
+  "landcover_grass": ""
 }

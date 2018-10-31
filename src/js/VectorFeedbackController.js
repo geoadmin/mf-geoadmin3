@@ -1,14 +1,19 @@
 goog.provide('ga_vector_feedback_controller');
 
+goog.require('ga_background_service');
+goog.require('ga_browsersniffer_service');
+
 (function() {
   var module = angular.module('ga_vector_feedback_controller', [
-    'ga_browsersniffer_service'
+    'ga_browsersniffer_service',
+    'ga_background_service'
   ]);
 
   module.controller('GaVectorFeedbackController', function(
       $scope,
       gaGlobalOptions,
-      gaBrowserSniffer
+      gaBrowserSniffer,
+      gaBackground
   ) {
     var apiUrl = gaGlobalOptions.apiUrl;
     var mobile = gaBrowserSniffer.mobile;
@@ -70,25 +75,13 @@ goog.provide('ga_vector_feedback_controller');
           labelsFilters: [['source', '==', 'ch.swissnames3d']]
         }
       },
-      backgroundLayers: [
-        {
-          id: 'omt.vt',
-          label: 'Openmaptiles'
-        },
-        {
-          id: 'ch.swisstopo.leichte-basiskarte.vt',
-          label: 'Basemap light'
-        },
-        {
-          id: 'ch.swisstopo.hybridkarte.vt',
-          label: 'Hybrid Map'
-        }
-      ],
       colors: colors,
       showLabels: [
         { value: true, label: 'Show' },
         { value: false, label: 'Hide' }
       ]
     };
+
+    $scope.options.backgroundLayers = gaBackground.getBackgrounds();
   });
 })();

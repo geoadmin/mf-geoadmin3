@@ -1,6 +1,7 @@
 goog.provide('ga_edit_directive');
 
 goog.require('ga_debounce_service');
+goog.require('ga_editglstyle_controller');
 goog.require('ga_exportglstyle_service');
 goog.require('ga_filestorage_service');
 goog.require('ga_glstyle_service');
@@ -12,7 +13,7 @@ goog.require('ga_mvt_service');
 
   var module = angular.module('ga_edit_directive', [
     'ga_exportglstyle_service',
-    'ga_filestorage_service',
+    'ga_glstylestorage_service',
     'ga_debounce_service',
     'ga_glstyle_service',
     'ga_layers_service',
@@ -24,7 +25,7 @@ goog.require('ga_mvt_service');
    * This directive add an interface where you can modify a glStyle.
    */
   module.directive('gaEdit', function($rootScope, $window, $translate, gaMvt,
-      gaDebounce, gaFileStorage, gaExportGlStyle, gaGlStyle, gaLayers,
+      gaDebounce, gaGlStyleStorage, gaExportGlStyle, gaGlStyle, gaLayers,
       gaMapUtils) {
     return {
       restrict: 'A',
@@ -40,26 +41,29 @@ goog.require('ga_mvt_service');
         /// /////////////////////////////////
         // create/update the file on s3
         /// /////////////////////////////////
-        var save = function(evt, layer) {
-          if (!layer.adminId && !layer.externalStyleUrl) {
-            return;
-          }
+        var save = function(evt, layer, glStyle) {
           scope.statusMsgId = 'edit_file_saving';
-          var id = layer.adminId || gaFileStorage.getFileIdFromFileUrl(
-              layer.externalStyleUrl);
-          gaExportGlStyle.create(layer).then(function(dataString) {
-            gaFileStorage.save(id, dataString || '{}', 'application/json').then(
-                function(data) {
 
-                  scope.statusMsgId = 'edit_file_saved';
+          gaExportGlStyle.create(glStyle).then(function(dataString) {
 
-                  // If a file has been created we set the correct id to the
-                  // layer
-                  if (data.adminId && data.adminId !== layer.adminId) {
-                    layer.adminId = data.adminId;
-                    layer.externalStyleUrl = data.fileUrl;
-                  }
-                }
+            if (!dataString) {
+              return;
+            }
+
+            // Get the id to use by the glStyleStorage, if no id
+            // the service will create a new one.
+            var id = layer.adminId;
+            gaGlStyleStorage.save(id, dataString).then(function(data) {
+              scope.statusMsgId = 'edit_file_saved';
+
+              // If a file has been created we set the correct id to the
+              // layer
+              if (data.adminId) {
+                layer.adminId = data.adminId;
+                layer.externalStyleUrl = data.fileUrl;
+                layer.useThirdPartyData = true;
+              }
+            }
             );
           });
         };
@@ -70,14 +74,14 @@ goog.require('ga_mvt_service');
         /// ////////////////////////////////
 
         scope.canExport = function(layer) {
-          return !!(layer && layer.externalStyleUrl);
+          return !!(layer && layer.glStyle);
         };
 
         scope.export = function(evt, layer) {
           if (evt.currentTarget.attributes.disabled) {
             return;
           }
-          gaExportGlStyle.createAndDownload(layer);
+          gaExportGlStyle.createAndDownload(layer.glStyle);
           evt.preventDefault();
         };
 
@@ -91,6 +95,7 @@ goog.require('ga_mvt_service');
           if ($window.confirm(str)) {
             // Delete the file on server ?
             layer.externalStyleUrl = undefined;
+            layer.useThirdPartyData = false;
             gaMvt.reload(layer);
           }
         };
@@ -108,15 +113,9 @@ goog.require('ga_mvt_service');
           $rootScope.$broadcast('gaShareDrawActive', layer);
         };
 
-        var activate = function() {
-          if (!scope.layer) {
-            // TODO: watch a collection, takes the first vector tile.
-            scope.layer = scope.map.getLayers().item(0);
-          }
-        };
+        var activate = function() {};
 
-        var deactivate = function() {
-        };
+        var deactivate = function() {};
 
         scope.$watch('isActive', function(active) {
           if (active) {
@@ -125,9 +124,15 @@ goog.require('ga_mvt_service');
             deactivate();
           }
         });
+
         scope.$on('destroy', function() {
           deactivate();
         })
+
+        scope.$on('gaGlStyleChanged', function(evt, glStyle) {
+          gaMapUtils.applyGlStyleToOlLayer(scope.layer, glStyle);
+          scope.saveDebounced({}, scope.layer, glStyle);
+        });
       }
     };
   });

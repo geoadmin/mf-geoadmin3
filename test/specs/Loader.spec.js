@@ -114,11 +114,6 @@ beforeEach(function() {
         '/downloadkml';
   });
 
-  module(function(gaFileStorageProvider, gaGlobalOptions) {
-    gaFileStorageProvider.fileStorageUrl = gaGlobalOptions.apiUrl + '/files';
-    gaFileStorageProvider.publicUrl = gaGlobalOptions.publicUrl;
-  });
-
   module(function(gaPreviewFeaturesProvider, gaGlobalOptions) {
     gaPreviewFeaturesProvider.url =
         gaGlobalOptions.cachedApiUrl + '/rest/services/all/MapServer/';
