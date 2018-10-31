@@ -2,7 +2,7 @@
 describe('ga_edit_directive', function() {
 
   var map, elt, parentScope, $timeout, $httpBackend, $rootScope,
-    $compile, gaDebounce, gaExportGlStyle, gaFileStorage, gaGLStyle, gaLayers,
+    $compile, gaDebounce, gaExportGlStyle, gaFileStorage, gaGlStyle, gaLayers,
     $window, scope, $q;
 
   var loadDirective = function(map, layer, active) {
@@ -47,7 +47,7 @@ describe('ga_edit_directive', function() {
     gaDebounce = $injector.get('gaDebounce');
     gaFileStorage = $injector.get('gaFileStorage');
     gaExportGlStyle = $injector.get('gaExportGlStyle');
-    gaGLStyle = $injector.get('gaGLStyle');
+    gaGlStyle = $injector.get('gaGlStyle');
     gaLayers = $injector.get('gaLayers');
   };
 
@@ -276,7 +276,7 @@ describe('ga_edit_directive', function() {
         sinon.stub(gaLayers, 'getLayer').
             withArgs('foo').returns({ styleUrl: 'bar' }).
             withArgs('subfoo').returns({ sourceId: 'fooSource' });
-        sinon.stub(gaGLStyle, 'get').withArgs('bar').returns($q.when(glStyle));
+        sinon.stub(gaGlStyle, 'get').withArgs('bar').returns($q.when(glStyle));
 
         var stub2 = sinon.stub($window.olms, 'stylefunction').withArgs(
             sublayer, glStyle.style, 'fooSource', undefined, 'value', 'value.png',

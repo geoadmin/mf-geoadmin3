@@ -20,7 +20,7 @@ goog.require('ga_layers_service');
    * This directive add an interface where you can modify a glStyle.
    */
   module.directive('gaEdit', function($rootScope, $window, $translate,
-      gaDebounce, gaFileStorage, gaExportGlStyle, gaGLStyle, gaLayers) {
+      gaDebounce, gaFileStorage, gaExportGlStyle, gaGlStyle, gaLayers) {
     return {
       restrict: 'A',
       templateUrl: 'components/edit/partials/edit.html',
@@ -73,7 +73,7 @@ goog.require('ga_layers_service');
               return;
             }
             sublayer.externalStyleUrl = layer.externalStyleUrl;
-            gaGLStyle.get(styleUrl).then(function(glStyle) {
+            gaGlStyle.get(styleUrl).then(function(glStyle) {
 
               var sprite = glStyle.style.sprite;
               var spriteUrl = sprite && (sprite + '.png');

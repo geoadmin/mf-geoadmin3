@@ -40,7 +40,7 @@ describe('ga_exportglstyle_service', function() {
         gaGlobalOptions = $injector.get('gaGlobalOptions');
         $windowMock = sinon.mock($window);
         gaExportGlStyle = $injector.get('gaExportGlStyle');
-        gaGlStyle = $injector.get('gaGLStyle');
+        gaGlStyle = $injector.get('gaGlStyle');
       });
 
       clock = sinon.useFakeTimers(t);

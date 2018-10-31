@@ -17,7 +17,7 @@ goog.require('ga_glstyle_service');
    */
   module.provider('gaExportGlStyle', function() {
     this.$get = function($translate, $window, $document, $http,
-        gaBrowserSniffer, gaGLStyle) {
+        gaBrowserSniffer, gaGlStyle) {
 
       var downloadUrl = this.downloadUrl;
 
@@ -30,7 +30,7 @@ goog.require('ga_glstyle_service');
       var Export = function() {
 
         this.create = function(layer) {
-          return gaGLStyle.get(layer.externalStyleUrl).then(function(data) {
+          return gaGlStyle.get(layer.externalStyleUrl).then(function(data) {
             return JSON.stringify(data.style);
           });
         };
