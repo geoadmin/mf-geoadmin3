@@ -499,9 +499,10 @@ goog.require('ga_urlutils_service');
           }
 
           if (olLayer instanceof ol.layer.Group) {
+            var that = this;
             var layers = olLayer.getLayers();
-            layers.forEach(function(layer) {
-              this.applyGlStyleToOlLayer(olLayer, glStyle);
+            layers.forEach(function(subOlLayer) {
+              that.applyGlStyleToOlLayer(subOlLayer, glStyle);
             })
             return;
           }
@@ -517,6 +518,46 @@ goog.require('ga_urlutils_service');
               olLayer.sourceId,
               undefined, sprite, spriteUrl,
               ['Helvetica']);
+        },
+
+        // This function creates  an ol source and set it to the layer from the
+        // sourceConfig of a glStyle.
+        // This function set also the extent and minZoom, maxZoom infos.
+        // ex: https://tileserver.dev.bgdi.ch/data/ch.astra.wanderland_1539077150.json
+        applyGlSourceToOlLayer: function(olLayer, sourceConfig) {
+          return $http.get(sourceConfig.url, {
+            cache: true
+          }).then(function(response) {
+            var data = response.data;
+            var olSource;
+
+            if (sourceConfig.type === 'raster') {
+              olSource = new ol.source.XYZ({
+                minZoom: data.minZoom,
+                maxZoom: data.maxZoom,
+                urls: data.tiles
+              });
+
+            } else { // vector
+              olSource = new ol.source.VectorTile({
+                format: new ol.format.MVT(),
+                minZoom: data.minzoom,
+                maxZoom: data.maxzoom,
+                urls: data.tiles
+              });
+            }
+            olLayer.setSource(olSource);
+
+            if (data.extent) {
+              // Extent in epsg:4326
+              olLayer.setExtent(ol.proj.transformExtent(data.extent,
+                  ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857')));
+            }
+
+          }, function(reason) {
+            $window.console.error('Loading source config failed. ' +
+                'Reason: "' + reason + '"');
+          });
         },
 
         /**

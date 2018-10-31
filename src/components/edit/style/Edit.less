@@ -1,0 +1,133 @@
+[ga-draw] {
+
+  hr {
+    margin: 5px 0;
+  }
+
+  .ga-draw-info-save {
+    color: lightgray;
+    text-align: center;
+  }
+
+  .ga-draw-disclaimer {
+    font-size: 10px;
+    text-align: justify;
+    
+    a {
+      color: red;
+    }
+  }
+   
+  .ga-draw-buttons {
+    margin-bottom: 5px;
+    text-align: center;
+
+    @media (max-width: @screen-phone) {
+      padding-right: 50px;
+    }
+
+    > .btn {
+      margin: 5px 30px;
+      width: 75px;
+      height: 75px;
+      padding: 2px;
+      transition: all 0.5s ease;
+      transition-property: width, height, margin;
+ 
+      i {
+        display: block;
+        font-size: 2em;
+        font-weight: bold;
+      }
+
+      @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
+        &:first-child {
+          margin-left: 0px;
+        }
+
+        width: @control-btn-size-px;
+        height: @control-btn-size-px;
+        margin: 5px 3px;
+
+        i {
+          font-size: 1.5em;
+        }
+
+        span {
+          display: none;
+        }
+      }
+    }
+    
+    button.btn-default {
+      border: 2px solid #eeeeee;
+      background-color: white;
+      border-radius: 15px;
+
+      &:hover, &:focus, &:active {
+        background-color: #eeeeee;
+      }
+    }
+  }
+
+  .ga-more {
+
+    li {
+      text-align: center;
+    }
+
+    .row {
+      margin-bottom: 0;
+    }
+
+    .vr {
+      border-right: #e5e5e5 1px solid;
+    }
+  }
+}
+
+
+/* Tooltips on draw */
+.ga-draw-help, .ga-draw-measure, .ga-draw-measure-static, .ga-draw-measure-tmp {
+  background-color: rgba(140, 140, 140, 0.9);
+  border-radius: 4px;
+  color: white;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+.ga-draw-measure, .ga-draw-measure-static, .ga-draw-measure-tmp  {
+  &:after {
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    margin-left: -7px;
+    content: "";
+    border-top: 6px solid rgba(140, 140, 140, 0.9);
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
+  }
+}
+
+.ga-draw-measure-tmp {
+  background-color: transparent;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+ 
+  &:after {
+    bottom: -11px;
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background-color: red;
+    margin-left: -4px;
+    border: none;
+  }
+}
+
+.ga-draw-measure-static {
+  background-color: rgba(255, 0, 0, 0.9);
+  &:after {
+    border-top: 6px solid #f00;
+  }
+}
+

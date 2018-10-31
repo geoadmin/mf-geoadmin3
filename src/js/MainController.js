@@ -177,7 +177,9 @@ goog.require('ga_window_service');
     var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
     var initWithFeedback = /feedback/g.test(gaPermalink.getParams().widgets);
     var initWithDraw = /draw/g.test(gaPermalink.getParams().widgets) ||
-        !!(gaPermalink.getParams().adminId);
+        (!!(gaPermalink.getParams().adminId) && !/vt$/.test(gaPermalink.getParams().bgLayer));
+    var initWithEdit = /edit/g.test(gaPermalink.getParams().widgets) ||
+        (!!(gaPermalink.getParams().adminId) && /vt$/.test(gaPermalink.getParams().bgLayer));
     gaPermalink.deleteParam('widgets');
 
     var onTopicsLoaded = function() {
@@ -222,6 +224,8 @@ goog.require('ga_window_service');
         $scope.globals.feedbackPopupShown = initWithFeedback;
       } else if (initWithDraw) {
         $scope.globals.isDrawActive = initWithDraw;
+      } else if (initWithEdit) {
+        $scope.globals.isEditActive = initWithDraw;
       } else {
         onTopicChange(null, gaTopic.get());
       }
@@ -266,6 +270,7 @@ goog.require('ga_window_service');
       queryShown: false,
       isShareActive: false,
       isDrawActive: false,
+      isEditActive: false,
       isFeatureTreeActive: false,
       isPrintActive: false,
       isSwipeActive: false,
@@ -295,6 +300,16 @@ goog.require('ga_window_service');
         $scope.globals.feedbackPopupShown = false;
         $scope.globals.isFeatureTreeActive = false;
         $scope.globals.isSwipeActive = false;
+        $scope.globals.isEditActive = false;
+      }
+    });
+    // Deactivate all tools when draw is opening
+    $scope.$watch('globals.isEditActive', function(active) {
+      if (active) {
+        $scope.globals.feedbackPopupShown = false;
+        $scope.globals.isFeatureTreeActive = false;
+        $scope.globals.isSwipeActive = false;
+        $scope.globals.isDrawActive = false;
       }
     });
     // Deactivate all tools when 3d is opening
@@ -304,12 +319,14 @@ goog.require('ga_window_service');
         $scope.globals.isFeatureTreeActive = false;
         $scope.globals.isSwipeActive = false;
         $scope.globals.isDrawActive = false;
+        $scope.globals.isEditActive = false;
         $scope.globals.isShareActive = false;
       }
     });
     // Activate share tool when menu is opening.
     $scope.$watch('globals.pulldownShown', function(active) {
       if (active && !$scope.globals.isDrawActive &&
+          !$scope.globals.isEditActive &&
           !$scope.globals.isShareActive && gaWindow.isWidth('xs')) {
         $scope.globals.isShareActive = true;
       }
@@ -344,8 +361,9 @@ goog.require('ga_window_service');
         }
       }
       if ((evt.which === 8 || evt.which === 27) &&
-          $scope.globals.isDrawActive) {
+          ($scope.globals.isDrawActive || $scope.globals.isEditActive)) {
         $scope.globals.isDrawActive = false;
+        $scope.globals.isEditActive = false;
         $scope.$digest();
       }
     });
@@ -360,10 +378,27 @@ goog.require('ga_window_service');
         gaHistory.pushState(null, '', gaPermalink.getHref());
       }
     });
+
+    // Browser back button management
+    $scope.$watch('globals.isEditActive', function(isActive) {
+      if (isActive && gaHistory) {
+        gaHistory.replaceState({
+          isEditActive: false
+        }, '', gaPermalink.getHref());
+
+        gaHistory.pushState(null, '', gaPermalink.getHref());
+      }
+    });
+
     $window.onpopstate = function(evt) {
       // When we go to full screen evt.state is null
       if (evt.state && evt.state.isDrawActive === false) {
         $scope.globals.isDrawActive = false;
+        gaPermalink.refresh();
+        $scope.$digest();
+      }
+      if (evt.state && evt.state.isEditActive === false) {
+        $scope.globals.isEditActive = false;
         gaPermalink.refresh();
         $scope.$digest();
       }
@@ -382,7 +417,8 @@ goog.require('ga_window_service');
 
       // Open share panel by default on phone
       if ($scope.globals.pulldownShown && !$scope.globals.isShareActive &&
-          !$scope.globals.isDrawActive && gaWindow.isWidth('xs')) {
+          !$scope.globals.isDrawActive && !$scope.globals.isEditActive &&
+          gaWindow.isWidth('xs')) {
         $scope.$applyAsync(function() {
           $scope.globals.isShareActive = true;
         });

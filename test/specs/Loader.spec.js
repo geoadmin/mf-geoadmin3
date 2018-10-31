@@ -109,6 +109,11 @@ beforeEach(function() {
     gaExportKmlProvider.downloadKmlUrl = gaGlobalOptions.apiUrl + '/downloadkml';
   });
 
+  module(function(gaExportGlStyleProvider, gaGlobalOptions) {
+    gaExportGlStyleProvider.downloadUrl = gaGlobalOptions.apiUrl +
+        '/downloadkml';
+  });
+
   module(function(gaFileStorageProvider, gaGlobalOptions) {
     gaFileStorageProvider.fileStorageUrl = gaGlobalOptions.apiUrl + '/files';
     gaFileStorageProvider.publicUrl = gaGlobalOptions.publicUrl;

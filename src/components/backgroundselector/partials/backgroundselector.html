@@ -4,6 +4,10 @@
      translate-attr="{title: layer.label}">
   <div class="ga-bg-layer-text" translate>{{layer.label}}</div>
   <button class="ga-icon ga-btn fa fa-user" ng-click="showWarning(layer)" ng-show="!!layer.styleUrl"></button>
+  <div class="ga-open-edit-bt" translate-attr="{title: 'open_edit_bt_title'}"
+       ng-click="toggleEdit(layer)">
+    <div class="fa fa-ga-mapfunction"></div>
+  </div>
 </div>
 <div class="ga-bg-layer-bt" translate-attr="{title: 'bg_toggle'}">
   <div class="ga-bg-layer-bt-text" translate>bg_chooser_label</div>

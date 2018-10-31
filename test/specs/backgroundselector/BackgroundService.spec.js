@@ -303,17 +303,15 @@ describe('ga_background_service', function() {
           $rootScope.$digest();
         });
 
-        it('initializes the default background from permalink (priority over plConfig)', function(done) {
+        it('initializes the default background from permalink (priority over plConfig)', function() {
           var getParams = gaPermalinkMock.expects('getParams').thrice().returns({bgLayer: 'voidLayer'});
-          gaBg.init(map).then(function() {
-            getParams.verify();
-            var bg = gaBg.get();
-            expect(bg.id).to.equal(firstBgId);
-            done();
-          });
+          gaBg.init(map);
           deferGaTopic.resolve();
           deferGaLayers.resolve();
           $rootScope.$digest();
+          getParams.verify();
+          var bg = gaBg.get();
+          expect(bg.id).to.equal(firstBgId);
         });
       });
     });

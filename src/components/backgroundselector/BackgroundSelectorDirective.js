@@ -14,6 +14,7 @@ goog.require('ga_event_service');
   module.directive('gaBackgroundSelector', function(
       $window,
       $translate,
+      $rootScope,
       gaBackground,
       gaEvent,
       gaBrowserSniffer
@@ -53,6 +54,10 @@ goog.require('ga_event_service');
           elt.toggleClass('ga-open');
         };
 
+        scope.toggleEdit = function(bg) {
+          $rootScope.$broadcast('gaToggleEdit', bg.olLayer);
+        };
+
         scope.getClass = function(layer) {
           if (layer) {
             var selected =
@@ -60,10 +65,8 @@ goog.require('ga_event_service');
             var splitLayer = layer.id.split('.');
             return (
               (selected ? 'ga-bg-highlight ' : '') +
-              'ga-' +
-              splitLayer[splitLayer.length - 2] +
-              ' ' +
-              (layer.disable3d ? 'ga-disable3d' : '')
+              'ga-' + splitLayer[splitLayer.length - 2] +
+              (layer.disable3d ? ' ga-disable3d' : '')
             );
           }
         };
@@ -82,13 +85,11 @@ goog.require('ga_event_service');
         });
 
         var showWarning = function(layer) {
-          var url =
-            layer && layer.styleUrl ?
-              layer.styleUrl :
-              scope.currentLayer.styleUrl;
-          $window.alert(
-              $translate.instant(
-                  'external_data_warning').replace('--URL--', url)
+          var url = layer && layer.styleUrl ?
+            layer.styleUrl :
+            scope.currentLayer.styleUrl;
+          $window.alert($translate.instant('external_data_warning').
+              replace('--URL--', url)
           );
         };
 
@@ -108,8 +109,8 @@ goog.require('ga_event_service');
             },
             template:
               '<div class="tooltip ga-red-tooltip">' +
-              '<div class="tooltip-arrow"></div>' +
-              '<div class="tooltip-inner"></div>' +
+                '<div class="tooltip-arrow"></div>' +
+                '<div class="tooltip-inner"></div>' +
               '</div>'
           };
           gaEvent.onMouseOverOut(elt, function(evt) {

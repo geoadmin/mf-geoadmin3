@@ -7,7 +7,7 @@
     bottom: unit(@bt-bottom, px);
     overflow: hidden;
     cursor: pointer;
-    position: absolute; 
+    position: absolute;
     background: #fff data-uri('bg-layersx2.jpg') no-repeat 0 center;
     background-size: 275px 58px;
     border: 3px solid;
@@ -15,6 +15,36 @@
 
     @media (max-width: @screen-tablet) {
       bottom: unit(@bt-bottom-sm, px);
+    }
+  }
+
+  .ga-open-edit-bt {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    background-color: white;
+    font-size: 2em;
+    width: 30px;
+    height: 30px;
+    border: none;
+
+    &:hover {
+      color: red;
+    }
+
+    .fa {
+      position: absolute;
+      right: 0;
+      left: 0;
+      margin: auto;
+      width: 17px;
+      height: 24px;
+      top: 0;
+      bottom: 0;
+    }
+
+    @media (max-width: @screen-tablet) {
+      display: none;
     }
   }
 
@@ -41,7 +71,7 @@
     font-size: 75%;
     text-align: center;
   }
-   
+
   .ga-bg-layer-text {
     background-color: rgba(255, 255, 255, 0.95);
   }
@@ -105,7 +135,7 @@
   }
 
   @media (min-width: (@screen-tablet + 1)) {
-    
+
     .fa-chevron-sign-right {
       line-height: 64px;
       text-align: center;

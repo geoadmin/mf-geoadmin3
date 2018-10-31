@@ -7,7 +7,9 @@ describe('ga_backgroundselector_directive', function() {
 
       map = new ol.Map({});
       layer1 = new ol.layer.Tile();
+      layer1.id = 'ch.swisstopo.swissimage';
       layer2 = new ol.layer.Tile();
+      layer2.id = 'omt.vt';
 
       module(function($provide) {
         $provide.value('gaLayers', {
@@ -23,6 +25,8 @@ describe('ga_backgroundselector_directive', function() {
           getLayerProperty: function(id, propertyName) {
             if (propertyName === 'label') {
               switch (id) {
+                case 'omt.vt':
+                  return 'omt.vt';
                 case 'ch.swisstopo.swissimage':
                   return 'bg_luftbild';
                 case 'ch.swisstopo.pixelkarte-farbe':
@@ -63,9 +67,7 @@ describe('ga_backgroundselector_directive', function() {
 
       $rootScope.map = map;
       element = angular.element(
-          '<div ga-background-selector ' +
-            'ga-background-selector-map="map">' +
-          '</div>');
+          '<div ga-background-selector ga-background-selector-map="map">');
       gaBackground.init(map);
       $compile(element)($rootScope);
       def.resolve();
