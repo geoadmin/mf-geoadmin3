@@ -1,7 +1,7 @@
 goog.provide('ga_layers_service');
 
 goog.require('ga_definepropertiesforlayer_service');
-goog.require('ga_gl_style_service');
+goog.require('ga_glstyle_service');
 goog.require('ga_maputils_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_permalink_service');
@@ -23,7 +23,7 @@ goog.require('ga_urlutils_service');
     'ga_time_service',
     'ga_urlutils_service',
     'ga_permalink_service',
-    'ga_gl_style_service',
+    'ga_glstyle_service',
     'ga_translation_service',
     'pascalprecht.translate'
   ]);
@@ -37,7 +37,7 @@ goog.require('ga_urlutils_service');
         gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapUtils,
         gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils,
         gaStylesFromLiterals, gaGlobalOptions, gaPermalink,
-        gaLang, gaTime, gaStyleFactory, gaGLStyle) {
+        gaLang, gaTime, gaStyleFactory, gaGlStyle) {
 
       var h2 = function(domainsArray) {
         if (gaBrowserSniffer.h2) {
@@ -777,7 +777,7 @@ goog.require('ga_urlutils_service');
                 config.styleUrl, opts.externalStyleUrl);
             if (config.sourceId && styleUrl) {
               var sourceId = config.sourceId;
-              gaGLStyle.get(styleUrl).then((data) => {
+              gaGlStyle.get(styleUrl).then((data) => {
                 var glStyle = data.style;
                 var spriteData = data.sprite;
                 var spriteUrl = glStyle.sprite + '.png';
@@ -837,6 +837,9 @@ goog.require('ga_urlutils_service');
             olLayer.externalStyleUrl = opts && opts.externalStyleUrl ?
               opts.externalStyleUrl : null;
             olLayer.useThirdPartyData = !(!opts) && !(!opts.externalStyleUrl);
+            olLayer.background = config.background || false;
+            // For MVT only
+            olLayer.sourceId = config.sourceId || null;
             var that = this;
             olLayer.getCesiumImageryProvider = function() {
               return that.getCesiumImageryProviderById(bodId, olLayer);

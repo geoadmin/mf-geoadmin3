@@ -1,15 +1,14 @@
-goog.provide('ga_gl_style_service');
+goog.provide('ga_glstyle_service');
 (function() {
-  var module = angular.module('ga_gl_style_service', []);
+  var module = angular.module('ga_glstyle_service', []);
 
-  module.provider('gaGLStyle', function() {
+  module.provider('gaGlStyle', function() {
     this.$get = function($http, $q, $window) {
-      var GLStyle = function() {
-
+      var GlStyle = function() {
         /**
-          * Stores the original style
-          * @private {Object}
-          */
+         * Stores the original style
+         * @private {Object}
+         */
         this.styleCache_ = null;
 
         /**
@@ -44,12 +43,8 @@ goog.provide('ga_gl_style_service');
           }, function(res) {
             that.styleCache_ = null;
             that.spriteCache_ = null;
-            var msg =
-              'Unable to load the style from ' +
-              styleUrl +
-              ' response status is ' +
-              res.status;
-            $window.console.error(msg);
+            $window.console.error('Unable to load the style from ' + styleUrl +
+                ' response status is ' + res.status);
             defer.reject(res);
           });
           return defer.promise;
@@ -65,11 +60,8 @@ goog.provide('ga_gl_style_service');
             };
           }, function(res) {
             that.spriteCache_ = null;
-            $window.console.error(
-                'Unable to load ' +
-                spriteUrl +
-                ' response status is ' +
-                res.status);
+            $window.console.error('Unable to load ' + spriteUrl +
+                ' response status is ' + res.status);
             // failing to load sprite is ok for now...
             return {
               style: that.styleCache_,
@@ -84,11 +76,9 @@ goog.provide('ga_gl_style_service');
           return newStyle;
         };
 
-        this.filter = function(filters) {
+        this.applyFiltersAndEdits_ = function(newStyle) {
           var that = this;
           var layers = [];
-          var newStyle = this.cloneStyle();
-          this.filters_ = this.filters_.concat(filters);
           newStyle.layers.forEach(function(layer) {
             var addLayer = true;
             that.filters_.forEach(function(filter) {
@@ -104,17 +94,68 @@ goog.provide('ga_gl_style_service');
                 }
               }
             });
-            if (addLayer) layers.push(layer);
+            if (addLayer) {
+              that.edits_.forEach(function(edit) {
+                var editPropertyName = edit[0];
+                var editPropertyValue = edit[1];
+                var editLayerProperty = layer[editPropertyName];
+                if (editLayerProperty &&
+                    editLayerProperty === editPropertyValue) {
+                  var editStyle = edit[2].split('|');
+                  if (!layer[editStyle[0]]) {
+                    layer[editStyle[0]] = {};
+                  }
+                  layer[editStyle[0]][editStyle[1]] = editStyle[2];
+                }
+              });
+              layers.push(layer);
+            }
           });
+          return layers;
+        };
+
+        this.filter = function(filters) {
+          var newStyle = this.cloneStyle();
+          this.filters_ = this.filters_.concat(filters);
+          var layers = this.applyFiltersAndEdits_(newStyle);
           newStyle.layers = layers;
-          return newStyle;
+          return {
+            style: newStyle,
+            sprite: this.spriteCache_
+          };
         };
 
         this.edit = function(edits) {
           var newStyle = this.cloneStyle();
           this.edits_ = this.edits_.concat(edits);
-          // TODO apply filters and edits logic here and return a new object
-          return newStyle;
+          var layers = this.applyFiltersAndEdits_(newStyle);
+          newStyle.layers = layers;
+          return {
+            style: newStyle,
+            sprite: this.spriteCache_
+          };
+        };
+
+        this.resetEdits = function() {
+          var newStyle = this.cloneStyle();
+          this.edits_ = [];
+          var layers = this.applyFiltersAndEdits_(newStyle);
+          newStyle.layers = layers;
+          return {
+            style: newStyle,
+            sprite: this.spriteCache_
+          }
+        };
+
+        this.resetFilters = function() {
+          var newStyle = this.cloneStyle();
+          this.filters_ = [];
+          var layers = this.applyFiltersAndEdits_(newStyle);
+          newStyle.layers = layers;
+          return {
+            style: newStyle,
+            sprite: this.spriteCache_
+          }
         };
 
         /**
@@ -123,10 +164,13 @@ goog.provide('ga_gl_style_service');
         this.reset = function() {
           this.filters_ = [];
           this.edits_ = [];
-          return this.styleCache_;
+          return {
+            style: this.styleCache_,
+            sprite: this.spriteCache_
+          };
         };
       };
-      return new GLStyle();
+      return new GlStyle();
     };
   });
 })();

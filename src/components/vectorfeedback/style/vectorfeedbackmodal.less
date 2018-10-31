@@ -1,0 +1,52 @@
+[ga-vector-feedback-modal] {
+  iframe,
+  .input-modal-container {
+    height: 100%;
+    width: 100%;
+  }
+
+  .modal-body {
+    overflow-y: hidden;
+  }
+
+  .modal-dialog {
+    width: 100%;
+    height: ~'calc(100% - 178px)';
+    max-width: 850px;
+    max-height: 660px;
+
+    .modal-content {
+      height: 100%;
+    }
+
+    .modal-body {
+      height: ~'calc(100% - 58px)';
+      overflow-x: hidden;
+
+      @media (max-width: @screen-phone) {
+        max-height: none !important;
+      }
+    }
+
+    @media (max-width: @screen-desktop) {
+      max-width: 692px;
+    }
+
+    @media (max-width: @screen-tablet) {
+      max-width: 535px;
+      top: 50px;
+    }
+
+    @media (max-width: 605px) {
+      max-width: 377px;
+    }
+
+    @media (max-width: @screen-phone) {
+      max-width: ~'calc(100% - 10px)';
+    }
+
+    @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
+      height: ~'calc(100% - 100px)';
+    }
+  }
+}

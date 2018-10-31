@@ -174,7 +174,18 @@ itemscope itemtype="http://schema.org/WebApplication"
 
 % endif
     <div id="loader"></div>
+    <!-- Vector feedback -->
+    <div ng-controller="GaVectorFeedbackController">
+      <div ga-vector-feedback
+           ga-vector-feedback-map="::map"
+           ga-vector-feedback-options="::options">
+      </div>
+    </div>
     <div tabindex="1" ga-map ga-map-map="map" ga-map-ol3d="::ol3d">
+
+    <!-- TEST Ribbon -->
+    <div class="corner-ribbon">TEST</div>
+
   % if device == 'embed':
       <a ng-cloak translate-cloak id="bigMapLink" target="_blank" href="{{toMainHref}}">
         <div>
@@ -470,6 +481,9 @@ itemscope itemtype="http://schema.org/WebApplication"
         </button>
       </div> <!-- #pulldown-content -->
     </div> <!-- #pulldown -->
+
+    <!-- Modal: vector tiles survey -->
+    <div ng-cloak translate-cloak ga-vector-feedback-modal></div>
 
     <!-- Modal: offline menu -->
     <div ng-cloak translate-cloak ga-offline-menu ga-offline-menu-map="map"></div>
@@ -783,7 +797,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           w3wApiKey: 'OM48J50Y',
           whitelist: [
             'https://' + window.location.host + '/**',
-            'https://www.googleapis.com/**'
+            'https://www.googleapis.com/**',
+            'https://findmind.ch/**'
           ],
 
           // App state values

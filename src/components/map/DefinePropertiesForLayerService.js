@@ -222,6 +222,10 @@ goog.provide('ga_definepropertiesforlayer_service');
           displayIn3d: {
             writable: true,
             value: true
+          },
+          sourceId: {
+            writable: true,
+            default: null
           }
         });
       };
