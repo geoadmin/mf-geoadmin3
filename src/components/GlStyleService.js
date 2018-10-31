@@ -1,10 +1,10 @@
-goog.provide('ga_gl_style_service');
+goog.provide('ga_glstyle_service');
 (function() {
-  var module = angular.module('ga_gl_style_service', []);
+  var module = angular.module('ga_glstyle_service', []);
 
-  module.provider('gaGLStyle', function() {
+  module.provider('gaGlStyle', function() {
     this.$get = function($http, $q, $window) {
-      var GLStyle = function() {
+      var GlStyle = function() {
         /**
          * Stores the original style
          * @private {Object}
@@ -170,7 +170,7 @@ goog.provide('ga_gl_style_service');
           };
         };
       };
-      return new GLStyle();
+      return new GlStyle();
     };
   });
 })();

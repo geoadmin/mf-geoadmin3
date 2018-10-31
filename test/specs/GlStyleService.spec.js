@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
-describe('ga_gl_style_service', function() {
-  var gaGLStyle, $httpBackend, styleUrl, styleJSON;
+describe('ga_glstyle_service', function() {
+  var gaGlStyle, $httpBackend, styleUrl, styleJSON;
 
   var injectServices = function($injector) {
-    gaGLStyle = $injector.get('gaGLStyle');
+    gaGlStyle = $injector.get('gaGlStyle');
     $httpBackend = $injector.get('$httpBackend');
   };
 
@@ -163,7 +163,7 @@ describe('ga_gl_style_service', function() {
   it('requests and caches a GL style #get', function(done) {
     $httpBackend.expectGET(styleUrl).respond(styleJSON);
     $httpBackend.expectGET(styleJSON.sprite + '.json').respond({ id: 'dummy' });
-    gaGLStyle.get(styleUrl).then(function(data) {
+    gaGlStyle.get(styleUrl).then(function(data) {
       expect(data.style.name).to.equal('ch.swisstopo.leichte-basiskarte.vt');
       expect(data.sprite.id).to.equal('dummy');
       done();
@@ -174,16 +174,16 @@ describe('ga_gl_style_service', function() {
   it('filters a GL style #filter and resets the style via #resest', function(done) {
     $httpBackend.expectGET(styleUrl).respond(styleJSON);
     $httpBackend.expectGET(styleJSON.sprite + '.json').respond({ id: 'dummy' });
-    gaGLStyle.get(styleUrl).then(function() {
-      var newStyle = gaGLStyle.filter([['id', '==', 'labels_watercourse']]);
+    gaGlStyle.get(styleUrl).then(function() {
+      var newStyle = gaGlStyle.filter([['id', '==', 'labels_watercourse']]);
       expect(newStyle.style.layers.length).to.equal(3);
       expect(newStyle.style.layers[2].id).to.equal('labels_settlement_100-999');
 
-      newStyle = gaGLStyle.filter([['type', '!=', 'background']]);
+      newStyle = gaGlStyle.filter([['type', '!=', 'background']]);
       expect(newStyle.style.layers.length).to.equal(1);
       expect(newStyle.style.layers[0].type).to.equal('background');
 
-      newStyle = gaGLStyle.reset();
+      newStyle = gaGlStyle.reset();
       expect(newStyle.style.layers.length).to.equal(4);
       done();
     });
@@ -193,8 +193,8 @@ describe('ga_gl_style_service', function() {
   it('edits a GL style #edit', function(done) {
     $httpBackend.expectGET(styleUrl).respond(styleJSON);
     $httpBackend.expectGET(styleJSON.sprite + '.json').respond({ id: 'dummy' });
-    gaGLStyle.get(styleUrl).then(function() {
-      var newStyle = gaGLStyle.edit([['id', 'background', 'paint|background-color|blue']])
+    gaGlStyle.get(styleUrl).then(function() {
+      var newStyle = gaGlStyle.edit([['id', 'background', 'paint|background-color|blue']])
       expect(newStyle.style.layers[0].id).to.equal('background');
       expect(newStyle.style.layers[0].paint['background-color']).to.equal('blue');
       expect(newStyle.style.layers[1].paint['background-color']).to.be(undefined);
@@ -206,13 +206,13 @@ describe('ga_gl_style_service', function() {
   it('resets only the filters when calling #resetFilters', function(done) {
     $httpBackend.expectGET(styleUrl).respond(styleJSON);
     $httpBackend.expectGET(styleJSON.sprite + '.json').respond({ id: 'dummy' });
-    gaGLStyle.get(styleUrl).then(function() {
+    gaGlStyle.get(styleUrl).then(function() {
       // Add a filter
-      var newStyle = gaGLStyle.filter([['id', '==', 'labels_watercourse']]);
+      var newStyle = gaGlStyle.filter([['id', '==', 'labels_watercourse']]);
       // Add an edition
-      newStyle = gaGLStyle.edit([['id', 'background', 'paint|background-color|blue']]);
+      newStyle = gaGlStyle.edit([['id', 'background', 'paint|background-color|blue']]);
 
-      newStyle = gaGLStyle.resetFilters();
+      newStyle = gaGlStyle.resetFilters();
       expect(newStyle.style.layers.length).to.equal(4);
       expect(newStyle.style.layers[0].id).to.equal('background');
       expect(newStyle.style.layers[0].paint['background-color']).to.equal('blue');
@@ -225,13 +225,13 @@ describe('ga_gl_style_service', function() {
   it('resets only the edits when calling #resetEdits', function(done) {
     $httpBackend.expectGET(styleUrl).respond(styleJSON);
     $httpBackend.expectGET(styleJSON.sprite + '.json').respond({ id: 'dummy' });
-    gaGLStyle.get(styleUrl).then(function() {
+    gaGlStyle.get(styleUrl).then(function() {
       // Add a filter
-      var newStyle = gaGLStyle.filter([['id', '==', 'labels_watercourse']]);
+      var newStyle = gaGlStyle.filter([['id', '==', 'labels_watercourse']]);
       // Add an edition
-      newStyle = gaGLStyle.edit([['id', 'background', 'paint|background-color|blue']]);
+      newStyle = gaGlStyle.edit([['id', 'background', 'paint|background-color|blue']]);
 
-      newStyle = gaGLStyle.resetEdits();
+      newStyle = gaGlStyle.resetEdits();
       expect(newStyle.style.layers.length).to.equal(3);
       expect(newStyle.style.layers[0].id).to.equal('background');
       expect(newStyle.style.layers[0].paint['background-color']).to.equal('rgb(255, 255, 255)');
@@ -242,7 +242,7 @@ describe('ga_gl_style_service', function() {
 
   it('should reject the promise if the style is not found', function(done) {
     $httpBackend.expectGET(styleUrl).respond(404);
-    gaGLStyle.get(styleUrl).then(function() {}, function(res) {
+    gaGlStyle.get(styleUrl).then(function() {}, function(res) {
       expect(res.status).to.equal(404);
       done();
     });
@@ -252,7 +252,7 @@ describe('ga_gl_style_service', function() {
   it('should set the sprite to null if the sprite is not found', function(done) {
     $httpBackend.expectGET(styleUrl).respond(styleJSON);
     $httpBackend.expectGET(styleJSON.sprite + '.json').respond(404);
-    gaGLStyle.get(styleUrl).then(function(data) {
+    gaGlStyle.get(styleUrl).then(function(data) {
       expect(data.style.name).to.equal('ch.swisstopo.leichte-basiskarte.vt');
       expect(data.sprite).to.equal(null);
       done();

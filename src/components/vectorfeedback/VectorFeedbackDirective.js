@@ -1,19 +1,19 @@
 goog.provide('ga_vector_feedback_directive');
 
 goog.require('ga_background_service');
-goog.require('ga_gl_style_service');
+goog.require('ga_glstyle_service');
 goog.require('ga_maputils_service');
 
 (function() {
   var module = angular.module('ga_vector_feedback_directive', [
     'ga_background_service',
-    'ga_gl_style_service',
+    'ga_glstyle_service',
     'ga_maputils_service'
   ]);
 
   module.directive('gaVectorFeedback', function(
       gaMapUtils,
-      gaGLStyle,
+      gaGlStyle,
       gaBackground
   ) {
     return {
@@ -37,8 +37,8 @@ goog.require('ga_maputils_service');
           if (edit) {
             edit = edit.slice();
             edit[2] = edit[2].replace('{color}', color);
-            var glStyle = gaGLStyle.edit([edit]);
-            gaMapUtils.applyGLStyleToOlLayer(
+            var glStyle = gaGlStyle.edit([edit]);
+            gaMapUtils.applyGlStyleToOlLayer(
                 gaMapUtils.getMapBackgroundLayer(map),
                 glStyle
             );
@@ -50,8 +50,8 @@ goog.require('ga_maputils_service');
               function(newVal, oldVal) {
                 if (newVal && oldVal && newVal.value !== oldVal.value) {
                   scope.options.activeColor = '';
-                  var glStyle = gaGLStyle.resetEdits();
-                  gaMapUtils.applyGLStyleToOlLayer(
+                  var glStyle = gaGlStyle.resetEdits();
+                  gaMapUtils.applyGlStyleToOlLayer(
                       gaMapUtils.getMapBackgroundLayer(map),
                       glStyle
                   );
@@ -74,16 +74,16 @@ goog.require('ga_maputils_service');
             if (newVal && oldVal && newVal.value !== oldVal.value) {
               var glStyle;
               if (newVal.value) {
-                glStyle = gaGLStyle.resetFilters();
+                glStyle = gaGlStyle.resetFilters();
               } else {
                 var bodId = scope.options.backgroundLayer.id;
                 var filters =
                   scope.options.layers[bodId].labelsFilters;
                 if (filters) {
-                  glStyle = gaGLStyle.filter(filters);
+                  glStyle = gaGlStyle.filter(filters);
                 }
               }
-              gaMapUtils.applyGLStyleToOlLayer(
+              gaMapUtils.applyGlStyleToOlLayer(
                   gaMapUtils.getMapBackgroundLayer(map),
                   glStyle
               );

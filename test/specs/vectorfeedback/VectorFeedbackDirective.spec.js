@@ -7,7 +7,7 @@ describe('ga_vector_feedback_directive', function() {
     map,
     options,
     spySetById,
-    spyApplyGLStyleToOlLayer,
+    spyApplyGlStyleToOlLayer,
     spyGetMapBackgroundLayer,
     spyGet,
     spyFilter,
@@ -48,12 +48,12 @@ describe('ga_vector_feedback_directive', function() {
         setById: spySetById
       });
 
-      spyApplyGLStyleToOlLayer = sinon.spy(function() {});
+      spyApplyGlStyleToOlLayer = sinon.spy(function() {});
       spyGetMapBackgroundLayer = sinon.spy(function() {
         return { bodId: 'toto' };
       });
       $provide.value('gaMapUtils', {
-        applyGLStyleToOlLayer: spyApplyGLStyleToOlLayer,
+        applyGlStyleToOlLayer: spyApplyGlStyleToOlLayer,
         getMapBackgroundLayer: spyGetMapBackgroundLayer
       });
 
@@ -72,7 +72,7 @@ describe('ga_vector_feedback_directive', function() {
       spyResetEdits = sinon.spy(function() {
         return { style: {}, sprite: {} };
       });
-      $provide.value('gaGLStyle', {
+      $provide.value('gaGlStyle', {
         get: spyGet,
         filter: spyFilter,
         edit: spyEdit,
@@ -175,7 +175,7 @@ describe('ga_vector_feedback_directive', function() {
     $rootScope.$digest();
 
     expect(spyGetMapBackgroundLayer.calledTwice).to.be.ok();
-    expect(spyApplyGLStyleToOlLayer.calledOnce).to.be.ok();
+    expect(spyApplyGlStyleToOlLayer.calledOnce).to.be.ok();
     expect(spyResetEdits.calledOnce).to.be.ok();
   });
 
@@ -189,7 +189,7 @@ describe('ga_vector_feedback_directive', function() {
 
     expect(spyGetMapBackgroundLayer.calledTwice).to.be.ok();
     expect(spyFilter.calledOnce).to.be.ok();
-    expect(spyApplyGLStyleToOlLayer.calledOnce).to.be.ok();
+    expect(spyApplyGlStyleToOlLayer.calledOnce).to.be.ok();
   });
 
   it('calls the right services when changing the color', function() {
@@ -202,6 +202,6 @@ describe('ga_vector_feedback_directive', function() {
 
     expect(spyGetMapBackgroundLayer.calledTwice).to.be.ok();
     expect(spyEdit.calledOnce).to.be.ok();
-    expect(spyApplyGLStyleToOlLayer.calledOnce).to.be.ok();
+    expect(spyApplyGlStyleToOlLayer.calledOnce).to.be.ok();
   });
 });
