@@ -25,8 +25,7 @@ goog.require('ga_event_service');
         'components/backgroundselector/partials/backgroundselector.html',
       scope: {
         map: '=gaBackgroundSelectorMap',
-        ol3d: '=gaBackgroundSelectorOl3d',
-        globals: '=gaBackgroundSelectorGlobals'
+        ol3d: '=gaBackgroundSelectorOl3d'
       },
       link: function(scope, elt, attrs) {
         scope.isBackgroundSelectorClosed = true;
@@ -55,8 +54,8 @@ goog.require('ga_event_service');
           elt.toggleClass('ga-open');
         };
 
-        scope.activeEdit = function(bg) {
-          $rootScope.$broadcast('gaActiveEdit', bg.olLayer);
+        scope.toggleEdit = function(bg) {
+          $rootScope.$broadcast('gaToggleEdit', bg.olLayer);
         };
 
         scope.getClass = function(layer) {
@@ -66,10 +65,8 @@ goog.require('ga_event_service');
             var splitLayer = layer.id.split('.');
             return (
               (selected ? 'ga-bg-highlight ' : '') +
-              'ga-' +
-              splitLayer[splitLayer.length - 2] +
-              ' ' +
-              (layer.disable3d ? 'ga-disable3d' : '')
+              'ga-' + splitLayer[splitLayer.length - 2] +
+              (layer.disable3d ? ' ga-disable3d' : '')
             );
           }
         };
@@ -88,13 +85,11 @@ goog.require('ga_event_service');
         });
 
         var showWarning = function(layer) {
-          var url =
-            layer && layer.styleUrl ?
-              layer.styleUrl :
-              scope.currentLayer.styleUrl;
-          $window.alert(
-              $translate.instant(
-                  'external_data_warning').replace('--URL--', url)
+          var url = layer && layer.styleUrl ?
+            layer.styleUrl :
+            scope.currentLayer.styleUrl;
+          $window.alert($translate.instant('external_data_warning').
+              replace('--URL--', url)
           );
         };
 

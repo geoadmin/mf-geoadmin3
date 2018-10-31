@@ -22,12 +22,9 @@ goog.require('ga_glstyle_service');
       var downloadUrl = this.downloadUrl;
 
       var useDownloadService = function() {
-        if (gaBrowserSniffer.msie === 9 ||
+        return !!(gaBrowserSniffer.msie === 9 ||
             gaBrowserSniffer.safari ||
-            !gaBrowserSniffer.blob) {
-          return true;
-        }
-        return false;
+            !gaBrowserSniffer.blob)
       };
 
       var Export = function() {
@@ -50,24 +47,27 @@ goog.require('ga_glstyle_service');
               return;
             }
 
-            if (useDownloadService()) {
-              $http.post(downloadUrl, {
-                kml: dataString,
-                filename: fileName
-              }).then(function(response) {
-                var url = response.data.url;
-
-                if (gaBrowserSniffer.msie === 9) {
-                  $window.open(url);
-                } else {
-                  $window.location = url;
-                }
-              });
-
-            } else {
+            if (!useDownloadService()) {
               var blob = new Blob([dataString], {type: type});
               saveAs(blob, fileName);
+              return;
             }
+
+            $http.post(downloadUrl, {
+              kml: dataString,
+              filename: fileName
+            }).then(function(response) {
+              var url = response.data.url;
+
+              if (gaBrowserSniffer.msie === 9) {
+                $window.open(url);
+                return;
+              }
+
+              $window.location = url;
+            }, function(reason) {
+              $window.console.error('Can\'t download the glStyle: ', reason);
+            });
           });
         };
       };

@@ -18,10 +18,11 @@ goog.provide('ga_edit_controller');
     $scope.options = angular.extend(options, $scope.options || {});
     $scope.globals = $scope.globals || {};
 
-    $scope.$on('gaActiveEdit', function(evt, layer) {
+    $scope.$on('gaToggleEdit', function(evt, layer) {
+      var toggle = (layer !== $scope.layer);
       $scope.layer = layer;
-      $scope.globals.isEditActive = true;
-      $scope.globals.pulldownShown = true;
+      $scope.globals.isEditActive = toggle;
+      $scope.globals.pulldownShown = toggle;
     });
   });
 })();

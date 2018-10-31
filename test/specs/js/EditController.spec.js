@@ -48,13 +48,18 @@ describe('ga_edit_controller', function() {
         expect(scope.globals).to.be.an(Object);
       });
 
-      it('set scope values on gaEditActive event', function() {
+      it('set scope values on gaToggleEdit event', function() {
         var layer = new ol.layer.Layer({});
-        $rootScope.$broadcast('gaActiveEdit', layer);
+        $rootScope.$broadcast('gaToggleEdit', layer);
         $rootScope.$digest();
         expect(scope.layer).to.be(layer);
         expect(scope.globals.isEditActive).to.be(true);
         expect(scope.globals.pulldownShown).to.be(true);
+        $rootScope.$broadcast('gaToggleEdit', layer);
+        $rootScope.$digest();
+        expect(scope.layer).to.be(layer);
+        expect(scope.globals.isEditActive).to.be(false);
+        expect(scope.globals.pulldownShown).to.be(false);
       });
     });
   });

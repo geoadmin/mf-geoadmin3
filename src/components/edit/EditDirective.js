@@ -1,51 +1,24 @@
 goog.provide('ga_edit_directive');
 
+goog.require('ga_debounce_service');
 goog.require('ga_exportglstyle_service');
+goog.require('ga_filestorage_service');
+goog.require('ga_glstyle_service');
+goog.require('ga_layers_service');
 
 (function() {
 
   var module = angular.module('ga_edit_directive', [
-    'ga_exportglstyle_service'
+    'ga_exportglstyle_service',
+    'ga_filestorage_service',
+    'ga_debounce_service',
+    'ga_glstyle_service',
+    'ga_layers_service'
   ]);
 
   /**
-   * This directive add a toolbar to draw feature on a map.
-   * Options:
-   *
-   *   - broadcastLayer : send the current layer drawn through the rootScope
-   *                      with the event 'gaDrawingLayer'.
-   *   - useTemporaryLayer: force to use a new layer which will not be saved
-   *                        automatically on s3.
-   *
+   * This directive add an interface where you can modify a glStyle.
    */
-  /*
-
-goog.require('ga_definepropertiesforlayer_service');
-goog.require('ga_event_service');
-goog.require('ga_exportkml_service');
-goog.require('ga_filestorage_service');
-goog.require('ga_geomutils_service');
-goog.require('ga_layerfilters_service');
-goog.require('ga_maputils_service');
-goog.require('ga_measure_service');
-goog.require('ga_styles_service');
-
-    'ga_definepropertiesforlayer_service',
-    'ga_exportkml_service',
-    'ga_event_service',
-    'ga_filestorage_service',
-    'ga_geomutils_service',
-    'ga_layerfilters_service',
-    'ga_maputils_service',
-    'ga_measure_service',
-    'ga_styles_service',
-    'pascalprecht.translate'
-
-  $translate, $rootScope, $timeout,
-      gaBrowserSniffer, gaDefinePropertiesForLayer, gaDebounce, gaFileStorage,
-      gaLayerFilters, gaExportKml, gaMapUtils, $document, gaMeasure,
-      gaStyleFactory, gaGeomUtils, gaEvent, $window
-  */
   module.directive('gaEdit', function($rootScope, $window, $translate,
       gaDebounce, gaFileStorage, gaExportGlStyle, gaGLStyle, gaLayers) {
     return {
