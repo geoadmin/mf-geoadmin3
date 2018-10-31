@@ -19,7 +19,8 @@ goog.provide('ga_edit_controller');
     $scope.globals = $scope.globals || {};
 
     $scope.$on('gaToggleEdit', function(evt, layer) {
-      var toggle = (!$scope.globals.isEditActive || layer !== $scope.layer);
+      var toggle = !!(!$scope.globals.isEditActive ||
+        (layer && layer.bodId !== $scope.layer.bodId));
       $scope.layer = layer;
       $scope.globals.isEditActive = toggle;
       $scope.globals.pulldownShown = toggle;
