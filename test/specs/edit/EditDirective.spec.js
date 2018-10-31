@@ -129,7 +129,8 @@ describe('ga_edit_directive', function() {
 
     beforeEach(function() {
       sublayer = new ol.layer.Layer({});
-      sublayer.id = 'subfoo'
+      sublayer.id = 'subfoo';
+      sublayer.sourceId = 'fooSource';
       layer = new ol.layer.Group({
         layers: [
           sublayer
@@ -274,12 +275,17 @@ describe('ga_edit_directive', function() {
         };
 
         sinon.stub(gaLayers, 'getLayer').
-            withArgs('foo').returns({ styleUrl: 'bar' }).
-            withArgs('subfoo').returns({ sourceId: 'fooSource' });
-        sinon.stub(gaGlStyle, 'get').withArgs('bar').returns($q.when(glStyle));
+            withArgs('foo').returns({
+              styleUrl: '//bar'
+            }).
+            withArgs('subfoo').returns({
+              sourceId: 'fooSource',
+              styleUrl: '//bar'
+            });
+        sinon.stub(gaGlStyle, 'get').withArgs('http://bar').returns($q.when(glStyle));
 
         var stub2 = sinon.stub($window.olms, 'stylefunction').withArgs(
-            sublayer, glStyle.style, 'fooSource', undefined, 'value', 'value.png',
+            sublayer, glStyle.style, 'fooSource', undefined, glStyle.sprite, 'value.png',
             ['Helvetica']
         );
         scope.reset(evt, layer);

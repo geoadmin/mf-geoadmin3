@@ -758,10 +758,11 @@ goog.require('ga_urlutils_service');
                   });
                 });
           } else if (config.type === 'vectortile') {
+
             if (config.sourceType === 'raster') {
               olLayer = new ol.layer.Tile();
-            } else {
 
+            } else {
               olLayer = new ol.layer.VectorTile({
                 declutter: true,
                 style: new ol.style.Style(),
@@ -773,52 +774,18 @@ goog.require('ga_urlutils_service');
               });
             }
 
-            styleUrl = gaUrlUtils.resolveStyleUrl(
-                config.styleUrl, opts.externalStyleUrl);
+            styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl,
+                opts.externalStyleUrl);
             if (config.sourceId && styleUrl) {
-              var sourceId = config.sourceId;
+              olLayer.sourceId = config.sourceId;
               gaGlStyle.get(styleUrl).then((data) => {
-                var glStyle = data.style;
-                var spriteData = data.sprite;
-                var spriteUrl = glStyle.sprite && glStyle.sprite + '.png';
-                $window.olms.stylefunction(olLayer, glStyle,
-                    config.sourceId,
-                    undefined, spriteData, spriteUrl,
-                    ['Helvetica']);
+                gaMapUtils.applyGlStyleToOlLayer(olLayer, data);
 
+                // Load informations from tileset.json file of a source
                 if (!config.url) {
-                  var sourceConfigUrl = glStyle.sources[sourceId].url;
-                  $http.get(sourceConfigUrl, {
-                    cache: true
-                  }).then(function(response) {
-                    var data = response.data;
-                    var olSource;
-                    if (config.sourceType === 'raster') {
-                      olSource = new ol.source.XYZ({
-                        minZoom: data.minZoom,
-                        maxZoom: data.maxZoom,
-                        urls: data.tiles
-                      });
-                      olLayer.setOpacity(config.opacity || 1);
-                    } else { // vector
-                      olSource = new ol.source.VectorTile({
-                        format: new ol.format.MVT(),
-                        minZoom: data.minzoom,
-                        maxZoom: data.maxzoom,
-                        urls: data.tiles
-                      });
-                    }
-                    olLayer.setSource(olSource);
-
-                    if (data.extent) {
-                      // Extent in epsg:4326
-                      olLayer.setExtent(ol.proj.transformExtent(data.extent,
-                          ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857')));
-                    }
-                  }, function(reason) {
-                    $window.console.error('Loading source config failed. ' +
-                        'Reason: "' + reason + '"');
-                  });
+                  var sourceConfig = data.style.sources[olLayer.sourceId];
+                  gaMapUtils.applyGlSourceToOlLayer(olLayer, sourceConfig);
+                  olLayer.setOpacity(config.opacity || 1);
                 }
               });
             }

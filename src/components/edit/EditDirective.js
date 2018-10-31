@@ -5,6 +5,8 @@ goog.require('ga_exportglstyle_service');
 goog.require('ga_filestorage_service');
 goog.require('ga_glstyle_service');
 goog.require('ga_layers_service');
+goog.require('ga_maputils_service');
+goog.require('ga_mvt_service');
 
 (function() {
 
@@ -13,14 +15,17 @@ goog.require('ga_layers_service');
     'ga_filestorage_service',
     'ga_debounce_service',
     'ga_glstyle_service',
-    'ga_layers_service'
+    'ga_layers_service',
+    'ga_maputils_service',
+    'ga_mvt_service'
   ]);
 
   /**
    * This directive add an interface where you can modify a glStyle.
    */
-  module.directive('gaEdit', function($rootScope, $window, $translate,
-      gaDebounce, gaFileStorage, gaExportGlStyle, gaGlStyle, gaLayers) {
+  module.directive('gaEdit', function($rootScope, $window, $translate, gaMvt,
+      gaDebounce, gaFileStorage, gaExportGlStyle, gaGlStyle, gaLayers,
+      gaMapUtils) {
     return {
       restrict: 'A',
       templateUrl: 'components/edit/partials/edit.html',
@@ -60,34 +65,6 @@ goog.require('ga_layers_service');
         };
         scope.saveDebounced = gaDebounce.debounce(save, 2000, false, false);
 
-        // Apply the default style to the layer.
-        // TODO It`s a duplicate function from gaMapUtils from Loic.
-        var reloadLayer = function(layer) {
-          var config = gaLayers.getLayer(layer.id);
-          var styleUrl = layer.externalStyleUrl ||
-              config.styleUrl;
-
-          layer.getLayers().forEach(function(sublayer) {
-            var subConfig = gaLayers.getLayer(sublayer.id);
-            if (!subConfig.sourceId) {
-              return;
-            }
-            sublayer.externalStyleUrl = layer.externalStyleUrl;
-            gaGlStyle.get(styleUrl).then(function(glStyle) {
-
-              var sprite = glStyle.style.sprite;
-              var spriteUrl = sprite && (sprite + '.png');
-
-              $window.olms.stylefunction(
-                  sublayer,
-                  glStyle.style,
-                  subConfig.sourceId,
-                  undefined,
-                  sprite, spriteUrl, ['Helvetica']);
-            });
-          });
-        }
-
         /// ////////////////////////////////
         // More... button functions
         /// ////////////////////////////////
@@ -114,7 +91,7 @@ goog.require('ga_layers_service');
           if ($window.confirm(str)) {
             // Delete the file on server ?
             layer.externalStyleUrl = undefined;
-            reloadLayer(layer);
+            gaMvt.reload(layer);
           }
         };
 
