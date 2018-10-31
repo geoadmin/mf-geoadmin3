@@ -43,15 +43,10 @@ goog.provide('ga_gl_style_service');
           }, function(res) {
             that.styleCache_ = null;
             that.spriteCache_ = null;
-            var msg =
-                'Unable to load the style from ' +
-                styleUrl +
-                ' response status is ' +
-                res.status;
-            $window.console.error(msg);
+            $window.console.error('Unable to load the style from ' + styleUrl +
+                ' response status is ' + res.status);
             defer.reject(res);
-          }
-          );
+          });
           return defer.promise;
         };
 
@@ -65,19 +60,14 @@ goog.provide('ga_gl_style_service');
             };
           }, function(res) {
             that.spriteCache_ = null;
-            $window.console.error(
-                'Unable to load ' +
-                  spriteUrl +
-                  ' response status is ' +
-                  res.status
-            );
+            $window.console.error('Unable to load ' + spriteUrl +
+                ' response status is ' + res.status);
             // failing to load sprite is ok for now...
             return {
               style: that.styleCache_,
               sprite: that.spriteCache_
             };
-          }
-          );
+          });
         };
 
         this.cloneStyle = function() {
