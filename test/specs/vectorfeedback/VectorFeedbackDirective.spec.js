@@ -7,9 +7,8 @@ describe('ga_vector_feedback_directive', function() {
     map,
     options,
     spySetById,
-    spyApplyGLStyleToOlLayers,
+    spyApplyGLStyleToOlLayer,
     spyGetMapBackgroundLayer,
-    spyGetMapBackgroundLayersArray,
     spyGet,
     spyFilter,
     spyEdit,
@@ -49,17 +48,13 @@ describe('ga_vector_feedback_directive', function() {
         setById: spySetById
       });
 
-      spyApplyGLStyleToOlLayers = sinon.spy(function() {});
+      spyApplyGLStyleToOlLayer = sinon.spy(function() {});
       spyGetMapBackgroundLayer = sinon.spy(function() {
         return { bodId: 'toto' };
       });
-      spyGetMapBackgroundLayersArray = sinon.spy(function() {
-        return {};
-      });
       $provide.value('gaMapUtils', {
-        applyGLStyleToOlLayers: spyApplyGLStyleToOlLayers,
-        getMapBackgroundLayer: spyGetMapBackgroundLayer,
-        getMapBackgroundLayersArray: spyGetMapBackgroundLayersArray
+        applyGLStyleToOlLayer: spyApplyGLStyleToOlLayer,
+        getMapBackgroundLayer: spyGetMapBackgroundLayer
       });
 
       spyGet = sinon.spy(function() {
@@ -179,8 +174,8 @@ describe('ga_vector_feedback_directive', function() {
       scope.options.layers[bodid].selectableLayers[1];
     $rootScope.$digest();
 
-    expect(spyGetMapBackgroundLayersArray.calledOnce).to.be.ok();
-    expect(spyApplyGLStyleToOlLayers.calledOnce).to.be.ok();
+    expect(spyGetMapBackgroundLayer.calledTwice).to.be.ok();
+    expect(spyApplyGLStyleToOlLayer.calledOnce).to.be.ok();
     expect(spyResetEdits.calledOnce).to.be.ok();
   });
 
@@ -192,9 +187,9 @@ describe('ga_vector_feedback_directive', function() {
     scope.options.showLabel = scope.options.showLabels[1];
     $rootScope.$digest();
 
-    expect(spyGetMapBackgroundLayersArray.calledOnce).to.be.ok();
+    expect(spyGetMapBackgroundLayer.calledTwice).to.be.ok();
     expect(spyFilter.calledOnce).to.be.ok();
-    expect(spyApplyGLStyleToOlLayers.calledOnce).to.be.ok();
+    expect(spyApplyGLStyleToOlLayer.calledOnce).to.be.ok();
   });
 
   it('calls the right services when changing the color', function() {
@@ -205,8 +200,8 @@ describe('ga_vector_feedback_directive', function() {
     scope.options.activeColor = scope.options.colors[0];
     $rootScope.$digest();
 
-    expect(spyGetMapBackgroundLayersArray.calledOnce).to.be.ok();
+    expect(spyGetMapBackgroundLayer.calledTwice).to.be.ok();
     expect(spyEdit.calledOnce).to.be.ok();
-    expect(spyApplyGLStyleToOlLayers.calledOnce).to.be.ok();
+    expect(spyApplyGLStyleToOlLayer.calledOnce).to.be.ok();
   });
 });

@@ -33,16 +33,14 @@ goog.require('ga_maputils_service');
           if (!mobile) {
             scope.options.activeColor = color;
           }
-          var olLayers = gaMapUtils.getMapBackgroundLayersArray(map);
           var edit = scope.options.selectedLayer.edit;
           if (edit) {
             edit = edit.slice();
             edit[2] = edit[2].replace('{color}', color);
             var glStyle = gaGLStyle.edit([edit]);
-            gaMapUtils.applyGLStyleToOlLayers(
-                olLayers,
-                glStyle.style,
-                glStyle.sprite
+            gaMapUtils.applyGLStyleToOlLayer(
+                gaMapUtils.getMapBackgroundLayer(map),
+                glStyle
             );
           }
         };
@@ -52,13 +50,10 @@ goog.require('ga_maputils_service');
               function(newVal, oldVal) {
                 if (newVal && oldVal && newVal.value !== oldVal.value) {
                   scope.options.activeColor = '';
-                  var olLayers = gaMapUtils.getMapBackgroundLayersArray(
-                      map);
                   var glStyle = gaGLStyle.resetEdits();
-                  gaMapUtils.applyGLStyleToOlLayers(
-                      olLayers,
-                      glStyle.style,
-                      glStyle.sprite
+                  gaMapUtils.applyGLStyleToOlLayer(
+                      gaMapUtils.getMapBackgroundLayer(map),
+                      glStyle
                   );
                 }
               });
@@ -78,26 +73,20 @@ goog.require('ga_maputils_service');
           return scope.$watch('options.showLabel', function(newVal, oldVal) {
             if (newVal && oldVal && newVal.value !== oldVal.value) {
               var glStyle;
-              var olLayers = gaMapUtils.getMapBackgroundLayersArray(map);
-              if (olLayers) {
-                if (newVal.value) {
-                  glStyle = gaGLStyle.resetFilters();
-                } else {
-                  var bodId = scope.options.backgroundLayer.id;
-                  var filters =
-                    scope.options.layers[bodId].labelsFilters;
-                  if (filters) {
-                    glStyle = gaGLStyle.filter(filters);
-                  }
-                }
-                if (glStyle && glStyle.style) {
-                  gaMapUtils.applyGLStyleToOlLayers(
-                      olLayers,
-                      glStyle.style,
-                      glStyle.sprite
-                  );
+              if (newVal.value) {
+                glStyle = gaGLStyle.resetFilters();
+              } else {
+                var bodId = scope.options.backgroundLayer.id;
+                var filters =
+                  scope.options.layers[bodId].labelsFilters;
+                if (filters) {
+                  glStyle = gaGLStyle.filter(filters);
                 }
               }
+              gaMapUtils.applyGLStyleToOlLayer(
+                  gaMapUtils.getMapBackgroundLayer(map),
+                  glStyle
+              );
             }
           });
         };
