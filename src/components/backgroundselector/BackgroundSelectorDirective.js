@@ -25,13 +25,16 @@ goog.require('ga_event_service');
         'components/backgroundselector/partials/backgroundselector.html',
       scope: {
         map: '=gaBackgroundSelectorMap',
-        ol3d: '=gaBackgroundSelectorOl3d'
+        ol3d: '=gaBackgroundSelectorOl3d',
+        isEditActive: '=gaBackgroundSelectorIsEditActive'
       },
-      link: function(scope, elt, attrs) {
+      link: function(scope, elt) {
+        var activeEditLayerId = '';
         scope.isBackgroundSelectorClosed = true;
         scope.backgroundLayers = [];
         scope.styleUrl = false;
         scope.mobile = gaBrowserSniffer.mobile;
+        scope.activeEditLayerId = activeEditLayerId;
 
         scope.$watch('currentLayer', function(newVal, oldVal) {
           if (oldVal !== newVal) {
@@ -55,8 +58,13 @@ goog.require('ga_event_service');
         };
 
         scope.toggleEdit = function(bg) {
+          activeEditLayerId = bg.id;
           $rootScope.$broadcast('gaToggleEdit', bg.olLayer);
         };
+
+        scope.$watch('isEditActive', function(newVal) {
+          scope.activeEditLayerId = newVal ? activeEditLayerId : '';
+        });
 
         scope.getClass = function(layer) {
           if (layer) {

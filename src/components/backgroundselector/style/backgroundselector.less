@@ -18,38 +18,8 @@
     }
   }
 
-  .ga-open-edit-bt {
-    position: absolute;
-    bottom: 2px;
-    left: 2px;
-    background-color: white;
-    font-size: 2em;
-    width: 30px;
-    height: 30px;
-    border: none;
-
-    &:hover {
-      color: red;
-    }
-
-    .fa {
-      position: absolute;
-      right: 0;
-      left: 0;
-      margin: auto;
-      width: 17px;
-      height: 24px;
-      top: 0;
-      bottom: 0;
-    }
-
-    @media (max-width: @screen-tablet) {
-      display: none;
-    }
-  }
-
   .ga-bg-layer:hover, .ga-bg-highlight {
-    border-color: red !important;
+    border-color: @red !important;
     cursor: normal;
   }
 
@@ -93,7 +63,7 @@
 
     .ga-bg-layer {
       &:active {
-        border-color: red;
+        border-color: @red;
       }
     }
 
@@ -194,12 +164,29 @@
   }
   .fa-user {
     float: right;
-    color: red;
+    color: @red;
     top: 3px;
-    font-size: 1.8em;
+    font-size: 1.9em;
     @media (max-width: @screen-tablet) {
       font-size: 1.1rem;
       right:  3px;
+    }
+  }
+  .fa-ga-mapfunction {
+    top: 3px;
+    left: 3px;
+    font-size: 1.7em;
+    background-color: rgba(254, 254, 254, 0.65);
+    padding-left: 5.5px;
+    padding-top: 2px; 
+    width: 27px;
+    height: 27px;
+    &:hover,
+    &.active {
+      color: @red;
+    }
+    @media (max-width: @screen-tablet) {
+      display: none;
     }
   }
 }
