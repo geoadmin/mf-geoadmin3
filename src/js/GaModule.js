@@ -45,6 +45,7 @@ goog.require('ga_profile_controller');
 goog.require('ga_profilepopup_controller');
 goog.require('ga_query');
 goog.require('ga_query_vector');
+goog.require('ga_query_vector_controller');
 goog.require('ga_rotate');
 goog.require('ga_scaleline');
 goog.require('ga_search');
@@ -105,6 +106,7 @@ goog.require('ga_waitcursor_service');
     'ga_edit',
     'ga_query',
     'ga_query_vector',
+    'ga_query_vector_controller',
     'ga_print',
     'ga_shop',
     'ga_tabs',

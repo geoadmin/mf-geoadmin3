@@ -1,7 +1,9 @@
-<div class="ga-query-vector pull-left">
+<div class="ga-query-vector pull-left" ng-if="!options.mobile">
   <label class="pull-left" for="queryVector">Key: </label>
-  <select class="pull-left" id="queryVector">
-    <option>Key name</option>
+  <select class="pull-left"
+          id="queryVector"
+          ng-model="options.propertySelected"
+          ng-options="c.id for c in options.properties track by c.id">
   </select>
-  <div class="pull-left"><strong>Value:</strong> theValue</div>
+  <div class="pull-left"><strong>Value:</strong> {{options.propertyValue}}</div>
 </div>
