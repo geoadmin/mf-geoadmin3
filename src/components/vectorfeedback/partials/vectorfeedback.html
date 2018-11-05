@@ -31,7 +31,7 @@
                         ng-repeat="c in options.colors track by c.value"
                         ng-click="applyColor(c.value)"
                         ng-class="options.activeColor === c.value ? 'active-color' : ''"
-                        style="background-color: {{c.value}};"
+                        ng-style="{'background-color': c.value}"
                         class="ga-vector-feedback-color-button"></button>
             </div>
             <div ng-if="options.mobile" class="ga-vector-feedback-item-select-wrapper">
