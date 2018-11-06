@@ -206,8 +206,8 @@ goog.require('ga_styles_service');
       //    It must represent the pattern after icon name and start with ^(.*)
       iconCategories: [
         {
-          id: 'standard',
-          label: 'standard',
+          id: 'modify_icon_category_default_label',
+          label: 'modify_icon_category_default_label',
           useColorOption: true,
           type: 'css',
           regex: getDefaultIconsRegex,
