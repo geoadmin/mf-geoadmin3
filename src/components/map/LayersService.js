@@ -342,10 +342,30 @@ goog.require('ga_urlutils_service');
                   editConfig: {
                     selectableLayers: [
                       'landuse-residential',
-                      'landcover_grass'
+                      'landcover_grass',
+                      'road_major_label',
+                      'place_label_city'
                     ],
-                    'landuse-residential': ['paint|fill-color|{color}'],
-                    'landcover_grass': ['paint|fill-color|{color}']
+                    'landuse-residential': [
+                      ['paint', 'fill-color', '{color}'],
+                      ['paint', 'fill-opacity', '{opacity}']
+                    ],
+                    'landcover_grass': [['paint', 'fill-color', '{color}']],
+                    'road_major_label': [
+                      ['paint', 'text-color', '{color}'],
+                      ['paint', 'text-halo-color', '{color}']
+                      /* ['paint', 'text-halo-width', '{color}'],
+                      ['layout', 'symbol-placement', '{placement}'],
+                      ['layout', 'text-font', '{font}'],
+                      ['layout', 'text-size', '{size}'],
+                      ['layout', 'text-transform', '{transform}'],
+                      ['layout', 'text-letter-spacing', '{spacing}'],
+                      ['layout', 'text-rotation-alignment', '{font}'] */
+                    ],
+                    'place_label_city': [
+                      ['paint', 'text-color', '{color}'],
+                      ['paint', 'text-halo-color', '{color}']
+                    ]
                   }
                 };
                 response.data['ch.swisstopo.hybridkarte.vt'] = {

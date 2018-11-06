@@ -17,21 +17,7 @@ goog.require('ga_mvt_service');
     var options = {
       translate: $translate, // For translation of ng-options
       glStyle: null,
-      editConfig: null,
-      colors: [
-        { value: 'lightgray', label: 'light_gray' },
-        { value: '#acc864', label: 'light_green' },
-        { value: '#3a8841', label: 'green' },
-        { value: '#40b5bc', label: 'light blue' },
-        { value: '#0000ff', label: 'blue' },
-        { value: '#ffff99', label: 'light_yellow' },
-        { value: '#ffca00', label: 'yellow' },
-        { value: '#f28500', label: 'orange' },
-        { value: '#dc0f0f', label: 'red' },
-        { value: '#80379c', label: 'purple' },
-        { value: 'black', label: 'black' },
-        { value: 'white', label: 'white' }
-      ]
+      editConfig: null
     };
 
     $scope.layer = undefined;

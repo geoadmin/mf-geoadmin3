@@ -562,8 +562,8 @@ goog.require('ga_urlutils_service');
             }
 
           }, function(reason) {
-            $window.console.error('Loading source config failed. ' +
-                'Reason: "' + reason + '"');
+            $window.console.error('Loading source config failed. Reason: ',
+                reason);
           });
         },
 

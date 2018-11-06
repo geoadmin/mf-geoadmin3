@@ -45,16 +45,15 @@ goog.require('ga_layers_service');
         });
 
         scope.useColorSelector = function(e) {
-          return /\{color\}/.test(e);
-        }
-
-        scope.useInputColorSelector = function(e) {
-          var colorInput = $('<input type="color" value="!" />')[0];
-          return colorInput.type === 'color' && colorInput.value !== '!';
+          return /\{color\}/.test(e[2]);
         }
 
         scope.save = function() {
           $rootScope.$broadcast('gaGlStyleChanged', scope.glStyle);
+        }
+
+        scope.getTranslateId = function(e) {
+          return 'edit_' + e[1].replace(/-/g, '_');
         }
       }
     };

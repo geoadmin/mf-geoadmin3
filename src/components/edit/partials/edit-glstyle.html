@@ -8,14 +8,7 @@
 
 <div ng-repeat="e in config[selectedLayer.id]">
   <label ng-if="useColorSelector(e)">
-    <span translate>edit_glstyle_choose_color</span>:
-    <select ng-show="!useInputColorSelector()"
-            ng-model="selectedLayer[e.split('|')[0]][e.split('|')[1]]"
-            ng-change="save()">
-        <option ng-repeat="c in options.colors" value="{{c.value}}" translate>{{c.label}}</option>
-    </select>
-    <input type="color" ng-show="useInputColorSelector()"
-           ng-model="selectedLayer[e.split('|')[0]][e.split('|')[1]]"
-           ng-change="save()" />
+    <span translate>{{getTranslateId(e)}}</span>:
+    <div ng-model="selectedLayer[e[0]][e[1]]" ng-change="save" ga-color />
   </label>
 </div>
