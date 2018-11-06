@@ -509,5 +509,8 @@
   "edit_glstyle_choose_color": "",
   "landuse-residential": "",
   "landcover_grass": "",
-  "edit_not_possible": ""
+  "edit_not_possible": "",
+  "edit_fill_color": "",
+  "edit_text_color": "",
+  "edit_text_halo_color": ""
 }

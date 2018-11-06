@@ -1,14 +1,14 @@
-<!-- List of modifyable layers -->
 <label>
-  <span translate>edit_glstyle_choose_layer</span>:
-  <select ng-model="selectedLayer"
+  <span translate>{{'edit_glstyle_choose_layer'}}:</span>
+  <select class="form-control"
+          ng-model="selectedLayer"
           ng-options="(s.id | translate) for s in selectableLayers">
   </select>
 </label>
 
-<div ng-repeat="e in config[selectedLayer.id]">
+<div ng-repeat="e in config[selectedLayer.id]" >
   <label ng-if="useColorSelector(e)">
-    <span translate>{{getTranslateId(e)}}</span>:
+    <span translate>{{getTranslateId(e)}}:</span>
     <div ng-model="selectedLayer[e[0]][e[1]]" ng-change="save" ga-color />
   </label>
 </div>
