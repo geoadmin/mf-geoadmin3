@@ -68,10 +68,10 @@ goog.require('ga_glstylestorage_service');
         },
         */
 
-        'ch.swisstopo.pixelkarte-farbe': {
+        /* 'ch.swisstopo.pixelkarte-farbe': {
           id: 'ch.swisstopo.pixelkarte-farbe',
           label: 'bg_pixel_color'
-        }
+        } */
 
         /* 'ch.swisstopo.pixelkarte-grau': {
           id: 'ch.swisstopo.pixelkarte-grau',
