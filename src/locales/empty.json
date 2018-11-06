@@ -508,5 +508,6 @@
   "edit_glstyle_choose_layer": "",
   "edit_glstyle_choose_color": "",
   "landuse-residential": "",
-  "landcover_grass": ""
+  "landcover_grass": "",
+  "edit_not_possible": ""
 }

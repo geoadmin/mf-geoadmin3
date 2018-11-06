@@ -1,16 +1,11 @@
-<div ng-if="!layer.glStyle">
-   Sorry you can't edit this layer. Please choose a different layer on bottom
-   right of the page.
-</div>
+<div ng-if="!layer.glStyle" translate>edit_not_possible</div>
 <div ng-show="layer.glStyle">
   We are modifying the layer {{layer.id}}
   <br/>
 
-  <!--div ng-controller="GaEditGlStyleController"-->
-    <div ga-edit-gl-style="layer.glStyle"
-         ga-edit-gl-style-config="options.editConfig"
-         ga-edit-gl-style-options="options"></div>
-  <!--/div-->
+  <div ga-edit-gl-style="layer.glStyle"
+        ga-edit-gl-style-config="options.editConfig">
+  </div>
 
   <div class="ga-edit-info-save">
     <span class="ga-success" translate="{{statusMsgId}}"></span>

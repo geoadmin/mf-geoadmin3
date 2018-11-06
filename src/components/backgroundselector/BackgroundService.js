@@ -171,14 +171,7 @@ goog.require('ga_glstylestorage_service');
           layer.displayInLayerManager = false;
           bg.olLayer = layer;
         }
-
-        // Add the bg to the map
-        var layers = map.getLayers();
-        if (layers.item(0) && layers.item(0).background) {
-          layers.setAt(0, layer);
-        } else {
-          layers.insertAt(0, layer);
-        }
+        return layer;
       };
 
       var Background = function() {
@@ -241,12 +234,21 @@ goog.require('ga_glstylestorage_service');
               bg = newBg;
               var layers = map.getLayers();
               if (bg.id === 'voidLayer') {
-                if (layers.getLength() > 0 &&
-                    layers.item(0).background === true) {
+
+                // Remove the bg from the map
+                if (layers.getLength() > 0 && layers.item(0).background) {
                   layers.removeAt(0);
                 }
+
               } else {
-                createOlLayer(map, bg);
+                var layer = createOlLayer(map, bg);
+
+                // Add the bg to the map
+                if (layers.item(0) && layers.item(0).background) {
+                  layers.setAt(0, layer);
+                } else {
+                  layers.insertAt(0, layer);
+                }
               }
               broadcast();
             }

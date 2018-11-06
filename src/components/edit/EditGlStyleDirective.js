@@ -17,8 +17,7 @@ goog.require('ga_layers_service');
       templateUrl: 'components/edit/partials/edit-glstyle.html',
       scope: {
         glStyle: '=gaEditGlStyle',
-        config: '=gaEditGlStyleConfig',
-        options: '=gaEditGlStyleOptions'
+        config: '=gaEditGlStyleConfig'
       },
       link: function(scope, element, attrs, controller) {
 
@@ -26,14 +25,7 @@ goog.require('ga_layers_service');
           if (!newGlStyle || !scope.config || !scope.config.selectableLayers) {
             return;
           }
-          /*
-          var config = gaLayers.getLayer(newGlStyle.id) ||
-              gaLayers.getLayer(newGlStyle.id);
-          if (!config.editConfig) {
-            return;
-          }
-          scope.config = config.editConfig;
-          */
+
           scope.selectableLayers = [];
 
           scope.glStyle.layers.forEach(function(layer) {

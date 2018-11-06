@@ -39,7 +39,7 @@ goog.provide('ga_color_directive');
           { value: 'lightgray', label: 'light_gray' },
           { value: '#acc864', label: 'light_green' },
           { value: '#3a8841', label: 'green' },
-          { value: '#40b5bc', label: 'light blue' },
+          { value: '#40b5bc', label: 'light_blue' },
           { value: '#0000ff', label: 'blue' },
           { value: '#ffff99', label: 'light_yellow' },
           { value: '#ffca00', label: 'yellow' },

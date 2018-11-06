@@ -16,7 +16,6 @@ goog.require('ga_drawstyle_controller');
 goog.require('ga_drawstylepopup_controller');
 goog.require('ga_edit');
 goog.require('ga_edit_controller');
-goog.require('ga_editglstyle_controller');
 goog.require('ga_featuretree');
 goog.require('ga_featuretree_controller');
 goog.require('ga_feedback');
@@ -135,7 +134,6 @@ goog.require('ga_waitcursor_service');
     'ga_tooltip_controller',
     'ga_featuretree_controller',
     'ga_edit_controller',
-    'ga_editglstyle_controller',
     'ga_draw_controller',
     'ga_drawstyle_controller',
     'ga_drawstylepopup_controller',

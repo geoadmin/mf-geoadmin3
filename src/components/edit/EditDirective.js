@@ -1,7 +1,6 @@
 goog.provide('ga_edit_directive');
 
 goog.require('ga_debounce_service');
-goog.require('ga_editglstyle_controller');
 goog.require('ga_exportglstyle_service');
 goog.require('ga_filestorage_service');
 goog.require('ga_glstyle_service');
