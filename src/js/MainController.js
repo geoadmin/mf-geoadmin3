@@ -177,9 +177,10 @@ goog.require('ga_window_service');
     var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
     var initWithFeedback = /feedback/g.test(gaPermalink.getParams().widgets);
     var initWithDraw = /draw/g.test(gaPermalink.getParams().widgets) ||
-        (!!(gaPermalink.getParams().adminId) && !/vt$/.test(gaPermalink.getParams().bgLayer));
+        (!!(gaPermalink.getParams().adminId) &&
+        !gaPermalink.getParams().glStyleAdminId);
     var initWithEdit = /edit/g.test(gaPermalink.getParams().widgets) ||
-        (!!(gaPermalink.getParams().adminId) && /vt$/.test(gaPermalink.getParams().bgLayer));
+        !!(gaPermalink.getParams().glStylesAdminId);
     gaPermalink.deleteParam('widgets');
 
     var onTopicsLoaded = function() {
@@ -225,7 +226,7 @@ goog.require('ga_window_service');
       } else if (initWithDraw) {
         $scope.globals.isDrawActive = initWithDraw;
       } else if (initWithEdit) {
-        $scope.globals.isEditActive = initWithDraw;
+        $scope.globals.isEditActive = initWithEdit;
       } else {
         onTopicChange(null, gaTopic.get());
       }
@@ -325,9 +326,11 @@ goog.require('ga_window_service');
     });
     // Activate share tool when menu is opening.
     $scope.$watch('globals.pulldownShown', function(active) {
-      if (active && !$scope.globals.isDrawActive &&
+      if (active &&
+          gaWindow.isWidth('xs') &&
+          !$scope.globals.isDrawActive &&
           !$scope.globals.isEditActive &&
-          !$scope.globals.isShareActive && gaWindow.isWidth('xs')) {
+          !$scope.globals.isShareActive) {
         $scope.globals.isShareActive = true;
       }
     });

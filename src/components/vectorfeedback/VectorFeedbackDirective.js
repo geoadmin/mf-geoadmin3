@@ -37,10 +37,9 @@ goog.require('ga_maputils_service');
           if (edit) {
             edit = edit.slice();
             edit[2] = edit[2].replace('{color}', color);
-            var glStyle = gaGlStyle.edit([edit]);
             gaMapUtils.applyGlStyleToOlLayer(
                 gaMapUtils.getMapBackgroundLayer(map),
-                glStyle
+                gaGlStyle.edit([edit])
             );
           }
         };
@@ -50,10 +49,10 @@ goog.require('ga_maputils_service');
               function(newVal, oldVal) {
                 if (newVal && oldVal && newVal.value !== oldVal.value) {
                   scope.options.activeColor = '';
-                  var glStyle = gaGlStyle.resetEdits();
+
                   gaMapUtils.applyGlStyleToOlLayer(
                       gaMapUtils.getMapBackgroundLayer(map),
-                      glStyle
+                      gaGlStyle.resetEdits()
                   );
                 }
               });
@@ -137,6 +136,10 @@ goog.require('ga_maputils_service');
             scope.options.activeColor = null;
             reg();
           }
+        });
+
+        scope.$on('gaToggleEdit', function(evt, layer) {
+          element.find('#ga-feedback-vector-body').collapse('hide');
         });
 
         if (!mobile) {

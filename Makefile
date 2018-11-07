@@ -615,6 +615,7 @@ prd/lib/build.js: src/lib/polyfill.min.js \
 	    src/lib/localforage.min.js \
 	    src/lib/filesaver.min.js \
 	    src/lib/gyronorm.complete.min.js \
+	    src/lib/tinycolor.min.js \
 	    .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*\.map//' > $@
@@ -842,6 +843,7 @@ libs:
 	$(call applypatches)
 	$(call compilejs,fastclick)
 	$(call compilejs,slip)
+	$(call compilejs,tinycolor)
 
 
 .build-artefacts/app.js: .build-artefacts/js-files

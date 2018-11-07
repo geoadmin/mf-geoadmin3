@@ -206,11 +206,6 @@ goog.require('ga_waitcursor_service');
         '/downloadkml';
   });
 
-  module.config(function(gaFileStorageProvider, gaGlobalOptions) {
-    gaFileStorageProvider.fileStorageUrl = gaGlobalOptions.apiUrl + '/files';
-    gaFileStorageProvider.publicUrl = gaGlobalOptions.publicUrl;
-  });
-
   module.config(function(gaPreviewFeaturesProvider, gaGlobalOptions) {
     gaPreviewFeaturesProvider.url = gaGlobalOptions.cachedApiUrl +
         '/rest/services/all/MapServer/';

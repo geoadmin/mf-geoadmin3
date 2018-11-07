@@ -5,7 +5,7 @@
   <div class="ga-bg-layer-text" translate>{{layer.label}}</div>
   <button class="ga-icon ga-btn fa fa-user"
           ng-click="showWarning(layer)"
-          ng-show="!!layer.styleUrl"></button>
+          ng-show="layer.olLayer.useThirdPartyData"></button>
   <button class="ga-icon ga-btn fa fa-ga-mapfunction"
           ng-click="toggleEdit(layer)"
           ng-class="{'active': layer.id === activeEditLayerId }"
@@ -14,6 +14,7 @@
 </div>
 <div class="ga-bg-layer-bt" translate-attr="{title: 'bg_toggle'}">
   <div class="ga-bg-layer-bt-text" translate>bg_chooser_label</div>
-  <button class="ga-icon ga-btn fa fa-user" ng-click="showWarning()" ng-show="!!styleUrl"></button>
+  <button class="ga-icon ga-btn fa fa-user" ng-click="showWarning()"
+          ng-show="currentLayer.olLayer.useThirdPartyData"></button>
   <i class="fa fa-chevron-sign-right"></i>
 </div>

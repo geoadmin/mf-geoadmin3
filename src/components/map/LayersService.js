@@ -289,7 +289,8 @@ goog.require('ga_urlutils_service');
               //                      By default, it takes the serverLayername value.
               //     url:             Template of the url where to get the vectortiles.
               //                      Overrides the source's url property of the glStyle.
-              //     styleUrl:        Url's a the glStyle to apply to this layer. It will apply styles associated to the sourceId value.
+              //     styleUrl:        Url's a the glStyle to apply to this layer.
+              //                      It will apply styles associated to the sourceId value.
               //                      Used only if the parent has no styleUrl defined (see background layers).
               var vts = [{
                 serverLayerName: 'openmaptiles',
@@ -337,7 +338,35 @@ goog.require('ga_urlutils_service');
                     relief + '-custom',
                     'openmaptiles'
                   ],
-                  styleUrl: 'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json'
+                  styleUrl: 'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json',
+                  editConfig: {
+                    selectableLayers: [
+                      'landuse-residential',
+                      'landcover_grass',
+                      'road_major_label',
+                      'place_label_city'
+                    ],
+                    'landuse-residential': [
+                      ['paint', 'fill-color', '{color}'],
+                      ['paint', 'fill-opacity', '{opacity}']
+                    ],
+                    'landcover_grass': [['paint', 'fill-color', '{color}']],
+                    'road_major_label': [
+                      ['paint', 'text-color', '{color}'],
+                      ['paint', 'text-halo-color', '{color}']
+                      /* ['paint', 'text-halo-width', '{color}'],
+                      ['layout', 'symbol-placement', '{placement}'],
+                      ['layout', 'text-font', '{font}'],
+                      ['layout', 'text-size', '{size}'],
+                      ['layout', 'text-transform', '{transform}'],
+                      ['layout', 'text-letter-spacing', '{spacing}'],
+                      ['layout', 'text-rotation-alignment', '{font}'] */
+                    ],
+                    'place_label_city': [
+                      ['paint', 'text-color', '{color}'],
+                      ['paint', 'text-halo-color', '{color}']
+                    ]
+                  }
                 };
                 response.data['ch.swisstopo.hybridkarte.vt'] = {
                   type: 'aggregate',
@@ -349,7 +378,13 @@ goog.require('ga_urlutils_service');
                     'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
                     'ch.swissnames3d.vt'
                   ],
-                  styleUrl: 'https://tileserver.dev.bgdi.ch/styles/ch.swisstopo.hybridkarte.vt_1539954688_e92c5b623257c5fafe1594ce4a0a72e0c08b0d80/style.json'
+                  styleUrl: 'https://tileserver.dev.bgdi.ch/styles/ch.swisstopo.hybridkarte.vt_1539954688_e92c5b623257c5fafe1594ce4a0a72e0c08b0d80/style.json',
+                  editConfig: {
+                    selectableLayers: [
+                      'cities',
+                      'highways'
+                    ]
+                  }
                 };
                 response.data['ch.swisstopo.leichte-basiskarte.vt'] = {
                   type: 'aggregate',
@@ -362,7 +397,13 @@ goog.require('ga_urlutils_service');
                     'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
                     'ch.swissnames3d.vt'
                   ],
-                  styleUrl: 'https://tileserver.dev.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_1539776348_8bdaf0a51d53ba3e109563680710cb372fb42fe1/style.json'
+                  styleUrl: 'https://tileserver.dev.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_1539776348_8bdaf0a51d53ba3e109563680710cb372fb42fe1/style.json',
+                  editConfig: {
+                    selectableLayers: [
+                      'background', 'lakes', 'rivers',
+                      'build_area', 'highways', 'forests'
+                    ]
+                  }
                 };
                 response.data['ch.swisstopo.wandern.vt'] = {
                   type: 'aggregate',
@@ -373,7 +414,14 @@ goog.require('ga_urlutils_service');
                     'ch.astra.wanderland.vt',
                     'ch.swisstopo.swisstlm3d-wanderwege.vt'
                   ],
-                  styleUrl: 'https://tileserver.dev.bgdi.ch/styles/ch.swisstopo.wandern.vt_1539954688_e92c5b623257c5fafe1594ce4a0a72e0c08b0d80/style.json'
+                  styleUrl: 'https://tileserver.dev.bgdi.ch/styles/ch.swisstopo.wandern.vt_1539954688_e92c5b623257c5fafe1594ce4a0a72e0c08b0d80/style.json',
+                  editConfig: {
+                    selectableLayers: [
+                      'route_local',
+                      'route_regional',
+                      'route_national'
+                    ]
+                  }
                 };
               }
 
@@ -583,12 +631,14 @@ goog.require('ga_urlutils_service');
          * Return an ol.layer.Layer object for a layer id.
          */
         this.getOlLayerById = function(bodId, opts) {
-          var olLayer, styleUrl;
+          opts = opts || {};
+          var olLayer;
           var config = layers[bodId];
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var crossOrigin = 'anonymous';
           var extent = config.extent || gaMapUtils.defaultExtent;
-          opts = opts || {};
+          var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl,
+              opts.externalStyleUrl);
 
           // The tileGridMinRes is the resolution at which the client
           // zoom is activated. It's different from the config.minResolution
@@ -703,8 +753,12 @@ goog.require('ga_urlutils_service');
             var subLayers = new Array(len);
             for (i = 0; i < len; i++) {
               var subLayerConf = layers[subLayersIds[i]];
-              if (config.styleUrl && subLayerConf) {
+              if (styleUrl && subLayerConf) {
                 layers[subLayersIds[i]].styleUrl = config.styleUrl;
+
+                gaGlStyle.get(styleUrl).then((glStyle) => {
+                  gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
+                });
               }
               subLayers[i] = this.getOlLayerById(subLayersIds[i], opts);
             }
@@ -742,8 +796,6 @@ goog.require('ga_urlutils_service');
                   });
                 });
 
-            styleUrl = gaUrlUtils.resolveStyleUrl(
-                config.styleUrl, opts.externalStyleUrl);
             // IE doesn't understand agnostic URLs
             stylePromises[bodId] = gaUrlUtils.proxifyUrl(styleUrl).
                 then(function(proxyStyleUrl) {
@@ -773,19 +825,20 @@ goog.require('ga_urlutils_service');
                 })
               });
             }
+            olLayer.setOpacity(config.opacity || 1);
 
-            styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl,
-                opts.externalStyleUrl);
             if (config.sourceId && styleUrl) {
               olLayer.sourceId = config.sourceId;
-              gaGlStyle.get(styleUrl).then((data) => {
-                gaMapUtils.applyGlStyleToOlLayer(olLayer, data);
+              gaGlStyle.get(styleUrl).then((glStyle) => {
+                if (!glStyle) {
+                  return;
+                }
+                gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
 
                 // Load informations from tileset.json file of a source
-                if (!config.url) {
-                  var sourceConfig = data.style.sources[olLayer.sourceId];
+                var sourceConfig = glStyle.sources[olLayer.sourceId];
+                if (sourceConfig) {
                   gaMapUtils.applyGlSourceToOlLayer(olLayer, sourceConfig);
-                  olLayer.setOpacity(config.opacity || 1);
                 }
               });
             }
@@ -801,9 +854,8 @@ goog.require('ga_urlutils_service');
             olLayer.timestamps = config.timestamps;
             olLayer.geojsonUrl = config.geojsonUrl;
             olLayer.updateDelay = config.updateDelay;
-            olLayer.externalStyleUrl = opts && opts.externalStyleUrl ?
-              opts.externalStyleUrl : null;
-            olLayer.useThirdPartyData = !(!opts) && !(!opts.externalStyleUrl);
+            olLayer.externalStyleUrl = opts.externalStyleUrl;
+            olLayer.useThirdPartyData = !!opts.externalStyleUrl;
             olLayer.background = config.background || false;
             // For MVT only
             olLayer.sourceId = config.sourceId || null;

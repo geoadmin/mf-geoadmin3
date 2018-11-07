@@ -13,12 +13,6 @@ goog.provide('ga_glstyle_service');
         this.styleCache_ = null;
 
         /**
-         * Stores the original sprites
-         * @private {Object}
-         */
-        this.spriteCache_ = null;
-
-        /**
          * A list of mutually inclusive active filters on the layers
          * Example: [['propName', 'comparator', 'propVal']]
          * @private {Array<Array<string, string, string>>}
@@ -34,47 +28,29 @@ goog.provide('ga_glstyle_service');
 
         this.get = function(styleUrl) {
           var that = this;
-          var defer = $q.defer();
-          $http.get(styleUrl, { cache: true }).then(function(response) {
+          return $http.get(styleUrl, {
+            cache: true
+          }).then(function(response) {
             that.styleCache_ = response.data;
-            if (!that.styleCache_.sprite) {
-              defer.resolve({
-                style: that.styleCache_
-              });
-              return;
-            }
-            var spriteUrl = that.styleCache_.sprite + '.json';
-            that.getSprite(spriteUrl).then(function(styleData) {
-              defer.resolve(styleData);
-            });
+            return response.data;
           }, function(res) {
-            that.styleCache_ = null;
-            that.spriteCache_ = null;
             $window.console.error('Unable to load the style from ' + styleUrl +
                 ' response status is ' + res.status);
-            defer.reject(res);
           });
-          return defer.promise;
         };
 
-        this.getSprite = function(spriteUrl) {
-          var that = this;
+        this.getSpriteData = function(spriteUrl) {
           return $http.get(spriteUrl, { cache: true }).then(function(res) {
-            that.spriteCache_ = res.data;
-            return {
-              style: that.styleCache_,
-              sprite: that.spriteCache_
-            };
+            return res.data;
           }, function(res) {
-            that.spriteCache_ = null;
             $window.console.error('Unable to load ' + spriteUrl +
                 ' response status is ' + res.status);
-            // failing to load sprite is ok for now...
-            return {
-              style: that.styleCache_,
-              sprite: that.spriteCache_
-            };
           });
+        };
+
+        this.getSpriteDataFromGlStyle = function(glStyle) {
+          var spriteUrl = glStyle.sprite + '.json'
+          return this.getSpriteData(spriteUrl);
         };
 
         this.cloneStyle = function() {
@@ -126,10 +102,7 @@ goog.provide('ga_glstyle_service');
           this.filters_ = this.filters_.concat(filters);
           var layers = this.applyFiltersAndEdits_(newStyle);
           newStyle.layers = layers;
-          return {
-            style: newStyle,
-            sprite: this.spriteCache_
-          };
+          return newStyle;
         };
 
         this.edit = function(edits) {
@@ -137,10 +110,7 @@ goog.provide('ga_glstyle_service');
           this.edits_ = this.edits_.concat(edits);
           var layers = this.applyFiltersAndEdits_(newStyle);
           newStyle.layers = layers;
-          return {
-            style: newStyle,
-            sprite: this.spriteCache_
-          };
+          return newStyle;
         };
 
         this.resetEdits = function() {
@@ -148,10 +118,7 @@ goog.provide('ga_glstyle_service');
           this.edits_ = [];
           var layers = this.applyFiltersAndEdits_(newStyle);
           newStyle.layers = layers;
-          return {
-            style: newStyle,
-            sprite: this.spriteCache_
-          }
+          return newStyle;
         };
 
         this.resetFilters = function() {
@@ -159,10 +126,7 @@ goog.provide('ga_glstyle_service');
           this.filters_ = [];
           var layers = this.applyFiltersAndEdits_(newStyle);
           newStyle.layers = layers;
-          return {
-            style: newStyle,
-            sprite: this.spriteCache_
-          }
+          return newStyle;
         };
 
         /**
@@ -171,10 +135,7 @@ goog.provide('ga_glstyle_service');
         this.reset = function() {
           this.filters_ = [];
           this.edits_ = [];
-          return {
-            style: this.styleCache_,
-            sprite: this.spriteCache_
-          };
+          return this.styleCache_;
         };
       };
       return new GlStyle();

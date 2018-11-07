@@ -1,29 +1,38 @@
-<div> We modify the layer {{layer.id}} </div>
-<div class="ga-edit-info-save">
-  <span class="ga-success" translate="{{statusMsgId}}"></span>
+<div ng-if="!layer.glStyle" translate>edit_not_possible</div>
+<div ng-show="layer.glStyle">
+  We are modifying the layer {{layer.id}}
+  <br/>
+
+  <div ga-edit-gl-style="layer.glStyle"
+        ga-edit-gl-style-config="options.editConfig">
+  </div>
+
+  <div class="ga-edit-info-save">
+    <span class="ga-success" translate="{{statusMsgId}}"></span>
+  </div>
+  <hr>
+  <div class="ga-more">
+    <ul class="list-inline row">
+      <li class="col-sm-4 col-xs-4 vr">
+        <a href="" class="btn"
+          ng-disabled="!canExport(layer)"
+          ng-click="reset($event, layer)"
+          translate>edit_reset</a>
+      </li>
+      <li class="col-sm-4 col-xs-4 vr">
+        <a href="" class="btn"
+          ng-disabled="!canExport(layer)"
+          ng-click="export($event, layer)"
+          translate>export</a>
+      </li>
+      <li class="col-sm-4 col-xs-4">
+        <a href="" class="btn"
+          ng-disabled="!canShare(layer)"
+          ng-click="share($event, layer)"
+          translate>share</a>
+      </li>
+    </ul>
+  </div>
+  <hr>
+  <div class="ga-edit-disclaimer" translate>edit_share_file_disclaimer</div>
 </div>
-<hr>
-<div class="ga-more">
-  <ul class="list-inline row">
-    <li class="col-sm-4 col-xs-4 vr">
-      <a href="" class="btn"
-         ng-disabled="!canExport(layer)"
-         ng-click="reset($event, layer)"
-         translate>edit_reset</a>
-    </li>
-    <li class="col-sm-4 col-xs-4 vr">
-      <a href="" class="btn"
-         ng-disabled="!canExport(layer)"
-         ng-click="export($event, layer)"
-         translate>export</a>
-    </li>
-    <li class="col-sm-4 col-xs-4">
-      <a href="" class="btn"
-         ng-disabled="!canShare(layer)"
-         ng-click="share($event, layer)"
-         translate>share</a>
-    </li>
-  </ul>
-</div>
-<hr>
-<div class="ga-edit-disclaimer" translate>edit_share_file_disclaimer</div>

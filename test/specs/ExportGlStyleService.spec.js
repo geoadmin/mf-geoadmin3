@@ -3,15 +3,12 @@ describe('ga_exportglstyle_service', function() {
 
   describe('gaExportGlStyle', function() {
     var $window, $httpBackend, gaBrowserSniffer, gaExportGlStyle,
-      gaGlobalOptions, clock, gaGlStyle, $rootScope;
-    var $windowMock, $q;
+      gaGlobalOptions, clock, $rootScope;
+    var $windowMock;
     var t = new Date('2016-01-15T10:00:00.000Z').getTime();
     var tFormatted = window.moment(t).format('YYYYMMDDhhmmss');
     var fileName = 'map.geo.admin.ch_GLSTYLE_' + tFormatted + '.json';
-
-    var layer = {
-      externalStyleUrl: 'http://foo.ch'
-    };
+    var glStyle = { property: 'value' };
 
     beforeEach(function() {
       module(function($provide) {
@@ -33,16 +30,13 @@ describe('ga_exportglstyle_service', function() {
 
       inject(function($injector) {
         $window = $injector.get('$window');
-        $q = $injector.get('$q');
         $rootScope = $injector.get('$rootScope');
         $httpBackend = $injector.get('$httpBackend');
         gaBrowserSniffer = $injector.get('gaBrowserSniffer');
         gaGlobalOptions = $injector.get('gaGlobalOptions');
         $windowMock = sinon.mock($window);
         gaExportGlStyle = $injector.get('gaExportGlStyle');
-        gaGlStyle = $injector.get('gaGlStyle');
       });
-
       clock = sinon.useFakeTimers(t);
     });
 
@@ -53,13 +47,16 @@ describe('ga_exportglstyle_service', function() {
 
     describe('#create()', function() {
 
-      it('creates a string from an url', function(done) {
-        sinon.stub(gaGlStyle, 'get').returns($q.when({
-          style: {
-            property: 'value'
-          }
-        }));
-        gaExportGlStyle.create(layer).then(function(str) {
+      it('does nothing if glStyle is udnefined', function(done) {
+        gaExportGlStyle.create().then(function(str) {
+          expect(str).to.be(undefined);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('creates a string from a glStyle', function(done) {
+        gaExportGlStyle.create(glStyle).then(function(str) {
           expect(str).to.be('{"property":"value"}');
           done();
         });
@@ -69,23 +66,22 @@ describe('ga_exportglstyle_service', function() {
 
     describe('#createAndDownload()', function() {
 
+      it('does nothing if glStyle is udnefined', function() {
+        gaExportGlStyle.createAndDownload();
+        $rootScope.$digest();
+      });
+
       describe('using download service', function() {
         var dlUrl, fileUrl, open;
 
         var expectations = function(winLocation) {
-
-          sinon.stub(gaGlStyle, 'get').returns($q.when({
-            style: {
-              property: 'value'
-            }
-          }));
           $httpBackend.whenPOST(dlUrl).respond({'url': fileUrl});
           $httpBackend.expectPOST(dlUrl, {
             kml: '{"property":"value"}',
             filename: fileName
           });
 
-          gaExportGlStyle.createAndDownload(layer);
+          gaExportGlStyle.createAndDownload(glStyle);
           $rootScope.$digest();
           $httpBackend.flush();
           open.verify();
@@ -132,13 +128,11 @@ describe('ga_exportglstyle_service', function() {
         gaBrowserSniffer.safari = false;
         gaBrowserSniffer.blob = true;
         var spySaveAs = sinon.spy($window, 'saveAs');
-        sinon.stub(gaExportGlStyle, 'create').returns($q.when('{"data": "obj"}'));
-        gaExportGlStyle.createAndDownload(layer);
+        gaExportGlStyle.createAndDownload(glStyle);
         $rootScope.$digest();
         expect(spySaveAs.calledOnce).to.be.ok();
         expect(spySaveAs.args[0][1]).to.be(fileName);
         expect(spySaveAs.args[0][0]).to.be.a(Blob);
-        gaExportGlStyle.create.restore();
       });
     });
   });
