@@ -274,13 +274,9 @@ itemscope itemtype="http://schema.org/WebApplication"
              ga-mouse-position-map="::map"
              ga-mouse-position-ol3d="::ol3d"
              ga-mouse-position-options="options"></div>
+        <div ga-query-vector-button></div>
       </div>
-      <div ng-controller="GaQueryVectorController" class="pull-left">
-        <div ga-query-vector
-             ga-query-vector-map="::map"
-             ga-query-vector-options="options">
-        </div>
-      </div>
+
       <div class="pull-right">
         <a target="_blank" href="https://www.geo.admin.ch/{{langId}}/about-swiss-geoportal/impressum.html#copyright" translate>copyright_label</a>
       </div>
@@ -651,6 +647,11 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-import-dnd
            ga-import-dnd-options="::options">
       </div>
+    </div>
+
+    <!-- Query Vector -->
+    <div ga-query-vector
+         ga-query-vector-map="::map">
     </div>
 
     <div ng-if="globals.homescreen" class="popover homescreen"

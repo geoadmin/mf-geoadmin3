@@ -1,9 +1,5 @@
-<div class="ga-query-vector pull-left" ng-if="!options.mobile">
-  <label class="pull-left" for="queryVector">Key: </label>
-  <select class="pull-left"
-          id="queryVector"
-          ng-model="options.propertySelected"
-          ng-options="c.id for c in options.properties track by c.id">
-  </select>
-  <div class="pull-left"><strong>Value:</strong> {{options.propertyValue}}</div>
+<div class="ga-query-vector-popup">
+  <div class="ga-query-vector-popup-content" ng-repeat="p in propertiesList">
+    {{p[0]}} - {{p[1]}}
+  </div>
 </div>

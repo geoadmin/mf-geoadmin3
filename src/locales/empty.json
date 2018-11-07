@@ -513,5 +513,7 @@
   "edit_not_possible": "",
   "edit_fill_color": "",
   "edit_text_color": "",
-  "edit_text_halo_color": ""
+  "edit_text_halo_color": "",
+  "inspect_bg_off": "",
+  "inspect_bg_on": ""
 }
