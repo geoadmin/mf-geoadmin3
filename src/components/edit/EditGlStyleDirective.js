@@ -1,17 +1,13 @@
 goog.provide('ga_editglstyle_directive');
 
-goog.require('ga_layers_service');
-
 (function() {
 
-  var module = angular.module('ga_editglstyle_directive', [
-    'ga_layers_service'
-  ]);
+  var module = angular.module('ga_editglstyle_directive', []);
 
   /**
    * This directive add an interface where you can modify a glStyle.
    */
-  module.directive('gaEditGlStyle', function(gaLayers, $rootScope) {
+  module.directive('gaEditGlStyle', function($rootScope) {
     return {
       restrict: 'A',
       templateUrl: 'components/edit/partials/edit-glstyle.html',

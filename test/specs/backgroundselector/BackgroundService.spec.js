@@ -391,7 +391,7 @@ describe('ga_background_service', function() {
 
       it('switch bgLayer from vt to wmts then to vt', function() {
         var dfltBg = gaBg.get(); // omt.vt
-        var bg = gaBg.getBackgrounds()[0]; // pixelkartefarbe
+        var bg = gaBg.getBackgrounds()[3]; // pixelkartefarbe
         expect(dfltBg.id).to.not.equal(bg.id);
         var bcast = $rootScopeMock.expects('$broadcast').
             withArgs('gaBgChange', bg).once();
@@ -417,7 +417,7 @@ describe('ga_background_service', function() {
 
         // from wmts to vt with externalStyleUrl
         id = 'omt.vt';
-        bg = gaBg.getBackgrounds()[1];
+        bg = gaBg.getBackgrounds()[0];
         bg.olLayer.externalStyleUrl = 'foo';
         bcast = $rootScopeMock.expects('$broadcast').
             withArgs('gaBgChange', bg).once();

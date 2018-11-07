@@ -68,10 +68,10 @@ goog.require('ga_glstylestorage_service');
         },
         */
 
-        /* 'ch.swisstopo.pixelkarte-farbe': {
+        'ch.swisstopo.pixelkarte-farbe': {
           id: 'ch.swisstopo.pixelkarte-farbe',
           label: 'bg_pixel_color'
-        } */
+        }
 
         /* 'ch.swisstopo.pixelkarte-grau': {
           id: 'ch.swisstopo.pixelkarte-grau',
@@ -91,6 +91,9 @@ goog.require('ga_glstylestorage_service');
         if (topic.plConfig) {
           var p = gaUrlUtils.parseKeyValue(topic.plConfig);
           topicBg = getBgById(p.bgLayer);
+        } else {
+          // Force vt
+          topic.defaultBackground = bgs[0].id;
         }
         return topicBg || getBgById(topic.defaultBackground) || bgs[0];
       };
@@ -105,16 +108,17 @@ goog.require('ga_glstylestorage_service');
       var updateDefaultBgOrder = function(bgLayers) {
         bgLayers = bgLayers || [];
         bgs.length = 0;
-        bgLayers.forEach(function(bgLayerId) {
-          var bgLayer = predefinedBgs[bgLayerId];
-          if (bgLayer) {
-            bgs.push(bgLayer);
-          }
-        });
 
         Object.keys(vtBgs).forEach(function(key) {
           if (bgs.indexOf(vtBgs[key]) === -1) {
             bgs.push(vtBgs[key]);
+          }
+        });
+
+        bgLayers.forEach(function(bgLayerId) {
+          var bgLayer = predefinedBgs[bgLayerId];
+          if (bgLayer) {
+            bgs.push(bgLayer);
           }
         });
 
