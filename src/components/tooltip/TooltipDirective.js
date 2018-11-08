@@ -724,15 +724,20 @@ goog.require('ga_window_service');
               }
               // Add result to array. ng-repeat will take
               // care of the rest
-              htmls.push({
+              var params = {
                 map: scope.map,
                 feature: value,
                 showVectorInfos: (value instanceof ol.Feature),
-                clickGeometry: new ol.geom.Point(scope.clickCoordinate),
                 snippet: $sce.trustAsHtml(html),
                 showProfile: !gaBrowserSniffer.embed &&
                     value instanceof ol.Feature && value.getGeometry()
-              });
+              };
+              if (scope.clickCoordinate !== undefined &&
+                      scope.clickCoordinate.length === 2) {
+                params['clickGeometry'] =
+                    new ol.geom.Point(scope.clickCoordinate)
+              }
+              htmls.push(params);
             };
           }
         };
