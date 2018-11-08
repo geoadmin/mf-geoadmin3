@@ -20,7 +20,7 @@
             <div class="ga-vector-feedback-item-select-wrapper">
                 <select class="form-control"
                         ng-model="options.selectedLayer"
-                        ng-options="c.label for c in options.layers[options.backgroundLayer.id].selectableLayers track by c.value">
+                        ng-options="c for c in options.layers[options.backgroundLayer.id].selectableLayers">
                 </select>
             </div>
         </div>

@@ -493,7 +493,7 @@ goog.require('ga_urlutils_service');
         /**
          * Applies a gl style to an ol layer
          */
-        applyGlStyleToOlLayer: function(olLayer, glStyle) {
+        applyGlStyleToOlLayer: function(olLayer, glStyle, noBind) {
           if (!olLayer || !glStyle) {
             return;
           }
@@ -504,7 +504,9 @@ goog.require('ga_urlutils_service');
             layers.forEach(function(subOlLayer) {
               that.applyGlStyleToOlLayer(subOlLayer, glStyle);
             })
-            olLayer.glStyle = glStyle;
+            if (!noBind) {
+              olLayer.glStyle = glStyle;
+            }
             return;
           }
 

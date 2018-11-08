@@ -2,18 +2,21 @@ goog.provide('ga_vector_feedback_controller');
 
 goog.require('ga_background_service');
 goog.require('ga_browsersniffer_service');
+goog.require('ga_layers_service');
 
 (function() {
   var module = angular.module('ga_vector_feedback_controller', [
     'ga_browsersniffer_service',
-    'ga_background_service'
+    'ga_background_service',
+    'ga_layers_service'
   ]);
 
   module.controller('GaVectorFeedbackController', function(
       $scope,
       gaGlobalOptions,
       gaBrowserSniffer,
-      gaBackground
+      gaBackground,
+      gaLayers
   ) {
     var apiUrl = gaGlobalOptions.apiUrl;
     var mobile = gaBrowserSniffer.mobile;
@@ -31,57 +34,34 @@ goog.require('ga_browsersniffer_service');
       { value: 'black', label: 'Black' },
       { value: 'white', label: 'White' }
     ];
-
     $scope.options = {
       serviceDocUrl: apiUrl + '/services/sdiservices.html',
       mobile: mobile,
-      layers: {
-        'omt.vt': {
-          selectableLayers: [
-            {
-              value: 'landuse-residential',
-              label: 'Landuse Residential',
-              edit: ['id', 'landuse-residential', 'paint|fill-color|{color}']
-            },
-            {
-              value: 'landcover_grass',
-              label: 'Landcover Grass',
-              edit: ['id', 'landcover_grass', 'paint|fill-color|{color}']
-            }
-          ],
-          labelsFilters: [
-            ['source-layer', '==', 'place'],
-            ['source-layer', '==', 'transportation_name'],
-            ['source-layer', '==', 'aerodrome_label'],
-            ['source-layer', '==', 'poi']
-          ]
-        },
-        'ch.swisstopo.leichte-basiskarte.vt': {
-          selectableLayers: [
-            { value: 'background', label: 'Background' },
-            { value: 'lakes', label: 'Lakes' },
-            { value: 'rivers', label: 'Rivers' },
-            { value: 'build_area', label: 'Built area' },
-            { value: 'highways', label: 'Highways' },
-            { value: 'forests', label: 'Forests' }
-          ],
-          labelsFilters: [['source', '==', 'ch.swissnames3d']]
-        },
-        'ch.swisstopo.hybridkarte.vt': {
-          selectableLayers: [
-            { value: 'cities', label: 'Cities' },
-            { value: 'highways', label: 'Highways' }
-          ],
-          labelsFilters: [['source', '==', 'ch.swissnames3d']]
-        }
-      },
       colors: colors,
+      activeColor: null,
       showLabels: [
         { value: true, label: 'Show' },
         { value: false, label: 'Hide' }
       ]
     };
-
-    $scope.options.backgroundLayers = gaBackground.getBackgrounds();
+    var layers = {};
+    // Load the edit config from layersConfig
+    var removeListener = $scope.$on('gaBgChange', function(evt, value) {
+      $scope.options.backgroundLayers = gaBackground.getBackgrounds();
+      $scope.options.backgroundLayers.forEach(function(bg){
+        var layerConfig = gaLayers.getLayer(bg.id);
+        layers[bg.id] = layerConfig.editConfig;
+      });
+      $scope.options.layers = layers;
+      $scope.options.backgroundLayer = value;
+      var layer = $scope.options.layers[value.id];
+      var selectableLayers = layer ? layer.selectableLayers : null;
+      if (selectableLayers) {
+        $scope.options.selectedLayer = selectableLayers[0];
+      }
+      $scope.options.showLabel = $scope.options.showLabels[0];
+      removeListener();
+      $scope.options.initialize = true;
+    });
   });
 })();

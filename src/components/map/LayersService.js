@@ -350,6 +350,12 @@ goog.require('ga_urlutils_service');
                       'road_major_label',
                       'place_label_city'
                     ],
+                    labelsFilters: [
+                      ['source-layer', '==', 'place'],
+                      ['source-layer', '==', 'transportation_name'],
+                      ['source-layer', '==', 'aerodrome_label'],
+                      ['source-layer', '==', 'poi']
+                    ],
                     'landuse-residential': [
                       ['paint', 'fill-color', '{color}'],
                       ['paint', 'fill-opacity', '{opacity}']
@@ -387,7 +393,8 @@ goog.require('ga_urlutils_service');
                     selectableLayers: [
                       'cities',
                       'highways'
-                    ]
+                    ],
+                    labelsFilters: [['source', '==', 'ch.swissnames3d']]
                   }
                 };
                 response.data['ch.swisstopo.leichte-basiskarte.vt'] = {
@@ -407,25 +414,8 @@ goog.require('ga_urlutils_service');
                     selectableLayers: [
                       'background', 'lakes', 'rivers',
                       'build_area', 'highways', 'forests'
-                    ]
-                  }
-                };
-                response.data['ch.swisstopo.wandern.vt'] = {
-                  type: 'aggregate',
-                  background: true,
-                  serverLayerName: 'ch.swisstopo.wandern.vt',
-                  subLayersIds: [
-                    'ch.bak.bundesinventar-schuetzenswerte-ortsbilder.vt',
-                    'ch.astra.wanderland.vt',
-                    'ch.swisstopo.swisstlm3d-wanderwege.vt'
-                  ],
-                  styleUrl: 'https://tileserver.dev.bgdi.ch/styles/ch.swisstopo.wandern.vt_1539954688_e92c5b623257c5fafe1594ce4a0a72e0c08b0d80/style.json',
-                  editConfig: {
-                    selectableLayers: [
-                      'route_local',
-                      'route_regional',
-                      'route_national'
-                    ]
+                    ],
+                    labelsFilters: [['source', '==', 'ch.swissnames3d']]
                   }
                 };
               }

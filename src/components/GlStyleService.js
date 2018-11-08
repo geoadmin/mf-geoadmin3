@@ -84,7 +84,7 @@ goog.provide('ga_glstyle_service');
                 var editLayerProperty = layer[editPropertyName];
                 if (editLayerProperty &&
                     editLayerProperty === editPropertyValue) {
-                  var editStyle = edit[2].split('|');
+                  var editStyle = edit[2];
                   if (!layer[editStyle[0]]) {
                     layer[editStyle[0]] = {};
                   }
