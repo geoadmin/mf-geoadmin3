@@ -2,13 +2,15 @@
 describe('ga_vector_feedback_directive', function() {
   var $rootScope,
     $compile,
+    $httpBackend,
     scope,
     el,
     map,
     options,
+    editConfig,
+    spyGetLayer,
     spySetById,
     spyApplyGlStyleToOlLayer,
-    spyGetMapBackgroundLayer,
     spyGet,
     spyFilter,
     spyEdit,
@@ -38,9 +40,25 @@ describe('ga_vector_feedback_directive', function() {
   var injectServices = function($injector) {
     $rootScope = $injector.get('$rootScope');
     $compile = $injector.get('$compile');
+    $httpBackend = $injector.get('$httpBackend');
   };
 
   beforeEach(function() {
+    editConfig = {
+      selectableLayers: [
+        'layer1',
+        'layer2'
+      ],
+      labelsFilters: [
+        ['source-layer', '==', 'place']
+      ],
+      'layer1': [
+        ['paint', 'fill-color', 'blue']
+      ],
+      'layer2': [
+        ['paint', 'fill-color', 'yellow']
+      ]
+    };
     module(function($provide) {
       spySetById = sinon.spy(function() {});
       $provide.value('gaBackground', {
@@ -49,12 +67,8 @@ describe('ga_vector_feedback_directive', function() {
       });
 
       spyApplyGlStyleToOlLayer = sinon.spy(function() {});
-      spyGetMapBackgroundLayer = sinon.spy(function() {
-        return { bodId: 'toto' };
-      });
       $provide.value('gaMapUtils', {
-        applyGlStyleToOlLayer: spyApplyGlStyleToOlLayer,
-        getMapBackgroundLayer: spyGetMapBackgroundLayer
+        applyGlStyleToOlLayer: spyApplyGlStyleToOlLayer
       });
 
       spyGet = sinon.spy(function() {
@@ -71,6 +85,12 @@ describe('ga_vector_feedback_directive', function() {
       });
       spyResetEdits = sinon.spy(function() {
         return { style: {}, sprite: {} };
+      });
+      spyGetLayer = sinon.spy(function() {
+        return { editConfig: editConfig };
+      });
+      $provide.value('gaLayers', {
+        getLayer: spyGetLayer
       });
       $provide.value('gaGlStyle', {
         get: spyGet,
@@ -99,27 +119,7 @@ describe('ga_vector_feedback_directive', function() {
         }
       ],
       layers: {
-        toto: {
-          selectableLayers: [
-            {
-              value: 'background',
-              label: 'Background',
-              edit: ['id', 'landuse-residential', 'paint|fill-color|{color}']
-            },
-            { value: 'rivers', label: 'Rivers' }
-          ],
-          labelsFilters: [
-            ['source-layer', '==', 'place'],
-            ['source-layer', '==', 'transportation_name']
-          ]
-        },
-        procrastinator: {
-          selectableLayers: [
-            { value: 'background', label: 'Background' },
-            { value: 'lakes', label: 'Lakes' }
-          ],
-          labelsFilters: [['source', '==', 'ch.swissnames3d']]
-        }
+        toto: editConfig
       },
       showLabels: [
         {
@@ -134,8 +134,10 @@ describe('ga_vector_feedback_directive', function() {
       colors: [
         { value: '#acc864', label: 'Light Green' },
         { value: '#3a8841', label: 'Green' }
-      ]
+      ],
+      initialize: true
     };
+    $httpBackend.expectGET('https://example.com/all?lang=en').respond({});
   });
 
   it('creates the vector feedback directive', function() {
@@ -145,7 +147,7 @@ describe('ga_vector_feedback_directive', function() {
     $rootScope.$digest();
 
     expect(scope.options.backgroundLayer.id).to.equal(bodid);
-    expect(scope.options.selectedLayer.value).to.equal('background');
+    expect(scope.options.selectedLayer).to.equal('layer1');
     expect(scope.options.showLabel.value).to.equal(true);
     expect(scope.options.activeColor).to.equal(null);
     expect(el.find('.ga-vector-feeback-service-link').attr('href')).to.equal(
@@ -158,10 +160,10 @@ describe('ga_vector_feedback_directive', function() {
     loadDirective(map, options);
     $rootScope.$broadcast('gaBgChange', { id: bodid, label: 'Toto' });
     $rootScope.$digest();
-    scope.options.backgroundLayer = scope.options.backgroundLayers[1];
+    scope.options.backgroundLayer = scope.options.backgroundLayers[2];
     $rootScope.$digest();
 
-    expect(spyGetMapBackgroundLayer.calledTwice).to.be.ok();
+    expect(spyGetLayer.calledOnce).to.be.ok();
     expect(spySetById.calledOnce).to.be.ok();
   });
 
@@ -174,7 +176,7 @@ describe('ga_vector_feedback_directive', function() {
       scope.options.layers[bodid].selectableLayers[1];
     $rootScope.$digest();
 
-    expect(spyGetMapBackgroundLayer.calledTwice).to.be.ok();
+    expect(spyGetLayer.calledOnce).to.be.ok();
     expect(spyApplyGlStyleToOlLayer.calledOnce).to.be.ok();
     expect(spyResetEdits.calledOnce).to.be.ok();
   });
@@ -187,7 +189,7 @@ describe('ga_vector_feedback_directive', function() {
     scope.options.showLabel = scope.options.showLabels[1];
     $rootScope.$digest();
 
-    expect(spyGetMapBackgroundLayer.calledTwice).to.be.ok();
+    expect(spyGetLayer.calledOnce).to.be.ok();
     expect(spyFilter.calledOnce).to.be.ok();
     expect(spyApplyGlStyleToOlLayer.calledOnce).to.be.ok();
   });
@@ -200,7 +202,7 @@ describe('ga_vector_feedback_directive', function() {
     scope.options.activeColor = scope.options.colors[0];
     $rootScope.$digest();
 
-    expect(spyGetMapBackgroundLayer.calledTwice).to.be.ok();
+    expect(spyGetLayer.calledOnce).to.be.ok();
     expect(spyEdit.calledOnce).to.be.ok();
     expect(spyApplyGlStyleToOlLayer.calledOnce).to.be.ok();
   });
