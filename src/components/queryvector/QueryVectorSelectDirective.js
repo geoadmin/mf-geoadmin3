@@ -18,6 +18,11 @@ goog.provide('ga_query_vector_select_directive');
         scope.$watch('selected', function(newVal) {
           $rootScope.$broadcast('gaToggleInspectMode', newVal.value);
         });
+        scope.$on('gaBgChange', function(evt, bg) {
+          if (bg.disableEdit) {
+            scope.selected = scope.options[0];
+          }
+        });
       }
     };
   });
