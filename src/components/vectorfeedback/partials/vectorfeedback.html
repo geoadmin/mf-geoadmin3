@@ -20,6 +20,7 @@
             <div class="ga-vector-feedback-item-select-wrapper">
                 <select class="form-control"
                         ng-model="options.selectedLayer"
+                        ng-disabled="!options.selectedLayer"
                         ng-options="c for c in options.layers[options.backgroundLayer.id].selectableLayers">
                 </select>
             </div>
@@ -32,11 +33,13 @@
                         ng-click="applyColor(c.value)"
                         ng-class="options.activeColor === c.value ? 'active-color' : ''"
                         ng-style="{'background-color': c.value}"
+                        ng-disabled="!options.selectedLayer"
                         class="ga-vector-feedback-color-button"></button>
             </div>
             <div ng-if="options.mobile" class="ga-vector-feedback-item-select-wrapper">
                 <select class="form-control ga-vector-feedback-colors"
                         ng-model="options.activeColor"
+                        ng-disabled="!options.selectedLayer"
                         ng-options="c.label for c in options.colors track by c.value">
                 </select>
             </div>
@@ -47,6 +50,7 @@
             <div class="ga-vector-feedback-item-select-wrapper">
                 <select class="form-control ga-vector-feedback-colors"
                         ng-model="options.showLabel"
+                        ng-disabled="!options.selectedLayer"
                         ng-options="c.label for c in options.showLabels track by c.value">
                 </select>
             </div>

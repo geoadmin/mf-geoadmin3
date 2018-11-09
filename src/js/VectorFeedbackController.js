@@ -48,7 +48,7 @@ goog.require('ga_layers_service');
     // Load the edit config from layersConfig
     var removeListener = $scope.$on('gaBgChange', function(evt, value) {
       $scope.options.backgroundLayers = gaBackground.getBackgrounds();
-      $scope.options.backgroundLayers.forEach(function(bg){
+      $scope.options.backgroundLayers.forEach(function(bg) {
         var layerConfig = gaLayers.getLayer(bg.id);
         layers[bg.id] = layerConfig.editConfig;
       });

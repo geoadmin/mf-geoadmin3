@@ -53,7 +53,7 @@ goog.require('ga_maputils_service');
             gaMapUtils.applyGlStyleToOlLayer(
                 gaMapUtils.getMapBackgroundLayer(map),
                 gaGlStyle.edit(edits),
-                true // don't bin to olLayer
+                true // don't bind to olLayer
             );
           }
         };
@@ -66,7 +66,7 @@ goog.require('ga_maputils_service');
                   gaMapUtils.applyGlStyleToOlLayer(
                       gaMapUtils.getMapBackgroundLayer(map),
                       gaGlStyle.resetEdits(),
-                      true // don't bin to olLayer
+                      true // don't bind to olLayer
                   );
                 }
               });
@@ -131,8 +131,8 @@ goog.require('ga_maputils_service');
           }
         };
 
-
-        var removeInitialize = scope.$watch('options.initialize', function(newVal) {
+        var removeInitialize = scope.$watch('options.initialize',
+            function(newVal) {
           if (newVal) {
             // Syncronize both background selectors
             scope.$on('gaBgChange', function(evt, value) {
@@ -148,7 +148,8 @@ goog.require('ga_maputils_service');
                 // Update the list of selectable layers according to the
                 // current bg layer
                 var editConfig = layer.editConfig;
-                var hasSelectableLayers = editConfig && editConfig.selectableLayers;
+                var hasSelectableLayers = editConfig &&
+                    editConfig.selectableLayers;
                 scope.options.selectedLayer = hasSelectableLayers ?
                     editConfig.selectableLayers[0] : null;
                 // Reset labels filters
