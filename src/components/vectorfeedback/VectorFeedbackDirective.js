@@ -45,13 +45,13 @@ goog.require('ga_maputils_service');
             for (var i = 0; i < edit.length; i++) {
               if (edit[i][2] === '{color}') {
                 edits.push([
-                    'id',
-                    selectedLayer,
-                    [edit[i][0], edit[i][1], color]]);
+                  'id',
+                  selectedLayer,
+                  [edit[i][0], edit[i][1], color]]);
               }
             }
             gaMapUtils.applyGlStyleToOlLayer(
-                gaMapUtils.getMapBackgroundLayer(map),
+                scope.options.backgroundLayer.olLayer,
                 gaGlStyle.edit(edits),
                 true // don't bind to olLayer
             );
@@ -64,7 +64,7 @@ goog.require('ga_maputils_service');
                 if (newVal && oldVal && newVal !== oldVal) {
                   scope.options.activeColor = '';
                   gaMapUtils.applyGlStyleToOlLayer(
-                      gaMapUtils.getMapBackgroundLayer(map),
+                      scope.options.backgroundLayer.olLayer,
                       gaGlStyle.resetEdits(),
                       true // don't bind to olLayer
                   );
@@ -74,7 +74,7 @@ goog.require('ga_maputils_service');
 
         var registerBackgroundLayerWatcher = function() {
           return scope.$watch('options.backgroundLayer', function(newVal) {
-            var olLayer = gaMapUtils.getMapBackgroundLayer(map);
+            var olLayer = scope.options.backgroundLayer;
             // Dropdown interaction
             if (olLayer && olLayer.bodId !== newVal.id) {
               gaBackground.setById(map, newVal.id);
@@ -97,7 +97,7 @@ goog.require('ga_maputils_service');
                 }
               }
               gaMapUtils.applyGlStyleToOlLayer(
-                  gaMapUtils.getMapBackgroundLayer(map),
+                  scope.options.backgroundLayer.olLayer,
                   glStyle,
                   true // don't bind to olLayer
               );
@@ -133,36 +133,36 @@ goog.require('ga_maputils_service');
 
         var removeInitialize = scope.$watch('options.initialize',
             function(newVal) {
-          if (newVal) {
-            // Syncronize both background selectors
-            scope.$on('gaBgChange', function(evt, value) {
-              var layer = gaLayers.getLayer(value.id);
-              if (layer) {
-                dereg();
-                // Sync the dropdown select
-                scope.options.backgroundLayers.forEach(function(bg) {
-                  if (bg.id === value.id) {
-                    scope.options.backgroundLayer = bg;
+              if (newVal) {
+                // Syncronize both background selectors
+                scope.$on('gaBgChange', function(evt, value) {
+                  var layer = gaLayers.getLayer(value.id);
+                  if (layer) {
+                    dereg();
+                    // Sync the dropdown select
+                    scope.options.backgroundLayers.forEach(function(bg) {
+                      if (bg.id === value.id) {
+                        scope.options.backgroundLayer = bg;
+                      }
+                    });
+                    // Update the list of selectable layers according to the
+                    // current bg layer
+                    var editConfig = layer.editConfig;
+                    var hasSelectableLayers = editConfig &&
+                    editConfig.selectableLayers;
+                    scope.options.selectedLayer = hasSelectableLayers ?
+                      editConfig.selectableLayers[0] : null;
+                    // Reset labels filters
+                    scope.options.showLabel = scope.options.showLabels[0];
+                    // Reset any color that was applied
+                    scope.options.activeColor = null;
+                    reg();
                   }
                 });
-                // Update the list of selectable layers according to the
-                // current bg layer
-                var editConfig = layer.editConfig;
-                var hasSelectableLayers = editConfig &&
-                    editConfig.selectableLayers;
-                scope.options.selectedLayer = hasSelectableLayers ?
-                    editConfig.selectableLayers[0] : null;
-                // Reset labels filters
-                scope.options.showLabel = scope.options.showLabels[0];
-                // Reset any color that was applied
-                scope.options.activeColor = null;
                 reg();
+                removeInitialize();
               }
             });
-            reg();
-            removeInitialize();
-          }
-        });
 
         scope.$on('gaToggleEdit', function(evt, layer) {
           element.find('#ga-feedback-vector-body').collapse('hide');
