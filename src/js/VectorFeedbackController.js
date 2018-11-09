@@ -40,8 +40,8 @@ goog.require('ga_layers_service');
       colors: colors,
       activeColor: null,
       showLabels: [
-        { value: true, label: 'Show' },
-        { value: false, label: 'Hide' }
+        { value: true, label: 'show' },
+        { value: false, label: 'hide' }
       ]
     };
     var layers = {};
