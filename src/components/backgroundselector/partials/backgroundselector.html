@@ -9,6 +9,7 @@
   <button class="ga-icon ga-btn fa fa-ga-mapfunction"
           ng-click="toggleEdit(layer)"
           ng-class="{'active': layer.id === activeEditLayerId }"
+          ng-hide="layer.disableEdit"
           translate-attr="{title: 'open_edit_bt_title'}">
   </button>
 </div>
