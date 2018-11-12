@@ -25,6 +25,9 @@ goog.provide('ga_query_vector_directive');
         scope.$apply(function() {
           scope.propertiesList = propertiesList;
         });
+      } else {
+        // Hide popup if no features are found
+        overlay.setPosition(undefined);
       }
     });
   };
