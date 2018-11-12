@@ -332,7 +332,7 @@ goog.require('ga_measure_service');
               if (gaMeasure.canShowAzimuthCircle(feature.getGeometry())) {
                 var coords = feature.getGeometry().getCoordinates();
                 var circle = new ol.geom.Circle(coords[0],
-                    gaMeasure.getLength(feature.getGeometry()));
+                    feature.getGeometry().getLength());
                 return circle;
               }
             },

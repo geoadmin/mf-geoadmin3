@@ -160,7 +160,7 @@ goog.require('ga_measure_filter');
           if (geomLine instanceof ol.geom.LineString) {
             var label = '',
               delta = 1,
-              length = geomLine.getLength();
+              length = this.getLength(geomLine);
             if (this.canShowAzimuthCircle(geomLine)) {
               label += this.getAzimuthLabel(geomLine) + ' / ';
             }
