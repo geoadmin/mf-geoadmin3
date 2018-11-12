@@ -29,7 +29,13 @@ goog.provide('ga_query_vector_directive');
     });
   };
 
-  module.directive('gaQueryVector', function($rootScope, gaLayerFilters) {
+  var registerMouseOut = function(map, overlay) {
+    return map.getViewport().addEventListener('mouseout', function() {
+      overlay.setPosition(undefined);
+    });
+  };
+
+  module.directive('gaQueryVector', function($rootScope) {
     return {
       restrict: 'A',
       templateUrl: 'components/queryvector/partials/queryvector.html',
@@ -51,6 +57,7 @@ goog.provide('ga_query_vector_directive');
 
         var activate = function() {
           pointerMoveListeners.push(registerPointerMove(scope, map, overlay));
+          pointerMoveListeners.push(registerMouseOut(map, overlay));
         };
 
         var deactivate = function() {
