@@ -542,16 +542,17 @@ goog.require('ga_urlutils_service');
 
             if (sourceConfig.type === 'raster') {
               olSource = new ol.source.XYZ({
-                minZoom: data.minZoom,
-                maxZoom: data.maxZoom,
+                minZoom: sourceConfig.minZoom || data.minzoom,
+                maxZoom: sourceConfig.maxZoom || data.maxzoom,
                 urls: data.tiles
               });
 
             } else { // vector
+              console.log(olLayer.sourceId, sourceConfig.minZoom, sourceConfig.maxZoom, data.minzoom, data.maxzoom)
               olSource = new ol.source.VectorTile({
                 format: new ol.format.MVT(),
-                minZoom: data.minzoom,
-                maxZoom: data.maxzoom,
+                minZoom: sourceConfig.minZoom || data.minzoom,
+                maxZoom: sourceConfig.maxZoom || data.maxzoom,
                 urls: data.tiles
               });
             }

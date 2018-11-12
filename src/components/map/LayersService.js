@@ -306,6 +306,7 @@ goog.require('ga_urlutils_service');
                 sourceId: 'ch.bav.haltestellen-oev'
               }, {
                 serverLayerName: 'ch.swisstopo.vektorkarte.vt'
+                // minZoom: 12
               }, {
                 serverLayerName: 'OpenMapTiles'
               }, {
@@ -404,7 +405,7 @@ goog.require('ga_urlutils_service');
                   subLayersIds: [
                     'OpenMapTiles',
                     'ch.swisstopo.swissalti3d-reliefschattierung',
-                    // 'ch.swisstopo.vektorkarte.vt',
+                    'ch.swisstopo.vektorkarte.vt',
                     'ch.bav.haltestellen-oev.vt',
                     'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
                     'ch.swissnames3d.vt'
@@ -832,6 +833,8 @@ goog.require('ga_urlutils_service');
 
                 // Load informations from tileset.json file of a source
                 var sourceConfig = glStyle.sources[olLayer.sourceId];
+                sourceConfig.minZoom = config.minZoom;
+                sourceConfig.maxZoom = config.maxZoom;
                 if (sourceConfig) {
                   gaMapUtils.applyGlSourceToOlLayer(olLayer, sourceConfig);
                 }
