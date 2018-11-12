@@ -349,7 +349,9 @@ goog.require('ga_urlutils_service');
                       'landuse-residential',
                       'landcover_grass',
                       'road_major_label',
-                      'place_label_city'
+                      'place_label_city',
+                      'road_path',
+                      'building'
                     ],
                     labelsFilters: [
                       ['source-layer', '==', 'place'],
@@ -358,24 +360,26 @@ goog.require('ga_urlutils_service');
                       ['source-layer', '==', 'poi']
                     ],
                     'landuse-residential': [
-                      ['paint', 'fill-color', '{color}'],
-                      ['paint', 'fill-opacity', '{opacity}']
+                      ['paint', 'fill-color', '{color}']
                     ],
-                    'landcover_grass': [['paint', 'fill-color', '{color}']],
+                    'landcover_grass': [
+                      ['paint', 'fill-color', '{color}']
+                    ],
                     'road_major_label': [
                       ['paint', 'text-color', '{color}'],
-                      ['paint', 'text-halo-color', '{color}']
-                      /* ['paint', 'text-halo-width', '{color}'],
-                      ['layout', 'symbol-placement', '{placement}'],
-                      ['layout', 'text-font', '{font}'],
-                      ['layout', 'text-size', '{size}'],
-                      ['layout', 'text-transform', '{transform}'],
-                      ['layout', 'text-letter-spacing', '{spacing}'],
-                      ['layout', 'text-rotation-alignment', '{font}'] */
+                      ['layout', 'text-size', '{size}']
                     ],
                     'place_label_city': [
                       ['paint', 'text-color', '{color}'],
-                      ['paint', 'text-halo-color', '{color}']
+                      ['layout', 'text-size', '{size}']
+                    ],
+                    'road_path': [
+                      ['paint', 'line-color', '{color}'],
+                      ['paint', 'line-width', '{size}']
+                    ],
+                    'building': [
+                      ['paint', 'fill-color', '{color}'],
+                      ['paint', 'fill-outline-color', '{color}']
                     ]
                   }
                 };

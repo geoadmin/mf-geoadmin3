@@ -8,7 +8,8 @@ describe('ga_editglstyle_directive', function() {
     var goodConfig = {
       selectableLayers: ['foo'],
       'foo': [
-        ['paint', 'fill-color', '{color}']
+        ['paint', 'fill-color', '{color}'],
+        ['paint', 'fill-color', '{size}']
       ]
     };
     var goodGlStyle = {layers: [{id: 'foo'}]};
@@ -56,7 +57,7 @@ describe('ga_editglstyle_directive', function() {
 
       it('set scope values', function() {
         loadDirective();
-        expect(scope.useColorSelector).to.be.a(Function);
+        expect(scope.useWidget).to.be.a(Function);
         expect(scope.save).to.be.a(Function);
         expect(scope.getTranslateId).to.be.a(Function);
         expect(scope.selectableLayers).to.be(undefined);
@@ -84,7 +85,8 @@ describe('ga_editglstyle_directive', function() {
         parentScope.config = goodConfig;
         $rootScope.$digest();
         expect(elt.find('[ga-color]').length).to.be(1);
-        expect(elt.find('label').length).to.be(2);
+        expect(elt.find('[ga-size]').length).to.be(1);
+        expect(elt.find('label').length).to.be(3);
         expect(scope.selectableLayers[0]).to.be(glStyle.layers[0]);
         expect(scope.selectableLayers.length).to.be(1);
         expect(scope.selectedLayer).to.be(glStyle.layers[0]);
@@ -97,7 +99,7 @@ describe('ga_editglstyle_directive', function() {
       });
 
       it('set scope values', function() {
-        expect(scope.useColorSelector).to.be.a(Function);
+        expect(scope.useWidget).to.be.a(Function);
         expect(scope.save).to.be.a(Function);
         expect(scope.getTranslateId).to.be.a(Function);
         expect(scope.selectableLayers[0]).to.be(goodGlStyle.layers[0]);
@@ -107,7 +109,8 @@ describe('ga_editglstyle_directive', function() {
 
       it('display html elements', function() {
         expect(elt.find('[ga-color]').length).to.be(1);
-        expect(elt.find('label').length).to.be(2);
+        expect(elt.find('[ga-size]').length).to.be(1);
+        expect(elt.find('label').length).to.be(3);
       });
 
       describe('#save()', function() {
@@ -118,9 +121,17 @@ describe('ga_editglstyle_directive', function() {
         });
       });
 
-      describe('#useColorSelector()', function() {
+      describe('#useWidget()', function() {
         it('tests if we need to use the color widget', function() {
-          expect(scope.useColorSelector(goodConfig.foo[0])).to.be(true);
+          expect(scope.useWidget('color', goodConfig.foo[0])).to.be(true);
+          expect(scope.useWidget('size', goodConfig.foo[0])).to.be(false);
+          expect(scope.useWidget('chuba', goodConfig.foo[0])).to.be(false);
+        });
+
+        it('tests if we need to use the size widget', function() {
+          expect(scope.useWidget('size', goodConfig.foo[1])).to.be(true);
+          expect(scope.useWidget('color', goodConfig.foo[1])).to.be(false);
+          expect(scope.useWidget('chuba', goodConfig.foo[1])).to.be(false);
         });
       });
 

@@ -515,5 +515,10 @@
   "edit_text_color": "",
   "edit_text_halo_color": "",
   "show": "",
-  "hide": ""
+  "hide": "",
+  "edit_fill_outline_color": "",
+  "edit_line_color": "",
+  "edit_line_width": "",
+  "edit_text_size": "",
+  "edit_current_layer": ""
 }

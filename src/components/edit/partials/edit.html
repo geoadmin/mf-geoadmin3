@@ -1,6 +1,6 @@
 <div ng-if="!layer.glStyle" translate>edit_not_possible</div>
 <div ng-show="layer.glStyle">
-  We are modifying the layer {{layer.id}}
+  <span translate>edit_current_layer</span> <span translate>{{bgLabelId}}</span>
   <br/>
 
   <div ga-edit-gl-style="layer.glStyle"

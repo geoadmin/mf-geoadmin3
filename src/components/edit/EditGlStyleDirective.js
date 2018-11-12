@@ -2,7 +2,9 @@ goog.provide('ga_editglstyle_directive');
 
 (function() {
 
-  var module = angular.module('ga_editglstyle_directive', []);
+  var module = angular.module('ga_editglstyle_directive', [
+    'ga_background_service'
+  ]);
 
   /**
    * This directive add an interface where you can modify a glStyle.
@@ -32,8 +34,9 @@ goog.provide('ga_editglstyle_directive');
           scope.selectedLayer = scope.selectableLayers[0];
         });
 
-        scope.useColorSelector = function(e) {
-          return /\{color\}/.test(e[2]);
+        scope.useWidget = function(widget, e) {
+          var regex = new RegExp(widget);
+          return regex.test(e[2]);
         }
 
         scope.save = function() {
