@@ -3,6 +3,7 @@ describe('ga_vector_feedback_directive', function() {
   var $rootScope,
     $compile,
     $httpBackend,
+    $q,
     scope,
     el,
     map,
@@ -41,6 +42,7 @@ describe('ga_vector_feedback_directive', function() {
     $rootScope = $injector.get('$rootScope');
     $compile = $injector.get('$compile');
     $httpBackend = $injector.get('$httpBackend');
+    $q = $injector.get('$q');
   };
 
   beforeEach(function() {
@@ -72,22 +74,22 @@ describe('ga_vector_feedback_directive', function() {
       });
 
       spyGet = sinon.spy(function() {
-        return { style: {}, sprite: {} };
+        return $q.when();
       });
       spyFilter = sinon.spy(function() {
-        return { style: {}, sprite: {} };
+        return {};
       });
       spyEdit = sinon.spy(function() {
-        return { style: {}, sprite: {} };
+        return {};
       });
       spyResetFilters = sinon.spy(function() {
-        return { style: {}, sprite: {} };
+        return {};
       });
       spyResetEdits = sinon.spy(function() {
-        return { style: {}, sprite: {} };
+        return {};
       });
       spyGetLayer = sinon.spy(function() {
-        return { editConfig: editConfig };
+        return { editConfig: editConfig, styleUrl: 'https://style.ch' };
       });
       $provide.value('gaLayers', {
         getLayer: spyGetLayer

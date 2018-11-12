@@ -139,24 +139,27 @@ goog.require('ga_maputils_service');
                   var layer = gaLayers.getLayer(value.id);
                   if (layer) {
                     dereg();
-                    // Sync the dropdown select
-                    scope.options.backgroundLayers.forEach(function(bg) {
-                      if (bg.id === value.id) {
-                        scope.options.backgroundLayer = bg;
-                      }
+                    // Reset service cache
+                    gaGlStyle.get(layer.styleUrl).then(function() {
+                      // Sync the dropdown select
+                      scope.options.backgroundLayers.forEach(function(bg) {
+                        if (bg.id === value.id) {
+                          scope.options.backgroundLayer = bg;
+                        }
+                      });
+                      // Update the list of selectable layers according to the
+                      // current bg layer
+                      var editConfig = layer.editConfig;
+                      var hasSelectableLayers = editConfig &&
+                      editConfig.selectableLayers;
+                      scope.options.selectedLayer = hasSelectableLayers ?
+                        editConfig.selectableLayers[0] : null;
+                      // Reset labels filters
+                      scope.options.showLabel = scope.options.showLabels[0];
+                      // Reset any color that was applied
+                      scope.options.activeColor = null;
+                      reg();
                     });
-                    // Update the list of selectable layers according to the
-                    // current bg layer
-                    var editConfig = layer.editConfig;
-                    var hasSelectableLayers = editConfig &&
-                    editConfig.selectableLayers;
-                    scope.options.selectedLayer = hasSelectableLayers ?
-                      editConfig.selectableLayers[0] : null;
-                    // Reset labels filters
-                    scope.options.showLabel = scope.options.showLabels[0];
-                    // Reset any color that was applied
-                    scope.options.activeColor = null;
-                    reg();
                   }
                 });
                 reg();
