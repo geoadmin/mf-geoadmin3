@@ -14,6 +14,7 @@ goog.require('ga_maputils_service');
   ]);
 
   module.directive('gaVectorFeedback', function(
+      $rootScope,
       gaMapUtils,
       gaGlStyle,
       gaBackground,
@@ -172,6 +173,11 @@ goog.require('ga_maputils_service');
           element.find('#ga-feedback-vector-body').collapse(
               show ? 'show' : 'hide');
         });
+
+        scope.openAdvanceEdit = function() {
+          $rootScope.$broadcast(
+              'gaToggleEdit', scope.options.backgroundLayer.olLayer);
+        };
 
         if (!mobile) {
           scope.applyColor = applyColor;

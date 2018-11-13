@@ -152,9 +152,8 @@ describe('ga_vector_feedback_directive', function() {
     expect(scope.options.selectedLayer).to.equal('layer1');
     expect(scope.options.showLabel.value).to.equal(true);
     expect(scope.options.activeColor).to.equal(null);
-    expect(el.find('.ga-vector-feeback-service-link').attr('href')).to.equal(
-        'https://service-doc.html'
-    );
+    expect(scope.options.serviceDocUrl).to.equal('https://service-doc.html');
+    expect($(el).find('.ga-vector-feeback-service-link')[1].href).to.equal('https://service-doc.html/');
   });
 
   it('calls the right services when changing the background layer', function() {
