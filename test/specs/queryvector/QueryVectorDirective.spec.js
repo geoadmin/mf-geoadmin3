@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
 describe('ga_query_vector_directive', function() {
   var $rootScope,
-      $compile,
-      el,
-      map;
+    $compile,
+    el,
+    map,
+    scope;
 
   var loadDirective = function(map) {
     scope = $rootScope.$new();
@@ -34,7 +35,6 @@ describe('ga_query_vector_directive', function() {
     });
     map = createMap();
   });
-
 
   it('creates the query vector directive and adds an overlay to the map', function() {
     loadDirective(map);
