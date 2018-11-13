@@ -520,5 +520,10 @@
   "edit_line_color": "",
   "edit_line_width": "",
   "edit_text_size": "",
-  "edit_current_layer": ""
+  "edit_current_layer": "",
+  "light_gray": "",
+  "light_green": "",
+  "light_blue": "",
+  "light_yellow": "",
+  "purple": ""
 }

@@ -40,7 +40,7 @@
                 <select class="form-control ga-vector-feedback-colors"
                         ng-model="options.activeColor"
                         ng-disabled="!options.selectedLayer"
-                        ng-options="c.label for c in options.colors track by c.value">
+                        ng-options="(c.label | translate) for c in options.colors track by c.value">
                 </select>
             </div>
         </div>

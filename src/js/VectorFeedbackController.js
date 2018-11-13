@@ -21,18 +21,18 @@ goog.require('ga_layers_service');
     var apiUrl = gaGlobalOptions.apiUrl;
     var mobile = gaBrowserSniffer.mobile;
     var colors = [
-      { value: 'lightgray', label: 'Light Gray' },
-      { value: '#acc864', label: 'Light Green' },
-      { value: '#3a8841', label: 'Green' },
-      { value: '#40b5bc', label: 'Light Blue' },
-      { value: '#483df6', label: 'Blue' },
-      { value: '#ffff99', label: 'Light Yellow' },
-      { value: '#ffca00', label: 'Yellow' },
-      { value: '#f28500', label: 'Orange' },
-      { value: '#dc0f0f', label: 'Red' },
-      { value: '#80379c', label: 'Purple' },
-      { value: 'black', label: 'Black' },
-      { value: 'white', label: 'White' }
+      { value: 'lightgray', label: 'light_gray' },
+      { value: '#acc864', label: 'light _green' },
+      { value: '#3a8841', label: 'green' },
+      { value: '#40b5bc', label: 'light _blue' },
+      { value: '#483df6', label: 'blue' },
+      { value: '#ffff99', label: 'light_yellow' },
+      { value: '#ffca00', label: 'yellow' },
+      { value: '#f28500', label: 'orange' },
+      { value: '#dc0f0f', label: 'red' },
+      { value: '#80379c', label: 'purple' },
+      { value: 'black', label: 'black' },
+      { value: 'white', label: 'white' }
     ];
     $scope.options = {
       serviceDocUrl: apiUrl + '/services/sdiservices.html',
