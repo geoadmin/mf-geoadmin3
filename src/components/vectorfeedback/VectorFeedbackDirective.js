@@ -2,19 +2,22 @@ goog.provide('ga_vector_feedback_directive');
 
 goog.require('ga_background_service');
 goog.require('ga_glstyle_service');
+goog.require('ga_layers_service');
 goog.require('ga_maputils_service');
 
 (function() {
   var module = angular.module('ga_vector_feedback_directive', [
     'ga_background_service',
     'ga_glstyle_service',
+    'ga_layers_service',
     'ga_maputils_service'
   ]);
 
   module.directive('gaVectorFeedback', function(
       gaMapUtils,
       gaGlStyle,
-      gaBackground
+      gaBackground,
+      gaLayers
   ) {
     return {
       restrict: 'A',
@@ -33,13 +36,24 @@ goog.require('ga_maputils_service');
           if (!mobile) {
             scope.options.activeColor = color;
           }
-          var edit = scope.options.selectedLayer.edit;
+          var bodId = scope.options.backgroundLayer.id;
+          var selectedLayer = scope.options.selectedLayer;
+          var edit = scope.options.layers[bodId][selectedLayer];
           if (edit) {
-            edit = edit.slice();
-            edit[2] = edit[2].replace('{color}', color);
+            var edits = [];
+            // Only edit the color part
+            for (var i = 0; i < edit.length; i++) {
+              if (edit[i][2] === '{color}') {
+                edits.push([
+                  'id',
+                  selectedLayer,
+                  [edit[i][0], edit[i][1], color]]);
+              }
+            }
             gaMapUtils.applyGlStyleToOlLayer(
-                gaMapUtils.getMapBackgroundLayer(map),
-                gaGlStyle.edit([edit])
+                scope.options.backgroundLayer.olLayer,
+                gaGlStyle.edit(edits),
+                true // don't bind to olLayer
             );
           }
         };
@@ -47,12 +61,12 @@ goog.require('ga_maputils_service');
         var registerSelectedLayerWatcher = function() {
           return scope.$watch('options.selectedLayer',
               function(newVal, oldVal) {
-                if (newVal && oldVal && newVal.value !== oldVal.value) {
+                if (newVal && oldVal && newVal !== oldVal) {
                   scope.options.activeColor = '';
-
                   gaMapUtils.applyGlStyleToOlLayer(
-                      gaMapUtils.getMapBackgroundLayer(map),
-                      gaGlStyle.resetEdits()
+                      scope.options.backgroundLayer.olLayer,
+                      gaGlStyle.resetEdits(),
+                      true // don't bind to olLayer
                   );
                 }
               });
@@ -60,7 +74,7 @@ goog.require('ga_maputils_service');
 
         var registerBackgroundLayerWatcher = function() {
           return scope.$watch('options.backgroundLayer', function(newVal) {
-            var olLayer = gaMapUtils.getMapBackgroundLayer(map);
+            var olLayer = scope.options.backgroundLayer;
             // Dropdown interaction
             if (olLayer && olLayer.bodId !== newVal.id) {
               gaBackground.setById(map, newVal.id);
@@ -83,8 +97,9 @@ goog.require('ga_maputils_service');
                 }
               }
               gaMapUtils.applyGlStyleToOlLayer(
-                  gaMapUtils.getMapBackgroundLayer(map),
-                  glStyle
+                  scope.options.backgroundLayer.olLayer,
+                  glStyle,
+                  true // don't bind to olLayer
               );
             }
           });
@@ -116,27 +131,41 @@ goog.require('ga_maputils_service');
           }
         };
 
-        // Syncronize both background selectors
-        scope.$on('gaBgChange', function(evt, value) {
-          var layer = scope.options.layers[value.id];
-          if (layer) {
-            dereg();
-            // Sync the dropdown select
-            scope.options.backgroundLayers.forEach(function(bg) {
-              if (bg.id === value.id) {
-                scope.options.backgroundLayer = bg;
+        var removeInitialize = scope.$watch('options.initialize',
+            function(newVal) {
+              if (newVal) {
+                // Syncronize both background selectors
+                scope.$on('gaBgChange', function(evt, value) {
+                  var layer = gaLayers.getLayer(value.id);
+                  if (layer) {
+                    dereg();
+                    // Reset service cache
+                    gaGlStyle.get(layer.styleUrl).then(function() {
+                      // Sync the dropdown select
+                      scope.options.backgroundLayers.forEach(function(bg) {
+                        if (bg.id === value.id) {
+                          scope.options.backgroundLayer = bg;
+                        }
+                      });
+                      // Update the list of selectable layers according to the
+                      // current bg layer
+                      var editConfig = layer.editConfig;
+                      var hasSelectableLayers = editConfig &&
+                      editConfig.selectableLayers;
+                      scope.options.selectedLayer = hasSelectableLayers ?
+                        editConfig.selectableLayers[0] : null;
+                      // Reset labels filters
+                      scope.options.showLabel = scope.options.showLabels[0];
+                      // Reset any color that was applied
+                      scope.options.activeColor = null;
+                      reg();
+                    });
+                  }
+                });
+                reg();
+                removeInitialize();
               }
             });
-            // Update the list of selectable layers according to the
-            // current bg layer
-            scope.options.selectedLayer = layer.selectableLayers[0];
-            // Reset labels filters
-            scope.options.showLabel = scope.options.showLabels[0];
-            // Reset any color that was applied
-            scope.options.activeColor = null;
-            reg();
-          }
-        });
 
         scope.$on('gaToggleEdit', function(evt, layer) {
           element.find('#ga-feedback-vector-body').collapse('hide');

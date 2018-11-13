@@ -191,7 +191,7 @@ describe('ga_glstyle_service', function() {
   it('edits a GL style #edit', function(done) {
     $httpBackend.expectGET(styleUrl).respond(styleJSON);
     gaGlStyle.get(styleUrl).then(function() {
-      var newStyle = gaGlStyle.edit([['id', 'background', 'paint|background-color|blue']])
+      var newStyle = gaGlStyle.edit([['id', 'background', ['paint', 'background-color', 'blue']]])
       expect(newStyle.layers[0].id).to.equal('background');
       expect(newStyle.layers[0].paint['background-color']).to.equal('blue');
       expect(newStyle.layers[1].paint['background-color']).to.be(undefined);
@@ -206,7 +206,7 @@ describe('ga_glstyle_service', function() {
       // Add a filter
       var newStyle = gaGlStyle.filter([['id', '==', 'labels_watercourse']]);
       // Add an edition
-      newStyle = gaGlStyle.edit([['id', 'background', 'paint|background-color|blue']]);
+      newStyle = gaGlStyle.edit([['id', 'background', ['paint', 'background-color', 'blue']]]);
 
       newStyle = gaGlStyle.resetFilters();
       expect(newStyle.layers.length).to.equal(4);
@@ -224,7 +224,7 @@ describe('ga_glstyle_service', function() {
       // Add a filter
       var newStyle = gaGlStyle.filter([['id', '==', 'labels_watercourse']]);
       // Add an edition
-      newStyle = gaGlStyle.edit([['id', 'background', 'paint|background-color|blue']]);
+      newStyle = gaGlStyle.edit([['id', 'background', ['paint', 'background-color', 'blue']]]);
 
       newStyle = gaGlStyle.resetEdits();
       expect(newStyle.layers.length).to.equal(3);

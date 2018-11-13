@@ -71,6 +71,9 @@
   @media (max-width: @screen-sm), (max-width: @screen-xs) {
     font-size: 13px;
   }
+  @media (max-width: @screen-sm) {
+    max-width: 300px;
+  }
 }
 
 .ga-vector-feedback-text {
@@ -136,7 +139,7 @@
 }
 
 .ga-vector-feedback-color-button {
-  width: 39px;
+  width: 37px;
   height: 25px;
   border: none;
   border: 3px solid rgba(0, 0, 0, 0);
@@ -145,6 +148,10 @@
   }
   @media (max-width: @screen-tablet), (max-height: @screen-m-height) {
     width: 37px;
+  }
+  &[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
   }
 }
 

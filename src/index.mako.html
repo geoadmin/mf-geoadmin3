@@ -219,7 +219,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div ga-geolocation ga-geolocation-map="::map" ga-geolocation-ol3d="::ol3d"></div>
   % endif
         <div id="zoomButtons"></div>
-        <div ga-tilt3d ng-if="globals.dev3d"></div>
+        <div ga-tilt3d ng-if="false"></div>
   % if device != 'embed':
         <div ga-time-selector-bt ga-time-selector-bt-map="map"></div>
   % endif
@@ -275,6 +275,7 @@ itemscope itemtype="http://schema.org/WebApplication"
              ga-mouse-position-ol3d="::ol3d"
              ga-mouse-position-options="options"></div>
       </div>
+
       <div class="pull-right">
         <a target="_blank" href="https://www.geo.admin.ch/{{langId}}/about-swiss-geoportal/impressum.html#copyright" translate>copyright_label</a>
       </div>
@@ -645,6 +646,11 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-import-dnd
            ga-import-dnd-options="::options">
       </div>
+    </div>
+
+    <!-- Query Vector -->
+    <div ga-query-vector
+         ga-query-vector-map="::map">
     </div>
 
     <div ng-if="globals.homescreen" class="popover homescreen"

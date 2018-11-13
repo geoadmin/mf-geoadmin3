@@ -35,14 +35,6 @@ goog.require('ga_glstylestorage_service');
           disable3d: true
           // labels: false
         },
-        /*
-        'ch.swisstopo.wandern.vt': {
-          id: 'ch.swisstopo.wandern.vt',
-          label: 'wandern',
-          disable3d: true,
-          labels: false
-        },
-        */
         'ch.swisstopo.leichte-basiskarte.vt': {
           id: 'ch.swisstopo.leichte-basiskarte.vt',
           label: 'basis',
@@ -58,25 +50,11 @@ goog.require('ga_glstylestorage_service');
       };
 
       var predefinedBgs = {
-        /*
-        'voidLayer': voidLayer,
-        'ch.swisstopo.swissimage': {
-          id: 'ch.swisstopo.swissimage',
-          label: 'bg_luftbild',
-          disable3d: true,
-          labels: false// 'SWISSNAMES-LV03-mbtiles'
-        },
-        */
-
         'ch.swisstopo.pixelkarte-farbe': {
           id: 'ch.swisstopo.pixelkarte-farbe',
-          label: 'bg_pixel_color'
+          label: 'bg_pixel_color',
+          disableEdit: true
         }
-
-        /* 'ch.swisstopo.pixelkarte-grau': {
-          id: 'ch.swisstopo.pixelkarte-grau',
-          label: 'bg_pixel_grey'
-        } */
       };
       var getBgById = function(id) {
         for (var i = 0, ii = bgs.length; i < ii; i++) {

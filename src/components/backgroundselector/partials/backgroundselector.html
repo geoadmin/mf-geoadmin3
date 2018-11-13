@@ -6,9 +6,10 @@
   <button class="ga-icon ga-btn fa fa-user"
           ng-click="showWarning(layer)"
           ng-show="layer.olLayer.useThirdPartyData"></button>
-  <button class="ga-icon ga-btn fa fa-ga-mapfunction"
+  <button class="ga-icon ga-btn fa fa-user-edit"
           ng-click="toggleEdit(layer)"
           ng-class="{'active': layer.id === activeEditLayerId }"
+          ng-if="!layer.disableEdit"
           translate-attr="{title: 'open_edit_bt_title'}">
   </button>
 </div>
