@@ -5,8 +5,10 @@
     width: 100%;
   }
 
-  .modal-body {
-    overflow-y: hidden;
+  .input-modal-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   .modal-dialog {
@@ -42,7 +44,7 @@
     }
 
     @media (max-width: @screen-phone) {
-      max-width: ~'calc(100% - 10px)';
+      max-width: ~'calc(100% - 20px)';
     }
 
     @media (max-width: @screen-tablet), (max-height: @screen-s-height) {

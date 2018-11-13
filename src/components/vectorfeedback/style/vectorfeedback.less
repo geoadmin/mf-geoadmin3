@@ -40,6 +40,7 @@
 }
 
 .ga-vector-feedback-header {
+  position: relative;
   width: 100%;
   display: table;
   cursor: pointer;
@@ -50,9 +51,13 @@
   }
   .fa-caret-down {
     color: white;
-    float: right;
-    margin-top: 14px;
-    margin-right: 8px;
+    position: absolute;
+    font-size: 30px;
+    height: 28px;
+    margin: auto;
+    right: 0px;
+    top: 0;
+    bottom: 0;
     transform: rotate(180deg);
     transition: transform 0.2s ease, -webkit-transform 0.2s ease;
   }
@@ -68,11 +73,9 @@
   font-weight: 500;
   padding: 10px 0;
   color: white;
+  width: calc(100% - 30px);
   @media (max-width: @screen-sm), (max-width: @screen-xs) {
     font-size: 13px;
-  }
-  @media (max-width: @screen-sm) {
-    max-width: 300px;
   }
 }
 
