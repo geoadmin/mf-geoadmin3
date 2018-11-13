@@ -43,7 +43,7 @@ describe('ga_filestorage_service', function() {
 
     describe('#get()', function() {
       it('gets a file', function() {
-        var expectedUrl = publicUrl + '/files/' + fileId;
+        var expectedUrl = publicUrl + '/' + fileId;
         $httpBackend.expectGET(expectedUrl).respond(fileContent);
         gaFileStorage.get(fileId);
         $httpBackend.flush();
