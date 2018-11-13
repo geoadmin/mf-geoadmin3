@@ -25,7 +25,8 @@ goog.require('ga_maputils_service');
       templateUrl: 'components/vectorfeedback/partials/vectorfeedback.html',
       scope: {
         map: '=gaVectorFeedbackMap',
-        options: '=gaVectorFeedbackOptions'
+        options: '=gaVectorFeedbackOptions',
+        toggle: '=gaVectorFeedbackToggle'
       },
       link: function(scope, element, attrs) {
         var map = scope.map;
@@ -167,8 +168,9 @@ goog.require('ga_maputils_service');
               }
             });
 
-        scope.$on('gaToggleEdit', function(evt, layer) {
-          element.find('#ga-feedback-vector-body').collapse('hide');
+        scope.$watch('toggle', function(show) {
+          element.find('#ga-feedback-vector-body').collapse(
+              show ? 'show' : 'hide');
         });
 
         if (!mobile) {

@@ -539,21 +539,18 @@ goog.require('ga_urlutils_service');
           }).then(function(response) {
             var data = response.data;
             var olSource;
+            var sourceOpts = {
+              minZoom: sourceConfig.minZoom || data.minzoom,
+              maxZoom: sourceConfig.maxZoom || data.maxzoom,
+              urls: data.tiles
+            };
 
             if (sourceConfig.type === 'raster') {
-              olSource = new ol.source.XYZ({
-                minZoom: data.minZoom,
-                maxZoom: data.maxZoom,
-                urls: data.tiles
-              });
+              olSource = new ol.source.XYZ(sourceOpts);
 
             } else { // vector
-              olSource = new ol.source.VectorTile({
-                format: new ol.format.MVT(),
-                minZoom: data.minzoom,
-                maxZoom: data.maxzoom,
-                urls: data.tiles
-              });
+              sourceOpts.format = new ol.format.MVT();
+              olSource = new ol.source.VectorTile(sourceOpts);
             }
             olLayer.setSource(olSource);
 

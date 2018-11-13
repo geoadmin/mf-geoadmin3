@@ -306,6 +306,7 @@ goog.require('ga_urlutils_service');
                 sourceId: 'ch.bav.haltestellen-oev'
               }, {
                 serverLayerName: 'ch.swisstopo.vektorkarte.vt'
+                // minZoom: 12
               }, {
                 serverLayerName: 'OpenMapTiles'
               }, {
@@ -348,7 +349,9 @@ goog.require('ga_urlutils_service');
                       'landuse-residential',
                       'landcover_grass',
                       'road_major_label',
-                      'place_label_city'
+                      'place_label_city',
+                      'road_path',
+                      'building'
                     ],
                     labelsFilters: [
                       ['source-layer', '==', 'place'],
@@ -357,24 +360,26 @@ goog.require('ga_urlutils_service');
                       ['source-layer', '==', 'poi']
                     ],
                     'landuse-residential': [
-                      ['paint', 'fill-color', '{color}'],
-                      ['paint', 'fill-opacity', '{opacity}']
+                      ['paint', 'fill-color', '{color}']
                     ],
-                    'landcover_grass': [['paint', 'fill-color', '{color}']],
+                    'landcover_grass': [
+                      ['paint', 'fill-color', '{color}']
+                    ],
                     'road_major_label': [
                       ['paint', 'text-color', '{color}'],
-                      ['paint', 'text-halo-color', '{color}']
-                      /* ['paint', 'text-halo-width', '{color}'],
-                      ['layout', 'symbol-placement', '{placement}'],
-                      ['layout', 'text-font', '{font}'],
-                      ['layout', 'text-size', '{size}'],
-                      ['layout', 'text-transform', '{transform}'],
-                      ['layout', 'text-letter-spacing', '{spacing}'],
-                      ['layout', 'text-rotation-alignment', '{font}'] */
+                      ['layout', 'text-size', '{size}']
                     ],
                     'place_label_city': [
                       ['paint', 'text-color', '{color}'],
-                      ['paint', 'text-halo-color', '{color}']
+                      ['layout', 'text-size', '{size}']
+                    ],
+                    'road_path': [
+                      ['paint', 'line-color', '{color}'],
+                      ['paint', 'line-width', '{size}']
+                    ],
+                    'building': [
+                      ['paint', 'fill-color', '{color}'],
+                      ['paint', 'fill-outline-color', '{color}']
                     ]
                   }
                 };
@@ -404,7 +409,7 @@ goog.require('ga_urlutils_service');
                   subLayersIds: [
                     'OpenMapTiles',
                     'ch.swisstopo.swissalti3d-reliefschattierung',
-                    // 'ch.swisstopo.vektorkarte.vt',
+                    'ch.swisstopo.vektorkarte.vt',
                     'ch.bav.haltestellen-oev.vt',
                     'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
                     'ch.swissnames3d.vt'
@@ -837,6 +842,8 @@ goog.require('ga_urlutils_service');
 
                 // Load informations from tileset.json file of a source
                 var sourceConfig = glStyle.sources[olLayer.sourceId];
+                sourceConfig.minZoom = config.minZoom;
+                sourceConfig.maxZoom = config.maxZoom;
                 if (sourceConfig) {
                   gaMapUtils.applyGlSourceToOlLayer(olLayer, sourceConfig);
                 }

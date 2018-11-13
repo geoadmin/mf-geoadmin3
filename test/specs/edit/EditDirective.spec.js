@@ -22,6 +22,13 @@ describe('ga_edit_directive', function() {
       $provide.value('gaLayers', {
         getLayer: function() {}
       });
+      $provide.value('gaBackground', {
+        get: function() {
+          return {
+            label: 'label'
+          }
+        }
+      });
       /* $provide.value('gaPermalink', {
         getHref: function() {
           return 'http://permalink.com';

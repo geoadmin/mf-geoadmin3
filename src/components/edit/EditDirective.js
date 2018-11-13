@@ -1,5 +1,6 @@
 goog.provide('ga_edit_directive');
 
+goog.require('ga_background_service');
 goog.require('ga_debounce_service');
 goog.require('ga_exportglstyle_service');
 goog.require('ga_filestorage_service');
@@ -17,7 +18,8 @@ goog.require('ga_mvt_service');
     'ga_glstyle_service',
     'ga_layers_service',
     'ga_maputils_service',
-    'ga_mvt_service'
+    'ga_mvt_service',
+    'ga_background_service'
   ]);
 
   /**
@@ -25,7 +27,7 @@ goog.require('ga_mvt_service');
    */
   module.directive('gaEdit', function($rootScope, $window, $translate, gaMvt,
       gaDebounce, gaGlStyleStorage, gaExportGlStyle, gaGlStyle, gaLayers,
-      gaMapUtils) {
+      gaMapUtils, gaBackground) {
     return {
       restrict: 'A',
       templateUrl: 'components/edit/partials/edit.html',
@@ -112,7 +114,9 @@ goog.require('ga_mvt_service');
           $rootScope.$broadcast('gaShareDrawActive', layer);
         };
 
-        var activate = function() {};
+        var activate = function() {
+          scope.bgLabelId = gaBackground.get().label;
+        };
 
         var deactivate = function() {};
 
