@@ -759,6 +759,7 @@ goog.require('ga_styles_service');
               map.getView().getProjection());
           var id = layer.adminId ||
               gaFileStorage.getFileIdFromFileUrl(layer.url);
+
           gaFileStorage.save(id, kmlString || '<kml></kml>').then(
               function(data) {
                 scope.statusMsgId = 'draw_file_saved';

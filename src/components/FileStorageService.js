@@ -14,12 +14,13 @@ goog.require('ga_publicstorage_service');
   module.provider('gaFileStorage', function() {
     this.$get = function($http, $q, gaPublicStorage) {
       var endPoint = '/files';
+      var publicEndPoint = '';
       var contentType = 'application/vnd.google-earth.kml+xml';
 
       var FileStorage = function() {
 
         this.get = function(fileId) {
-          return gaPublicStorage.get(endPoint, fileId);
+          return gaPublicStorage.get(publicEndPoint, fileId);
         };
 
         this.getFileIdFromFileUrl = function(fileUrl) {
@@ -27,11 +28,13 @@ goog.require('ga_publicstorage_service');
         };
 
         this.getFileUrlFromAdminId = function(adminId) {
-          return gaPublicStorage.getFileUrlFromAdminId(endPoint, adminId);
+          return gaPublicStorage.getFileUrlFromAdminId(endPoint, publicEndPoint,
+              adminId);
         };
 
         this.save = function(id, content) {
-          return gaPublicStorage.save(endPoint, id, content, contentType);
+          return gaPublicStorage.save(endPoint, publicEndPoint, id, content,
+              contentType);
         };
 
         this.del = function(adminId) {

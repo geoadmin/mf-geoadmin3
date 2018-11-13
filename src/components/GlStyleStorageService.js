@@ -27,11 +27,13 @@ goog.require('ga_publicstorage_service');
         };
 
         this.getFileUrlFromAdminId = function(adminId) {
-          return gaPublicStorage.getFileUrlFromAdminId(endPoint, adminId);
+          return gaPublicStorage.getFileUrlFromAdminId(endPoint, endPoint,
+              adminId);
         };
 
         this.save = function(id, content) {
-          return gaPublicStorage.save(endPoint, id, content, contentType);
+          return gaPublicStorage.save(endPoint, endPoint, id, content,
+              contentType);
         };
 
         this.del = function(adminId) {

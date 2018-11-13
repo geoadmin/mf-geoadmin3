@@ -22,8 +22,8 @@ goog.provide('ga_publicstorage_service');
       var PublicStorage = function() {
 
         // Get the file from a fileId
-        this.get = function(endPoint, fileId) {
-          return $http.get(getPublicUrl(endPoint, fileId));
+        this.get = function(publicEndPoint, fileId) {
+          return $http.get(getPublicUrl(publicEndPoint, fileId));
         };
 
         // Get a fileId from a fileUrl
@@ -35,12 +35,13 @@ goog.provide('ga_publicstorage_service');
         };
 
         // Get the accessible url of the file from an adminId
-        this.getFileUrlFromAdminId = function(endPoint, adminId) {
+        this.getFileUrlFromAdminId = function(endPoint, publicEndPoint,
+            adminId) {
           var deferred = $q.defer();
           $http.get(getServiceUrl(endPoint, adminId)).then(function(response) {
             var data = response.data;
             if (data && data.fileId) {
-              var url = getPublicUrl(endPoint, data.fileId);
+              var url = getPublicUrl(publicEndPoint, data.fileId);
               deferred.resolve(url);
             } else {
               deferred.reject();
@@ -58,7 +59,8 @@ goog.provide('ga_publicstorage_service');
         //     returns the same adminId and the same file url
         // if id is an fileId --> fork the file
         //     returns new adminId and new file url
-        this.save = function(endPoint, id, content, contentType) {
+        this.save = function(endPoint, publicEndPoint, id, content,
+            contentType) {
           return $http.post(getServiceUrl(endPoint, id), content, {
             headers: {
               'Content-Type': contentType
@@ -68,7 +70,7 @@ goog.provide('ga_publicstorage_service');
             return {
               adminId: data.adminId,
               fileId: data.fileId,
-              fileUrl: getPublicUrl(endPoint, data.fileId)
+              fileUrl: getPublicUrl(publicEndPoint, data.fileId)
             };
           });
         };

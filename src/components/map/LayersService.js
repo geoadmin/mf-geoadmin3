@@ -750,19 +750,24 @@ goog.require('ga_urlutils_service');
               var subLayerConf = layers[subLayersIds[i]];
               if (styleUrl && subLayerConf) {
                 layers[subLayersIds[i]].styleUrl = config.styleUrl;
-
-                gaGlStyle.get(styleUrl).then((glStyle) => {
-                  gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
-                });
               }
               subLayers[i] = this.getOlLayerById(subLayersIds[i], opts);
             }
+
             olLayer = new ol.layer.Group({
               minResolution: config.minResolution,
               maxResolution: config.maxResolution,
-              opacity: config.opacity || 1,
-              layers: subLayers
+              opacity: config.opacity || 1
             });
+            if (styleUrl) {
+              gaGlStyle.get(styleUrl).then((glStyle) => {
+                gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
+                olLayer.setLayers(new ol.Collection(subLayers));
+              });
+            } else {
+              olLayer.setLayers(new ol.Collection(subLayers));
+            }
+
           } else if (config.type === 'geojson') {
             // cannot request resources over https in S3
             olSource = new ol.source.Vector({
