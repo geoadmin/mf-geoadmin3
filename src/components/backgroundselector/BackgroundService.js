@@ -25,7 +25,6 @@ goog.require('ga_glstylestorage_service');
       var bg; // The current background
       var bgs = []; // The list of backgrounds available
       var bgsP; // Promise resolved when the background service is initialized.
-      // var labels; // , voidLayer = {id: 'voidLayer', label: 'void_layer'};
 
       // Bgs with vector tiles tileset.
       var vtBgs = {
@@ -40,12 +39,6 @@ goog.require('ga_glstylestorage_service');
           label: 'basis',
           disable3d: true,
           labels: false
-        },
-        'ch.swisstopo.hybridkarte.vt': {
-          id: 'ch.swisstopo.hybridkarte.vt',
-          label: 'hybrid',
-          disable3d: true,
-          labels: false
         }
       };
 
@@ -54,8 +47,14 @@ goog.require('ga_glstylestorage_service');
           id: 'ch.swisstopo.pixelkarte-farbe',
           label: 'bg_pixel_color',
           disableEdit: true
+        },
+        'ch.swisstopo.swissimage': {
+          id: 'ch.swisstopo.swissimage',
+          label: 'bg_luftbild',
+          disable3d: true
         }
       };
+
       var getBgById = function(id) {
         for (var i = 0, ii = bgs.length; i < ii; i++) {
           if (bgs[i].id === id) {
@@ -100,10 +99,14 @@ goog.require('ga_glstylestorage_service');
           }
         });
 
-        // Deactivate auto-add of voidLayer
-        /* if (bgs.indexOf(voidLayer) === -1) {
-          bgs.push(voidLayer);
-        } */
+        // auto add voidLayer
+        if (bgs.indexOf('voidLayer') === -1) {
+          bgs.push({
+            id: 'voidLayer',
+            label: 'void_layer',
+            disableEdit: true
+          });
+        }
       };
 
       var updateBgLayerStyleUrlParam = function(olLayer) {
