@@ -146,17 +146,21 @@ goog.require('ga_glstylestorage_service');
       };
 
       var createOlLayer = function(bg) {
-        var layer = bg.olLayer;
-        if (!layer) {
-          layer = gaLayers.getOlLayerById(bg.id, {
-            externalStyleUrl: bg.externalStyleUrl
-          });
-          layer.adminId = bg.adminId;
-          layer.background = true;
-          layer.displayInLayerManager = false;
-          bg.olLayer = layer;
+        var externalStyleUrl;
+        if (bg.externalStyleUrl) {
+          externalStyleUrl = bg.externalStyleUrl;
+        } else {
+          externalStyleUrl = bg.olLayer ?
+            bg.olLayer.externalStyleUrl : undefined;
         }
-        return layer;
+        bg.olLayer = gaLayers.getOlLayerById(bg.id, {
+          externalStyleUrl: externalStyleUrl,
+          glStyle: bg.olLayer ? bg.olLayer.glStyle : undefined
+        });
+        bg.olLayer.adminId = bg.adminId;
+        bg.olLayer.background = true;
+        bg.olLayer.displayInLayerManager = false;
+        return bg.olLayer;
       };
 
       var Background = function() {
@@ -214,20 +218,15 @@ goog.require('ga_glstylestorage_service');
 
         this.setById = function(map, newBgId) {
           if (map && (!bg || newBgId !== bg.id)) {
-            var newBg = getBgById(newBgId);
-            if (newBg) {
-              bg = newBg;
+            bg = getBgById(newBgId);
+            if (bg) {
               var layers = map.getLayers();
-              if (bg.id === 'voidLayer') {
-
+              if (bg.id === 'voidLayer' && layers.getLength() > 0 &&
+                  layers.item(0).background) {
                 // Remove the bg from the map
-                if (layers.getLength() > 0 && layers.item(0).background) {
-                  layers.removeAt(0);
-                }
-
+                layers.removeAt(0);
               } else {
                 var layer = createOlLayer(bg);
-
                 // Add the bg to the map
                 if (layers.item(0) && layers.item(0).background) {
                   layers.setAt(0, layer);

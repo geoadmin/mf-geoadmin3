@@ -149,8 +149,6 @@ describe('ga_background_service', function() {
             expect(bgs[0].label).to.equal('OpenMapTiles');
             expect(bgs[1].id).to.equal('ch.swisstopo.leichte-basiskarte.vt');
             expect(bgs[1].label).to.equal('basis');
-            expect(bgs[2].id).to.equal('ch.swisstopo.hybridkarte.vt');
-            expect(bgs[2].label).to.equal('hybrid');
             done();
           });
           deferGaTopic.resolve();
@@ -343,7 +341,7 @@ describe('ga_background_service', function() {
           $rootScope.$digest();
           getParams.verify();
           var bg = gaBg.get();
-          expect(bg.id).to.equal(firstBgId);
+          expect(bg.id).to.equal('voidLayer');
         });
       });
     });
@@ -391,7 +389,7 @@ describe('ga_background_service', function() {
 
       it('switch bgLayer from vt to wmts then to vt', function() {
         var dfltBg = gaBg.get(); // omt.vt
-        var bg = gaBg.getBackgrounds()[3]; // pixelkartefarbe
+        var bg = gaBg.getBackgrounds()[2]; // pixelkartefarbe
         expect(dfltBg.id).to.not.equal(bg.id);
         var bcast = $rootScopeMock.expects('$broadcast').
             withArgs('gaBgChange', bg).once();

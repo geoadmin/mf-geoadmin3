@@ -61,8 +61,7 @@ goog.require('ga_maputils_service');
             }
             gaMapUtils.applyGlStyleToOlLayer(
                 scope.options.backgroundLayer.olLayer,
-                gaGlStyle.edit(edits),
-                true // don't bind to olLayer
+                gaGlStyle.edit(edits)
             );
           }
         };
@@ -74,20 +73,20 @@ goog.require('ga_maputils_service');
                   scope.options.activeColor = '';
                   gaMapUtils.applyGlStyleToOlLayer(
                       scope.options.backgroundLayer.olLayer,
-                      gaGlStyle.resetEdits(),
-                      true // don't bind to olLayer
+                      gaGlStyle.resetEdits()
                   );
                 }
               });
         };
 
         var registerBackgroundLayerWatcher = function() {
-          return scope.$watch('options.backgroundLayer', function(newVal, oldVal) {
-            // Dropdown interaction
-            if (newVal && oldVal.id !== newVal.id) {
-              gaBackground.setById(map, newVal.id);
-            }
-          });
+          return scope.$watch('options.backgroundLayer',
+              function(newVal, oldVal) {
+                // Dropdown interaction
+                if (newVal && oldVal.id !== newVal.id) {
+                  gaBackground.setById(map, newVal.id);
+                }
+              });
         };
 
         var registerShowLabelWatcher = function() {
@@ -106,8 +105,7 @@ goog.require('ga_maputils_service');
               }
               gaMapUtils.applyGlStyleToOlLayer(
                   scope.options.backgroundLayer.olLayer,
-                  glStyle,
-                  true // don't bind to olLayer
+                  glStyle
               );
             }
           });
