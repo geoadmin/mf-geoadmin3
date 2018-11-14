@@ -22,9 +22,9 @@ goog.require('ga_layers_service');
     var mobile = gaBrowserSniffer.mobile;
     var colors = [
       { value: 'lightgray', label: 'light_gray' },
-      { value: '#acc864', label: 'light _green' },
+      { value: '#acc864', label: 'light_green' },
       { value: '#3a8841', label: 'green' },
-      { value: '#40b5bc', label: 'light _blue' },
+      { value: '#40b5bc', label: 'light_blue' },
       { value: '#483df6', label: 'blue' },
       { value: '#ffff99', label: 'light_yellow' },
       { value: '#ffca00', label: 'yellow' },
