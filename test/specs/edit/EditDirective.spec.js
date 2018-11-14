@@ -181,6 +181,30 @@ describe('ga_edit_directive', function() {
         expect(elt.find('[ng-if="!layer.glStyle"]').length).to.be(0);
       });
 
+      describe('#isExternalStyleUrlValid', function() {
+
+        it('returns true', function() {
+          loadDirective(map, layer);
+          expect(scope.isExternalStyleUrlValid()).to.be(true);
+          expect(scope.isExternalStyleUrlValid(null)).to.be(true);
+          expect(scope.isExternalStyleUrlValid({})).to.be(true);
+          expect(scope.isExternalStyleUrlValid({ externalStyleUrl: 'http://public.dev.bgdi.ch/foo' })).to.be(true);
+          expect(scope.isExternalStyleUrlValid({ externalStyleUrl: 'http://public.int.bgdi.ch/foo' })).to.be(true);
+          expect(scope.isExternalStyleUrlValid({ externalStyleUrl: 'http://public.prod.bgdi.ch/foo' })).to.be(true);
+          expect(scope.isExternalStyleUrlValid({ externalStyleUrl: 'https://public.geo.admin.ch/foo' })).to.be(true);
+        });
+
+        it('returns false', function() {
+          loadDirective(map, layer);
+          expect(scope.isExternalStyleUrlValid({
+            externalStyleUrl: 'https://raw.githubusercontent.com/openmaptiles/fiord-color-gl-style/master/style.json'
+          })).to.be(false);
+          expect(scope.isExternalStyleUrlValid({
+            externalStyleUrl: 'bar'
+          })).to.be(false);
+        });
+      });
+
       describe('#saveDebounced', function() {
 
         it('does nothing if an glStylesAdminId or an externalStyleUrl are specifed', function() {

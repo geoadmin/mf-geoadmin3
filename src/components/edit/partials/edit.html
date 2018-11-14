@@ -3,14 +3,14 @@
     <span translate>edit_not_possible</span>
   </p>
 </div>
-<p ng-if="layer.glStyle && isThirdPartyValid(layer)">
+<p ng-if="layer.glStyle && !isExternalStyleUrlValid(layer)">
   <span translate>{{'edit_or_reset_style'}}:</span>
   <a href="" class="btn btn-default"
     ng-disabled="!canExport(layer)"
     ng-click="reset($event, layer)"
     translate>edit_reset</a>
 </p>
-<div ng-show="layer.glStyle && !isThirdPartyValid(layer)">
+<div ng-show="layer.glStyle && isExternalStyleUrlValid(layer)">
   <p>
     <span translate>edit_current_layer</span> <span translate>{{getBgLabelId()}}</span>
   </p>

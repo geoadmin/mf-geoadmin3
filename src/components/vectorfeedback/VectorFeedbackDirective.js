@@ -4,13 +4,15 @@ goog.require('ga_background_service');
 goog.require('ga_glstyle_service');
 goog.require('ga_layers_service');
 goog.require('ga_maputils_service');
+goog.require('ga_mvt_service');
 
 (function() {
   var module = angular.module('ga_vector_feedback_directive', [
     'ga_background_service',
     'ga_glstyle_service',
     'ga_layers_service',
-    'ga_maputils_service'
+    'ga_maputils_service',
+    'ga_mvt_service'
   ]);
 
   module.directive('gaVectorFeedback', function(
@@ -18,7 +20,8 @@ goog.require('ga_maputils_service');
       gaMapUtils,
       gaGlStyle,
       gaBackground,
-      gaLayers
+      gaLayers,
+      gaMvt
   ) {
     return {
       restrict: 'A',
@@ -179,14 +182,17 @@ goog.require('ga_maputils_service');
               }
             });
 
-        scope.$watch('toggle', function(show) {
+        var toggle = function(show) {
           element.find('#ga-feedback-vector-body').collapse(
               show ? 'show' : 'hide');
-        });
+        }
+
+        scope.$watch('toggle', toggle);
 
         scope.openAdvanceEdit = function() {
+          toggle(false);
           $rootScope.$broadcast(
-              'gaToggleEdit', scope.options.backgroundLayer.olLayer);
+              'gaToggleEdit', scope.options.backgroundLayer.olLayer, true);
         };
 
         if (!mobile) {

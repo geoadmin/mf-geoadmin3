@@ -26,13 +26,18 @@ goog.require('ga_mvt_service');
     $scope.options = angular.extend(options, $scope.options || {});
     $scope.globals = $scope.globals || {};
 
-    $scope.$on('gaToggleEdit', function(evt, layer) {
-      var toggle = !!(!$scope.globals.isEditActive ||
-        !$scope.layer ||
-        (layer && layer.bodId !== $scope.layer.bodId));
+    $scope.$on('gaToggleEdit', function(evt, layer, toggle) {
+      if (toggle === undefined) {
+        toggle = !!(!$scope.globals.isEditActive ||
+          !$scope.layer ||
+          (layer && layer.bodId !== $scope.layer.bodId));
+      }
       $scope.layer = layer;
       $scope.globals.isEditActive = toggle;
       $scope.globals.pulldownShown = toggle;
+      if (toggle) {
+        gaMvt.reload($scope.layer);
+      }
     });
 
     $scope.$on('gaBgChange', function(evt, bg) {
