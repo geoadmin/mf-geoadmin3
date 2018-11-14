@@ -71,9 +71,12 @@ goog.require('ga_event_service');
             var selected =
               scope.currentLayer && layer.id === scope.currentLayer.id;
             var splitLayer = layer.id.split('.');
+            var layerClass = splitLayer[splitLayer.length - 1] === 'vt' ?
+              splitLayer[splitLayer.length - 2] :
+              splitLayer[splitLayer.length - 1];
             return (
               (selected ? 'ga-bg-highlight ' : '') +
-              'ga-' + splitLayer[splitLayer.length - 2] +
+              'ga-' + layerClass +
               (layer.disable3d ? ' ga-disable3d' : '')
             );
           }

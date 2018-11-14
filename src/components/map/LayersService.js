@@ -323,7 +323,7 @@ goog.require('ga_urlutils_service');
               }];
               /* eslint-enable max-len */
 
-              vts.forEach(function(vt, idx) {
+              vts.forEach(function(vt) {
                 response.data[vt.serverLayerName] = angular.extend(vt, {
                   type: 'vectortile',
                   sourceId: vt.sourceId || vt.serverLayerName
@@ -382,25 +382,6 @@ goog.require('ga_urlutils_service');
                       ['paint', 'fill-color', '{color}'],
                       ['paint', 'fill-outline-color', '{color}']
                     ]
-                  }
-                };
-                response.data['ch.swisstopo.hybridkarte.vt'] = {
-                  type: 'aggregate',
-                  background: true,
-                  serverLayerName: 'ch.swisstopo.hybridkarte.vt',
-                  subLayersIds: [
-                    'ch.swisstopo.swissimage',
-                    'ch.bav.haltestellen-oev.vt',
-                    'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
-                    'ch.swissnames3d.vt'
-                  ],
-                  styleUrl: 'https://tileserver.dev.bgdi.ch/styles/ch.swisstopo.hybridkarte.vt_1539954688_e92c5b623257c5fafe1594ce4a0a72e0c08b0d80/style.json',
-                  editConfig: {
-                    selectableLayers: [
-                      'cities',
-                      'highways'
-                    ],
-                    labelsFilters: [['source', '==', 'ch.swissnames3d']]
                   }
                 };
                 response.data['ch.swisstopo.leichte-basiskarte.vt'] = {

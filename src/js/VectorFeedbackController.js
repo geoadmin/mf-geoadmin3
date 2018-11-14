@@ -50,7 +50,9 @@ goog.require('ga_layers_service');
       $scope.options.backgroundLayers = gaBackground.getBackgrounds();
       $scope.options.backgroundLayers.forEach(function(bg) {
         var layerConfig = gaLayers.getLayer(bg.id);
-        layers[bg.id] = layerConfig.editConfig;
+        if (layerConfig) {
+          layers[bg.id] = layerConfig.editConfig;
+        }
       });
       $scope.options.layers = layers;
       $scope.options.backgroundLayer = value;
