@@ -182,6 +182,16 @@ goog.require('ga_mvt_service');
               }
             });
 
+        element.find('#ga-feedback-vector-body').on('show.bs.collapse',
+            function() {
+              element.removeClass('in');
+            })
+
+        element.find('#ga-feedback-vector-body').on('hide.bs.collapse',
+            function() {
+              element.addClass('in');
+            })
+
         var toggle = function(show) {
           element.find('#ga-feedback-vector-body').collapse(
               show ? 'show' : 'hide');

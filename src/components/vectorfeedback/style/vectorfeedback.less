@@ -11,6 +11,7 @@
   max-width: 500px;
   padding: 0 15px;
   width: 41%;
+  transition: top 1s ease, width 1s ease;
 
   @media (max-width: @screen-tablet) {
     width: 50%;
@@ -30,11 +31,22 @@
     left: 0;
     right: 55px;
   }
-  .in {
-    transition: top 1s ease;
+  &.in {
+
+    @media (max-width: @screen-tablet) and (min-width: @screen-phone) {
+      width: 41%;
+      left: auto;
+    }
   }
   &.collapsing {
     overflow-y: hidden;
+  }
+}
+
+.ga-draw-active, .ga-edit-active {
+  .ga-vector-feedback-panel {
+    top: unit(@small-header-height + 5, px);
+    max-height: ~"calc(100% - 55px)";
   }
 }
 

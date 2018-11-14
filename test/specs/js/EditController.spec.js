@@ -62,7 +62,7 @@ describe('ga_edit_controller', function() {
         expect(scope.globals).to.be.an(Object);
       });
 
-      it.only('set scope values on gaToggleEdit event', function() {
+      it('set scope values on gaToggleEdit event', function() {
         var layer = new ol.layer.Layer({});
         $rootScope.$broadcast('gaToggleEdit', layer);
         $rootScope.$digest();
