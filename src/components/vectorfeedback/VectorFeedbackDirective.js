@@ -14,6 +14,7 @@ goog.require('ga_maputils_service');
   ]);
 
   module.directive('gaVectorFeedback', function(
+      $rootScope,
       gaMapUtils,
       gaGlStyle,
       gaBackground,
@@ -132,35 +133,45 @@ goog.require('ga_maputils_service');
           }
         };
 
+        var resetPanelState = function(layer, bodId) {
+          // Sync the dropdown select
+          scope.options.backgroundLayers.forEach(function(bg) {
+            if (bg.id === bodId) {
+              scope.options.backgroundLayer = bg;
+            }
+          });
+          // Update the list of selectable layers according to the
+          // current bg layer
+          var editConfig = layer.editConfig;
+          var hasSelectableLayers = editConfig &&
+          editConfig.selectableLayers;
+          scope.options.selectedLayer = hasSelectableLayers ?
+            editConfig.selectableLayers[0] : null;
+          // Reset labels filters
+          scope.options.showLabel = scope.options.showLabels[0];
+          // Reset any color that was applied
+          scope.options.activeColor = null;
+        };
+
         var removeInitialize = scope.$watch('options.initialize',
             function(newVal) {
               if (newVal) {
                 // Syncronize both background selectors
                 scope.$on('gaBgChange', function(evt, value) {
-                  var layer = gaLayers.getLayer(value.id);
+                  var bodId = value.id;
+                  var layer = gaLayers.getLayer(bodId);
                   if (layer) {
                     dereg();
-                    // Reset service cache
-                    gaGlStyle.get(layer.styleUrl).then(function() {
-                      // Sync the dropdown select
-                      scope.options.backgroundLayers.forEach(function(bg) {
-                        if (bg.id === value.id) {
-                          scope.options.backgroundLayer = bg;
-                        }
+                    if (layer.styleUrl) {
+                      // Reset service cache FIXME
+                      gaGlStyle.get(layer.styleUrl).then(function() {
+                        resetPanelState(layer, bodId);
+                        reg();
                       });
-                      // Update the list of selectable layers according to the
-                      // current bg layer
-                      var editConfig = layer.editConfig;
-                      var hasSelectableLayers = editConfig &&
-                      editConfig.selectableLayers;
-                      scope.options.selectedLayer = hasSelectableLayers ?
-                        editConfig.selectableLayers[0] : null;
-                      // Reset labels filters
-                      scope.options.showLabel = scope.options.showLabels[0];
-                      // Reset any color that was applied
-                      scope.options.activeColor = null;
+                    } else {
+                      resetPanelState(layer, bodId);
                       reg();
-                    });
+                    }
                   }
                 });
                 reg();
@@ -172,6 +183,11 @@ goog.require('ga_maputils_service');
           element.find('#ga-feedback-vector-body').collapse(
               show ? 'show' : 'hide');
         });
+
+        scope.openAdvanceEdit = function() {
+          $rootScope.$broadcast(
+              'gaToggleEdit', scope.options.backgroundLayer.olLayer);
+        };
 
         if (!mobile) {
           scope.applyColor = applyColor;

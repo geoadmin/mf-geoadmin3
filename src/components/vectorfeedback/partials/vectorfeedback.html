@@ -40,7 +40,7 @@
                 <select class="form-control ga-vector-feedback-colors"
                         ng-model="options.activeColor"
                         ng-disabled="!options.selectedLayer"
-                        ng-options="c.label for c in options.colors track by c.value">
+                        ng-options="(c.label | translate) for c in options.colors track by c.value">
                 </select>
             </div>
         </div>
@@ -67,8 +67,10 @@
             <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_getting_started_title</h4>
             <div class="ga-vector-feedback-item-text-wrapper">
                 <span translate>vector_feedback_getting_started_1</span>
-                <a class="ga-vector-feeback-service-link" href="{{options.serviceDocUrl}}" target="_blank" translate>vector_feedback_getting_started_2</a>
+                <a class="ga-vector-feeback-service-link" ng-click="openAdvanceEdit()" translate>vector_feedback_getting_started_2</a>
                 <span translate>vector_feedback_getting_started_3</span>
+                <a class="ga-vector-feeback-service-link" href="{{options.serviceDocUrl}}" target="_blank" translate>vector_feedback_getting_started_4</a>
+                <span translate>vector_feedback_getting_started_5</span>
             </div>
         </div>
         <hr>

@@ -494,6 +494,8 @@
   "vector_feedback_getting_started_1": "",
   "vector_feedback_getting_started_2": "",
   "vector_feedback_getting_started_3": "",
+  "vector_feedback_getting_started_4": "",
+  "vector_feedback_getting_started_5": "",
   "vector_feedback_survey_title": "",
   "vector_feedback_survey_btn_text": "",
   "vector_feedback_survey_modal_title": "",
@@ -520,5 +522,10 @@
   "edit_line_color": "",
   "edit_line_width": "",
   "edit_text_size": "",
-  "edit_current_layer": ""
+  "edit_current_layer": "",
+  "light_gray": "",
+  "light_green": "",
+  "light_blue": "",
+  "light_yellow": "",
+  "purple": ""
 }
