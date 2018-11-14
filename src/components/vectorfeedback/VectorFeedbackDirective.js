@@ -6,7 +6,6 @@ goog.require('ga_glstyle_service');
 goog.require('ga_translation_service');
 goog.require('ga_layers_service');
 goog.require('ga_maputils_service');
-goog.require('ga_mvt_service');
 
 (function() {
   var module = angular.module('ga_vector_feedback_directive', [
@@ -14,7 +13,6 @@ goog.require('ga_mvt_service');
     'ga_glstyle_service',
     'ga_layers_service',
     'ga_maputils_service',
-    'ga_mvt_service',
     'ga_browsersniffer_service',
     'ga_translation_service'
   ]);
@@ -25,7 +23,6 @@ goog.require('ga_mvt_service');
       gaGlStyle,
       gaBackground,
       gaLayers,
-      gaMvt,
       gaBrowserSniffer,
       gaLang
   ) {
@@ -85,10 +82,9 @@ goog.require('ga_mvt_service');
         };
 
         var registerBackgroundLayerWatcher = function() {
-          return scope.$watch('options.backgroundLayer', function(newVal) {
-            var olLayer = scope.options.backgroundLayer;
+          return scope.$watch('options.backgroundLayer', function(newVal, oldVal) {
             // Dropdown interaction
-            if (olLayer && olLayer.bodId !== newVal.id) {
+            if (newVal && oldVal.id !== newVal.id) {
               gaBackground.setById(map, newVal.id);
             }
           });
