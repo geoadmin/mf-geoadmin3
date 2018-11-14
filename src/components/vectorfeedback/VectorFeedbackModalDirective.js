@@ -14,12 +14,32 @@ goog.require('ga_translation_service');
       templateUrl: 'components/vectorfeedback/partials' +
           '/vectorfeedbackmodal.html',
       scope: {},
-      link: function(scope) {
+      link: function(scope, elt) {
         var urlTemplate = 'https://findmind.ch/c/vectorsimple{lang}';
         scope.url = urlTemplate.replace('{lang}', gaLang.getNoRm());
         $rootScope.$on('$translateChangeEnd', function() {
           scope.url = urlTemplate.replace('{lang}', gaLang.getNoRm());
         });
+
+        function preventDefault(e) {
+          e.preventDefault();
+        }
+
+        function disableScroll() {
+          document.body.addEventListener('touchmove', preventDefault,
+              { passive: false });
+        }
+        function enableScroll() {
+          document.body.removeEventListener('touchmove', preventDefault,
+              { passive: false });
+        }
+        elt.on('shown.bs.modal', function() {
+          disableScroll();
+        })
+
+        elt.on('hidden.bs.modal', function() {
+          enableScroll();
+        })
       }
     };
   });

@@ -6,25 +6,24 @@
   background-color: rgba(0, 0, 0, 0.65);
   color: white;
   overflow-y: auto;
-  max-height: 740px;
+
+  max-height: ~"calc(100% - 93px)";
   max-width: 500px;
   padding: 0 15px;
   width: 41%;
+
   @media (max-width: @screen-tablet) {
     width: 50%;
   }
-  @media (max-height: @screen-m-height) {
-    max-height: 575px;
-  }
-  @media (max-height: @screen-ms-height) {
-    max-height: 494px;
-  }
+
   @media (max-height: @screen-s-height) {
-    max-height: unit(@screen-xs-height - @small-header-height, px);
+    max-height: ~"calc(100% - 55px)";
   }
+
   @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
     top: unit(@small-header-height + 5, px);
   }
+
   @media (max-width: @screen-sm), (max-width: @screen-xs) {
     max-width: 100%;
     width: auto;
