@@ -110,6 +110,10 @@ goog.require('ga_window_service');
                 }
               }
             }
+          }, {
+            layerFilter: function(layer) {
+              return !(layer instanceof ol.layer.VectorTile)
+            }
           });
           return featureFound;
         };
@@ -124,23 +128,18 @@ goog.require('ga_window_service');
           }
           if (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 10) {
             var coord = map.getCoordinateFromPixel(pixel);
-            hasQueryableLayer = map.forEachLayerAtPixel(pixel,
-                function() {
-                  return true;
-                },
-                undefined,
-                function(layer) {
-                  // EDGE: An IndexSizeError is triggered by the
-                  // map.forEachLayerAtPixel when the mouse is outside the
-                  // extent of switzerland (west, north). So we avoid triggering
-                  // this function outside a layer's extent.
-                  var extent = layer.getExtent();
-                  if (extent && !ol.extent.containsXY(extent, coord[0],
-                      coord[1])) {
-                    return false;
-                  }
-                  return gaLayers.hasTooltipBodLayer(layer);
-                });
+            hasQueryableLayer = map.forEachLayerAtPixel(pixel, function(layer) {
+              // EDGE: An IndexSizeError is triggered by the
+              // map.forEachLayerAtPixel when the mouse is outside the
+              // extent of switzerland (west, north). So we avoid triggering
+              // this function outside a layer's extent.
+              var extent = layer.getExtent();
+              if (extent && !ol.extent.containsXY(extent, coord[0],
+                  coord[1])) {
+                return false;
+              }
+              return gaLayers.hasTooltipBodLayer(layer);
+            });
           }
           if (!hasQueryableLayer) {
             feature = findVectorFeature(map, pixel);
