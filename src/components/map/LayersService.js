@@ -339,6 +339,7 @@ goog.require('ga_urlutils_service');
                   type: 'aggregate',
                   background: true,
                   serverLayerName: 'omt.vt',
+                  attribution: 'OpenMapTiles, OpenStreetMap contributors',
                   subLayersIds: [
                     relief + '-custom',
                     'openmaptiles'
@@ -406,6 +407,8 @@ goog.require('ga_urlutils_service');
                   type: 'aggregate',
                   background: true,
                   serverLayerName: 'ch.swisstopo.leichte-basiskarte.vt',
+                  attribution: 'OpenMapTiles, OpenStreetMap contributors,' +
+                      ' swisstopo',
                   subLayersIds: [
                     'OpenMapTiles',
                     'ch.swisstopo.swissalti3d-reliefschattierung',

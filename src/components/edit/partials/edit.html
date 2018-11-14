@@ -1,7 +1,19 @@
-<div ng-if="!layer.glStyle" translate>edit_not_possible</div>
-<div ng-show="layer.glStyle">
-  <span translate>edit_current_layer</span> <span translate>{{bgLabelId}}</span>
-  <br/>
+<div ng-if="!layer.glStyle" translate>
+  <p>
+    <span translate>edit_not_possible</span>
+  </p>
+</div>
+<p ng-if="layer.glStyle && isThirdPartyValid(layer)">
+  <span translate>{{'edit_or_reset_style'}}:</span>
+  <a href="" class="btn btn-default"
+    ng-disabled="!canExport(layer)"
+    ng-click="reset($event, layer)"
+    translate>edit_reset</a>
+</p>
+<div ng-show="layer.glStyle && !isThirdPartyValid(layer)">
+  <p>
+    <span translate>edit_current_layer</span> <span translate>{{getBgLabelId()}}</span>
+  </p>
 
   <div ga-edit-gl-style="layer.glStyle"
         ga-edit-gl-style-config="options.editConfig">

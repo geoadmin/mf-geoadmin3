@@ -5,8 +5,8 @@
     width: 100%;
   }
 
-  .modal-body {
-    overflow-y: hidden;
+  .input-modal-container {
+    overflow: hidden;
   }
 
   .modal-dialog {
@@ -24,6 +24,7 @@
       overflow-x: hidden;
 
       @media (max-width: @screen-phone) {
+        height: ~'calc(100% - 35px)';
         max-height: none !important;
       }
     }
@@ -34,7 +35,7 @@
 
     @media (max-width: @screen-tablet) {
       max-width: 535px;
-      top: 50px;
+      top: 15px;
     }
 
     @media (max-width: 605px) {
@@ -42,11 +43,27 @@
     }
 
     @media (max-width: @screen-phone) {
-      max-width: ~'calc(100% - 10px)';
+      max-width: ~'calc(100% - 20px)';
     }
 
     @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
-      height: ~'calc(100% - 100px)';
+      height: ~'calc(100% - 30px)';
+    }
+  }
+}
+.ios {
+
+  body,
+  html {
+    position: fixed;
+  }
+
+  [ga-vector-feedback-modal] {
+
+    .input-modal-container {
+      overflow-y: scroll;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
     }
   }
 }

@@ -8,6 +8,7 @@ goog.require('ga_glstyle_service');
 goog.require('ga_layers_service');
 goog.require('ga_maputils_service');
 goog.require('ga_mvt_service');
+goog.require('ga_urlutils_service');
 
 (function() {
 
@@ -19,7 +20,8 @@ goog.require('ga_mvt_service');
     'ga_layers_service',
     'ga_maputils_service',
     'ga_mvt_service',
-    'ga_background_service'
+    'ga_background_service',
+    'ga_urlutils_service'
   ]);
 
   /**
@@ -27,7 +29,7 @@ goog.require('ga_mvt_service');
    */
   module.directive('gaEdit', function($rootScope, $window, $translate, gaMvt,
       gaDebounce, gaGlStyleStorage, gaExportGlStyle, gaGlStyle, gaLayers,
-      gaMapUtils, gaBackground) {
+      gaMapUtils, gaBackground, gaUrlUtils) {
     return {
       restrict: 'A',
       templateUrl: 'components/edit/partials/edit.html',
@@ -38,6 +40,11 @@ goog.require('ga_mvt_service');
         isActive: '=gaEditActive'
       },
       link: function(scope, element, attrs, controller) {
+
+        scope.isThirdPartyValid = function(layer) {
+          return !!(layer.externalStyleUrl &&
+            gaUrlUtils.isThirdPartyValid(layer.externalStyleUrl))
+        }
 
         /// /////////////////////////////////
         // create/update the file on s3
@@ -114,9 +121,12 @@ goog.require('ga_mvt_service');
           $rootScope.$broadcast('gaShareDrawActive', layer);
         };
 
-        var activate = function() {
-          scope.bgLabelId = gaBackground.get().label;
-        };
+        scope.getBgLabelId = function() {
+          var bg = gaBackground.get();
+          return bg ? bg.label : '';
+        }
+
+        var activate = function() {};
 
         var deactivate = function() {};
 

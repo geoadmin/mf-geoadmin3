@@ -44,7 +44,6 @@ goog.require('ga_urlutils_service');
           }
 
           if (olLayer instanceof ol.layer.Group) {
-            var that = this;
             var children = olLayer.getLayers().getArray();
             for (var i = 0; i < children.length; i++) {
               var sublayer = children[i];
@@ -52,15 +51,14 @@ goog.require('ga_urlutils_service');
                 continue;
               }
               sublayer.externalStyleUrl = olLayer.externalStyleUrl;
-              return that.reload(sublayer);
             }
-            return $q.when();
           }
 
           return gaGlStyle.get(styleUrl).then(function(glStyle) {
             gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
             return glStyle;
           });
+
         };
       };
       return new Mvt();

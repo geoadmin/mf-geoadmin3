@@ -318,7 +318,7 @@ describe('ga_edit_directive', function() {
               });
           sinon.stub(gaGlStyle, 'get').withArgs('http://bar').returns($q.when(glStyle));
 
-          var stub3 = sinon.stub(gaMapUtils, 'applyGlStyleToOlLayer').withArgs(layer.getLayers().item(0), glStyle).returns();
+          var stub3 = sinon.stub(gaMapUtils, 'applyGlStyleToOlLayer').withArgs(layer, glStyle).returns();
           scope.reset(evt, layer);
           expect(sublayer.externalStyleUrl).to.be(layer.externalStyleUrl);
           $rootScope.$digest();
