@@ -120,23 +120,7 @@ goog.require('ga_urlutils_service');
         scope.getBgLabelId = function() {
           var bg = gaBackground.get();
           return bg ? bg.label : '';
-        }
-
-        var activate = function() {};
-
-        var deactivate = function() {};
-
-        scope.$watch('isActive', function(active) {
-          if (active) {
-            activate();
-          } else {
-            deactivate();
-          }
-        });
-
-        scope.$on('destroy', function() {
-          deactivate();
-        })
+        };
 
         scope.$on('gaGlStyleChanged', function(evt, glStyle) {
           gaMapUtils.applyGlStyleToOlLayer(scope.layer, glStyle);
