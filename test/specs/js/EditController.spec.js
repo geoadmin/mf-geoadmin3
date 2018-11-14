@@ -69,6 +69,11 @@ describe('ga_edit_controller', function() {
         expect(scope.layer).to.be(layer);
         expect(scope.globals.isEditActive).to.be(true);
         expect(scope.globals.pulldownShown).to.be(true);
+        $rootScope.$broadcast('gaToggleEdit', layer, true);
+        $rootScope.$digest();
+        expect(scope.layer).to.be(layer);
+        expect(scope.globals.isEditActive).to.be(true);
+        expect(scope.globals.pulldownShown).to.be(true);
         $rootScope.$broadcast('gaToggleEdit', layer);
         $rootScope.$digest();
         expect(scope.layer).to.be(layer);

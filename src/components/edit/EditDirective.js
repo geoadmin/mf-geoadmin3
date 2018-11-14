@@ -41,9 +41,9 @@ goog.require('ga_urlutils_service');
       },
       link: function(scope, element, attrs, controller) {
 
-        scope.isThirdPartyValid = function(layer) {
-          return !!(layer.externalStyleUrl &&
-            gaUrlUtils.isThirdPartyValid(layer.externalStyleUrl))
+        scope.isExternalStyleUrlValid = function(layer) {
+          return !layer || !layer.externalStyleUrl ||
+            gaUrlUtils.isPublicValid(layer.externalStyleUrl);
         }
 
         /// /////////////////////////////////
