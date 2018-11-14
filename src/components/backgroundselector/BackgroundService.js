@@ -145,7 +145,7 @@ goog.require('ga_glstylestorage_service');
         });
       };
 
-      var createOlLayer = function(map, bg) {
+      var createOlLayer = function(bg) {
         var layer = bg.olLayer;
         if (!layer) {
           layer = gaLayers.getOlLayerById(bg.id, {
@@ -226,7 +226,7 @@ goog.require('ga_glstylestorage_service');
                 }
 
               } else {
-                var layer = createOlLayer(map, bg);
+                var layer = createOlLayer(bg);
 
                 // Add the bg to the map
                 if (layers.item(0) && layers.item(0).background) {
