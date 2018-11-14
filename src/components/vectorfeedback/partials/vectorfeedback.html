@@ -76,7 +76,10 @@
         <div class="ga-vector-feedback-item ga-vector-feedback-item-last">
             <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_survey_title</h4>
             <div class="ga-vector-feedback-item-select-wrapper">
-                <a class="ga-feedback-survey-link btn btn-default form-control" data-toggle="modal" data-target="#vectorFeedbackSurvey.modal" href="#" translate>
+                <a ng-if="!msie" class="ga-feedback-survey-link btn btn-default form-control" data-toggle="modal" data-target="#vectorFeedbackSurvey.modal" href="#" translate>
+                    vector_feedback_survey_btn_text
+                </a>
+                <a ng-if="msie" class="ga-feedback-survey-link btn btn-default form-control" target="_blank" href="{{getSurveyUrl()}}" translate>
                     vector_feedback_survey_btn_text
                 </a>
             </div>

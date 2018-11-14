@@ -35,6 +35,7 @@ goog.require('ga_layers_service');
       { value: 'white', label: 'white' }
     ];
     $scope.options = {
+      surveyUrl: 'https://findmind.ch/c/vectorsimple{lang}',
       serviceDocUrl: apiUrl + '/services/sdiservices.html',
       mobile: mobile,
       colors: colors,

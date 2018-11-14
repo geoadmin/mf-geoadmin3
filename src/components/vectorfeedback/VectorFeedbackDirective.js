@@ -1,7 +1,9 @@
 goog.provide('ga_vector_feedback_directive');
 
 goog.require('ga_background_service');
+goog.require('ga_browsersniffer_service');
 goog.require('ga_glstyle_service');
+goog.require('ga_translation_service');
 goog.require('ga_layers_service');
 goog.require('ga_maputils_service');
 goog.require('ga_mvt_service');
@@ -12,7 +14,9 @@ goog.require('ga_mvt_service');
     'ga_glstyle_service',
     'ga_layers_service',
     'ga_maputils_service',
-    'ga_mvt_service'
+    'ga_mvt_service',
+    'ga_browsersniffer_service',
+    'ga_translation_service'
   ]);
 
   module.directive('gaVectorFeedback', function(
@@ -21,7 +25,9 @@ goog.require('ga_mvt_service');
       gaGlStyle,
       gaBackground,
       gaLayers,
-      gaMvt
+      gaMvt,
+      gaBrowserSniffer,
+      gaLang
   ) {
     return {
       restrict: 'A',
@@ -35,6 +41,7 @@ goog.require('ga_mvt_service');
       link: function(scope, element, attrs) {
         var map = scope.map;
         var mobile = scope.options.mobile;
+        scope.msie = gaBrowserSniffer.msie;
 
         // Change the color
         var applyColor = function(color) {
@@ -203,6 +210,10 @@ goog.require('ga_mvt_service');
           toggle(false);
           $rootScope.$broadcast(
               'gaToggleEdit', scope.options.backgroundLayer.olLayer, true);
+        };
+
+        scope.getSurveyUrl = function() {
+          return scope.options.surveyUrl.replace('{lang}', gaLang.getNoRm())
         };
 
         if (!mobile) {
