@@ -147,16 +147,11 @@ goog.require('ga_glstylestorage_service');
       };
 
       var createOlLayer = function(bg) {
-        var externalStyleUrl;
-        if (bg.externalStyleUrl) {
-          externalStyleUrl = bg.externalStyleUrl;
-        } else {
-          externalStyleUrl = bg.olLayer ?
-            bg.olLayer.externalStyleUrl : undefined;
-        }
+        var externalStyleUrl = bg.externalStyleUrl ||
+            (bg.olLayer && bg.olLayer.externalStyleUrl);
         bg.olLayer = gaLayers.getOlLayerById(bg.id, {
           externalStyleUrl: externalStyleUrl,
-          glStyle: bg.olLayer ? bg.olLayer.glStyle : undefined
+          glStyle: bg.olLayer && bg.olLayer.glStyle
         });
         bg.olLayer.adminId = bg.adminId;
         bg.olLayer.background = true;
@@ -219,13 +214,15 @@ goog.require('ga_glstylestorage_service');
 
         this.setById = function(map, newBgId) {
           if (map && (!bg || newBgId !== bg.id)) {
-            bg = getBgById(newBgId);
-            if (bg) {
+            var newBg = getBgById(newBgId);
+            if (newBg) {
+              bg = newBg;
               var layers = map.getLayers();
-              if (bg.id === 'voidLayer' && layers.getLength() > 0 &&
-                  layers.item(0).background) {
+              if (bg.id === 'voidLayer') {
                 // Remove the bg from the map
-                layers.removeAt(0);
+                if (layers.getLength() > 0 && layers.item(0).background) {
+                  layers.removeAt(0);
+                }
               } else {
                 var layer = createOlLayer(bg);
                 // Add the bg to the map

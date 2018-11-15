@@ -616,7 +616,7 @@ goog.require('ga_urlutils_service');
         this.getOlLayerById = function(bodId, opts) {
           opts = opts || {};
           var that = this;
-          var olLayer;
+          var olLayer, p;
           var config = layers[bodId];
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var crossOrigin = 'anonymous';
@@ -754,15 +754,15 @@ goog.require('ga_urlutils_service');
               opacity: config.opacity || 1
             });
             gaDefinePropertiesForLayer(olLayer);
-            if (glStyle) {
-              createSubLayers(olLayer, glStyle);
-            } else if (styleUrl) {
-              gaGlStyle.get(styleUrl).then(function(glStyle) {
+            if (glStyle || styleUrl) {
+              p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
+              p.then(function(glStyle) {
                 createSubLayers(olLayer, glStyle);
               });
             } else {
               createSubLayers(olLayer);
             }
+
           } else if (config.type === 'geojson') {
             // cannot request resources over https in S3
             olSource = new ol.source.Vector({
@@ -827,19 +827,15 @@ goog.require('ga_urlutils_service');
               }
             };
             var sourceId = config.sourceId;
-            if (sourceId) { olLayer.sourceId = sourceId; }
-            if (glStyle) {
+            olLayer.sourceId = sourceId;
+            p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
+            p.then(function(glStyle) {
+              if (!glStyle) {
+                return;
+              }
               gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
               applyTilesetJson(olLayer, glStyle);
-            } else if (styleUrl) {
-              gaGlStyle.get(styleUrl).then((glStyle) => {
-                if (!glStyle) {
-                  return;
-                }
-                gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
-                applyTilesetJson(olLayer, glStyle);
-              });
-            }
+            });
           }
 
           if (angular.isDefined(olLayer)) {
