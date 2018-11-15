@@ -51,7 +51,8 @@ goog.require('ga_glstylestorage_service');
         'ch.swisstopo.swissimage': {
           id: 'ch.swisstopo.swissimage',
           label: 'bg_luftbild',
-          disable3d: true
+          disable3d: true,
+          disableEdit: true
         }
       };
 
