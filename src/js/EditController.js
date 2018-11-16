@@ -1,18 +1,16 @@
 goog.provide('ga_edit_controller');
 
 goog.require('ga_layers_service');
-goog.require('ga_maputils_service');
 
 (function() {
 
   var module = angular.module('ga_edit_controller', [
     'pascalprecht.translate',
-    'ga_layers_service',
-    'ga_maputils_service'
+    'ga_layers_service'
   ]);
 
   module.controller('GaEditController', function($scope, $translate,
-      gaLayers, gaMapUtils) {
+      gaLayers) {
 
     var options = {
       translate: $translate, // For translation of ng-options
@@ -35,20 +33,6 @@ goog.require('ga_maputils_service');
       $scope.layer = layer;
       $scope.globals.isEditActive = toggle;
       $scope.globals.pulldownShown = toggle;
-    });
-
-    var activate = function(active) {
-      if (active && $scope.layer && $scope.layer.glStyle) {
-        // set timeout to smooth the transition
-        setTimeout(function() {
-          gaMapUtils.applyGlStyleToOlLayer(
-              $scope.layer, $scope.layer.glStyle)
-        }, 600);
-      }
-    };
-
-    $scope.$watch('globals.isEditActive', function(active) {
-      activate(active);
     });
 
     $scope.$on('gaBgChange', function(evt, bg) {
