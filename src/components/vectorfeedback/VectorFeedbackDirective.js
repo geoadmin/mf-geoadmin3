@@ -57,6 +57,12 @@ goog.require('ga_translation_service');
         scope.getSurveyUrl = function() {
           return scope.options.surveyUrl.replace('{lang}', gaLang.getNoRm());
         };
+
+        scope.$on('gaBgChange', function(evt, bg) {
+          if (bg.disableEdit) {
+            toggle(false);
+          }
+        });
       }
     };
   });
