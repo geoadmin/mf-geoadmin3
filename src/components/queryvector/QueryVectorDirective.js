@@ -14,16 +14,18 @@ goog.provide('ga_query_vector_directive');
         hitTolerance: 1
       });
       if (features) {
-        var propertiesList = [];
+        var flatFeatures = [];
         features.forEach(function(feature) {
+          var flatProperties = [];
           var properties = feature.getProperties();
           var keys = Object.keys(properties);
           angular.forEach(keys, function(key) {
-            propertiesList.push([key, properties[key]]);
+            flatProperties.push([key, properties[key]]);
           });
+          flatFeatures.push(flatProperties);
         });
         scope.$apply(function() {
-          scope.propertiesList = propertiesList;
+          scope.flatFeatures = flatFeatures;
         });
       } else {
         // Hide popup if no features are found
@@ -47,7 +49,7 @@ goog.provide('ga_query_vector_directive');
         map: '=gaQueryVectorMap'
       },
       link: function(scope, elt) {
-        scope.propertiesList = [];
+        scope.flatFeatures = [];
 
         var pointerMoveListeners = [];
         var map = scope.map;

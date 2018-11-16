@@ -38,7 +38,6 @@ describe('ga_query_vector_directive', function() {
 
   it('creates the query vector directive and adds an overlay to the map', function() {
     loadDirective(map);
-    expect(el.find('table').length).to.be(1);
     expect($(map.getViewport()).find('div.ol-overlay-container').css('display')).to.equal('none');
     var overlay = map.getOverlays().getArray()[0];
     expect(overlay).to.be.an(ol.Overlay);
