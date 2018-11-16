@@ -1,10 +1,15 @@
 goog.provide('ga_query_vector_directive');
 
-(function() {
-  var module = angular.module('ga_query_vector_directive', []);
+goog.require('ga_browsersniffer_service');
 
-  var registerPointerMove = function(scope, map, overlay) {
-    return map.on('pointermove', function(evt) {
+(function() {
+  var module = angular.module('ga_query_vector_directive', [
+    'ga_browsersniffer_service'
+  ]);
+
+  var registerPointerMove = function(scope, map, overlay, mobile) {
+    var evtType = mobile ? 'singleclick' : 'pointermove';
+    return map.on(evtType, function(evt) {
       var coord = evt.coordinate;
       overlay.setPosition(coord);
       var features = map.getFeaturesAtPixel(evt.pixel, {
@@ -40,7 +45,7 @@ goog.provide('ga_query_vector_directive');
     });
   };
 
-  module.directive('gaQueryVector', function($rootScope) {
+  module.directive('gaQueryVector', function($rootScope, gaBrowserSniffer) {
     return {
       restrict: 'A',
       templateUrl: 'components/queryvector/partials/queryvector.html',
@@ -51,17 +56,20 @@ goog.provide('ga_query_vector_directive');
       link: function(scope, elt) {
         scope.flatFeatures = [];
 
+        var mobile = gaBrowserSniffer.mobile;
         var pointerMoveListeners = [];
         var map = scope.map;
         var popup = elt.find('div.ga-query-vector-popup');
         var overlay = new ol.Overlay({
-          element: popup.prevObject[0]
+          element: popup.prevObject[0],
+          autoPan: mobile
         });
 
         map.addOverlay(overlay);
 
         var activate = function() {
-          pointerMoveListeners.push(registerPointerMove(scope, map, overlay));
+          pointerMoveListeners.push(
+              registerPointerMove(scope, map, overlay, mobile));
           pointerMoveListeners.push(registerMouseOut(map, overlay));
         };
 
