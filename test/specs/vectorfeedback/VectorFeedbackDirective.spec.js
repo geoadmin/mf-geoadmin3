@@ -173,7 +173,7 @@ describe('ga_vector_feedback_directive', function() {
     loadDirective(map, options);
     $rootScope.$broadcast('gaBgChange', { id: bodid, label: 'Toto' });
     $rootScope.$digest();
-    scope.options.backgroundLayer = scope.options.backgroundLayers[2];
+    scope.options.backgroundLayer = scope.options.backgroundLayers[1];
     $rootScope.$digest();
 
     expect(spyGetLayer.calledOnce).to.be.ok();

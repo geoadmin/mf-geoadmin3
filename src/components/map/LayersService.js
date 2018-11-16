@@ -335,80 +335,79 @@ goog.require('ga_urlutils_service');
               if (response.data[relief]) {
                 response.data[relief + '-custom'] = response.data[relief];
                 response.data[relief + '-custom'].opacity = 0.4;
-                response.data['omt.vt'] = {
-                  type: 'aggregate',
-                  background: true,
-                  serverLayerName: 'omt.vt',
-                  attribution: 'OpenMapTiles, OpenStreetMap contributors',
-                  subLayersIds: [
-                    relief + '-custom',
-                    'openmaptiles'
-                  ],
-                  styleUrl: 'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json',
-                  editConfig: {
-                    selectableLayers: [
-                      'landuse-residential',
-                      'landcover_grass',
-                      'road_major_label',
-                      'place_label_city',
-                      'road_path',
-                      'building'
-                    ],
-                    labelsFilters: [
-                      ['source-layer', '==', 'place'],
-                      ['source-layer', '==', 'transportation_name'],
-                      ['source-layer', '==', 'aerodrome_label'],
-                      ['source-layer', '==', 'poi']
-                    ],
-                    'landuse-residential': [
-                      ['paint', 'fill-color', '{color}']
-                    ],
-                    'landcover_grass': [
-                      ['paint', 'fill-color', '{color}']
-                    ],
-                    'road_major_label': [
-                      ['paint', 'text-color', '{color}'],
-                      ['layout', 'text-size', '{size}']
-                    ],
-                    'place_label_city': [
-                      ['paint', 'text-color', '{color}'],
-                      ['layout', 'text-size', '{size}']
-                    ],
-                    'road_path': [
-                      ['paint', 'line-color', '{color}'],
-                      ['paint', 'line-width', '{size}']
-                    ],
-                    'building': [
-                      ['paint', 'fill-color', '{color}'],
-                      ['paint', 'fill-outline-color', '{color}']
-                    ]
-                  }
-                };
-                response.data['ch.swisstopo.leichte-basiskarte.vt'] = {
-                  type: 'aggregate',
-                  background: true,
-                  serverLayerName: 'ch.swisstopo.leichte-basiskarte.vt',
-                  attribution: 'OpenMapTiles, OpenStreetMap contributors,' +
-                      ' swisstopo',
-                  subLayersIds: [
-                    'OpenMapTiles',
-                    'ch.swisstopo.swissalti3d-reliefschattierung',
-                    'ch.swisstopo.vektorkarte.vt',
-                    'ch.bav.haltestellen-oev.vt',
-                    'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
-                    'ch.swissnames3d.vt'
-                  ],
-                  styleUrl: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_current/style.json',
-                  editConfig: {
-                    selectableLayers: [
-                      'background', 'lakes', 'rivers',
-                      'build_area', 'highways', 'forests'
-                    ],
-                    labelsFilters: [['source', '==', 'ch.swissnames3d']]
-                  }
-                };
               }
-
+              response.data['omt.vt'] = {
+                type: 'aggregate',
+                background: true,
+                serverLayerName: 'omt.vt',
+                attribution: 'OpenMapTiles, OpenStreetMap contributors',
+                subLayersIds: [
+                  relief + '-custom',
+                  'openmaptiles'
+                ],
+                styleUrl: 'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json',
+                editConfig: {
+                  selectableLayers: [
+                    'landuse-residential',
+                    'landcover_grass',
+                    'road_major_label',
+                    'place_label_city',
+                    'road_path',
+                    'building'
+                  ],
+                  labelsFilters: [
+                    ['source-layer', '==', 'place'],
+                    ['source-layer', '==', 'transportation_name'],
+                    ['source-layer', '==', 'aerodrome_label'],
+                    ['source-layer', '==', 'poi']
+                  ],
+                  'landuse-residential': [
+                    ['paint', 'fill-color', '{color}']
+                  ],
+                  'landcover_grass': [
+                    ['paint', 'fill-color', '{color}']
+                  ],
+                  'road_major_label': [
+                    ['paint', 'text-color', '{color}'],
+                    ['layout', 'text-size', '{size}']
+                  ],
+                  'place_label_city': [
+                    ['paint', 'text-color', '{color}'],
+                    ['layout', 'text-size', '{size}']
+                  ],
+                  'road_path': [
+                    ['paint', 'line-color', '{color}'],
+                    ['paint', 'line-width', '{size}']
+                  ],
+                  'building': [
+                    ['paint', 'fill-color', '{color}'],
+                    ['paint', 'fill-outline-color', '{color}']
+                  ]
+                }
+              };
+              response.data['ch.swisstopo.leichte-basiskarte.vt'] = {
+                type: 'aggregate',
+                background: true,
+                serverLayerName: 'ch.swisstopo.leichte-basiskarte.vt',
+                attribution: 'OpenMapTiles, OpenStreetMap contributors,' +
+                    ' swisstopo',
+                subLayersIds: [
+                  'OpenMapTiles',
+                  'ch.swisstopo.swissalti3d-reliefschattierung',
+                  'ch.swisstopo.vektorkarte.vt',
+                  'ch.bav.haltestellen-oev.vt',
+                  'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
+                  'ch.swissnames3d.vt'
+                ],
+                styleUrl: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_current/style.json',
+                editConfig: {
+                  selectableLayers: [
+                    'background', 'lakes', 'rivers',
+                    'build_area', 'highways', 'forests'
+                  ],
+                  labelsFilters: [['source', '==', 'ch.swissnames3d']]
+                }
+              };
             }
 
             if (!layers) { // First load
@@ -616,13 +615,15 @@ goog.require('ga_urlutils_service');
          */
         this.getOlLayerById = function(bodId, opts) {
           opts = opts || {};
-          var olLayer;
+          var that = this;
+          var olLayer, p;
           var config = layers[bodId];
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var crossOrigin = 'anonymous';
           var extent = config.extent || gaMapUtils.defaultExtent;
           var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl,
               opts.externalStyleUrl);
+          var glStyle = opts.glStyle;
 
           // The tileGridMinRes is the resolution at which the client
           // zoom is activated. It's different from the config.minResolution
@@ -683,6 +684,7 @@ goog.require('ga_urlutils_service');
               preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
               useInterimTilesOnError: gaNetworkStatus.offline
             });
+            gaDefinePropertiesForLayer(olLayer);
           } else if (config.type === 'wms') {
             var wmsParams = {
               LAYERS: config.wmsLayers,
@@ -705,6 +707,7 @@ goog.require('ga_urlutils_service');
                 source: olSource,
                 extent: extent
               });
+              gaDefinePropertiesForLayer(olLayer);
             } else {
               if (!olSource) {
                 olSource = config.olSource = new ol.source.TileWMS({
@@ -730,31 +733,34 @@ goog.require('ga_urlutils_service');
                 preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
                 useInterimTilesOnError: gaNetworkStatus.offline
               });
+              gaDefinePropertiesForLayer(olLayer);
             }
           } else if (config.type === 'aggregate') {
             var subLayersIds = config.subLayersIds;
             var i, len = subLayersIds.length;
-            var subLayers = new Array(len);
-            for (i = 0; i < len; i++) {
-              var subLayerConf = layers[subLayersIds[i]];
-              if (styleUrl && subLayerConf) {
-                layers[subLayersIds[i]].styleUrl = config.styleUrl;
+            var createSubLayers = function(olLayer, glStyle) {
+              var subLayers = new Array(len);
+              olLayer.glStyle = glStyle;
+              for (i = 0; i < len; i++) {
+                subLayers[i] = that.getOlLayerById(subLayersIds[i], {
+                  glStyle: glStyle
+                });
               }
-              subLayers[i] = this.getOlLayerById(subLayersIds[i], opts);
-            }
-
+              olLayer.setLayers(new ol.Collection(subLayers));
+            };
             olLayer = new ol.layer.Group({
               minResolution: config.minResolution,
               maxResolution: config.maxResolution,
               opacity: config.opacity || 1
             });
-            if (styleUrl) {
-              gaGlStyle.get(styleUrl).then((glStyle) => {
-                gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
-                olLayer.setLayers(new ol.Collection(subLayers));
+            gaDefinePropertiesForLayer(olLayer);
+            if (glStyle || styleUrl) {
+              p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
+              p.then(function(glStyle) {
+                createSubLayers(olLayer, glStyle);
               });
             } else {
-              olLayer.setLayers(new ol.Collection(subLayers));
+              createSubLayers(olLayer);
             }
 
           } else if (config.type === 'geojson') {
@@ -769,6 +775,7 @@ goog.require('ga_urlutils_service');
               source: olSource,
               extent: extent
             });
+            gaDefinePropertiesForLayer(olLayer);
             geojsonPromises[bodId] = gaUrlUtils.proxifyUrl(config.geojsonUrl).
                 then(function(proxyUrl) {
                   return $http.get(proxyUrl).then(function(response) {
@@ -799,44 +806,39 @@ goog.require('ga_urlutils_service');
                   });
                 });
           } else if (config.type === 'vectortile') {
-
-            if (config.sourceType === 'raster') {
-              olLayer = new ol.layer.Tile();
-
-            } else {
-              olLayer = new ol.layer.VectorTile({
-                declutter: true,
-                style: new ol.style.Style(),
-                source: new ol.source.VectorTile({
-                  format: new ol.format.MVT(),
-                  maxZoom: config.maxZoom,
-                  url: config.url
-                })
-              });
-            }
+            olLayer = new ol.layer.VectorTile({
+              declutter: true,
+              style: new ol.style.Style(),
+              source: new ol.source.VectorTile({
+                format: new ol.format.MVT(),
+                maxZoom: config.maxZoom,
+                url: config.url
+              })
+            });
+            gaDefinePropertiesForLayer(olLayer);
             olLayer.setOpacity(config.opacity || 1);
-
-            if (config.sourceId && styleUrl) {
-              olLayer.sourceId = config.sourceId;
-              gaGlStyle.get(styleUrl).then((glStyle) => {
-                if (!glStyle) {
-                  return;
-                }
-                gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
-
-                // Load informations from tileset.json file of a source
-                var sourceConfig = glStyle.sources[olLayer.sourceId];
-                sourceConfig.minZoom = config.minZoom;
-                sourceConfig.maxZoom = config.maxZoom;
-                if (sourceConfig) {
-                  gaMapUtils.applyGlSourceToOlLayer(olLayer, sourceConfig);
-                }
-              });
-            }
+            var applyTilesetJson = function(olLayer, glStyle) {
+              // Load informations from tileset.json file of a source
+              var sourceConfig = glStyle.sources[olLayer.sourceId];
+              sourceConfig.minZoom = config.minZoom;
+              sourceConfig.maxZoom = config.maxZoom;
+              if (sourceConfig) {
+                gaMapUtils.applyGlSourceToOlLayer(olLayer, sourceConfig);
+              }
+            };
+            var sourceId = config.sourceId;
+            olLayer.sourceId = sourceId;
+            p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
+            p.then(function(glStyle) {
+              if (!glStyle) {
+                return;
+              }
+              gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
+              applyTilesetJson(olLayer, glStyle);
+            });
           }
 
           if (angular.isDefined(olLayer)) {
-            gaDefinePropertiesForLayer(olLayer);
             olLayer.bodId = bodId;
             olLayer.label = config.label;
             olLayer.time = timestamp;
@@ -850,7 +852,6 @@ goog.require('ga_urlutils_service');
             olLayer.background = config.background || false;
             // For MVT only
             olLayer.sourceId = config.sourceId || null;
-            var that = this;
             olLayer.getCesiumImageryProvider = function() {
               return that.getCesiumImageryProviderById(bodId, olLayer);
             };

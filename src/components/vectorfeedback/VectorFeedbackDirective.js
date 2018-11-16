@@ -6,7 +6,6 @@ goog.require('ga_glstyle_service');
 goog.require('ga_translation_service');
 goog.require('ga_layers_service');
 goog.require('ga_maputils_service');
-goog.require('ga_mvt_service');
 
 (function() {
   var module = angular.module('ga_vector_feedback_directive', [
@@ -14,7 +13,6 @@ goog.require('ga_mvt_service');
     'ga_glstyle_service',
     'ga_layers_service',
     'ga_maputils_service',
-    'ga_mvt_service',
     'ga_browsersniffer_service',
     'ga_translation_service'
   ]);
@@ -25,7 +23,6 @@ goog.require('ga_mvt_service');
       gaGlStyle,
       gaBackground,
       gaLayers,
-      gaMvt,
       gaBrowserSniffer,
       gaLang
   ) {
@@ -64,8 +61,7 @@ goog.require('ga_mvt_service');
             }
             gaMapUtils.applyGlStyleToOlLayer(
                 scope.options.backgroundLayer.olLayer,
-                gaGlStyle.edit(edits),
-                true // don't bind to olLayer
+                gaGlStyle.edit(edits)
             );
           }
         };
@@ -77,21 +73,20 @@ goog.require('ga_mvt_service');
                   scope.options.activeColor = '';
                   gaMapUtils.applyGlStyleToOlLayer(
                       scope.options.backgroundLayer.olLayer,
-                      gaGlStyle.resetEdits(),
-                      true // don't bind to olLayer
+                      gaGlStyle.resetEdits()
                   );
                 }
               });
         };
 
         var registerBackgroundLayerWatcher = function() {
-          return scope.$watch('options.backgroundLayer', function(newVal) {
-            var olLayer = scope.options.backgroundLayer;
-            // Dropdown interaction
-            if (olLayer && olLayer.bodId !== newVal.id) {
-              gaBackground.setById(map, newVal.id);
-            }
-          });
+          return scope.$watch('options.backgroundLayer',
+              function(newVal, oldVal) {
+                // Dropdown interaction
+                if (newVal && oldVal.id !== newVal.id) {
+                  gaBackground.setById(map, newVal.id);
+                }
+              });
         };
 
         var registerShowLabelWatcher = function() {
@@ -110,8 +105,7 @@ goog.require('ga_mvt_service');
               }
               gaMapUtils.applyGlStyleToOlLayer(
                   scope.options.backgroundLayer.olLayer,
-                  glStyle,
-                  true // don't bind to olLayer
+                  glStyle
               );
             }
           });

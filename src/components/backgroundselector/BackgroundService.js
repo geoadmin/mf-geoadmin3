@@ -51,7 +51,8 @@ goog.require('ga_glstylestorage_service');
         'ch.swisstopo.swissimage': {
           id: 'ch.swisstopo.swissimage',
           label: 'bg_luftbild',
-          disable3d: true
+          disable3d: true,
+          disableEdit: true
         }
       };
 
@@ -145,18 +146,17 @@ goog.require('ga_glstylestorage_service');
         });
       };
 
-      var createOlLayer = function(map, bg) {
-        var layer = bg.olLayer;
-        if (!layer) {
-          layer = gaLayers.getOlLayerById(bg.id, {
-            externalStyleUrl: bg.externalStyleUrl
-          });
-          layer.adminId = bg.adminId;
-          layer.background = true;
-          layer.displayInLayerManager = false;
-          bg.olLayer = layer;
-        }
-        return layer;
+      var createOlLayer = function(bg) {
+        var externalStyleUrl = bg.externalStyleUrl ||
+            (bg.olLayer && bg.olLayer.externalStyleUrl);
+        bg.olLayer = gaLayers.getOlLayerById(bg.id, {
+          externalStyleUrl: externalStyleUrl,
+          glStyle: bg.olLayer && bg.olLayer.glStyle
+        });
+        bg.olLayer.adminId = bg.adminId;
+        bg.olLayer.background = true;
+        bg.olLayer.displayInLayerManager = false;
+        return bg.olLayer;
       };
 
       var Background = function() {
@@ -219,15 +219,12 @@ goog.require('ga_glstylestorage_service');
               bg = newBg;
               var layers = map.getLayers();
               if (bg.id === 'voidLayer') {
-
                 // Remove the bg from the map
                 if (layers.getLength() > 0 && layers.item(0).background) {
                   layers.removeAt(0);
                 }
-
               } else {
-                var layer = createOlLayer(map, bg);
-
+                var layer = createOlLayer(bg);
                 // Add the bg to the map
                 if (layers.item(0) && layers.item(0).background) {
                   layers.setAt(0, layer);

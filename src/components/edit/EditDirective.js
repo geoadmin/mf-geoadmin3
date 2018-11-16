@@ -4,8 +4,6 @@ goog.require('ga_background_service');
 goog.require('ga_debounce_service');
 goog.require('ga_exportglstyle_service');
 goog.require('ga_filestorage_service');
-goog.require('ga_glstyle_service');
-goog.require('ga_layers_service');
 goog.require('ga_maputils_service');
 goog.require('ga_mvt_service');
 goog.require('ga_urlutils_service');
@@ -16,8 +14,6 @@ goog.require('ga_urlutils_service');
     'ga_exportglstyle_service',
     'ga_glstylestorage_service',
     'ga_debounce_service',
-    'ga_glstyle_service',
-    'ga_layers_service',
     'ga_maputils_service',
     'ga_mvt_service',
     'ga_background_service',
@@ -28,8 +24,8 @@ goog.require('ga_urlutils_service');
    * This directive add an interface where you can modify a glStyle.
    */
   module.directive('gaEdit', function($rootScope, $window, $translate, gaMvt,
-      gaDebounce, gaGlStyleStorage, gaExportGlStyle, gaGlStyle, gaLayers,
-      gaMapUtils, gaBackground, gaUrlUtils) {
+      gaDebounce, gaGlStyleStorage, gaExportGlStyle, gaMapUtils,
+      gaBackground, gaUrlUtils) {
     return {
       restrict: 'A',
       templateUrl: 'components/edit/partials/edit.html',
@@ -124,23 +120,7 @@ goog.require('ga_urlutils_service');
         scope.getBgLabelId = function() {
           var bg = gaBackground.get();
           return bg ? bg.label : '';
-        }
-
-        var activate = function() {};
-
-        var deactivate = function() {};
-
-        scope.$watch('isActive', function(active) {
-          if (active) {
-            activate();
-          } else {
-            deactivate();
-          }
-        });
-
-        scope.$on('destroy', function() {
-          deactivate();
-        })
+        };
 
         scope.$on('gaGlStyleChanged', function(evt, glStyle) {
           gaMapUtils.applyGlStyleToOlLayer(scope.layer, glStyle);
