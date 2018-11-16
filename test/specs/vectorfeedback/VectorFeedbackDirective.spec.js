@@ -51,11 +51,10 @@ describe('ga_vector_feedback_directive', function() {
   it('creates the vector feedback directive', function() {
     loadDirective(options);
     expect(scope.options.serviceDocUrl).to.equal('https://service-doc.html');
-    expect($(el).find('.ga-vector-feeback-service-link')[1].href).to.equal('https://service-doc.html/');
+    expect(el.find('.ga-vector-feeback-service-link')[0].href).to.equal('https://service-doc.html/');
     expect(el.find('[target="_blank"]').length).to.be(1);
     expect(el.find('[href="http://foo.ch/somelang"]').length).to.be(0);
   });
-
 
   it('get the survey url', function() {
     loadDirective({

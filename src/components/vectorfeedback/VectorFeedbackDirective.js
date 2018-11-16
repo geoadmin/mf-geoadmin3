@@ -50,7 +50,7 @@ goog.require('ga_translation_service');
           var bg = gaBackground.get();
           if (bg && bg.olLayer) {
             $rootScope.$broadcast(
-              'gaToggleEdit', bg.olLayer, true);
+                'gaToggleEdit', bg.olLayer, true);
           }
         };
 
