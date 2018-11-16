@@ -9,48 +9,8 @@
         <div class="ga-vector-feedback-item">
             <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_select_style</h4>
             <div class="ga-vector-feedback-item-select-wrapper">
-                <select class="form-control"
-                        ng-model="options.backgroundLayer"
-                        ng-options="(c.label | translate) for c in options.backgroundLayers">
-                </select>
-            </div>
-        </div>
-        <div class="ga-vector-feedback-item">
-            <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_choose_layer</h4>
-            <div class="ga-vector-feedback-item-select-wrapper">
-                <select class="form-control"
-                        ng-model="options.selectedLayer"
-                        ng-disabled="!options.selectedLayer"
-                        ng-options="(c | translate) for c in options.layers[options.backgroundLayer.id].selectableLayers">
-                </select>
-            </div>
-        </div>
-        <div class="ga-vector-feedback-item">
-            <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_choose_color</h4>
-            <div ng-if="!options.mobile" class="ga-vector-feedback-item-buttons-wrapper">
-                <button ng-repeat="c in options.colors track by c.value"
-                        ng-click="applyColor(c.value)"
-                        ng-class="options.activeColor === c.value ? 'active-color' : ''"
-                        ng-style="{'background-color': c.value}"
-                        ng-disabled="!options.selectedLayer"
-                        class="ga-vector-feedback-color-button"></button>
-            </div>
-            <div ng-if="options.mobile" class="ga-vector-feedback-item-select-wrapper">
-                <select class="form-control ga-vector-feedback-colors"
-                        ng-model="options.activeColor"
-                        ng-disabled="!options.selectedLayer"
-                        ng-options="(c.label | translate) for c in options.colors track by c.value">
-                </select>
-            </div>
-        </div>
-        <hr>
-        <div class="ga-vector-feedback-item">
-            <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_labels_on_off</h4>
-            <div class="ga-vector-feedback-item-select-wrapper">
-                <select class="form-control ga-vector-feedback-colors"
-                        ng-model="options.showLabel"
-                        ng-disabled="!options.selectedLayer"
-                        ng-options="(c.label | translate) for c in options.showLabels track by c.value">
+                <select class="form-control">
+                    <option>Dummy</option>
                 </select>
             </div>
         </div>
