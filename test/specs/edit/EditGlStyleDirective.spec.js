@@ -5,13 +5,14 @@ describe('ga_editglstyle_directive', function() {
 
     var map, elt, parentScope, $timeout, $httpBackend, $rootScope,
       $compile, scope;
-    var goodConfig = {
-      selectableLayers: ['foo'],
-      'foo': [
+    var goodConfig = [{
+      id: 'foo',
+      props: [
         ['paint', 'fill-color', '{color}'],
-        ['paint', 'fill-color', '{size}']
+        ['paint', 'fill-color', '{size}'],
+        ['layout', 'visibility', '{toggle}', 'visible', 'none']
       ]
-    };
+    }];
     var goodGlStyle = {layers: [{id: 'foo'}]};
 
     var loadDirective = function(glStyle, config) {
@@ -78,7 +79,6 @@ describe('ga_editglstyle_directive', function() {
         $rootScope.$digest();
         expect(scope.glStyle).to.be(glStyle);
         expect(elt.find('label').length).to.be(1);
-        expect(scope.selectableLayers).to.be(undefined);
 
         glStyle = goodGlStyle;
         parentScope.glStyle = glStyle;
@@ -86,10 +86,12 @@ describe('ga_editglstyle_directive', function() {
         $rootScope.$digest();
         expect(elt.find('[ga-color]').length).to.be(1);
         expect(elt.find('[ga-size]').length).to.be(1);
-        expect(elt.find('label').length).to.be(3);
-        expect(scope.selectableLayers[0]).to.be(glStyle.layers[0]);
-        expect(scope.selectableLayers.length).to.be(1);
-        expect(scope.selectedLayer).to.be(glStyle.layers[0]);
+        expect(elt.find('[ga-toggle]').length).to.be(1);
+        expect(elt.find('label').length).to.be(4);
+        expect(scope.groups.foo[0]).to.be(glStyle.layers[0]);
+        expect(scope.groups.foo.length).to.be(1);
+        expect(scope.group[0]).to.be(glStyle.layers[0]);
+        expect(scope.group.length).to.be(1);
       });
     });
 
@@ -102,15 +104,15 @@ describe('ga_editglstyle_directive', function() {
         expect(scope.useWidget).to.be.a(Function);
         expect(scope.save).to.be.a(Function);
         expect(scope.getTranslateId).to.be.a(Function);
-        expect(scope.selectableLayers[0]).to.be(goodGlStyle.layers[0]);
-        expect(scope.selectableLayers.length).to.be(1);
-        expect(scope.selectedLayer).to.be(goodGlStyle.layers[0]);
+        expect(scope.group[0]).to.be(goodGlStyle.layers[0]);
+        expect(scope.group.length).to.be(1);
       });
 
       it('display html elements', function() {
         expect(elt.find('[ga-color]').length).to.be(1);
         expect(elt.find('[ga-size]').length).to.be(1);
-        expect(elt.find('label').length).to.be(3);
+        expect(elt.find('[ga-toggle]').length).to.be(1);
+        expect(elt.find('label').length).to.be(4);
       });
 
       describe('#save()', function() {
@@ -123,21 +125,21 @@ describe('ga_editglstyle_directive', function() {
 
       describe('#useWidget()', function() {
         it('tests if we need to use the color widget', function() {
-          expect(scope.useWidget('color', goodConfig.foo[0])).to.be(true);
-          expect(scope.useWidget('size', goodConfig.foo[0])).to.be(false);
-          expect(scope.useWidget('chuba', goodConfig.foo[0])).to.be(false);
+          expect(scope.useWidget('color', goodConfig[0].props[0])).to.be(true);
+          expect(scope.useWidget('size', goodConfig[0].props[0])).to.be(false);
+          expect(scope.useWidget('chuba', goodConfig[0].props[0])).to.be(false);
         });
 
         it('tests if we need to use the size widget', function() {
-          expect(scope.useWidget('size', goodConfig.foo[1])).to.be(true);
-          expect(scope.useWidget('color', goodConfig.foo[1])).to.be(false);
-          expect(scope.useWidget('chuba', goodConfig.foo[1])).to.be(false);
+          expect(scope.useWidget('size', goodConfig[0].props[1])).to.be(true);
+          expect(scope.useWidget('color', goodConfig[0].props[1])).to.be(false);
+          expect(scope.useWidget('chuba', goodConfig[0].props[1])).to.be(false);
         });
       });
 
       describe('#getTranslateId()', function() {
         it('get an id', function() {
-          expect(scope.getTranslateId(goodConfig.foo[0])).to.be('edit_fill_color');
+          expect(scope.getTranslateId(goodConfig[0].props[0])).to.be('edit_fill_color');
         });
       });
     });

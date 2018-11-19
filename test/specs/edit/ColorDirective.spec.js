@@ -10,7 +10,7 @@ describe('ga_color_directive', function() {
       parentScope = $rootScope.$new();
       parentScope.ngModel = ngModel;
       parentScope.ngChange = ngChange;
-      var tpl = '<div ng-model="ngModel" ng-change="ngChange" ga-color></div>';
+      var tpl = '<div ng-model="ngModel" ng-change="ngChange()" ga-color></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
       scope = elt.isolateScope();
@@ -54,7 +54,7 @@ describe('ga_color_directive', function() {
 
       it('set scope values', function() {
         expect(scope.ngModel).to.be(ngModel);
-        expect(scope.ngChange).to.be(spy);
+        expect(scope.ngChange).to.be.a(Function);
         expect(scope.colors.length).to.be(12);
         expect(scope.useInputColorSelector).to.be(true);
         expect(scope.toHexString).to.be.a(Function);

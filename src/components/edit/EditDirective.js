@@ -41,7 +41,7 @@ goog.require('ga_urlutils_service');
 
         scope.isExternalStyleUrlValid = function(layer) {
           if (!layer || !layer.externalStyleUrl) {
-            return;
+            return true;
           }
           var styleUrls = gaLayers.getLayerProperty(layer.id, 'styleUrls') ||
               [];

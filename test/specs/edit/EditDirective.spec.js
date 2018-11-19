@@ -20,7 +20,12 @@ describe('ga_edit_directive', function() {
 
     var provideServices = function($provide) {
       $provide.value('gaLayers', {
-        getLayer: function() {}
+        getLayer: function() {},
+        getLayerProperty: function(id, prop) {
+          if (prop === 'styleUrls') {
+            return ['foo.ch', 'bar.ch'];
+          }
+        }
       });
       $provide.value('gaBackground', {
         get: function() {
@@ -188,6 +193,7 @@ describe('ga_edit_directive', function() {
           expect(scope.isExternalStyleUrlValid()).to.be(true);
           expect(scope.isExternalStyleUrlValid(null)).to.be(true);
           expect(scope.isExternalStyleUrlValid({})).to.be(true);
+          expect(scope.isExternalStyleUrlValid({ externalStyleUrl: 'foo.ch' })).to.be(true);
           expect(scope.isExternalStyleUrlValid({ externalStyleUrl: 'http://public.dev.bgdi.ch/foo' })).to.be(true);
           expect(scope.isExternalStyleUrlValid({ externalStyleUrl: 'http://public.int.bgdi.ch/foo' })).to.be(true);
           expect(scope.isExternalStyleUrlValid({ externalStyleUrl: 'http://public.prod.bgdi.ch/foo' })).to.be(true);

@@ -21,6 +21,7 @@ goog.provide('ga_toggle_directive');
       link: function(scope, element, attrs) {
         scope.gaToggleOn = scope.gaToggleOn || true;
         scope.gaToggleOff = scope.gaToggleOff || false;
+        scope.ngModel = scope.ngModel || false;
 
         scope.$watch('ngModel', function(newValue, oldValue) {
           if (newValue && newValue !== oldValue) {
@@ -28,7 +29,7 @@ goog.provide('ga_toggle_directive');
           }
         });
 
-        scope.onClick = function() {
+        scope.toggle = function() {
           scope.ngModel = (scope.ngModel === scope.gaToggleOn) ?
             scope.gaToggleOff :
             scope.gaToggleOn;

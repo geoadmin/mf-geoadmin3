@@ -13,7 +13,7 @@ describe('ga_size_directive', function() {
       parentScope.min = min;
       parentScope.max = max;
       parentScope.step = step;
-      var tpl = '<div ng-model="ngModel" ng-change="ngChange" ' +
+      var tpl = '<div ng-model="ngModel" ng-change="ngChange()" ' +
                      'ga-size ga-size-min="{{min}}" ga-size-max="{{max}}" ' +
                      'ga-size-step="{{step}}"></div>';
       elt = $compile(tpl)(parentScope);
@@ -59,7 +59,7 @@ describe('ga_size_directive', function() {
 
       it('set scope values', function() {
         expect(scope.ngModel).to.be(0);
-        expect(scope.ngChange).to.be(spy);
+        expect(scope.ngChange).to.be.a(Function);
         expect(scope.min).to.be(0);
         expect(scope.max).to.be(50);
         expect(scope.step).to.be(5);
@@ -119,7 +119,7 @@ describe('ga_size_directive', function() {
 
       it('set scope values', function() {
         expect(scope.ngModel).to.be(12.2);
-        expect(scope.ngChange).to.be(spy);
+        expect(scope.ngChange).to.be.a(Function);
         expect(scope.min).to.be(5);
         expect(scope.max).to.be(30);
         expect(scope.step).to.be(2);
