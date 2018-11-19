@@ -529,5 +529,11 @@
   "purple": "",
   "basis": "",
   "vector_feedback_create_your_own": "",
-  "vector_feedback_edit_map": ""
+  "vector_feedback_edit_map": "",
+  "labels": "",
+  "roadtraffic":"",
+  "hydrology": "",
+  "landuse": "",
+  "settlement": "",
+  "edit_visibility": ""
 }

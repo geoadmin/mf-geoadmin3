@@ -346,44 +346,47 @@ goog.require('ga_urlutils_service');
                   'openmaptiles'
                 ],
                 styleUrl: 'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json',
-                editConfig: {
-                  selectableLayers: [
-                    'landuse-residential',
-                    'landcover_grass',
-                    'road_major_label',
-                    'place_label_city',
-                    'road_path',
-                    'building'
-                  ],
-                  labelsFilters: [
-                    ['source-layer', '==', 'place'],
-                    ['source-layer', '==', 'transportation_name'],
-                    ['source-layer', '==', 'aerodrome_label'],
-                    ['source-layer', '==', 'poi']
-                  ],
-                  'landuse-residential': [
+                styleUrls: [
+                  'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json',
+                  'https://raw.githubusercontent.com/openmaptiles/positron-gl-style/master/style.json',
+                  'https://raw.githubusercontent.com/openmaptiles/dark-matter-gl-style/master/style.json'
+
+                ],
+                edits: [{
+                  id: 'landuse-residential',
+                  props: [
                     ['paint', 'fill-color', '{color}']
-                  ],
-                  'landcover_grass': [
+                  ]
+                }, {
+                  id: 'landcover_grass',
+                  props: [
                     ['paint', 'fill-color', '{color}']
-                  ],
-                  'road_major_label': [
+                  ]
+                }, {
+                  id: 'road_major_label',
+                  props: [
                     ['paint', 'text-color', '{color}'],
                     ['layout', 'text-size', '{size}']
-                  ],
-                  'place_label_city': [
+                  ]
+                }, {
+                  id: 'place_label_city',
+                  props: [
                     ['paint', 'text-color', '{color}'],
                     ['layout', 'text-size', '{size}']
-                  ],
-                  'road_path': [
+                  ]
+                }, {
+                  id: 'road_path',
+                  props: [
                     ['paint', 'line-color', '{color}'],
                     ['paint', 'line-width', '{size}']
-                  ],
-                  'building': [
-                    ['paint', 'fill-color', '{color}'],
-                    ['paint', 'fill-outline-color', '{color}']
                   ]
-                }
+                }, {
+                  id: 'building',
+                  props: [
+                    ['paint', 'line-color', '{color}'],
+                    ['paint', 'line-width', '{size}']
+                  ]
+                }]
               };
               response.data['ch.swisstopo.leichte-basiskarte.vt'] = {
                 type: 'aggregate',
@@ -399,14 +402,55 @@ goog.require('ga_urlutils_service');
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
                   'ch.swissnames3d.vt'
                 ],
-                styleUrl: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_v001/style.json',
-                editConfig: {
-                  selectableLayers: [
-                    'background', 'lakes', 'rivers',
-                    'build_area', 'highways', 'forests'
-                  ],
-                  labelsFilters: [['source', '==', 'ch.swissnames3d']]
-                }
+                styleUrl: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_current/style.json',
+                styles: [{
+                  url: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_current/style.json',
+                  editConfig: {
+                    selectableLayers: [
+                      /^settlement/, /^landuse/, /^hydrology/, /^roadtraffic/, /^labels/
+                    ]
+                  }
+                }, {
+                  url: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_current/style.json'
+                }],
+                edits: [{
+                  id: 'settlement',
+                  regex: /^settlement/,
+                  props: [
+                    ['paint', 'fill-color', '{color}']
+                  ]
+
+                }, {
+                  id: 'landuse',
+                  regex: /^landuse/,
+                  props: [
+                    ['paint', 'fill-color', '{color}']
+                  ]
+
+                }, {
+                  id: 'hydrology',
+                  regex: /^hydrology/,
+                  props: [
+                    ['paint', 'fill-color', '{color}']
+                  ]
+
+                }, {
+                  id: 'roadtraffic',
+                  regex: /^roadtraffic/,
+                  props: [
+                    ['paint', 'line-color', '{color}'],
+                    ['paint', 'line-width', '{size}']
+                  ]
+
+                }, {
+                  id: 'labels',
+                  regex: /^labels/,
+                  props: [
+                    ['layout', 'visibility', '{toggle}', 'visible', 'none'],
+                    ['paint', 'text-color', '{color}'],
+                    ['layout', 'text-size', '{size}']
+                  ]
+                }]
               };
             }
 

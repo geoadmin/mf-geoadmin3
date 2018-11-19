@@ -14,13 +14,13 @@ goog.provide('ga_color_directive');
       templateUrl: 'components/edit/partials/color.html',
       scope: {
         ngModel: '=',
-        ngChange: '='
+        ngChange: '&'
       },
       link: function(scope, element, attrs) {
 
         scope.$watch('ngModel', function(newValue, oldValue) {
           if (newValue && newValue !== oldValue) {
-            scope.ngChange(newValue);
+            scope.ngChange();
           }
         });
 

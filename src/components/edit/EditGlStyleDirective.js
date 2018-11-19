@@ -20,23 +20,48 @@ goog.provide('ga_editglstyle_directive');
       link: function(scope, element, attrs, controller) {
 
         scope.$watch('glStyle', function(newGlStyle) {
-          if (!newGlStyle || !scope.config || !scope.config.selectableLayers) {
+          if (!newGlStyle || !scope.config || !scope.config.length) {
             return;
           }
 
-          scope.selectableLayers = [];
+          /**
+           * Object containing list of glStyle layers to modfiy for each value
+           * in config.selectableLayers.
+           */
+          scope.groups = [];
 
           scope.glStyle.layers.forEach(function(layer) {
-            if (scope.config.selectableLayers.indexOf(layer.id) !== -1) {
-              scope.selectableLayers.push(layer);
-            }
+            scope.config.forEach(function(edit) {
+              var regex = new RegExp(edit.regex || edit.id);
+              if (regex.test(layer.id)) {
+                if (!scope.groups[edit.id]) {
+                  scope.groups[edit.id] = [];
+                }
+                scope.groups[edit.id].push(layer);
+              }
+            });
           });
-          scope.selectedLayer = scope.selectableLayers[0];
+          scope.edit = scope.config[0];
         });
 
-        scope.useWidget = function(widget, e) {
+        scope.useWidget = function(widget, path) {
           var regex = new RegExp(widget);
-          return regex.test(e[2]);
+          return regex.test(path[2]);
+        }
+
+        /**
+         * @param value : Value of the glStyle property.
+         * @param group : List of glStyle layers to modify
+         * @param editConfig : Path the glStyle property.
+         *                     Ex: ['paint', 'fill-color', '{color}']
+         */
+        scope.change = function(value, group, path) {
+          group.forEach(function(layer, idx) {
+            if (idx !== 0) {
+              layer[path[0]][path[1]] = value;
+            }
+          });
+          scope.save();
         }
 
         scope.save = function() {

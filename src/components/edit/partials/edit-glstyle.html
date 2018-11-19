@@ -1,18 +1,52 @@
-<label>
-  <span translate>{{'edit_glstyle_choose_layer'}}:</span>
-  <select class="form-control"
-          ng-model="selectedLayer"
-          ng-options="(s.id | translate) for s in selectableLayers">
-  </select>
-</label>
+  <label>
+    <span translate>{{'edit_glstyle_choose_layer'}}:</span>
+    <select class="form-control"
+            ng-model="edit"
+            ng-options="(edit.id | translate) for edit in config">
+    </select>
+  </label>
 
-<div ng-repeat="e in config[selectedLayer.id]" >
-  <label ng-if="useWidget('color', e)">
-    <span translate>{{getTranslateId(e)}}:</span>
-    <div ng-model="selectedLayer[e[0]][e[1]]" ng-change="save" ga-color />
-  </label>
-  <label ng-if="useWidget('size', e)">
-    <span translate>{{getTranslateId(e)}}:</span>
-    <div ng-model="selectedLayer[e[0]][e[1]]" ng-change="save" ga-size />
-  </label>
-</div>
+
+  <div ng-init="group = groups[edit.id]" ng-repeat="e in edit.props" >
+    <label ng-if="useWidget('toggle', e)">
+      <span translate>{{getTranslateId(e)}}:</span>
+      <div ng-model="group[0][e[0]][e[1]]"
+           ng-change="change(group[0][e[0]][e[1]], group, e)"
+           ga-toggle
+           ga-toggle-on="e[3]"
+           ga-toggle-off="e[4]"/>
+    </label>
+    <label ng-if="useWidget('color', e)">
+      <span translate>{{getTranslateId(e)}}:</span>
+      <div ng-model="group[0][e[0]][e[1]]"
+           ng-change="change(group[0][e[0]][e[1]], group, e)"
+           ga-color />
+    </label>
+    <label ng-if="useWidget('size', e)">
+      <span translate>{{getTranslateId(e)}}:</span>
+      <div ng-model="group[0][e[0]][e[1]]"
+           ng-change="change(group[0][e[0]][e[1]], group, e)"
+           ga-size />
+    </label>
+  </div>
+
+
+
+  <!--label>
+    <span translate>{{'edit_glstyle_choose_layer'}}:</span>
+    <select class="form-control"
+            ng-model="selectedLayer"
+            ng-options="(s.id | translate) for s in selectableLayers">
+    </select>
+  </label
+
+  <div ng-repeat="e in config[selectedLayer.id]" >
+    <label ng-if="useWidget('color', e)">
+      <span translate>{{getTranslateId(e)}}:</span>
+      <div ng-model="selectedLayer[e[0]][e[1]]" ng-change="save" ga-color />
+    </label>
+    <label ng-if="useWidget('size', e)">
+      <span translate>{{getTranslateId(e)}}:</span>
+      <div ng-model="selectedLayer[e[0]][e[1]]" ng-change="save" ga-size />
+    </label>
+  </div>-->

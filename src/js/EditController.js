@@ -55,7 +55,7 @@ goog.require('ga_layers_service');
       }
 
       // This config defines which properties of the glStyle are modifiable
-      $scope.options.editConfig = config.editConfig;
+      $scope.options.editConfig = config.edits;
     });
   });
 })();
