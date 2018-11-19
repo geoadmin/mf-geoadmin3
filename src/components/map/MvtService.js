@@ -36,8 +36,9 @@ goog.require('ga_urlutils_service');
             return $q.when();
           }
 
-          var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl,
-              olLayer.externalStyleUrl);
+          var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl ||
+            (config.styleUrls && config.styleUrls[0]),
+          olLayer.externalStyleUrl);
 
           if (!styleUrl) {
             return $q.when();

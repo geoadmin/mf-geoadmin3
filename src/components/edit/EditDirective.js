@@ -130,6 +130,10 @@ goog.require('ga_urlutils_service');
         };
 
         scope.$on('gaGlStyleChanged', function(evt, glStyle) {
+          if (!scope.isActive) {
+            return;
+          }
+
           gaMapUtils.applyGlStyleToOlLayer(scope.layer, glStyle);
           scope.saveDebounced({}, scope.layer, glStyle);
         });

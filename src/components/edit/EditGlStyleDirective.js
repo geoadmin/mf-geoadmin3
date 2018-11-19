@@ -33,7 +33,7 @@ goog.provide('ga_editglstyle_directive');
           scope.glStyle.layers.forEach(function(layer) {
             scope.config.forEach(function(edit) {
               var regex = new RegExp(edit.regex || edit.id);
-              if (regex.test(layer.id)) {
+              if (regex.test(layer.id) || regex.test(layer['source-layer'])) {
                 if (!scope.groups[edit.id]) {
                   scope.groups[edit.id] = [];
                 }

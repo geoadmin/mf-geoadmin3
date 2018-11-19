@@ -86,12 +86,23 @@ goog.require('ga_translation_service');
           if (newVal && newVal !== oldVal) {
             scope.styleUrls = gaLayers.getLayerProperty(scope.olLayer.id,
                 'styleUrls');
-            console.log(scope.styleUrls);
           }
         });
 
-        scope.applyStyle = function(styleUrl) {
-          scope.olLayer.externalStyleUrl = styleUrl
+        scope.applyNextStyle = function(styleUrl) {
+          var currUrl = scope.olLayer.externalStyleUrl;
+          var idx = scope.styleUrls.indexOf(currUrl);
+          if (!currUrl) {
+            idx = 1;
+          } else if (idx !== -1) {
+            idx++;
+            if (idx > scope.styleUrls.length) {
+              idx = 0;
+            }
+          } else {
+            idx = 0;
+          }
+          scope.olLayer.externalStyleUrl = scope.styleUrls[idx];
           gaMvt.reload(scope.olLayer);
         };
       }

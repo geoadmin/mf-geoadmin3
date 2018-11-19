@@ -345,42 +345,40 @@ goog.require('ga_urlutils_service');
                   relief + '-custom',
                   'openmaptiles'
                 ],
-                styleUrl: 'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json',
                 styleUrls: [
                   'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json',
                   'https://raw.githubusercontent.com/openmaptiles/positron-gl-style/master/style.json',
                   'https://raw.githubusercontent.com/openmaptiles/fiord-color-gl-style/master/style.json'
                 ],
                 edits: [{
-                  id: 'landuse-residential',
+                  id: 'landuse',
+                  regex: /landuse/,
                   props: [
                     ['paint', 'fill-color', '{color}']
                   ]
                 }, {
-                  id: 'landcover_grass',
+                  id: 'landcover',
+                  regex: /landcover/,
                   props: [
                     ['paint', 'fill-color', '{color}']
                   ]
                 }, {
-                  id: 'road_major_label',
+                  id: 'labels',
+                  regex: /^(transportation_name|place)$/,
                   props: [
                     ['paint', 'text-color', '{color}'],
                     ['layout', 'text-size', '{size}']
                   ]
                 }, {
-                  id: 'place_label_city',
-                  props: [
-                    ['paint', 'text-color', '{color}'],
-                    ['layout', 'text-size', '{size}']
-                  ]
-                }, {
-                  id: 'road_path',
+                  id: 'roadtraffic',
+                  regex: /^transportation$/,
                   props: [
                     ['paint', 'line-color', '{color}'],
                     ['paint', 'line-width', '{size}']
                   ]
                 }, {
                   id: 'building',
+                  regex: /building/,
                   props: [
                     ['paint', 'line-color', '{color}'],
                     ['paint', 'line-width', '{size}']
@@ -401,7 +399,6 @@ goog.require('ga_urlutils_service');
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
                   'ch.swissnames3d.vt'
                 ],
-                styleUrl: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_current/style.json',
                 styleUrls: [
                   'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_current/style.json',
                   'http://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
@@ -658,8 +655,8 @@ goog.require('ga_urlutils_service');
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var crossOrigin = 'anonymous';
           var extent = config.extent || gaMapUtils.defaultExtent;
-          var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl,
-              opts.externalStyleUrl);
+          var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl ||
+              (config.styleUrls && config.styleUrls[0]), opts.externalStyleUrl);
           var glStyle = opts.glStyle;
 
           // The tileGridMinRes is the resolution at which the client

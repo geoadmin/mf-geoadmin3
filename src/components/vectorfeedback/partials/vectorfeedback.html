@@ -7,12 +7,9 @@
         <p class="ga-vector-feedback-text" translate>vector_feedback_description_text</p>
         <hr>
         <div class="ga-vector-feedback-item">
-            <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_select_style</h4>
-            <div class="ga-vector-feedback-item-select-wrapper">
-              <select ng-model="styleUrl" ng-options="styleUrl for styleUrl in styleUrls" ng-change="applyStyle(styleUrl)" >
-              </select>
-            </div>
+            <button class="btn btn-default" ng-click="applyNextStyle()" translate>vector_feedback_select_style</button>
         </div>
+        <hr>
         <div class="ga-vector-feedback-item">
                 <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_create_your_own</h4>
                 <div class="ga-vector-feedback-item-select-wrapper">
