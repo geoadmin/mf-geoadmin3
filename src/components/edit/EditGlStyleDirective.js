@@ -42,6 +42,7 @@ goog.provide('ga_editglstyle_directive');
             });
           });
           scope.edit = scope.config[0];
+          scope.group = scope.groups[scope.edit.id];
         });
 
         scope.useWidget = function(widget, path) {

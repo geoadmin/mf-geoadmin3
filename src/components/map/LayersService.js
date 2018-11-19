@@ -349,8 +349,7 @@ goog.require('ga_urlutils_service');
                 styleUrls: [
                   'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json',
                   'https://raw.githubusercontent.com/openmaptiles/positron-gl-style/master/style.json',
-                  'https://raw.githubusercontent.com/openmaptiles/dark-matter-gl-style/master/style.json'
-
+                  'https://raw.githubusercontent.com/openmaptiles/fiord-color-gl-style/master/style.json'
                 ],
                 edits: [{
                   id: 'landuse-residential',
@@ -403,16 +402,10 @@ goog.require('ga_urlutils_service');
                   'ch.swissnames3d.vt'
                 ],
                 styleUrl: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_current/style.json',
-                styles: [{
-                  url: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_current/style.json',
-                  editConfig: {
-                    selectableLayers: [
-                      /^settlement/, /^landuse/, /^hydrology/, /^roadtraffic/, /^labels/
-                    ]
-                  }
-                }, {
-                  url: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_current/style.json'
-                }],
+                styleUrls: [
+                  'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_current/style.json',
+                  'http://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
+                ],
                 edits: [{
                   id: 'settlement',
                   regex: /^settlement/,

@@ -4,6 +4,7 @@ goog.require('ga_background_service');
 goog.require('ga_debounce_service');
 goog.require('ga_exportglstyle_service');
 goog.require('ga_filestorage_service');
+goog.require('ga_layers_service');
 goog.require('ga_maputils_service');
 goog.require('ga_mvt_service');
 goog.require('ga_urlutils_service');
@@ -17,7 +18,8 @@ goog.require('ga_urlutils_service');
     'ga_maputils_service',
     'ga_mvt_service',
     'ga_background_service',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'ga_layers_service'
   ]);
 
   /**
@@ -25,7 +27,7 @@ goog.require('ga_urlutils_service');
    */
   module.directive('gaEdit', function($rootScope, $window, $translate, gaMvt,
       gaDebounce, gaGlStyleStorage, gaExportGlStyle, gaMapUtils,
-      gaBackground, gaUrlUtils) {
+      gaBackground, gaUrlUtils, gaLayers) {
     return {
       restrict: 'A',
       templateUrl: 'components/edit/partials/edit.html',
@@ -38,7 +40,12 @@ goog.require('ga_urlutils_service');
       link: function(scope, element, attrs, controller) {
 
         scope.isExternalStyleUrlValid = function(layer) {
-          return !layer || !layer.externalStyleUrl ||
+          if (!layer || !layer.externalStyleUrl) {
+            return;
+          }
+          var styleUrls = gaLayers.getLayerProperty(layer.id, 'styleUrls') ||
+              [];
+          return (styleUrls.indexOf(layer.externalStyleUrl) !== -1) ||
             gaUrlUtils.isPublicValid(layer.externalStyleUrl);
         }
 

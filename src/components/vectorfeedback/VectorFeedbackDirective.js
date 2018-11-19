@@ -2,20 +2,26 @@ goog.provide('ga_vector_feedback_directive');
 
 goog.require('ga_background_service');
 goog.require('ga_browsersniffer_service');
+goog.require('ga_layers_service');
+goog.require('ga_mvt_service');
 goog.require('ga_translation_service');
 
 (function() {
   var module = angular.module('ga_vector_feedback_directive', [
     'ga_browsersniffer_service',
     'ga_background_service',
-    'ga_translation_service'
+    'ga_translation_service',
+    'ga_layers_service',
+    'ga_mvt_service'
   ]);
 
   module.directive('gaVectorFeedback', function(
       $rootScope,
       gaBackground,
       gaBrowserSniffer,
-      gaLang
+      gaLang,
+      gaLayers,
+      gaMvt
   ) {
     return {
       restrict: 'A',
@@ -27,6 +33,7 @@ goog.require('ga_translation_service');
         toggle: '=gaVectorFeedbackToggle'
       },
       link: function(scope, element) {
+        scope.olLayer = null;
         scope.msie = gaBrowserSniffer.msie;
 
         element.find('#ga-feedback-vector-body').on('show.bs.collapse',
@@ -67,11 +74,26 @@ goog.require('ga_translation_service');
 
         scope.$on('gaBgChange', function(evt, bg) {
           if (bg.disableEdit) {
+            scope.olLayer = null;
             toggle(false);
           } else {
             toggle(true);
+            scope.olLayer = bg.olLayer;
           }
         });
+
+        scope.$watch('olLayer', function(newVal, oldVal) {
+          if (newVal && newVal !== oldVal) {
+            scope.styleUrls = gaLayers.getLayerProperty(scope.olLayer.id,
+                'styleUrls');
+            console.log(scope.styleUrls);
+          }
+        });
+
+        scope.applyStyle = function(styleUrl) {
+          scope.olLayer.externalStyleUrl = styleUrl
+          gaMvt.reload(scope.olLayer);
+        };
       }
     };
   });

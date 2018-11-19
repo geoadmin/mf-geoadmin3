@@ -2,12 +2,13 @@
     <span translate>{{'edit_glstyle_choose_layer'}}:</span>
     <select class="form-control"
             ng-model="edit"
+            ng-change="group = groups[edit.id]"
             ng-options="(edit.id | translate) for edit in config">
     </select>
   </label>
 
 
-  <div ng-init="group = groups[edit.id]" ng-repeat="e in edit.props" >
+  <div ng-repeat="e in edit.props">
     <label ng-if="useWidget('toggle', e)">
       <span translate>{{getTranslateId(e)}}:</span>
       <div ng-model="group[0][e[0]][e[1]]"

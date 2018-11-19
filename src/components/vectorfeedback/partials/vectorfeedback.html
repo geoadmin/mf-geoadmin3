@@ -9,9 +9,8 @@
         <div class="ga-vector-feedback-item">
             <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_select_style</h4>
             <div class="ga-vector-feedback-item-select-wrapper">
-                <select class="form-control">
-                    <option>dummy</option>
-                </select>
+              <select ng-model="styleUrl" ng-options="styleUrl for styleUrl in styleUrls" ng-change="applyStyle(styleUrl)" >
+              </select>
             </div>
         </div>
         <div class="ga-vector-feedback-item">
