@@ -8,19 +8,31 @@ goog.provide('ga_query_vector_select_directive');
       restrict: 'A',
       templateUrl: 'components/queryvector/partials/queryvectorselect.html',
       replace: true,
-      scope: { disabled: '=gaQueryVectorSelectDisabled' },
+      transclude: true,
+      scope: {
+        isEditActive: '=gaQueryVectorSelectIsEditActive'
+      },
       link: function(scope) {
         scope.options = [
           { value: false, label: 'hide' },
           { value: true, label: 'show' }
         ];
-        scope.selected = scope.options[0];
+        var deactivate = function() {
+          scope.selected = scope.options[0];
+        };
+        deactivate();
+
         scope.$watch('selected', function(newVal) {
           $rootScope.$broadcast('gaToggleInspectMode', newVal.value);
         });
+        scope.$watch('isEditActive', function(newVal) {
+          if (scope.selected.value && !newVal) {
+            deactivate();
+          }
+        });
         scope.$on('gaBgChange', function(evt, bg) {
           if (bg.disableEdit) {
-            scope.selected = scope.options[0];
+            deactivate();
           }
         });
       }

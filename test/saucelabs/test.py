@@ -104,7 +104,7 @@ if __name__ == '__main__':
         'wms': runWmsTest,
         'search': runSearchTest,
         'kml': runKmlTest,
-        'print': runPrintTest,
+        #'print': runPrintTest,
         'tooltip': runTooltipTest
     }
 

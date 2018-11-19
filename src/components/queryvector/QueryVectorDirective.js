@@ -1,10 +1,15 @@
 goog.provide('ga_query_vector_directive');
 
-(function() {
-  var module = angular.module('ga_query_vector_directive', []);
+goog.require('ga_browsersniffer_service');
 
-  var registerPointerMove = function(scope, map, overlay) {
-    return map.on('pointermove', function(evt) {
+(function() {
+  var module = angular.module('ga_query_vector_directive', [
+    'ga_browsersniffer_service'
+  ]);
+
+  var registerPointerMove = function(scope, map, overlay, mobile) {
+    var evtType = mobile ? 'singleclick' : 'pointermove';
+    return map.on(evtType, function(evt) {
       var coord = evt.coordinate;
       overlay.setPosition(coord);
       var features = map.getFeaturesAtPixel(evt.pixel, {
@@ -14,16 +19,18 @@ goog.provide('ga_query_vector_directive');
         hitTolerance: 1
       });
       if (features) {
-        var propertiesList = [];
+        var flatFeatures = [];
         features.forEach(function(feature) {
+          var flatProperties = [];
           var properties = feature.getProperties();
           var keys = Object.keys(properties);
           angular.forEach(keys, function(key) {
-            propertiesList.push([key, properties[key]]);
+            flatProperties.push([key, properties[key]]);
           });
+          flatFeatures.push(flatProperties);
         });
         scope.$apply(function() {
-          scope.propertiesList = propertiesList;
+          scope.flatFeatures = flatFeatures;
         });
       } else {
         // Hide popup if no features are found
@@ -38,7 +45,7 @@ goog.provide('ga_query_vector_directive');
     });
   };
 
-  module.directive('gaQueryVector', function($rootScope) {
+  module.directive('gaQueryVector', function($rootScope, gaBrowserSniffer) {
     return {
       restrict: 'A',
       templateUrl: 'components/queryvector/partials/queryvector.html',
@@ -47,19 +54,22 @@ goog.provide('ga_query_vector_directive');
         map: '=gaQueryVectorMap'
       },
       link: function(scope, elt) {
-        scope.propertiesList = [];
+        scope.flatFeatures = [];
 
+        var mobile = gaBrowserSniffer.mobile;
         var pointerMoveListeners = [];
         var map = scope.map;
         var popup = elt.find('div.ga-query-vector-popup');
         var overlay = new ol.Overlay({
-          element: popup.prevObject[0]
+          element: popup.prevObject[0],
+          autoPan: mobile
         });
 
         map.addOverlay(overlay);
 
         var activate = function() {
-          pointerMoveListeners.push(registerPointerMove(scope, map, overlay));
+          pointerMoveListeners.push(
+              registerPointerMove(scope, map, overlay, mobile));
           pointerMoveListeners.push(registerMouseOut(map, overlay));
         };
 

@@ -3,7 +3,9 @@
 [ga-background-selector] {
   user-select: none;
 
-  .ga-bg-layer-bt, .ga-bg-layer, .ga-bg-layer-bt-close {
+  .ga-bg-layer-bt,
+  .ga-bg-layer,
+  .ga-bg-layer-bt-close {
     bottom: unit(@bt-bottom, px);
     overflow: hidden;
     cursor: pointer;
@@ -11,32 +13,34 @@
     background: #fff data-uri('bg-layersx2.png') no-repeat 0 center;
     background-size: 275px 58px;
     border: 3px solid;
-    transition: transform .5s,  bottom .5s, width .5s;
+    transition: transform 0.5s, bottom 0.5s, width 0.5s;
 
     @media (max-width: @screen-tablet) {
       bottom: unit(@bt-bottom-sm, px);
     }
   }
 
-  .ga-bg-layer:hover, .ga-bg-highlight {
+  .ga-bg-layer:hover,
+  .ga-bg-highlight {
     border-color: @red !important;
     cursor: normal;
   }
 
-  .ga-bg-layer-bt, .ga-bg-layer {
+  .ga-bg-layer-bt,
+  .ga-bg-layer {
     z-index: 1005;
   }
 
-
   .zIndexes(@index) when (@index < @nbBgs) {
     .ga-bg-layer-@{index} {
-      z-index: 1005 - @index
+      z-index: 1005 - @index;
     }
     .zIndexes(@index + 1);
   }
   .zIndexes(1);
 
-  .ga-bg-layer-text, .ga-bg-layer-bt-text {
+  .ga-bg-layer-text,
+  .ga-bg-layer-bt-text {
     padding: 1px;
     font-size: 75%;
     text-align: center;
@@ -52,12 +56,14 @@
   }
 
   @media (max-width: @screen-tablet) {
-
-    .ga-bg-layer-text, .ga-bg-layer-bt-text, .fa-chevron-sign-right {
+    .ga-bg-layer-text,
+    .ga-bg-layer-bt-text,
+    .fa-chevron-sign-right {
       display: none;
     }
 
-    .ga-bg-layer-bt, .ga-bg-layer {
+    .ga-bg-layer-bt,
+    .ga-bg-layer {
       left: unit(@control-btns-right, px);
     }
 
@@ -75,27 +81,28 @@
       }
     }
 
-    .ga-bg-layer-bt, .ga-bg-layer {
+    .ga-bg-layer-bt,
+    .ga-bg-layer {
       width: unit(@control-btn-size - 2, px);
       height: unit(@control-btn-size - 2, px);
       border-radius: 21px;
       margin: 1px;
     }
 
-    .ga-pixelkarte-grau {
-      background-position: -118px center;
+    .ga-leichte-basiskarte,
+    .ga-omt {
+      background-position: -92px 0;
     }
 
-    .ga-pixelkarte-farbe, .ga-omt {
-      background-position: -210px center;
+    .ga-pixelkarte-farbe {
+      background-position: -185px 0;
     }
 
     &.ga-open {
-
       .transformVertical(@index) when (@index < @nbBgs) {
         @y: -49px * (@index + 1);
         .ga-bg-layer-@{index} {
-          transform:  translate3d(0, @y, 0);
+          transform: translate3d(0, @y, 0);
           -ms-transform: translateY(@y); /* IE 9*/
         }
         .transformVertical(@index + 1);
@@ -105,14 +112,14 @@
   }
 
   @media (min-width: (@screen-tablet + 1)) {
-
     .fa-chevron-sign-right {
       line-height: 64px;
       text-align: center;
       display: none;
     }
 
-    .ga-bg-layer, .ga-bg-layer-bt {
+    .ga-bg-layer,
+    .ga-bg-layer-bt {
       width: 96px;
       height: 64px;
       right: unit(@control-btns-right, px);
@@ -122,13 +129,12 @@
     .ga-pixelkarte-farbe {
       background-position: -185px 0;
     }
-
-    .ga-leichte-basiskarte {
+    .ga-leichte-basiskarte,
+    .ga-omt {
       background-position: -92px 0;
     }
 
     &.ga-open {
-
       .ga-bg-layer-bt {
         width: 20px;
         background-image: none;
@@ -145,7 +151,7 @@
       .transformHorizontal(@index) when (@index < @nbBgs) {
         @x: -25px - (101px * @index);
         .ga-bg-layer-@{index} {
-          transform:  translate3d(@x, 0, 0);
+          transform: translate3d(@x, 0, 0);
           -ms-transform: translateX(@x); /* IE 9*/
         }
         .transformHorizontal(@index + 1);
@@ -163,7 +169,8 @@
     }
   }
 
-  .fa-user-edit, .fa-user {
+  .fa-user-edit,
+  .fa-user {
     font-size: 1.6em;
   }
 
@@ -206,9 +213,7 @@
 }
 
 .ga-3d-active {
-
   [ga-background-selector] {
-
     .ga-disable3d {
       cursor: not-allowed;
       border-color: gray !important;
