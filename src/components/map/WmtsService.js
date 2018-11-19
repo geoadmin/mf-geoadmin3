@@ -214,7 +214,8 @@ goog.require('ga_urlutils_service');
               layerIdentifier, options.capabilitiesUrl);
           if (layerOptions) {
             layerOptions.opacity = options.opacity || 1;
-            layerOptions.visible = options.visible || true;
+            layerOptions.visible = options.visible === false ?
+              options.visible : true;
             return createWmtsLayer(layerOptions);
           }
         };
