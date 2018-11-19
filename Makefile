@@ -133,6 +133,8 @@ LAST_VERSION = $(call lastvalue,version)
 VERSION := $(shell if [ $(KEEP_VERSION) = true ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo '$(LAST_VERSION)'; else date '+%y%m%d%H%M'; fi)
 NAMED_BRANCH ?= true
 DEEP_CLEAN ?= false
+NVM_VERSION ?= v0.33.8
+NODE_VERSION ?= 6.13.1
 
 
 # S3 deploy variables
@@ -203,6 +205,7 @@ help:
 	@echo "Possible targets:"
 	@echo
 	@echo "- user                Build the app using user specific environment variables (see $(USER_SOURCE) file)"
+	@echo "- env                 Install NVM and set the correct node version to build the application"
 	@echo "- all                 Build the app using current environment variables"
 	@echo "- build               Build the app using current environment variables. No linting and testing."
 	@echo "- dev                 Build the app using dev environment variables (see rc_dev file). No linting and testing."
@@ -279,6 +282,13 @@ user:
 
 .PHONY: build
 build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) debug release
+
+
+.PHONY: env
+env:
+	curl -o- https://raw.githubusercontent.com/creationix/nvm/$(NVM_VERSION)/install.sh | bash ;\
+	source $(HOME)/.bashrc ;\
+	nvm install $(NODE_VERSION)
 
 .PHONY: dev
 dev:
