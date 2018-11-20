@@ -65,7 +65,7 @@ goog.require('ga_styles_service');
     };
   });
 
-  module.directive('gaMap', function($window, $timeout, gaPermalink,
+  module.directive('gaMap', function($window, gaPermalink,
       gaStyleFactory, gaBrowserSniffer, gaLayers, gaDebounce, gaOffline,
       gaMapUtils, $translate) {
     return {
@@ -78,10 +78,17 @@ goog.require('ga_styles_service');
         var map = scope.map;
         var view = map.getView();
         var isOpeningIn3d = false;
+        var isSwissPermalink = false;
 
         // set view states based on URL query string
         var queryParams = gaPermalink.getParams();
-        if ((queryParams.E && queryParams.N) ||
+
+        if (isFinite(queryParams.lon) && isFinite(queryParams.lat)) {
+          view.setCenter(
+              ol.proj.transform(
+                [parseFloat(queryParams.lon), parseFloat(queryParams.lat)],
+                'EPSG:4326', view.getProjection().getCode()));
+        } else if ((queryParams.E && queryParams.N) ||
            (queryParams.X && queryParams.Y)) {
           var easting = queryParams.Y;
           var northing = queryParams.X;
@@ -93,21 +100,40 @@ goog.require('ga_styles_service');
           easting = parseFloat(easting.replace(/,/g, '.'));
           northing = parseFloat(northing.replace(/,/g, '.'));
 
-          if (isFinite(easting) && isFinite(northing)) {
+          isSwissPermalink = isFinite(easting) && isFinite(northing);
+          if (isSwissPermalink) {
             var position = [easting, northing];
+            var lonlat = [easting, northing];
+            // Backward compatible with 21781
             if (ol.extent.containsCoordinate(
                 [420000, 30000, 900000, 350000], position)) {
-              position = ol.proj.transform([easting, northing],
+              position = ol.proj.transform(position,
                   'EPSG:21781', view.getProjection().getCode());
+              lonlat = ol.proj.transform(lonlat, 'EPSG:21781', 'EPSG:4326');
+            // Backward compatible with 2056
             } else {
               position = new ol.geom.Point(position);
               position = gaMapUtils.transformBack(position).getCoordinates();
+              lonlat = ol.proj.transform(lonlat, 'EPSG:2056', 'EPSG:4326');
             }
+            // Delete old params and replace them with lon/lat
+            gaPermalink.deleteSwissCoords();
+            gaPermalink.updateParams({
+              lon: lonlat[0],
+              lat: lonlat[1]
+            })
             view.setCenter(position);
           }
         }
+
         if (queryParams.zoom !== undefined && isFinite(queryParams.zoom)) {
-          view.setZoom(+queryParams.zoom);
+          var zoom = parseInt(queryParams.zoom);
+          // Map old permalink zooms (same for both swiss projections)
+          if (isSwissPermalink) {
+            zoom = gaMapUtils.swissZoomToMercator(zoom);
+            gaPermalink.updateParams({zoom: zoom});
+          }
+          view.setZoom(zoom);
         }
 
         if (queryParams.crosshair !== undefined) {
@@ -131,8 +157,6 @@ goog.require('ga_styles_service');
           // only update the permalink in 2d mode
           if (!scope.ol3d || !scope.ol3d.getEnabled()) {
             // remove 3d params
-            gaPermalink.deleteParam('lon');
-            gaPermalink.deleteParam('lat');
             gaPermalink.deleteParam('elevation');
             gaPermalink.deleteParam('heading');
             gaPermalink.deleteParam('pitch');
@@ -141,14 +165,14 @@ goog.require('ga_styles_service');
             // when the directive is instantiated the view may not
             // be defined yet.
             if (center && zoom !== undefined) {
-              center = new ol.geom.Point(center);
-              center = gaMapUtils.transform(center).getCoordinates();
-              var e = center[0].toFixed(2);
-              var n = center[1].toFixed(2);
-
-              gaPermalink.updateParams({E: e, N: n, zoom: zoom});
-              gaPermalink.deleteParam('X');
-              gaPermalink.deleteParam('Y');
+              center = ol.proj.transform(
+                  center, view.getProjection().getCode(), 'EPSG:4326');
+              gaPermalink.updateParams({
+                lon: center[0].toFixed(5),
+                lat: center[1].toFixed(5),
+                zoom: zoom
+              });
+              gaPermalink.deleteSwissCoords();
             }
           }
         };

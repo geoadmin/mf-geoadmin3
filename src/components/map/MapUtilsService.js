@@ -586,7 +586,7 @@ goog.require('ga_urlutils_service');
         },
 
         /**
-         * Mapping between Swiss zooms and Web Mercator zooms.
+         * Mapping between Swiss map zooms and Web Mercator zooms.
         */
         swissZoomToMercator: function(zoom) {
           var gridZoom = zoom + 14;
