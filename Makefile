@@ -134,8 +134,9 @@ VERSION := $(shell if [ $(KEEP_VERSION) = true ] && [ '$(LAST_VERSION)' != '-non
 NAMED_BRANCH ?= true
 DEEP_CLEAN ?= false
 NVM_VERSION ?= v0.33.8
+LAST_NVM_VERSION := $(call lastvalue,nvm-version)
 NODE_VERSION ?= 6.13.1
-
+LAST_NODE_VERSION := $(call lastvalue,node-version)
 
 # S3 deploy variables
 DEPLOY_TARGET ?= int
@@ -260,6 +261,8 @@ help:
 	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
 	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
+	@echo "- NVM_VERSION                 (build with: $(LAST_NVM_VERSION), current value: $(NVM_VERSION))"
+	@echo "- NODE_VERSION                (build with: $(LAST_NODE_VERSION), current value: $(NODE_VERSION))"
 	@echo "- SNAPSHOT                    (current value: $(SNAPSHOT))"
 	@echo "- DEPLOY_GIT_BRANCH           (current value: $(DEPLOY_GIT_BRANCH))"
 	@echo "- GIT_COMMIT_HASH             (current value: $(GIT_COMMIT_HASH))"
@@ -284,11 +287,22 @@ user: env
 build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) debug release
 
 
-.PHONY: env
-env:
-	curl -o- https://raw.githubusercontent.com/creationix/nvm/$(NVM_VERSION)/install.sh | bash ;\
+.PHONY: .build-artefacts/nvm-version
+.build-artefacts/nvm-version: .build-artefacts/last-nvm-version
+ifneq ($(LAST_NVM_VERSION),$(NVM_VERSION))
+	curl -o- https://raw.githubusercontent.com/creationix/nvm/$(NVM_VERSION)/install.sh | bash
+endif
+
+.PHONY: .build-artefacts/node-version
+.build-artefacts/node-version: .build-artefacts/last-node-version
+ifneq ($(LAST_NODE_VERSION),$(NODE_VERSION))
 	source $(HOME)/.bashrc ;\
 	nvm install $(NODE_VERSION)
+endif
+
+.PHONY: env
+env: .build-artefacts/nvm-version .build-artefacts/node-version
+
 
 .PHONY: dev
 dev:
@@ -939,6 +953,11 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 .build-artefacts/last-pypi-url::
 	$(call cachelastvariable,$@,$(PYPI_URL),$(LAST_PYPI_URL),pypi-url)
 
+.build-artefacts/last-nvm-version::
+	$(call cachelastvariable,$@,$(NVM_VERSION),$(LAST_NVM_VERSION),nvm-version)
+
+.build-artefacts/last-node-version::
+	$(call cachelastvariable,$@,$(NODE_VERSION),$(LAST_NODE_VERSION),node-version)
 
 .build-artefacts/openlayers:
 	git clone https://github.com/geoblocks/legacylib.git $@
