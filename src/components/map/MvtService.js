@@ -36,9 +36,9 @@ goog.require('ga_urlutils_service');
             return $q.when();
           }
 
-          var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl ||
-            (config.styleUrls && config.styleUrls[0]),
-          olLayer.externalStyleUrl);
+          // An vector layer MUST have a styleUrls property
+          var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrls[0],
+              olLayer.externalStyleUrl);
 
           if (!styleUrl) {
             return $q.when();
