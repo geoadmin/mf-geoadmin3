@@ -366,6 +366,7 @@ goog.require('ga_urlutils_service');
                   id: 'labels',
                   regex: /^(transportation_name|place)$/,
                   props: [
+                    ['layout', 'visibility', '{toggle}', 'visible', 'none'],
                     ['paint', 'text-color', '{color}'],
                     ['layout', 'text-size', '{size}']
                   ]
