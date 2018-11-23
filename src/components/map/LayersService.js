@@ -399,7 +399,7 @@ goog.require('ga_urlutils_service');
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
                   'ch.swissnames3d.vt'
                 ],
-                styleUrl: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_current/style.json',
+                styleUrl: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_v001/style.json',
                 editConfig: {
                   selectableLayers: [
                     'background', 'lakes', 'rivers',
