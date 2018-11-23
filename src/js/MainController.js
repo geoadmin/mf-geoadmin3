@@ -101,8 +101,10 @@ goog.require('ga_window_service');
 
     if (gaGlobalOptions.dev3d && gaBrowserSniffer.webgl) {
 
-      if (gaPermalink.getParams().lon !== undefined &&
-          gaPermalink.getParams().lat !== undefined) {
+      // 3d specific parameters
+      if (gaPermalink.getParams().elevation !== undefined &&
+          gaPermalink.getParams().heading !== undefined &&
+          gaPermalink.getParams().pitch !== undefined) {
         startWith3D = true;
       }
 
@@ -169,6 +171,7 @@ goog.require('ga_window_service');
     // Activate the "features" permalink manager for the map.
     gaPermalinkFeaturesManager($scope.map);
 
+    // Activate watcher for layers with real-time data
     gaRealtimeLayersManager($scope.map);
 
     // Optimize performance by hiding non-visible layers

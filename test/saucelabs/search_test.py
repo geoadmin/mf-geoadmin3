@@ -144,37 +144,37 @@ searchLocationTests = [
     {
         'searchText': u'Kanalstrasse bus rar',
         'resultTitle': u'Bus Raron, Kanalstrasse',
-        'resultLocation': u'E=26274[0-9]{2}.[0-9]{2}&N=11281[0-9]{2}.[0-9]{2}&zoom=19'
+        'resultLocation': u'lon=7.[0-9]{5}&lat=46.[0-9]{5}&zoom=[0-9]{2}'
     },
     {
         'searchText': u'p Mesolcina Bellinzona',
         'resultTitle': u'Bus Bellinzona, Piazza Mesolcina',
-        'resultLocation': u'E=27225[0-9]{2}.[0-9]{2}&N=11174[0-9]{2}.[0-9]{2}&zoom=19'
+        'resultLocation': u'lon=9.[0-9]{5}&lat=46.[0-9]{5}&zoom=[0-9]{2}'
     },
     {
         'searchText': u'bruckenmoostrasse 11 raron',
         'resultTitle': u'Brückenmoosstrasse 11 3942 Raron',
-        'resultLocation': u'E=26276[0-9]{2}.[0-9]{2}&N=11286[0-9]{2}.[0-9]{2}&zoom=17'
+        'resultLocation': u'lon=7.[0-9]{5}&lat=46.[0-9]{5}&zoom=16.7'
     },
     {
         'searchText': u'rte berne 91 1010',
         'resultTitle': u'Route de Berne 91 1010 Lausanne',
-        'resultLocation': u'E=25392[0-9]{2}.[0-9]{2}&N=11542[0-9]{2}.[0-9]{2}&zoom=17'
+        'resultLocation': u'lon=6.[0-9]{5}&lat=46.[0-9]{5}&zoom=16.7'
     },
     {
         'searchText': u'pl chateau 3 laus',
         'resultTitle': u'Place du Château 3 1005 Lausanne',
-        'resultLocation': u'E=25384[0-9]{2}.[0-9]{2}&N=11528[0-9]{2}.[0-9]{2}&zoom=17'
+        'resultLocation': u'lon=6.[0-9]{5}&lat=46.[0-9]{5}&zoom=16.7'
     },
     {
         'searchText': u'basel',
         'resultTitle': u'Basel (BS)',
-        'resultLocation': 'E=26117[0-9]{2}.[0-9]{2}&N=12671[0-9]{2}.[0-9]{2}&zoom=13'
+        'resultLocation': 'lon=7.[0-9]{5}&lat=47.[0-9]{5}&zoom=13'
     },
     {
         'searchText': u'bern',
         'resultTitle': u'Bern (BE)',
-        'resultLocation': u'E=25966[0-9]{2}.[0-9]{2}&N=12003[0-9]{2}.[0-9]{2}&zoom=13'
+        'resultLocation': u'lon=7.[0-9]{5}&lat=46.[0-9]{5}&zoom=13'
     }
 ]
 
@@ -198,13 +198,13 @@ swissSearchParamTests = [
         'searchText': u'chemin des caves 11',
         'oneResOnly': True,
         'resultTitle': u'Chemin des Caves 11 1040 Echallens',
-        'resultLocation': u'E=25383[0-9]{2}.[0-9]{2}&N=11660[0-9]{2}.[0-9]{2}&zoom=17'
+        'resultLocation': u'lon=6.[0-9]{5}&lat=46.[0-9]{5}&zoom=16.7'
     },
     {
         'searchText': u'oliviers vinzel 1',
         'oneResOnly': False,
         'resultTitle': u'Chemin des Oliviers 8 1184 Vinzel',
-        'resultLocation': u'E=25111[0-9]{2}.[0-9]{2}&N=11446[0-9]{2}.[0-9]{2}&zoom=17'
+        'resultLocation': u'lon=6.[0-9]{5}&lat=46.[0-9]{5}&zoom=16.7'
     }
 ]
 
