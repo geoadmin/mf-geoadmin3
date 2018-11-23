@@ -591,21 +591,21 @@ goog.require('ga_urlutils_service');
         swissZoomToMercator: function(zoom) {
           var gridZoom = zoom + 14;
           var mapping = {
-            14: 8,
-            15: 8,
-            16: 9,
-            17: 11,
-            18: 12,
-            19: 13,
-            20: 14,
-            21: 15,
-            22: 16,
-            23: 16,
-            24: 17,
-            25: 17,
-            26: 18,
-            27: 19,
-            28: 21
+            14: 7.35,
+            15: 7.75,
+            16: 8.75,
+            17: 10,
+            18: 11,
+            19: 12.5,
+            20: 13.5,
+            21: 14.5,
+            22: 15.5,
+            23: 15.75,
+            24: 16.7,
+            25: 17.75,
+            26: 18.75,
+            27: 20,
+            28: 21 // not defined at the moment
           };
           return mapping[gridZoom];
         }

@@ -127,11 +127,11 @@ goog.require('ga_styles_service');
         }
 
         if (queryParams.zoom !== undefined && isFinite(queryParams.zoom)) {
-          var zoom = parseInt(queryParams.zoom);
+          var zoom = parseFloat(queryParams.zoom);
           // Map old permalink zooms (same for both swiss projections)
           if (isSwissPermalink) {
             zoom = gaMapUtils.swissZoomToMercator(zoom);
-            gaPermalink.updateParams({zoom: zoom});
+            gaPermalink.updateParams({zoom: zoom.toFixed(2)});
           }
           view.setZoom(zoom);
         }
