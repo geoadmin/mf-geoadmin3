@@ -48,8 +48,9 @@ goog.require('ga_translation_service');
             })
 
         var toggle = function(show) {
+          // Do not open menu feedback panel if edit menu is active
           element.find('#ga-feedback-vector-body').collapse(
-              show ? 'show' : 'hide');
+              show && scope.toggle ? 'show' : 'hide');
         }
 
         scope.$watch('toggle', toggle);

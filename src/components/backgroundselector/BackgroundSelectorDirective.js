@@ -29,11 +29,10 @@ goog.require('ga_event_service');
         isEditActive: '=gaBackgroundSelectorIsEditActive'
       },
       link: function(scope, elt) {
-        var activeEditLayerId = '';
         scope.isBackgroundSelectorClosed = true;
         scope.backgroundLayers = [];
         scope.mobile = gaBrowserSniffer.mobile;
-        scope.activeEditLayerId = activeEditLayerId;
+        scope.activeEditLayerId = '';
 
         scope.$watch('currentLayer', function(newVal, oldVal) {
           if (oldVal !== newVal) {
@@ -41,13 +40,19 @@ goog.require('ga_event_service');
           }
         });
 
-        scope.activateBackgroundLayer = function(bgLayer) {
+        var activateBackgroundLayer = function(bgLayer) {
           if (scope.currentLayer !== bgLayer) {
             var ol3dEnabled = scope.ol3d && scope.ol3d.getEnabled();
             if (!(bgLayer.disable3d && ol3dEnabled)) {
               scope.currentLayer = bgLayer;
+              scope.activeEditLayerId =
+                  !bgLayer.disableEdit && scope.isEditActive ? bgLayer.id : '';
             }
           }
+        };
+
+        scope.activateBackgroundLayer = function(bgLayer) {
+          activateBackgroundLayer(bgLayer);
           scope.toggleMenu();
         };
 
@@ -56,12 +61,16 @@ goog.require('ga_event_service');
         };
 
         scope.toggleEdit = function(bg) {
-          activeEditLayerId = bg.id;
           $rootScope.$broadcast('gaToggleEdit', bg.olLayer);
         };
 
+        scope.toggleEditSmallScreen = function(bg) {
+          scope.activateBackgroundLayer(bg);
+          scope.toggleEdit(bg);
+        };
+
         scope.$watch('isEditActive', function(newVal) {
-          scope.activeEditLayerId = newVal ? activeEditLayerId : '';
+          scope.activeEditLayerId = newVal ? scope.currentLayer.id : '';
         });
 
         scope.getClass = function(layer) {

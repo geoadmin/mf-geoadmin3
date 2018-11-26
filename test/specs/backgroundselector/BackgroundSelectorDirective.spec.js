@@ -89,14 +89,14 @@ describe('ga_backgroundselector_directive', function() {
         element.find('.ga-bg-layer-bt').click();
         expect(element.hasClass('ga-open')).to.be(true);
 
-        element.find('.ga-leichte-basiskarte').click();
-        $rootScope.$digest();
+        element.find('.ga-leichte-basiskarte:nth-child(2)').click();
         expect(element.hasClass('ga-open')).to.be(false);
       });
 
       it('creates 5 layer bgselectors div', function() {
+        // edit button 5 layers + 2 vector layers
         var divsBg = element.find('.ga-bg-layer');
-        expect(divsBg.length).to.equal(5);
+        expect(divsBg.length).to.equal(7);
       });
     });
   });

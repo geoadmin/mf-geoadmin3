@@ -55,6 +55,27 @@
     background-color: rgba(0, 0, 0, 0.7);
   }
 
+  .ga-bg-layer-edit {
+    display: none;
+    &:hover,
+    &.active {
+      color: @red;
+    }
+  }
+
+  button.fa-user-edit {
+    top: 13px;
+    left: 1px;
+    background-color: rgba(254, 254, 254, 0.65);
+    padding-top: 2px;
+    width: 27px;
+    height: 27px;
+  }
+
+  i.fa-user-edit {
+    padding: 9px;
+  }
+
   @media (max-width: @screen-tablet) {
     .ga-bg-layer-text,
     .ga-bg-layer-bt-text,
@@ -98,6 +119,10 @@
       background-position: -185px 0;
     }
 
+    .ga-bg-layer-edit {
+      display: block;
+    }
+
     &.ga-open {
       .transformVertical(@index) when (@index < @nbBgs) {
         @y: -49px * (@index + 1);
@@ -108,6 +133,17 @@
         .transformVertical(@index + 1);
       }
       .transformVertical(0);
+      .ga-bg-layer-edit {
+        left: unit(@control-btns-right + 45, px);
+      }
+    }
+
+    button.fa-user-edit {
+      display: none;
+    }
+
+    i.fa-user-edit {
+      display: block;
     }
   }
 
@@ -158,6 +194,14 @@
       }
       .transformHorizontal(0);
     }
+
+    button.fa-user-edit {
+      display: block;
+    }
+
+    i.fa-user-edit {
+      display: none;
+    }
   }
 
   &.ga-open .ga-bg-layer-bt {
@@ -196,18 +240,9 @@
   }
 
   .fa-user-edit {
-    top: 13px;
-    left: 1px;
-    background-color: rgba(254, 254, 254, 0.65);
-    padding-top: 2px;
-    width: 27px;
-    height: 27px;
     &:hover,
     &.active {
       color: @red;
-    }
-    @media (max-width: @screen-tablet) {
-      display: none;
     }
   }
 }

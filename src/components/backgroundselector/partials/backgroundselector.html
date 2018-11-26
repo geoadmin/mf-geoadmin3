@@ -13,6 +13,15 @@
           translate-attr="{title: 'open_edit_bt_title'}">
   </button>
 </div>
+<div class="ga-bg-layer ga-bg-layer-edit ga-bg-layer-{{$index}} {{getClass(layer)}}"
+     ng-repeat="layer in backgroundLayers"
+     ng-click="toggleEditSmallScreen(layer)"
+     ng-class="{'active': layer.id === activeEditLayerId }"
+     ng-if="!layer.disableEdit"
+     translate-attr="{title: 'open_edit_bt_title'}">
+  <div class="ga-bg-layer-text" translate>{{layer.label}}</div>
+  <i class="fa fa-user-edit"></i>
+</div>
 <div class="ga-bg-layer-bt" translate-attr="{title: 'bg_toggle'}">
   <div class="ga-bg-layer-bt-text" translate>bg_chooser_label</div>
   <button class="ga-icon ga-btn fa fa-user"
