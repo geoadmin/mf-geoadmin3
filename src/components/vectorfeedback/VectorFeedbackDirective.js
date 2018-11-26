@@ -69,7 +69,8 @@ goog.require('ga_translation_service');
 
         scope.applyVectorBackground = function() {
           if (gaBackground.get()) {
-            gaBackground.setById(scope.map, 'ch.swisstopo.leichte-basiskarte.vt');
+            gaBackground.setById(scope.map,
+                'ch.swisstopo.leichte-basiskarte.vt');
           }
         };
 
