@@ -497,7 +497,7 @@
 "url_video": "Link del video",
 "vector_feedback_choose_color": "Scegliere un colore",
 "vector_feedback_choose_layer": "Scegliere un layer",
-"vector_feedback_choose_style": "Cambia stile",
+"vector_feedback_choose_style": "Choose style",
 "vector_feedback_create_your_own": "Creare una mappa personalizzata ",
 "vector_feedback_description_text": "La mappa è composta da <b>tessere vettoriali</b> invece che tessere raster. Essa è disegnata direttamente nel vostro navigatore basandosi su dati che sono scaricati una volta sola. La mappa è disegnata più velocemente e potete facilmente cambiarne lo stile. Al fine di accelerare il caricamento e lo styling della mappa, i dati sono organizzati in maniera semplice. Con solo pochi layers potete ora creare in modo rapido e semplice la vostra carta personalizzata! <b>Provateci ora.</b>",
 "vector_feedback_description_title": "Vector Tiles BASEMAP ",
