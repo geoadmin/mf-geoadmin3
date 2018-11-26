@@ -86,8 +86,8 @@ goog.require('ga_styles_service');
         if (isFinite(queryParams.lon) && isFinite(queryParams.lat)) {
           view.setCenter(
               ol.proj.transform(
-                [parseFloat(queryParams.lon), parseFloat(queryParams.lat)],
-                'EPSG:4326', view.getProjection().getCode()));
+                  [parseFloat(queryParams.lon), parseFloat(queryParams.lat)],
+                  'EPSG:4326', view.getProjection().getCode()));
         } else if ((queryParams.E && queryParams.N) ||
            (queryParams.X && queryParams.Y)) {
           var easting = queryParams.Y;
