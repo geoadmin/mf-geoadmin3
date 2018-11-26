@@ -67,9 +67,13 @@ goog.require('ga_translation_service');
           return scope.options.surveyUrl.replace('{lang}', gaLang.getNoRm());
         };
 
-        scope.applyVectorBackground = function() {
+        scope.isVectorTileLayer = function() {
           var bg = gaBackground.get();
-          if (bg && !bg.olLayer.glStyle) {
+          return !!(bg && bg.olLayer && bg.olLayer.glStyle);
+        };
+
+        scope.applyVectorBackground = function() {
+          if (!scope.isVectorTileLayer()) {
             gaBackground.setById(scope.map,
                 'ch.swisstopo.leichte-basiskarte.vt');
           }
