@@ -31,13 +31,13 @@ goog.require('ga_urlutils_service');
             return $q.when();
           }
 
-          var config = gaLayers.getLayer(olLayer.id);
-          if (!config) {
+          var styles = gaLayers.getLayerProperty(olLayer.id, 'styles');
+          if (!styles) {
             return $q.when();
           }
 
-          // An vector layer MUST have a styleUrls property
-          var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrls[0],
+          // An vector tile layer MUST have a styles property
+          var styleUrl = gaUrlUtils.resolveStyleUrl(styles[0].url,
               olLayer.externalStyleUrl);
 
           if (!styleUrl) {
@@ -54,7 +54,6 @@ goog.require('ga_urlutils_service');
               sublayer.externalStyleUrl = olLayer.externalStyleUrl;
             }
           }
-
           return gaGlStyle.get(styleUrl).then(function(glStyle) {
             gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
             return glStyle;

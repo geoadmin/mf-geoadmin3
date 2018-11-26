@@ -33,6 +33,7 @@ goog.require('ga_translation_service');
         toggle: '=gaVectorFeedbackToggle'
       },
       link: function(scope, element) {
+        var styleIdx;
         scope.olLayer = null;
         scope.msie = gaBrowserSniffer.msie;
 
@@ -84,25 +85,22 @@ goog.require('ga_translation_service');
 
         scope.$watch('olLayer', function(newVal, oldVal) {
           if (newVal && newVal !== oldVal) {
-            scope.styleUrls = gaLayers.getLayerProperty(scope.olLayer.id,
-                'styleUrls');
+            scope.styles = gaLayers.getLayerProperty(scope.olLayer.id,
+                'styles');
+            styleIdx = scope.styles.findIndex(function(style) {
+              return style.url === scope.olLayer.externalStyleUrl;
+            });
           }
         });
 
-        scope.applyNextStyle = function(styleUrl) {
-          var currUrl = scope.olLayer.externalStyleUrl;
-          var idx = scope.styleUrls.indexOf(currUrl);
-          if (!currUrl) {
-            idx = 1;
-          } else if (idx !== -1) {
-            idx++;
-            if (idx > scope.styleUrls.length) {
-              idx = 0;
-            }
+        scope.applyNextStyle = function() {
+          if (isNaN(styleIdx) || styleIdx === -1 ||
+              styleIdx >= scope.styles.length - 1) {
+            styleIdx = 0;
           } else {
-            idx = 0;
+            styleIdx++;
           }
-          scope.olLayer.externalStyleUrl = scope.styleUrls[idx];
+          scope.olLayer.externalStyleUrl = scope.styles[styleIdx].url;
           gaMvt.reload(scope.olLayer);
         };
       }

@@ -181,7 +181,7 @@ goog.require('ga_glstylestorage_service');
                   gaGlStyleStorage.getFileUrlFromAdminId(adminId).then(
                       function(styleUrl) {
                         initBg.adminId = adminId;
-                        initBg.externalStyleUrl = styleUrl
+                        initBg.externalStyleUrl = styleUrl;
                         that.set(map, initBg);
                         gaPermalink.deleteParam('glStylesAdminId');
                       }

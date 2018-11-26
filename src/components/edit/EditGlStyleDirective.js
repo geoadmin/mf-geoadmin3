@@ -58,7 +58,7 @@ goog.provide('ga_editglstyle_directive');
          */
         scope.change = function(value, group, path) {
           group.forEach(function(layer, idx) {
-            if (idx !== 0) {
+            if (idx !== 0 && layer[path[0]] && layer[path[0]][path[1]]) {
               layer[path[0]][path[1]] = value;
             }
           });

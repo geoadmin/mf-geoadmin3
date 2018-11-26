@@ -39,12 +39,18 @@ goog.require('ga_urlutils_service');
       },
       link: function(scope, element, attrs, controller) {
 
+        // Test if the url comes from the layers config or from another place.
+        // Returns true if the url comes from the layers config.
+        // Returns true if the url comes from public.XXX storage.
+        // Returns false otherwise.
         scope.isExternalStyleUrlValid = function(layer) {
           if (!layer || !layer.externalStyleUrl) {
             return true;
           }
-          var styleUrls = gaLayers.getLayerProperty(layer.id, 'styleUrls') ||
-              [];
+          var styleUrls = (gaLayers.getLayerProperty(layer.id, 'styles') ||
+              []).map(function(style) {
+            return style.url;
+          });
           return (styleUrls.indexOf(layer.externalStyleUrl) !== -1) ||
             gaUrlUtils.isPublicValid(layer.externalStyleUrl);
         }
@@ -106,7 +112,6 @@ goog.require('ga_urlutils_service');
           if ($window.confirm(str)) {
             // Delete the file on server ?
             layer.externalStyleUrl = undefined;
-            layer.useThirdPartyData = false;
             gaMvt.reload(layer);
           }
         };

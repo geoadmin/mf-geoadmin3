@@ -345,11 +345,13 @@ goog.require('ga_urlutils_service');
                   relief + '-custom',
                   'openmaptiles'
                 ],
-                styleUrls: [
-                  'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json',
-                  'https://raw.githubusercontent.com/openmaptiles/positron-gl-style/master/style.json',
-                  'https://raw.githubusercontent.com/openmaptiles/fiord-color-gl-style/master/style.json'
-                ],
+                styles: [{
+                  id: 'basic',
+                  url: 'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json'
+                }, {
+                  id: 'fiord',
+                  url: 'https://raw.githubusercontent.com/openmaptiles/fiord-color-gl-style/master/style.json'
+                }],
                 edits: [{
                   id: 'landuse',
                   regex: /landuse/,
@@ -400,10 +402,13 @@ goog.require('ga_urlutils_service');
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
                   'ch.swissnames3d.vt'
                 ],
-                styleUrls: [
-                  'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_v001/style.json',
-                  'https://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
-                ],
+                styles: [{
+                  id: 'default',
+                  url: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_v001/style.json'
+                }, {
+                  id: 'artist',
+                  url: 'https://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
+                }],
                 edits: [{
                   id: 'settlement',
                   regex: /^settlement/,
@@ -651,13 +656,13 @@ goog.require('ga_urlutils_service');
         this.getOlLayerById = function(bodId, opts) {
           opts = opts || {};
           var that = this;
-          var olLayer, p;
+          var olLayer;
           var config = layers[bodId];
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var crossOrigin = 'anonymous';
           var extent = config.extent || gaMapUtils.defaultExtent;
           var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl ||
-              (config.styleUrls && config.styleUrls[0]), opts.externalStyleUrl);
+              (config.styles && config.styles[0].url), opts.externalStyleUrl);
           var glStyle = opts.glStyle;
 
           // The tileGridMinRes is the resolution at which the client
@@ -790,7 +795,7 @@ goog.require('ga_urlutils_service');
             });
             gaDefinePropertiesForLayer(olLayer);
             if (glStyle || styleUrl) {
-              p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
+              var p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
               p.then(function(glStyle) {
                 createSubLayers(olLayer, glStyle);
               });
@@ -852,7 +857,13 @@ goog.require('ga_urlutils_service');
             });
             gaDefinePropertiesForLayer(olLayer);
             olLayer.setOpacity(config.opacity || 1);
-            var applyTilesetJson = function(olLayer, glStyle) {
+            olLayer.sourceId = config.sourceId;
+            p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
+            p.then(function(glStyle) {
+              if (!glStyle) {
+                return;
+              }
+              gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
               // Load informations from tileset.json file of a source
               var sourceConfig = glStyle.sources[olLayer.sourceId];
               sourceConfig.minZoom = config.minZoom;
@@ -860,16 +871,6 @@ goog.require('ga_urlutils_service');
               if (sourceConfig) {
                 gaMapUtils.applyGlSourceToOlLayer(olLayer, sourceConfig);
               }
-            };
-            var sourceId = config.sourceId;
-            olLayer.sourceId = sourceId;
-            p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
-            p.then(function(glStyle) {
-              if (!glStyle) {
-                return;
-              }
-              gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
-              applyTilesetJson(olLayer, glStyle);
             });
           }
 
@@ -883,7 +884,11 @@ goog.require('ga_urlutils_service');
             olLayer.geojsonUrl = config.geojsonUrl;
             olLayer.updateDelay = config.updateDelay;
             olLayer.externalStyleUrl = opts.externalStyleUrl;
-            olLayer.useThirdPartyData = !!opts.externalStyleUrl;
+            olLayer.styles = config.styles;
+            if (styleUrl) {
+              olLayer.useThirdPartyData =
+                  gaUrlUtils.isThirdPartyValid(styleUrl);
+            }
             olLayer.background = config.background || false;
             // For MVT only
             olLayer.sourceId = config.sourceId || null;
