@@ -886,7 +886,6 @@ goog.require('ga_urlutils_service');
             olLayer.externalStyleUrl = opts.externalStyleUrl;
             olLayer.styles = config.styles;
             if (styleUrl) {
-              console.log(styleUrl, gaUrlUtils.isThirdPartyValid(styleUrl));
               olLayer.useThirdPartyData =
                   gaUrlUtils.isThirdPartyValid(styleUrl);
             }

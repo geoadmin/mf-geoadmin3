@@ -206,7 +206,7 @@ describe('ga_urlutils_service', function() {
       });
     });
     describe('#isThirdPartyValid()', function() {
-      it.only('verifies third party validity', function() {
+      it('verifies third party validity', function() {
         expect(gaUrlUtils.isThirdPartyValid('http://public.geo.admin.ch')).to.be(false);
         expect(gaUrlUtils.isThirdPartyValid('http://public.geo.admin.ch/dfilghjdfigfdj')).to.be(true);
         expect(gaUrlUtils.isThirdPartyValid('http://public.bgdi.ch')).to.be(false);
