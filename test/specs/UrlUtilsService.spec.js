@@ -36,6 +36,7 @@ describe('ga_urlutils_service', function() {
 
     describe('#isAdminValid()', function() {
       it('verifies admin validity', function() {
+        expect(gaUrlUtils.isAdminValid('https://tileserver.int.bgdi.ch/styles/')).to.be(true);
         expect(gaUrlUtils.isAdminValid('http://')).to.be(false);
         expect(gaUrlUtils.isAdminValid('https://')).to.be(false);
         expect(gaUrlUtils.isAdminValid('http://heig.ch')).to.be(false);
@@ -205,7 +206,7 @@ describe('ga_urlutils_service', function() {
       });
     });
     describe('#isThirdPartyValid()', function() {
-      it('verifies third party validity', function() {
+      it.only('verifies third party validity', function() {
         expect(gaUrlUtils.isThirdPartyValid('http://public.geo.admin.ch')).to.be(false);
         expect(gaUrlUtils.isThirdPartyValid('http://public.geo.admin.ch/dfilghjdfigfdj')).to.be(true);
         expect(gaUrlUtils.isThirdPartyValid('http://public.bgdi.ch')).to.be(false);

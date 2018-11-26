@@ -54,6 +54,9 @@ goog.require('ga_urlutils_service');
               sublayer.externalStyleUrl = olLayer.externalStyleUrl;
             }
           }
+
+          olLayer.useThirdPartyData = gaUrlUtils.isThirdPartyValid(styleUrl);
+
           return gaGlStyle.get(styleUrl).then(function(glStyle) {
             gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
             return glStyle;

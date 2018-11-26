@@ -68,7 +68,8 @@ goog.require('ga_translation_service');
         };
 
         scope.applyVectorBackground = function() {
-          if (gaBackground.get()) {
+          var bg = gaBackground.get();
+          if (bg && !bg.olLayer.glStyle) {
             gaBackground.setById(scope.map,
                 'ch.swisstopo.leichte-basiskarte.vt');
           }
@@ -91,6 +92,9 @@ goog.require('ga_translation_service');
             styleIdx = scope.styles.findIndex(function(style) {
               return style.url === scope.olLayer.externalStyleUrl;
             });
+            if (styleIdx === -1) {
+              styleIdx = 0;
+            }
           }
         });
 
@@ -101,7 +105,8 @@ goog.require('ga_translation_service');
           } else {
             styleIdx++;
           }
-          scope.olLayer.externalStyleUrl = scope.styles[styleIdx].url;
+          scope.olLayer.externalStyleUrl = (!styleIdx) ? undefined :
+            scope.styles[styleIdx].url;
           gaMvt.reload(scope.olLayer);
         };
       }
