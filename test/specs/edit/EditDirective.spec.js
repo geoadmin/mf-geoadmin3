@@ -20,7 +20,12 @@ describe('ga_edit_directive', function() {
 
     var provideServices = function($provide) {
       $provide.value('gaLayers', {
-        getLayer: function() {}
+        getLayer: function() {},
+        getLayerProperty: function(id, prop) {
+          if (prop === 'styles') {
+            return [{id: 'foo', url: 'foo.ch'}, {id: 'bar', url: 'bar.ch'}];
+          }
+        }
       });
       $provide.value('gaBackground', {
         get: function() {
@@ -188,6 +193,7 @@ describe('ga_edit_directive', function() {
           expect(scope.isExternalStyleUrlValid()).to.be(true);
           expect(scope.isExternalStyleUrlValid(null)).to.be(true);
           expect(scope.isExternalStyleUrlValid({})).to.be(true);
+          expect(scope.isExternalStyleUrlValid({ externalStyleUrl: 'foo.ch' })).to.be(true);
           expect(scope.isExternalStyleUrlValid({ externalStyleUrl: 'http://public.dev.bgdi.ch/foo' })).to.be(true);
           expect(scope.isExternalStyleUrlValid({ externalStyleUrl: 'http://public.int.bgdi.ch/foo' })).to.be(true);
           expect(scope.isExternalStyleUrlValid({ externalStyleUrl: 'http://public.prod.bgdi.ch/foo' })).to.be(true);
@@ -327,19 +333,18 @@ describe('ga_edit_directive', function() {
           $window.confirm.restore();
         });
 
-        it('resets the style of the layer with the config.styleUrl value', function() {
+        it('resets the style of the layer with the config.styles[0].url value', function() {
           layer.id = 'foo';
           layer.externalStyleUrl = 'fooExt';
           var glStyle = { sprite: 'value' };
 
-          sinon.stub(gaLayers, 'getLayer').
-              withArgs('foo').returns({
-                styleUrl: '//bar'
-              }).
-              withArgs('subfoo').returns({
-                sourceId: 'fooSource',
-                styleUrl: '//bar'
-              });
+          sinon.stub(gaLayers, 'getLayerProperty').
+              withArgs('foo', 'styles').returns([
+                {id: 'bar', url: '//bar'}
+              ]).
+              withArgs('subfoo', 'styles').returns([
+                {id: 'bar', url: '//bar'}
+              ]);
           sinon.stub(gaGlStyle, 'get').withArgs('http://bar').returns($q.when(glStyle));
 
           var stub3 = sinon.stub(gaMapUtils, 'applyGlStyleToOlLayer').withArgs(layer, glStyle).returns();

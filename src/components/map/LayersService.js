@@ -306,20 +306,8 @@ goog.require('ga_urlutils_service');
                 sourceId: 'ch.bav.haltestellen-oev'
               }, {
                 serverLayerName: 'ch.swisstopo.vektorkarte.vt'
-                // minZoom: 12
               }, {
                 serverLayerName: 'OpenMapTiles'
-              }, {
-                serverLayerName: 'ch.vereinfachte-hintergrundkarte_vektorkacheln.mbtiles'
-              }, {
-                serverLayerName: 'ch.swisstopo.swisstlm3d-wanderwege.vt',
-                sourceId: 'ch.swisstopo.swisstlm3d-wanderwege'
-              }, {
-                serverLayerName: 'ch.astra.wanderland.vt',
-                sourceId: 'ch.astra.wanderland'
-              }, {
-                serverLayerName: 'ch.bak.bundesinventar-schuetzenswerte-ortsbilder.vt',
-                sourceId: 'ch.bak.bundesinventar-schuetzenswerte-ortsbilder'
               }];
               /* eslint-enable max-len */
 
@@ -345,45 +333,48 @@ goog.require('ga_urlutils_service');
                   relief + '-custom',
                   'openmaptiles'
                 ],
-                styleUrl: 'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json',
-                editConfig: {
-                  selectableLayers: [
-                    'landuse-residential',
-                    'landcover_grass',
-                    'road_major_label',
-                    'place_label_city',
-                    'road_path',
-                    'building'
-                  ],
-                  labelsFilters: [
-                    ['source-layer', '==', 'place'],
-                    ['source-layer', '==', 'transportation_name'],
-                    ['source-layer', '==', 'aerodrome_label'],
-                    ['source-layer', '==', 'poi']
-                  ],
-                  'landuse-residential': [
+                styles: [{
+                  id: 'basic',
+                  url: 'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json'
+                }, {
+                  id: 'fiord',
+                  url: 'https://raw.githubusercontent.com/openmaptiles/fiord-color-gl-style/master/style.json'
+                }],
+                edits: [{
+                  id: 'landuse',
+                  regex: /landuse/,
+                  props: [
                     ['paint', 'fill-color', '{color}']
-                  ],
-                  'landcover_grass': [
+                  ]
+                }, {
+                  id: 'landcover',
+                  regex: /landcover/,
+                  props: [
                     ['paint', 'fill-color', '{color}']
-                  ],
-                  'road_major_label': [
+                  ]
+                }, {
+                  id: 'labels',
+                  regex: /^(transportation_name|place)$/,
+                  props: [
+                    ['layout', 'visibility', '{toggle}', 'visible', 'none'],
                     ['paint', 'text-color', '{color}'],
                     ['layout', 'text-size', '{size}']
-                  ],
-                  'place_label_city': [
-                    ['paint', 'text-color', '{color}'],
-                    ['layout', 'text-size', '{size}']
-                  ],
-                  'road_path': [
+                  ]
+                }, {
+                  id: 'roadtraffic',
+                  regex: /^transportation$/,
+                  props: [
                     ['paint', 'line-color', '{color}'],
                     ['paint', 'line-width', '{size}']
-                  ],
-                  'building': [
-                    ['paint', 'fill-color', '{color}'],
-                    ['paint', 'fill-outline-color', '{color}']
                   ]
-                }
+                }, {
+                  id: 'building',
+                  regex: /building/,
+                  props: [
+                    ['paint', 'line-color', '{color}'],
+                    ['paint', 'line-width', '{size}']
+                  ]
+                }]
               };
               response.data['ch.swisstopo.leichte-basiskarte.vt'] = {
                 type: 'aggregate',
@@ -393,20 +384,56 @@ goog.require('ga_urlutils_service');
                     ' swisstopo',
                 subLayersIds: [
                   'OpenMapTiles',
-                  'ch.swisstopo.swissalti3d-reliefschattierung',
                   'ch.swisstopo.vektorkarte.vt',
                   'ch.bav.haltestellen-oev.vt',
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
                   'ch.swissnames3d.vt'
                 ],
-                styleUrl: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_v001/style.json',
-                editConfig: {
-                  selectableLayers: [
-                    'background', 'lakes', 'rivers',
-                    'build_area', 'highways', 'forests'
-                  ],
-                  labelsFilters: [['source', '==', 'ch.swissnames3d']]
-                }
+                styles: [{
+                  id: 'default',
+                  url: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_v001/style.json'
+                }, {
+                  id: 'artist',
+                  url: 'https://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
+                }],
+                edits: [{
+                  id: 'settlement',
+                  regex: /^settlement/,
+                  props: [
+                    ['paint', 'fill-color', '{color}']
+                  ]
+
+                }, {
+                  id: 'landuse',
+                  regex: /^landuse/,
+                  props: [
+                    ['paint', 'fill-color', '{color}']
+                  ]
+
+                }, {
+                  id: 'hydrology',
+                  regex: /^hydrology/,
+                  props: [
+                    ['paint', 'fill-color', '{color}']
+                  ]
+
+                }, {
+                  id: 'roadtraffic',
+                  regex: /^roadtraffic/,
+                  props: [
+                    ['paint', 'line-color', '{color}'],
+                    ['paint', 'line-width', '{size}']
+                  ]
+
+                }, {
+                  id: 'labels',
+                  regex: /^labels/,
+                  props: [
+                    ['layout', 'visibility', '{toggle}', 'visible', 'none'],
+                    ['paint', 'text-color', '{color}'],
+                    ['layout', 'text-size', '{size}']
+                  ]
+                }]
               };
             }
 
@@ -616,13 +643,13 @@ goog.require('ga_urlutils_service');
         this.getOlLayerById = function(bodId, opts) {
           opts = opts || {};
           var that = this;
-          var olLayer, p;
+          var olLayer;
           var config = layers[bodId];
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var crossOrigin = 'anonymous';
           var extent = config.extent || gaMapUtils.defaultExtent;
-          var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl,
-              opts.externalStyleUrl);
+          var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl ||
+              (config.styles && config.styles[0].url), opts.externalStyleUrl);
           var glStyle = opts.glStyle;
 
           // The tileGridMinRes is the resolution at which the client
@@ -755,7 +782,7 @@ goog.require('ga_urlutils_service');
             });
             gaDefinePropertiesForLayer(olLayer);
             if (glStyle || styleUrl) {
-              p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
+              var p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
               p.then(function(glStyle) {
                 createSubLayers(olLayer, glStyle);
               });
@@ -817,7 +844,13 @@ goog.require('ga_urlutils_service');
             });
             gaDefinePropertiesForLayer(olLayer);
             olLayer.setOpacity(config.opacity || 1);
-            var applyTilesetJson = function(olLayer, glStyle) {
+            olLayer.sourceId = config.sourceId;
+            p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
+            p.then(function(glStyle) {
+              if (!glStyle) {
+                return;
+              }
+              gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
               // Load informations from tileset.json file of a source
               var sourceConfig = glStyle.sources[olLayer.sourceId];
               sourceConfig.minZoom = config.minZoom;
@@ -825,16 +858,6 @@ goog.require('ga_urlutils_service');
               if (sourceConfig) {
                 gaMapUtils.applyGlSourceToOlLayer(olLayer, sourceConfig);
               }
-            };
-            var sourceId = config.sourceId;
-            olLayer.sourceId = sourceId;
-            p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
-            p.then(function(glStyle) {
-              if (!glStyle) {
-                return;
-              }
-              gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
-              applyTilesetJson(olLayer, glStyle);
             });
           }
 
@@ -848,7 +871,11 @@ goog.require('ga_urlutils_service');
             olLayer.geojsonUrl = config.geojsonUrl;
             olLayer.updateDelay = config.updateDelay;
             olLayer.externalStyleUrl = opts.externalStyleUrl;
-            olLayer.useThirdPartyData = !!opts.externalStyleUrl;
+            olLayer.styles = config.styles;
+            if (styleUrl) {
+              olLayer.useThirdPartyData =
+                  gaUrlUtils.isThirdPartyValid(styleUrl);
+            }
             olLayer.background = config.background || false;
             // For MVT only
             olLayer.sourceId = config.sourceId || null;

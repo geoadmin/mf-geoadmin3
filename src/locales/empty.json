@@ -485,7 +485,9 @@
   "print_request_too_large": "",
   "whatsapp_tooltip": "",
   "vector_feedback_description_title": "",
+  "vector_feedback_tryit_title": "",
   "vector_feedback_description_text": "",
+  "vector_feedback_choose_style": "",
   "vector_feedback_select_style": "",
   "vector_feedback_choose_layer": "",
   "vector_feedback_choose_color": "",
@@ -529,5 +531,11 @@
   "purple": "",
   "basis": "",
   "vector_feedback_create_your_own": "",
-  "vector_feedback_edit_map": ""
+  "vector_feedback_edit_map": "",
+  "labels": "",
+  "roadtraffic":"",
+  "hydrology": "",
+  "landuse": "",
+  "settlement": "",
+  "edit_visibility": ""
 }

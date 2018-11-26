@@ -14,7 +14,7 @@ goog.provide('ga_size_directive');
       templateUrl: 'components/edit/partials/size.html',
       scope: {
         ngModel: '=',
-        ngChange: '='
+        ngChange: '&'
       },
       link: function(scope, elt, attrs) {
         scope.step = parseFloat(attrs['gaSizeStep']) || 5;
@@ -29,7 +29,7 @@ goog.provide('ga_size_directive');
 
         scope.$watch('ngModel', function(newValue, oldValue) {
           if (newValue && newValue !== oldValue) {
-            scope.ngChange(newValue);
+            scope.ngChange();
           }
         });
 

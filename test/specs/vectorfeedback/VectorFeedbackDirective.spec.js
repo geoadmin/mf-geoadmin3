@@ -38,6 +38,11 @@ describe('ga_vector_feedback_directive', function() {
           return {};
         }
       });
+      $provide.value('gaLayers', {
+        getLayerProperty: function(id, prop) {
+          return ['foo.ch', 'bar.ch'];
+        }
+      });
     });
     inject(function($injector) {
       injectServices($injector);

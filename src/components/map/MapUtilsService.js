@@ -504,6 +504,7 @@ goog.require('ga_urlutils_service');
             layers.forEach(function(subOlLayer) {
               that.applyGlStyleToOlLayer(subOlLayer, glStyle);
             })
+            olLayer.glStyle = glStyle;
             return;
           }
 

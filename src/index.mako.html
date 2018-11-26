@@ -381,14 +381,8 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
 
         <!-- Edit -->
-        <div class="panel" ng-show="!globals.is3dActive">
-          <a id="editHeading" class="panel-heading accordion-toggle collapsed"
-             data-toggle="collapse" data-parent="#pulldown-content" href="#edit"
-             ga-collapsible-show="globals.isEditActive" accesskey="r">
-            <i class="fa fa-caret-down"></i>
-            <span translate>edit_panel_title</span>
-          </a>
-          <div id="edit" class="panel-collapse collapse">
+        <div class="panel" ng-show="globals.isEditActive">
+          <div id="edit" class="panel-collapse">
             <div class="panel-body" ng-controller="GaEditController">
               <div ga-edit
                    ga-edit-map="map"

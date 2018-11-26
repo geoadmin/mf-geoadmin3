@@ -32,7 +32,6 @@ goog.require('ga_event_service');
         var activeEditLayerId = '';
         scope.isBackgroundSelectorClosed = true;
         scope.backgroundLayers = [];
-        scope.styleUrl = false;
         scope.mobile = gaBrowserSniffer.mobile;
         scope.activeEditLayerId = activeEditLayerId;
 
@@ -47,7 +46,6 @@ goog.require('ga_event_service');
             var ol3dEnabled = scope.ol3d && scope.ol3d.getEnabled();
             if (!(bgLayer.disable3d && ol3dEnabled)) {
               scope.currentLayer = bgLayer;
-              scope.styleUrl = !!scope.currentLayer.styleUrl;
             }
           }
           scope.toggleMenu();
@@ -87,8 +85,19 @@ goog.require('ga_event_service');
         gaBackground.loadConfig().then(function() {
           scope.backgroundLayers = gaBackground.getBackgrounds();
           scope.currentLayer = gaBackground.get();
-          scope.styleUrl = !!scope.currentLayer.styleUrl;
+
+          // alert message only on long press on mobile
+          if (scope.mobile) {
+            scope.$applyAsync(function() {
+              elt.find('.fa-user').on('contextmenu', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                showWarning(scope.currentLayer);
+              });
+            });
+          }
         });
+
         scope.$on('gaBgChange', function(evt, newBg) {
           if (!scope.currentLayer || newBg.id !== scope.currentLayer.id) {
             scope.currentLayer = newBg;
@@ -96,12 +105,13 @@ goog.require('ga_event_service');
         });
 
         var showWarning = function(layer) {
-          var url = layer && layer.styleUrl ?
-            layer.styleUrl :
-            scope.currentLayer.styleUrl;
-          $window.alert($translate.instant('external_data_warning').
-              replace('--URL--', url)
-          );
+          if (layer && layer.olLayer) {
+            var url = layer.olLayer.externalStyleUrl ||
+                layer.olLayer.styles[0].url;
+            $window.alert($translate.instant('external_data_warning').
+                replace('--URL--', url)
+            );
+          }
         };
 
         scope.showWarning = function(layer) {
@@ -133,15 +143,6 @@ goog.require('ga_event_service');
           }, function(evt) {
             $(evt.target).tooltip('hide');
           }, tooltipOptions.selector);
-        }
-
-        // alert message only on long press on mobile
-        if (scope.mobile) {
-          elt.parent().find('button').on('contextmenu', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            showWarning();
-          });
         }
 
         elt.find('.ga-bg-layer-bt').on('click', scope.toggleMenu);

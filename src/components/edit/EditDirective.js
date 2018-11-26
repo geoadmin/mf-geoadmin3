@@ -4,6 +4,7 @@ goog.require('ga_background_service');
 goog.require('ga_debounce_service');
 goog.require('ga_exportglstyle_service');
 goog.require('ga_filestorage_service');
+goog.require('ga_layers_service');
 goog.require('ga_maputils_service');
 goog.require('ga_mvt_service');
 goog.require('ga_urlutils_service');
@@ -17,7 +18,8 @@ goog.require('ga_urlutils_service');
     'ga_maputils_service',
     'ga_mvt_service',
     'ga_background_service',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'ga_layers_service'
   ]);
 
   /**
@@ -25,7 +27,7 @@ goog.require('ga_urlutils_service');
    */
   module.directive('gaEdit', function($rootScope, $window, $translate, gaMvt,
       gaDebounce, gaGlStyleStorage, gaExportGlStyle, gaMapUtils,
-      gaBackground, gaUrlUtils) {
+      gaBackground, gaUrlUtils, gaLayers) {
     return {
       restrict: 'A',
       templateUrl: 'components/edit/partials/edit.html',
@@ -37,8 +39,19 @@ goog.require('ga_urlutils_service');
       },
       link: function(scope, element, attrs, controller) {
 
+        // Test if the url comes from the layers config or from another place.
+        // Returns true if the url comes from the layers config.
+        // Returns true if the url comes from public.XXX storage.
+        // Returns false otherwise.
         scope.isExternalStyleUrlValid = function(layer) {
-          return !layer || !layer.externalStyleUrl ||
+          if (!layer || !layer.externalStyleUrl) {
+            return true;
+          }
+          var styleUrls = (gaLayers.getLayerProperty(layer.id, 'styles') ||
+              []).map(function(style) {
+            return style.url;
+          });
+          return (styleUrls.indexOf(layer.externalStyleUrl) !== -1) ||
             gaUrlUtils.isPublicValid(layer.externalStyleUrl);
         }
 
@@ -99,7 +112,6 @@ goog.require('ga_urlutils_service');
           if ($window.confirm(str)) {
             // Delete the file on server ?
             layer.externalStyleUrl = undefined;
-            layer.useThirdPartyData = false;
             gaMvt.reload(layer);
           }
         };
@@ -123,6 +135,10 @@ goog.require('ga_urlutils_service');
         };
 
         scope.$on('gaGlStyleChanged', function(evt, glStyle) {
+          if (!scope.isActive) {
+            return;
+          }
+
           gaMapUtils.applyGlStyleToOlLayer(scope.layer, glStyle);
           scope.saveDebounced({}, scope.layer, glStyle);
         });
