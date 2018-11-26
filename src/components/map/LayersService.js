@@ -306,20 +306,8 @@ goog.require('ga_urlutils_service');
                 sourceId: 'ch.bav.haltestellen-oev'
               }, {
                 serverLayerName: 'ch.swisstopo.vektorkarte.vt'
-                // minZoom: 12
               }, {
                 serverLayerName: 'OpenMapTiles'
-              }, {
-                serverLayerName: 'ch.vereinfachte-hintergrundkarte_vektorkacheln.mbtiles'
-              }, {
-                serverLayerName: 'ch.swisstopo.swisstlm3d-wanderwege.vt',
-                sourceId: 'ch.swisstopo.swisstlm3d-wanderwege'
-              }, {
-                serverLayerName: 'ch.astra.wanderland.vt',
-                sourceId: 'ch.astra.wanderland'
-              }, {
-                serverLayerName: 'ch.bak.bundesinventar-schuetzenswerte-ortsbilder.vt',
-                sourceId: 'ch.bak.bundesinventar-schuetzenswerte-ortsbilder'
               }];
               /* eslint-enable max-len */
 
