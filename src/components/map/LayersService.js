@@ -297,8 +297,8 @@ goog.require('ga_urlutils_service');
                 url: 'https://free.tilehosting.com/data/v3/{z}/{x}/{y}.pbf.pict?key=Og58UhhtiiTaLVlPtPgs',
                 maxZoom: 14
               }, {
-                serverLayerName: 'ch.swissnames3d.vt',
-                sourceId: 'ch.swissnames3d'
+                serverLayerName: 'ch.swisstopo.swissnames3d.vt',
+                sourceId: 'ch.swisstopo.swissnames3d'
               }, {
                 serverLayerName: 'ch.swisstopo.amtliches-strassenverzeichnis_validiert'
               }, {
@@ -384,14 +384,15 @@ goog.require('ga_urlutils_service');
                     ' swisstopo',
                 subLayersIds: [
                   'OpenMapTiles',
+                  'ch.swisstopo.swissalti3d-reliefschattierung',
                   'ch.swisstopo.vektorkarte.vt',
                   'ch.bav.haltestellen-oev.vt',
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
-                  'ch.swissnames3d.vt'
+                  'ch.swisstopo.swissnames3d.vt'
                 ],
                 styles: [{
                   id: 'default',
-                  url: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_v001/style.json'
+                  url: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_v003/style.json'
                 }, {
                   id: 'artist',
                   url: 'https://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
