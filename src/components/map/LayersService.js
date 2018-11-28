@@ -305,7 +305,8 @@ goog.require('ga_urlutils_service');
                 serverLayerName: 'ch.bav.haltestellen-oev.vt',
                 sourceId: 'ch.bav.haltestellen-oev'
               }, {
-                serverLayerName: 'ch.swisstopo.vektorkarte.vt'
+                serverLayerName: 'ch.swisstopo.vektorkarte.vt',
+                opacity: 0.75 // Show swissalti
               }, {
                 serverLayerName: 'OpenMapTiles'
               }];
