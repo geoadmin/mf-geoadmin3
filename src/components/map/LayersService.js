@@ -391,7 +391,7 @@ goog.require('ga_urlutils_service');
                 ],
                 styles: [{
                   id: 'default',
-                  url: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_v001/style.json'
+                  url: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_v003/style.json'
                 }, {
                   id: 'artist',
                   url: 'https://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
