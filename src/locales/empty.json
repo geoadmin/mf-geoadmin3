@@ -537,5 +537,6 @@
   "hydrology": "",
   "landuse": "",
   "settlement": "",
-  "edit_visibility": ""
+  "displayed": "",
+  "hidden": ""
 }

@@ -10,12 +10,13 @@
 
   <div ng-repeat="e in edit.props">
     <label ng-if="useWidget('toggle', e)">
-      <span translate>{{getTranslateId(e)}}:</span>
       <div ng-model="group[0][e[0]][e[1]]"
            ng-change="change(group[0][e[0]][e[1]], group, e)"
            ga-toggle
            ga-toggle-on="e[3]"
-           ga-toggle-off="e[4]"/>
+           ga-toggle-off="e[4]"
+           ga-toggle-on-label="'hide'"
+           ga-toggle-off-label="'show'"/>
     </label>
     <label ng-if="useWidget('color', e)">
       <span translate>{{getTranslateId(e)}}:</span>

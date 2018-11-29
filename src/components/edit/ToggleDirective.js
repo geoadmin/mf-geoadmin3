@@ -16,12 +16,17 @@ goog.provide('ga_toggle_directive');
         ngModel: '=',
         ngChange: '&',
         gaToggleOn: '=',
-        gaToggleOff: '='
+        gaToggleOff: '=',
+        gaToggleOnLabel: '=',
+        gaToggleOffLabel: '='
       },
       link: function(scope, element, attrs) {
         scope.gaToggleOn = scope.gaToggleOn || true;
         scope.gaToggleOff = scope.gaToggleOff || false;
         scope.ngModel = scope.ngModel || false;
+        scope.text = scope.ngModel === scope.gaToggleOn ?
+          scope.gaToggleOnLabel :
+          scope.gaToggleOffLabel;
 
         scope.$watch('ngModel', function(newValue, oldValue) {
           if (newValue && newValue !== oldValue) {
@@ -30,10 +35,14 @@ goog.provide('ga_toggle_directive');
         });
 
         scope.toggle = function() {
-          scope.ngModel = (scope.ngModel === scope.gaToggleOn) ?
+          var isToggleOn = scope.ngModel === scope.gaToggleOn;
+          scope.ngModel = isToggleOn ?
             scope.gaToggleOff :
             scope.gaToggleOn;
-        }
+          scope.text = isToggleOn ?
+            scope.gaToggleOffLabel :
+            scope.gaToggleOnLabel;
+        };
       }
     };
   });

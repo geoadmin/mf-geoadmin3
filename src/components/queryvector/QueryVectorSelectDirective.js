@@ -14,8 +14,8 @@ goog.provide('ga_query_vector_select_directive');
       },
       link: function(scope) {
         scope.options = [
-          { value: false, label: 'hide' },
-          { value: true, label: 'show' }
+          { value: false, label: 'hidden' },
+          { value: true, label: 'displayed' }
         ];
         var deactivate = function() {
           scope.selected = scope.options[0];
