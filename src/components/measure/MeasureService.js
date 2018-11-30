@@ -226,7 +226,7 @@ goog.require('ga_measure_filter');
                 if (evt.target.get('overlays')) {
                   this.updateOverlays(layer, evt.target);
                 }
-              }, this);
+              }.bind(this));
             }
             this.updateOverlays(layer, feature);
           }
@@ -277,17 +277,17 @@ goog.require('ga_measure_filter');
             if (evt.element === layer) {
               this.toggleLayerOverlays(map, evt.element, false);
             }
-          }, this);
+          }.bind(this));
           map.getLayers().on('add', function(evt) {
             if (evt.element === layer) {
               this.toggleLayerOverlays(map, evt.element, true);
             }
-          }, this);
+          }.bind(this));
 
           layer.getSource().on('removefeature', function(evt) {
             this.removeOverlays(evt.feature);
             evt.feature.set('overlays', undefined);
-          }, this);
+          }.bind(this));
 
           if (!layer.displayInLayerManager) {
             return;
@@ -295,7 +295,7 @@ goog.require('ga_measure_filter');
 
           layer.on('change:visible', function(evt) {
             this.toggleLayerOverlays(map, evt.target, evt.target.getVisible());
-          }, this);
+          }.bind(this));
 
           layer.on('change:opacity', function(evt) {
             evt.target.getSource().getFeatures().forEach(function(feat) {

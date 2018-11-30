@@ -14,7 +14,7 @@ pycodestyle==2.0.0
 pyflakes==1.2.3
 python-dateutil==2.6.0
 python-gflags==3.1.0
-requests==2.11.1
+requests==2.20.0
 s3transfer==0.1.9
 sauceclient==1.0.0
 selenium==3.4.3

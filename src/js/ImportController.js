@@ -27,6 +27,7 @@ goog.require('ga_wmts_service');
 
     var servers = [
       'https://wms.geo.admin.ch/?lang=',
+      'https://wms-inspire.geo.admin.ch/?SERVICE=WMS',
       'http://owsproxy.lgl-bw.de/owsproxy/ows/WMS_Maps4BW',
       'https://www.ogd.stadt-zuerich.ch/mapproxy/wmts/1.0.0/WMTSCapabilities.xml',
       'https://wms.geo.gl.ch/',
@@ -128,6 +129,8 @@ goog.require('ga_wmts_service');
       'https://wms.geo.gr.ch/wildschutzgebiete',
       'https://wms.geo.gr.ch/richtplan',
       'https://wms.geo.gr.ch/uebersichtsplan',
+      'https://map.geo.sz.ch/main/wsgi/mapserv_proxy',
+      'http://geoshop.sz.ch/WMSSZ',
       'https://map.geo.tg.ch/proxy/geofy_chsdi3/gefaehrdung_wasser?access_key=YoW2syIQ4xe0ccJA',
       'https://map.geo.tg.ch/proxy/geofy_chsdi3/grundwasserkarte-fassung?access_key=YoW2syIQ4xe0ccJA',
       'https://map.geo.tg.ch/proxy/geofy_chsdi3/gewaesserschutzkarte-gewaesserschutzbereiche?access_key=YoW2syIQ4xe0ccJA',
@@ -181,8 +184,13 @@ goog.require('ga_wmts_service');
       'https://geodienste.ch/db/npl_nutzungsplanung/fra',
       'https://geodienste.ch/db/planerischer_gewaesserschutz/deu',
       'https://geodienste.ch/db/planerischer_gewaesserschutz/fra',
+      'https://geodienste.ch/db/npl_waldabstandslinien/deu',
+      'https://geodienste.ch/db/npl_waldabstandslinien/fra',
       'https://geodienste.ch/db/npl_waldgrenzen/deu',
       'https://geodienste.ch/db/npl_waldgrenzen/fra',
+      'https://geodienste.ch/db/waldreservate/deu',
+      'https://geodienste.ch/db/waldreservate/fra',
+      'https://geodienste.ch/db/waldreservate/ita',
       // non-SwissProjected test urls
       'http://wms.ga.admin.ch/1GE',
       'http://wms.ga.admin.ch/LG_DE_Geologie_und_Tektonik/wms',
@@ -213,6 +221,7 @@ goog.require('ga_wmts_service');
       'https://osmlab.github.io/wmts-osm/WMTSCapabilities.xml',
       'https://wxs.ign.fr/bvl2gp6za3srtz6yblo9fx8o/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetCapabilities',
       'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts/1.0.0/WMTSCapabilities.xml',
+      'https://geoserver.swissdatacube.org/geoserver/gwc/service/wmts?REQUEST=GetCapabilities',
       'https://services.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
       'https://services.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
       'https://services.arcgisonline.com/arcgis/rest/services/World_Street_Map/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',

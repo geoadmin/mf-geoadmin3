@@ -205,7 +205,8 @@ goog.require('ga_urlutils_service');
                 'ch.swisstopo.lubis-luftbilder_schwarzweiss',
                 'ch.swisstopo.lubis-luftbilder_infrarot',
                 'ch.swisstopo.lubis-terrestrische_aufnahmen',
-                'ch.swisstopo.lubis-bildstreifen'
+                'ch.swisstopo.lubis-bildstreifen',
+                'ch.swisstopo.lubis-luftbilder_schraegaufnahmen'
               ];
               angular.forEach(ids, function(id) {
                 if (response.data[id]) {
@@ -218,7 +219,7 @@ goog.require('ga_urlutils_service');
               response.data['ch.swisstopo.terrain.3d'] = {
                 type: 'terrain',
                 serverLayerName: 'ch.swisstopo.terrain.3d',
-                timestamps: ['20160115'],
+                timestamps: ['20180601'],
                 attribution: 'swisstopo',
                 attributionUrl: 'https://www.swisstopo.admin.ch/' + lang +
                     '/home.html'
@@ -231,9 +232,9 @@ goog.require('ga_urlutils_service');
                 'ch.swisstopo.vegetation.3d'
               ];
               var tilesetTs = [
-                '20170425',
-                '20170814',
-                '20170630'
+                '20180716',
+                '20180716',
+                '20180716'
               ];
               var tilesetStyle = [
                 undefined,
@@ -335,9 +336,11 @@ goog.require('ga_urlutils_service');
           var timestamp = this.getLayerTimestampFromYear(config3d,
               gaTime.get());
           var requestedLayer = config3d.serverLayerName || bodId;
+          var url = getVectorTilesUrl(requestedLayer, timestamp,
+              h2(vectorTilesSubdomains));
+          url += 'tileset.json';
           var tileset = new Cesium.Cesium3DTileset({
-            url: getVectorTilesUrl(requestedLayer, timestamp,
-                h2(vectorTilesSubdomains)),
+            url: url,
             maximumNumberOfLoadedTiles: 3
           });
           tileset.bodId = bodId;
@@ -613,6 +616,7 @@ goog.require('ga_urlutils_service');
             olLayer = new ol.layer.Vector({
               minResolution: config.minResolution,
               maxResolution: config.maxResolution,
+              opacity: config.opacity || 1,
               source: olSource,
               extent: extent
             });

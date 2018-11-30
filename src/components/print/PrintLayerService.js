@@ -286,7 +286,7 @@ goog.require('ga_urlutils_service');
       // Get the styles of the feature
       if (!styles) {
         if (feature.getStyleFunction()) {
-          styles = feature.getStyleFunction().call(feature, resolution);
+          styles = feature.getStyleFunction()(feature, resolution);
         } else if (layer.getStyleFunction()) {
           styles = layer.getStyleFunction()(feature, resolution);
         }

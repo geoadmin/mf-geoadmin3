@@ -84,7 +84,7 @@ describe('ga_layers_service', function() {
     var terrainTpl = '//3d.geo.admin.ch/1.0.0/{layer}/default/{Time}/4326';
     var wmtsLV03Tpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{Time}/4326/{z}/{y}/{x}.{format}';
     var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{Time}/4326/{z}/{x}/{y}.{format}';
-    var vectorTilesTpl = '//vectortiles100.geo.admin.ch/{layer}/{Time}/';
+    var vectorTilesTpl = '//vectortiles100.geo.admin.ch/{layer}/{Time}/tileset.json';
     var wmsTpl = '//wms{s}.geo.admin.ch/?layers={layer}&format=image%2F{format}&service=WMS&version=1.3.0&request=GetMap&crs=CRS:84&bbox={westProjected},{southProjected},{eastProjected},{northProjected}&width=512&height=512&styles=';
     var wmsTplTime = wmsTpl + '&time={Time}';
 
@@ -198,7 +198,7 @@ describe('ga_layers_service', function() {
         expect(terrain).to.eql({
           type: 'terrain',
           serverLayerName: 'ch.swisstopo.terrain.3d',
-          timestamps: ['20160115'],
+          timestamps: ['20180601'],
           attribution: 'swisstopo',
           attributionUrl: 'https://www.swisstopo.admin.ch/somelang/home.html'
         });
@@ -840,7 +840,8 @@ describe('ga_layers_service', function() {
           expect(layer instanceof ol.layer.Vector).to.be.ok();
           expect(layer.getMinResolution()).to.be(0.5);
           expect(layer.getMaxResolution()).to.be(100);
-          expect(layer.getOpacity()).to.be(1);
+          // opacity from layersConfig
+          expect(layer.getOpacity()).to.be(0.35);
           expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
           var source = layer.getSource();
           expect(source instanceof ol.source.Vector).to.be.ok();
@@ -921,7 +922,7 @@ describe('ga_layers_service', function() {
           expect(layer instanceof ol.layer.Vector).to.be.ok();
           expect(layer.getMinResolution()).to.be(0.5);
           expect(layer.getMaxResolution()).to.be(100);
-          expect(layer.getOpacity()).to.be(1);
+          expect(layer.getOpacity()).to.be(0.35);
           expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
           var source = layer.getSource();
           expect(source instanceof ol.source.Vector).to.be.ok();

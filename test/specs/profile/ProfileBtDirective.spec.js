@@ -40,7 +40,7 @@ describe('ga_profilebt_directive', function() {
     });
 
     it('has no child if feature is not valid', function() {
-      loadDirective(new ol.Feature(new ol.geom.Point()));
+      loadDirective(new ol.Feature(new ol.geom.Point([0, 0])));
       expect(elt.find('a').length).to.be(0);
       $timeout.flush();
     });
@@ -76,9 +76,9 @@ describe('ga_profilebt_directive', function() {
       it('returns true', function() {
         loadDirective();
         [
-          new ol.geom.LineString(),
-          new ol.geom.LinearRing(),
-          new ol.geom.Polygon(),
+          new ol.geom.LineString([[0, 0], [0, 1]]),
+          new ol.geom.LinearRing([0, 0], 2),
+          new ol.geom.Polygon([[[0, 0], [0, 1], [1, 1], [0, 0]]]),
           new ol.geom.MultiLineString([[[0, 0]]]),
           new ol.geom.MultiLineString([[[0, 0]], [[0, 0]]]),
           new ol.geom.GeometryCollection([new ol.geom.MultiLineString([[[0, 0]]])])
@@ -93,10 +93,9 @@ describe('ga_profilebt_directive', function() {
       it('returns false', function() {
         loadDirective();
         [
-          new ol.geom.Point(),
+          new ol.geom.Point([0, 0]),
           new ol.geom.MultiPoint([[0, 0]]),
-          new ol.geom.MultiLineString(),
-          new ol.geom.MultiPolygon(),
+          new ol.geom.MultiPolygon([]),
           new ol.geom.MultiLineString([[[0, 0]], [[1, 1]]]),
           new ol.geom.GeometryCollection([new ol.geom.Point([0, 0])])
         ].forEach(function(geom) {
