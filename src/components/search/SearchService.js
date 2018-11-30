@@ -173,18 +173,19 @@ goog.require('ga_reframe_service');
             left > right ? left : right,
             right < left ? right : left
           ];
-
+          var pos95 = ol.proj.transform(position, 'EPSG:2056',
+              gaGlobalOptions.defaultEpsg);
           // Match LV95
-          if (ol.extent.containsCoordinate(extent, position)) {
-            return $q.when(roundCoordinates(position));
+          if (ol.extent.containsCoordinate(extent, pos95)) {
+            return $q.when(roundCoordinates(pos95));
           }
 
+          var pos03 = ol.proj.transform(position, 'EPSG:21781',
+              gaGlobalOptions.defaultEpsg);
           // Match LV03 coordinates
-          return gaReframe.get03To95(position).then(function(position) {
-            if (ol.extent.containsCoordinate(extent, position)) {
-              return roundCoordinates(position);
-            }
-          });
+          if (ol.extent.containsCoordinate(extent, pos03)) {
+            return $q.when(roundCoordinates(pos03));
+          }
         }
         return $q.when();
       };

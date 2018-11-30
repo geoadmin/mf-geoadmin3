@@ -98,28 +98,12 @@ describe('ga_search_service', function() {
     });
 
     describe('supports EPSG:21781 coordinate', function() {
-      var coord21781 = [600123.12, 200345];
-      var coord2056 = [2600123.12, 1200345];
-      var ticino21781 = [722204.89, 76225.24];
-      var ticino2056 = [2722205.003, 1076223.702];
-      var spy, spy2, stub;
-
-      beforeEach(function() {
-        stub = sinon.stub(gaReframe, 'get03To95');
-        spy = stub.withArgs(coord21781).resolves(coord2056);
-        spy2 = stub.withArgs(ticino21781).resolves(ticino2056);
-      });
-      afterEach(function() {
-        stub.resetHistory();
-        spy.resetHistory();
-        spy2.resetHistory();
-
-      });
+      var coord1 = [2600123.12, 1200345];
+      var coord2 = [2722204.89, 1076225.24];
 
       it('separated by space', function(done) {
         getCoordinate(extent, '600123.12 200345').then(function(position) {
-          expect(position).to.eql(coord2056);
-          expect(spy.callCount).to.eql(1);
+          expect(position).to.eql(coord1);
           done();
         });
         $rootScope.$digest();
@@ -127,8 +111,8 @@ describe('ga_search_service', function() {
 
       it('separated by space (northing < 100 000)', function(done) {
         getCoordinate(extent, '722204.89 76225.24').then(function(position) {
-          expect(position).to.eql([2722205.003, 1076223.702]);
-          expect(spy2.callCount).to.eql(1);
+
+          expect(position).to.eql(coord2);
           done();
         });
         $rootScope.$digest();
@@ -136,8 +120,7 @@ describe('ga_search_service', function() {
 
       it('separated by space (northing < 100 000, northing before easting)', function(done) {
         getCoordinate(extent, '76225.24 722204.89').then(function(position) {
-          expect(position).to.eql([2722205.003, 1076223.702]);
-          expect(spy2.callCount).to.eql(1);
+          expect(position).to.eql(coord2);
           done();
         });
         $rootScope.$digest();
@@ -145,8 +128,7 @@ describe('ga_search_service', function() {
 
       it('separated by comma', function(done) {
         getCoordinate(extent, '600123.12,200345').then(function(position) {
-          expect(position).to.eql(coord2056);
-          expect(spy.callCount).to.eql(1);
+          expect(position).to.eql(coord1);
           done();
         });
         $rootScope.$digest();
@@ -154,16 +136,14 @@ describe('ga_search_service', function() {
 
       it('separated by slash [n]', function(done) {
         getCoordinate(extent, '600123.12/200345').then(function(position) {
-          expect(position).to.eql(coord2056);
-          expect(spy.callCount).to.eql(1);
+          expect(position).to.eql(coord1);
           done();
         });
         $rootScope.$digest();
       });
       it('separated by slash and spaces [n]', function(done) {
         getCoordinate(extent, '600123.12 / 200345').then(function(position) {
-          expect(position).to.eql(coord2056);
-          expect(spy.callCount).to.eql(1);
+          expect(position).to.eql(coord1);
           done();
         });
         $rootScope.$digest();
@@ -171,8 +151,7 @@ describe('ga_search_service', function() {
 
       it('thousands separated by apostrophe', function(done) {
         getCoordinate(extent, '600\'123.12 200\'345').then(function(position) {
-          expect(position).to.eql(coord2056);
-          expect(spy.callCount).to.eql(1);
+          expect(position).to.eql(coord1);
           done();
         });
         $rootScope.$digest();
@@ -180,18 +159,7 @@ describe('ga_search_service', function() {
 
       it('separated by spaces', function(done) {
         getCoordinate(extent, '600 123.12 200 345').then(function(position) {
-          expect(position).to.eql(coord2056);
-          expect(spy.callCount).to.eql(1);
-          done();
-        });
-        $rootScope.$digest();
-      });
-
-      it('returns undefined if outside EPSG:2056 extent', function(done) {
-        gaReframe.get03To95.restore();
-        spy = sinon.stub(gaReframe, 'get03To95').withArgs([600000, 20000]).resolves([2600000, 1020000]);
-        getCoordinate(extent, '600000 20000').then(function(position) {
-          expect(position).to.be(undefined);
+          expect(position).to.eql(coord1);
           done();
         });
         $rootScope.$digest();
