@@ -108,7 +108,6 @@ describe('ga_main_controller', function() {
         expect(scope.deviceSwitcherHref).to.be(gaPermalink.getHref({mobile: 'true'}));
         var g = scope.globals;
         expect(g.dev3d).to.be(false);
-        expect(g.pegman).to.be(false);
         expect(g.searchFocused).to.be(true);
         expect(g.homescreen).to.be(false);
         expect(g.webkit).to.be(true);
@@ -129,12 +128,13 @@ describe('ga_main_controller', function() {
         expect(g.isPrintActive).to.be(false);
         expect(g.isSwipeActive).to.be(false);
         expect(g.is3dActive).to.be(false);
+        expect(g.isFpsActive).to.be(false);
         expect(g.hostIsProd).to.be(undefined);
       });
 
       it('set map properties', function() {
         var spy = sinon.spy(ol, 'Map');
-        var spy2 = sinon.spy(ol.control, 'defaults');
+        var spy2 = sinon.spy(ol.control.util, 'defaults');
         var spy3 = sinon.spy(ol.interaction, 'defaults');
         loadController();
         expect(scope.map).to.be.an(ol.Map);

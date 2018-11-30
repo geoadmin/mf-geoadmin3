@@ -50,7 +50,7 @@ goog.require('ga_file_service');
               matches = servers;
             } else {
               servers.forEach(function(server) {
-                if (server.url.includes(q)) {
+                if (server.url.indexOf(q) !== -1) {
                   matches.push(server);
                 }
               });

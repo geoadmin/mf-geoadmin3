@@ -46,6 +46,13 @@ function FPS(scene, scope) {
   };
 
   /**
+   * Slow down the mouse movement
+   * @const {number}
+   * @private
+   */
+  this.mouseMovementLag_ = 0.1;
+
+  /**
    * @type {number}
    * @private
    */
@@ -248,11 +255,11 @@ FPS.prototype.setActive = function(active, optPosition) {
 FPS.prototype.onMouseMove_ = function(event) {
   if (this.getPointerLock()) {
     if (event.movementX && event.movementY) {
-      this.movementX_ += event.movementX;
-      this.movementY_ += event.movementY;
+      this.movementX_ += event.movementX * this.mouseMovementLag_;
+      this.movementY_ += event.movementY * this.mouseMovementLag_;
     } else if (event.mozMovementX && event.mozMovementY) {
-      this.movementX_ += event.mozMovementX;
-      this.movementY_ += event.mozMovementY;
+      this.movementX_ += event.mozMovementX * this.mouseMovementLag_;
+      this.movementY_ += event.mozMovementY * this.mouseMovementLag_;
     }
   }
 };
@@ -372,12 +379,13 @@ FPS.prototype.flyModeTick_ = function(delta) {
     roll += 0.02;
   }
   if (this.buttons_.forward) {
-    pitch -= 0.02;
+    pitch -= 0.02 * Math.cos(roll);
+    heading -= 0.02 * Math.sin(roll);
   }
   if (this.buttons_.backward) {
-    pitch += 0.02;
+    pitch += 0.02 * Math.cos(roll);
+    heading += 0.02 * Math.sin(roll);
   }
-
   // rotate the plane on roll
   if (roll < Cesium.Math.PI) {
     // turn right
