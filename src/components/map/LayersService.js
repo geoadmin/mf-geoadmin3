@@ -307,9 +307,9 @@ goog.require('ga_urlutils_service');
               }, {
                 serverLayerName: 'ch.swisstopo.vektorkarte.vt',
                 opacity: 0.75 // Show swissalti
-              }, {
+              }/*, {
                 serverLayerName: 'OpenMapTiles'
-              }];
+              } */];
               /* eslint-enable max-len */
 
               vts.forEach(function(vt) {
@@ -325,58 +325,6 @@ goog.require('ga_urlutils_service');
                 response.data[relief + '-custom'] = response.data[relief];
                 response.data[relief + '-custom'].opacity = 0.4;
               }
-              response.data['omt.vt'] = {
-                type: 'aggregate',
-                background: true,
-                serverLayerName: 'omt.vt',
-                attribution: 'OpenMapTiles, OpenStreetMap contributors',
-                subLayersIds: [
-                  relief + '-custom',
-                  'openmaptiles'
-                ],
-                styles: [{
-                  id: 'basic',
-                  url: 'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json'
-                }, {
-                  id: 'fiord',
-                  url: 'https://raw.githubusercontent.com/openmaptiles/fiord-color-gl-style/master/style.json'
-                }],
-                edits: [{
-                  id: 'landuse',
-                  regex: /landuse/,
-                  props: [
-                    ['paint', 'fill-color', '{color}']
-                  ]
-                }, {
-                  id: 'landcover',
-                  regex: /landcover/,
-                  props: [
-                    ['paint', 'fill-color', '{color}']
-                  ]
-                }, {
-                  id: 'labels',
-                  regex: /^(transportation_name|place)$/,
-                  props: [
-                    ['layout', 'visibility', '{toggle}', 'visible', 'none'],
-                    ['paint', 'text-color', '{color}'],
-                    ['layout', 'text-size', '{size}']
-                  ]
-                }, {
-                  id: 'roadtraffic',
-                  regex: /^transportation$/,
-                  props: [
-                    ['paint', 'line-color', '{color}'],
-                    ['paint', 'line-width', '{size}']
-                  ]
-                }, {
-                  id: 'building',
-                  regex: /building/,
-                  props: [
-                    ['paint', 'line-color', '{color}'],
-                    ['paint', 'line-width', '{size}']
-                  ]
-                }]
-              };
               response.data['ch.swisstopo.leichte-basiskarte.vt'] = {
                 type: 'aggregate',
                 background: true,
@@ -384,7 +332,7 @@ goog.require('ga_urlutils_service');
                 attribution: 'OpenMapTiles, OpenStreetMap contributors,' +
                     ' swisstopo',
                 subLayersIds: [
-                  'OpenMapTiles',
+                  // 'OpenMapTiles',
                   'ch.swisstopo.swissalti3d-reliefschattierung',
                   'ch.swisstopo.vektorkarte.vt',
                   'ch.bav.haltestellen-oev.vt',
