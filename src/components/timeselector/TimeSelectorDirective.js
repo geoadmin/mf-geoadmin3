@@ -110,6 +110,7 @@ goog.require('ga_time_service');
       controller: 'GaTimeSelectorDirectiveController',
       link: function(scope, elt, attrs, controller) {
         scope.years = [];
+        scope.delayNextYear = 1000;
         var promise;
 
         // Copy from slider
@@ -136,7 +137,7 @@ goog.require('ga_time_service');
           var nextYear = nextValue(scope.currentYear, scope.availableYears);
           if (nextYear !== scope.currentYear) {
             scope.currentYear = nextYear;
-            promise = $timeout(applyNextYear, 1000);
+            promise = $timeout(applyNextYear, scope.delayNextYear);
           } else {
             scope.stop();
           }
@@ -202,6 +203,7 @@ goog.require('ga_time_service');
         }, function(active) {
           scope.stop();
           scope.is3dActive = active;
+          scope.delayNextYear = active ? 5000 : 1000;
           elt.toggle(scope.isActive);
         });
 
