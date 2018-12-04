@@ -133,7 +133,7 @@ LAST_VERSION = $(call lastvalue,version)
 VERSION := $(shell if [ $(KEEP_VERSION) = true ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo '$(LAST_VERSION)'; else date '+%y%m%d%H%M'; fi)
 NAMED_BRANCH ?= true
 DEEP_CLEAN ?= false
-NVM_VERSION ?= v0.33.8
+NVM_VERSION ?= v10.14.1
 LAST_NVM_VERSION := $(call lastvalue,nvm-version)
 NODE_VERSION ?= 6.13.1
 LAST_NODE_VERSION := $(call lastvalue,node-version)
