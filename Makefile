@@ -133,7 +133,10 @@ LAST_VERSION = $(call lastvalue,version)
 VERSION := $(shell if [ $(KEEP_VERSION) = true ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo '$(LAST_VERSION)'; else date '+%y%m%d%H%M'; fi)
 NAMED_BRANCH ?= true
 DEEP_CLEAN ?= false
-
+NVM_VERSION ?= v0.33.8
+LAST_NVM_VERSION := $(call lastvalue,nvm-version)
+NODE_VERSION ?= 6.13.1
+LAST_NODE_VERSION := $(call lastvalue,node-version)
 
 # S3 deploy variables
 DEPLOY_TARGET ?= int
@@ -203,6 +206,7 @@ help:
 	@echo "Possible targets:"
 	@echo
 	@echo "- user                Build the app using user specific environment variables (see $(USER_SOURCE) file)"
+	@echo "- env                 Install NVM and set the correct node version to build the application"
 	@echo "- all                 Build the app using current environment variables"
 	@echo "- build               Build the app using current environment variables. No linting and testing."
 	@echo "- dev                 Build the app using dev environment variables (see rc_dev file). No linting and testing."
@@ -257,6 +261,8 @@ help:
 	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
 	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
+	@echo "- NVM_VERSION                 (build with: $(LAST_NVM_VERSION), current value: $(NVM_VERSION))"
+	@echo "- NODE_VERSION                (build with: $(LAST_NODE_VERSION), current value: $(NODE_VERSION))"
 	@echo "- SNAPSHOT                    (current value: $(SNAPSHOT))"
 	@echo "- DEPLOY_GIT_BRANCH           (current value: $(DEPLOY_GIT_BRANCH))"
 	@echo "- GIT_COMMIT_HASH             (current value: $(GIT_COMMIT_HASH))"
@@ -274,11 +280,29 @@ showVariables:
 all: showVariables lint debug release apache testdebug testrelease fixrights
 
 .PHONY: user
-user:
+user: env
 	source $(USER_SOURCE) && make all
 
 .PHONY: build
 build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) debug release
+
+
+.PHONY: .build-artefacts/nvm-version
+.build-artefacts/nvm-version: .build-artefacts/last-nvm-version
+ifneq ($(LAST_NVM_VERSION),$(NVM_VERSION))
+	curl -o- https://raw.githubusercontent.com/creationix/nvm/$(NVM_VERSION)/install.sh | bash
+endif
+
+.PHONY: .build-artefacts/node-version
+.build-artefacts/node-version: .build-artefacts/last-node-version
+ifneq ($(LAST_NODE_VERSION),$(NODE_VERSION))
+	source $(HOME)/.bashrc ;\
+	nvm install $(NODE_VERSION)
+endif
+
+.PHONY: env
+env: .build-artefacts/nvm-version .build-artefacts/node-version
+	source $(HOME)/.bashrc && nvm use $(NODE_VERSION)
 
 .PHONY: dev
 dev:
@@ -929,6 +953,11 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 .build-artefacts/last-pypi-url::
 	$(call cachelastvariable,$@,$(PYPI_URL),$(LAST_PYPI_URL),pypi-url)
 
+.build-artefacts/last-nvm-version::
+	$(call cachelastvariable,$@,$(NVM_VERSION),$(LAST_NVM_VERSION),nvm-version)
+
+.build-artefacts/last-node-version::
+	$(call cachelastvariable,$@,$(NODE_VERSION),$(LAST_NODE_VERSION),node-version)
 
 .build-artefacts/openlayers:
 	git clone https://github.com/geoblocks/legacylib.git $@
