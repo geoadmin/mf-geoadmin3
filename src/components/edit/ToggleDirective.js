@@ -24,6 +24,7 @@ goog.provide('ga_toggle_directive');
         scope.gaToggleOn = scope.gaToggleOn || true;
         scope.gaToggleOff = scope.gaToggleOff || false;
         scope.ngModel = scope.ngModel || false;
+
         scope.text = scope.ngModel === scope.gaToggleOn ?
           scope.gaToggleOnLabel :
           scope.gaToggleOffLabel;

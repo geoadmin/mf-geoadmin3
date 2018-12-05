@@ -5,29 +5,30 @@ describe('ga_background_service', function() {
     var gaBg, gaPermalink, gaTopic, deferGaLayers, deferGaTopic, map, $rootScope,
       gaPermalinkMock, $rootScopeMock, $q, gaGlStyleStorage;
 
-    var nbBgs = 3;
-    var firstBgId = 'omt.vt';
+    // Only vector bg and void layer are always added to the map
+    var nbBgs = 2;
+    var firstBgId = 'ch.swisstopo.leichte-basiskarte.vt';
     var topic1 = {
-      'defaultBackground': 'bg1',
+      'defaultBackground': 'ch.swisstopo.leichte-basiskarte.vt',
       'backgroundLayers': [
-        'bg2',
-        'bg1'
+        'ch.swisstopo.leichte-basiskarte.vt',
+        'voidLayer'
       ]
     };
     var topic2 = {
-      'defaultBackground': 'bg3',
+      'defaultBackground': 'ch.swisstopo.leichte-basiskarte.vt',
       'backgroundLayers': [
-        'bg1',
-        'bg2',
-        'bg3'
+        'ch.swisstopo.leichte-basiskarte.vt',
+        'ch.swisstopo.pixelkarte-farbe',
+        'ch.swisstopo.swissimage'
       ]
     };
     var topicVoidLayer = {
       'defaultBackground': 'voidLayer',
       'backgroundLayers': [
-        'bg1',
-        'bg2',
-        'bg3'
+        'ch.swisstopo.leichte-basiskarte.vt',
+        'ch.swisstopo.pixelkarte-farbe',
+        'ch.swisstopo.swissimage'
       ]
     };
     var topicPlConfig = {
@@ -40,7 +41,7 @@ describe('ga_background_service', function() {
       ]
     };
     var topic4 = {
-      'defaultBackground': 'omt.vt',
+      'defaultBackground': 'ch.swisstopo.leichte-basiskarte.vt',
       'backgroundLayers': [
         'ch.swisstopo.pixelkarte-farbe'
       ]
@@ -143,12 +144,13 @@ describe('ga_background_service', function() {
 
         it('initializes the list of background layers', function(done) {
           gaBg.init(map).then(function() {
+            // no bg in topic we only add basis and voidLayer
             var bgs = gaBg.getBackgrounds();
             expect(bgs.length).to.equal(nbBgs);
             expect(bgs[0].id).to.equal(firstBgId);
-            expect(bgs[0].label).to.equal('OpenMapTiles');
-            expect(bgs[1].id).to.equal('ch.swisstopo.leichte-basiskarte.vt');
-            expect(bgs[1].label).to.equal('basis');
+            expect(bgs[0].label).to.equal('basis');
+            expect(bgs[1].id).to.equal('voidLayer');
+            expect(bgs[1].label).to.equal('void_layer');
             done();
           });
           deferGaTopic.resolve();
@@ -298,14 +300,14 @@ describe('ga_background_service', function() {
 
             $rootScope.$broadcast('gaTopicChange', topic2);
             expect(gaBg.get().id).to.equal(firstBgId);
-            expect(gaBg.getBackgrounds().length).to.equal(nbBgs);
+            expect(gaBg.getBackgrounds().length).to.equal(4);
             expect(layers.getLength()).to.equal(1);
 
             $rootScope.$broadcast('gaTopicChange', topicVoidLayer);
+            // default layer is always vt layer
             expect(gaBg.get().id).to.equal(firstBgId);
-            expect(gaBg.getBackgrounds().length).to.equal(nbBgs);
+            expect(gaBg.getBackgrounds().length).to.equal(4);
             expect(layers.getLength()).to.equal(1);
-
             done();
           });
           deferGaTopic.resolve();
@@ -388,8 +390,8 @@ describe('ga_background_service', function() {
       });
 
       it('switch bgLayer from vt to wmts then to vt', function() {
-        var dfltBg = gaBg.get(); // omt.vt
-        var bg = gaBg.getBackgrounds()[2]; // pixelkartefarbe
+        var dfltBg = gaBg.get(); // ch.swisstopo.leichte-basiskarte.vt
+        var bg = gaBg.getBackgrounds()[1]; // pixelkartefarbe
         expect(dfltBg.id).to.not.equal(bg.id);
         var bcast = $rootScopeMock.expects('$broadcast').
             withArgs('gaBgChange', bg).once();
@@ -414,7 +416,7 @@ describe('ga_background_service', function() {
         gaPermalink.deleteParam.restore();
 
         // from wmts to vt with externalStyleUrl
-        id = 'omt.vt';
+        id = 'ch.swisstopo.leichte-basiskarte.vt';
         bg = gaBg.getBackgrounds()[0];
         bg.olLayer.externalStyleUrl = 'foo';
         bcast = $rootScopeMock.expects('$broadcast').

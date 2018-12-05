@@ -30,7 +30,8 @@ goog.require('ga_translation_service');
       scope: {
         map: '=gaVectorFeedbackMap',
         options: '=gaVectorFeedbackOptions',
-        toggle: '=gaVectorFeedbackToggle'
+        toggle: '=gaVectorFeedbackToggle',
+        ol3d: '=gaVectorFeedbackOl3d'
       },
       link: function(scope, element) {
         var styleIdx;

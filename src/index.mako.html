@@ -192,7 +192,8 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div ga-vector-feedback
            ga-vector-feedback-map="::map"
            ga-vector-feedback-options="::options"
-           ga-vector-feedback-toggle="!globals.isEditActive">
+           ga-vector-feedback-toggle="!globals.isEditActive"
+           ga-vector-feedback-ol3d="::ol3d">
       </div>
     </div>
     <div tabindex="1" ga-map ga-map-map="map" ga-map-ol3d="::ol3d">
@@ -220,7 +221,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div ga-geolocation ga-geolocation-map="::map" ga-geolocation-ol3d="::ol3d"></div>
   % endif
         <div id="zoomButtons"></div>
-        <div ga-tilt3d ng-if="false"></div>
+        <div ga-tilt3d ng-if="globals.dev3d"></div>
   % if device != 'embed':
         <div ga-time-selector-bt ga-time-selector-bt-map="map"></div>
   % endif
