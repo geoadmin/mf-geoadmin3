@@ -81,7 +81,6 @@ goog.require('ga_window_service');
         }),
         logo: false
       });
-      window.map = map;
       return map;
     };
 
