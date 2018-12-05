@@ -207,7 +207,8 @@ goog.require('ga_urlutils_service');
                 'ch.swisstopo.lubis-luftbilder_schwarzweiss',
                 'ch.swisstopo.lubis-luftbilder_infrarot',
                 'ch.swisstopo.lubis-terrestrische_aufnahmen',
-                'ch.swisstopo.lubis-bildstreifen'
+                'ch.swisstopo.lubis-bildstreifen',
+                'ch.swisstopo.lubis-luftbilder_schraegaufnahmen'
               ];
               angular.forEach(ids, function(id) {
                 if (response.data[id]) {
