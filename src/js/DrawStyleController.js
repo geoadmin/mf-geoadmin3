@@ -213,8 +213,8 @@ goog.require('ga_styles_service');
           regex: getDefaultIconsRegex,
           icons: iconsCategory0
         }, {
-          id: 'babs',
-          label: 'babs',
+          id: 'modify_icon_category_babs_label',
+          label: 'modify_icon_category_babs_label',
           useColorOption: false,
           nbIcons: 160,
           type: 'img'
