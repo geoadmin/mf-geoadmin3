@@ -293,7 +293,7 @@ a `vectortile` layer:
   serverLayerName: 'ch.swisstopo.vektorkarte.vt',
   styles: [{
     id: 'default',
-    url: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_v001/style.json'
+    url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v003/style.json'
   }, {
     id: 'artist',
     url: 'https://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
@@ -337,7 +337,7 @@ or an `aggregate` layer:
   ],
   styles: [{
     id: 'default',
-    url: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_v001/style.json'
+    url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v003/style.json'
   }, {
     id: 'artist',
     url: 'https://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'

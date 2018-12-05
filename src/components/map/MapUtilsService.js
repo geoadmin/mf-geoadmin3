@@ -530,7 +530,7 @@ goog.require('ga_urlutils_service');
         // This function creates  an ol source and set it to the layer from the
         // sourceConfig of a glStyle.
         // This function set also the extent and minZoom, maxZoom infos.
-        // ex: https://tileserver.dev.bgdi.ch/data/ch.astra.wanderland_1539077150.json
+        // ex: https://vectortiles.geo.admin.ch/mbtiles/ch.astra.wanderland_1539077150.json
         applyGlSourceToOlLayer: function(olLayer, sourceConfig) {
           return $http.get(sourceConfig.url, {
             cache: true
