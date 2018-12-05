@@ -15,7 +15,7 @@ goog.require('ga_urlutils_service');
   ]);
 
   /**
-   * Service used by the gaVector service to have KML layers configuration.
+   * Service containing utilities function for vector tile layer.
    */
   module.provider('gaMvt', function() {
 
@@ -24,7 +24,7 @@ goog.require('ga_urlutils_service');
 
       var Mvt = function() {
 
-        // This function will load the gl style of a layer.
+        // This function will apply the gl style associated to a layer.
         this.reload = function(olLayer) {
           if (!olLayer || (!(olLayer instanceof ol.layer.Group) &&
               !olLayer.sourceId)) {

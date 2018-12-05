@@ -12,8 +12,7 @@ goog.require('ga_glstyle_service');
   ]);
 
   /**
-   * This service can be used to export a kml file based on some
-   * features on an ol map
+   * This service can be used to export a mapbox-gl style file.
    */
   module.provider('gaExportGlStyle', function() {
     this.$get = function($translate, $window, $document, $http, $q,
