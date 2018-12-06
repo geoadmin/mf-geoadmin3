@@ -306,7 +306,7 @@ goog.require('ga_urlutils_service');
                 serverLayerName: 'ch.bav.haltestellen-oev.vt',
                 sourceId: 'ch.bav.haltestellen-oev'
               }, {
-                serverLayerName: 'ch.swisstopo.vektorkarte.vt',
+                serverLayerName: 'ch.swisstopo.vektorkarte_aggregated.vt',
                 opacity: 0.75 // Show swissalti
               }, {
                 serverLayerName: 'OpenMapTiles'
@@ -335,7 +335,7 @@ goog.require('ga_urlutils_service');
                 subLayersIds: [
                   'OpenMapTiles',
                   'ch.swisstopo.swissalti3d-reliefschattierung',
-                  'ch.swisstopo.vektorkarte.vt',
+                  'ch.swisstopo.vektorkarte_aggregated.vt',
                   'ch.bav.haltestellen-oev.vt',
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
                   'ch.swisstopo.swissnames3d.vt'
