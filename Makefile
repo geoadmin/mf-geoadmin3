@@ -136,7 +136,10 @@ RESOLUTIONS = '[156543.03392812, 78271.51696392, 39135.75848196, 19567.879241008
 TILEGRID_ORIGIN = '[-20037508.3428, 20037508.3428]'
 TILEGRID_RESOLUTIONS = '[156543.03392812, 78271.51696392, 39135.75848196, 19567.879241008, 9783.939620504, 4891.969810252, 2445.984905126, 1222.9924525616, 611.4962262808, 305.7481131404, 152.87405657048, 76.43702828524, 38.21851414248, 19.109257071296, 9.554628535648, 4.777314267824, 2.388657133912, 1.194328566956, 0.597164283478, 0.2985821417404, 0.1492910708702]'
 TILEGRID_WMTS_DFLT_MIN_RES ?= 0.5
-
+OFFLINE_MIN_ZOOM ?= 8    # First zoom from which we save the 15km2, before we save tiles on the entire DEFAULT_EXTENT.
+OFFLINE_MIN_ZOOM_NON_BGLAYER ?= 12 # For non bg layer we only save the 15km2 from this zoom level. Must be a even number because e load only 1 level on 2.
+OFFLINE_MAX_ZOOM ?= 16   # Last zoom saved
+OFFLINE_Z_OFFSET ?= 0   # Difference between map zoom levekl and layer zoom lvel to request. In swiss coordinate it's 14 for stop layer.
 
 # Build variables
 KEEP_VERSION ?= false
@@ -711,6 +714,10 @@ define buildpage
 		--var "default_extent"="$(DEFAULT_EXTENT)" \
 		--var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 		--var "default_level_of_detail"="$(DEFAULT_LEVEL_OF_DETAIL)" \
+		--var "offline_min_zoom"="$(OFFLINE_MIN_ZOOM)" \
+		--var "offline_min_zoom_nonbglayer"="$(OFFLINE_MIN_ZOOM_NON_BGLAYER)" \
+		--var "offline_max_zoom"="$(OFFLINE_MAX_ZOOM)" \
+		--var "offline_z_offset"="$(OFFLINE_Z_OFFSET)" \
 		--var "resolutions"="$(RESOLUTIONS)" \
 		--var "level_of_details"="$(LEVEL_OF_DETAILS)" \
 		--var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \

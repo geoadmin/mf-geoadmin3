@@ -858,7 +858,13 @@ itemscope itemtype="http://schema.org/WebApplication"
           lods: JSON.parse(${level_of_details}),
           tileGridOrigin: JSON.parse(${tilegrid_origin}),
           tileGridResolutions: JSON.parse(${tilegrid_resolutions}),
-          tileGridWmtsDfltMinRes: ${tilegrid_wmts_dflt_min_res}
+          tileGridWmtsDfltMinRes: ${tilegrid_wmts_dflt_min_res},
+
+          // Offline parameters
+		      offlineMinZoom: ${offline_min_zoom},
+		      offlineMinZoomNonbglayer: ${offline_min_zoom_nonbglayer},
+		      offlineMaxZoom: ${offline_max_zoom},
+		      offlineZOffset: ${offline_z_offset}
         });
       })();
 
