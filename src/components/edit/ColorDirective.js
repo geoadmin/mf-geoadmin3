@@ -18,8 +18,25 @@ goog.provide('ga_color_directive');
       },
       link: function(scope, element, attrs) {
 
+        var setCurrentValue = function(newValue) {
+          if (!scope.currentValue) {
+            var foundColor = false;
+            for (var i = 0; i < scope.colors.length; i++) {
+              var c = scope.colors[i];
+              if (c.value === newValue) {
+                foundColor = true
+                break;
+              }
+            }
+            if (!foundColor) {
+              scope.currentValue = newValue;
+            }
+          }
+        }
+
         scope.$watch('ngModel', function(newValue, oldValue) {
           if (newValue && newValue !== oldValue) {
+            setCurrentValue(newValue);
             scope.ngChange();
           }
         });
@@ -49,6 +66,7 @@ goog.provide('ga_color_directive');
           { value: 'black', label: 'black' },
           { value: 'white', label: 'white' }
         ];
+        setCurrentValue(scope.ngModel);
       }
     };
   });

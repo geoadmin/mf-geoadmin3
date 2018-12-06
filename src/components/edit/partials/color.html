@@ -1,7 +1,7 @@
 <select class="form-control"
         ng-show="!useInputColorSelector"
         ng-model="ngModel">
-    <option ng-value="toHexString(ngModel)">{{ngModel}}</option>
+    <option ng-show="currentValue" ng-value="currentValue" translate>{{'current_value'}}</option>
     <option ng-repeat="c in colors" ng-value="toHexString(c.value)" translate>{{c.label}}</option>
 </select>
 <input type="color"

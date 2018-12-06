@@ -542,5 +542,6 @@
   "landuse": "",
   "settlement": "",
   "displayed": "",
-  "hidden": ""
+  "hidden": "",
+  "current_value": ""
 }
