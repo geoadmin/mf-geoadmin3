@@ -308,9 +308,9 @@ goog.require('ga_urlutils_service');
               }, {
                 serverLayerName: 'ch.swisstopo.vektorkarte.vt',
                 opacity: 0.75 // Show swissalti
-              }/*, {
+              }, {
                 serverLayerName: 'OpenMapTiles'
-              } */];
+              }];
               /* eslint-enable max-len */
 
               vts.forEach(function(vt) {
@@ -333,7 +333,7 @@ goog.require('ga_urlutils_service');
                 attribution: 'OpenMapTiles, OpenStreetMap contributors,' +
                     ' swisstopo',
                 subLayersIds: [
-                  // 'OpenMapTiles',
+                  'OpenMapTiles',
                   'ch.swisstopo.swissalti3d-reliefschattierung',
                   'ch.swisstopo.vektorkarte.vt',
                   'ch.bav.haltestellen-oev.vt',
