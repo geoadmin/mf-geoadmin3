@@ -334,7 +334,6 @@ goog.require('ga_urlutils_service');
                     ' swisstopo',
                 subLayersIds: [
                   'OpenMapTiles',
-                  'ch.swisstopo.swissalti3d-reliefschattierung',
                   'ch.swisstopo.vektorkarte.vt',
                   'ch.bav.haltestellen-oev.vt',
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
