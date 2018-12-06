@@ -124,6 +124,7 @@
   font-size: 15px;
   font-weight: 300;
   width: 60%;
+
   @media (max-width: @screen-sm), (max-width: @screen-xs) {
     font-size: 12px;
     width: 100%;
@@ -133,8 +134,21 @@
 .ga-vector-feedback-item-select-wrapper {
   width: 40%;
   float: right;
+
   @media (max-width: @screen-sm), (max-width: @screen-xs) {
     width: 100%;
+  }
+
+  &.ga-select-style {
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    a {
+      width: 40%;
+      margin: 5px;
+    }
   }
 }
 

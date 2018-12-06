@@ -104,15 +104,21 @@ goog.require('ga_translation_service');
           }
         });
 
-        scope.applyNextStyle = function() {
-          if (isNaN(styleIdx) || styleIdx === -1 ||
-              styleIdx >= scope.styles.length - 1) {
-            styleIdx = 0;
+        scope.applyNextStyle = function(style, idx) {
+          if (style) {
+            scope.olLayer.externalStyleUrl = idx ? style.url : undefined;
           } else {
-            styleIdx++;
+            // Apply the next style from the styles array
+            if (isNaN(styleIdx) || styleIdx === -1 ||
+                styleIdx >= scope.styles.length - 1) {
+              styleIdx = 0;
+            } else {
+              styleIdx++;
+            }
+            scope.olLayer.externalStyleUrl = (!styleIdx) ? undefined :
+              scope.styles[styleIdx].url;
+
           }
-          scope.olLayer.externalStyleUrl = (!styleIdx) ? undefined :
-            scope.styles[styleIdx].url;
           gaMvt.reload(scope.olLayer);
         };
       }

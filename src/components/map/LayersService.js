@@ -344,8 +344,14 @@ goog.require('ga_urlutils_service');
                   id: 'default',
                   url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v004/style.json'
                 }, {
-                  id: 'artist',
-                  url: 'https://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
+                  id: 'color',
+                  url: 'https://gist.githubusercontent.com/davidoesch/6223bb04dee87172e93e98d1e7c0bbc3/raw/e75972dfc0edcb572b7efe0525b4de49957f634b/styles-ch.swisstopo.basiskarte.vt_v004.json'
+                }, {
+                  id: 'grey',
+                  url: 'https://gist.githubusercontent.com/davidoesch/b531a80d89f982cd38fcebaf8f23a0fe/raw/684d357d72e10e7b1eb20994ad84e930e5d50d6f/styles-ch.swisstopo.leichte-basiskarte-grey.vt_v004.json'
+                }, {
+                  id: 'lsd',
+                  url: 'https://gist.githubusercontent.com/davidoesch/f6a23f30c653e1dac5709dcd9be92b29/raw/b09cec946961adb34f619bc59a11e71d04af5438/styles-ch.swisstopo.basiskarte-lsd.vt_v004.json'
                 }],
                 edits: [{
                   id: 'settlement',
