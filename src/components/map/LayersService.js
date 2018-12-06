@@ -308,9 +308,9 @@ goog.require('ga_urlutils_service');
               }, {
                 serverLayerName: 'ch.swisstopo.vektorkarte.vt',
                 opacity: 0.75 // Show swissalti
-              }/*, {
+              }, {
                 serverLayerName: 'OpenMapTiles'
-              } */];
+              }];
               /* eslint-enable max-len */
 
               vts.forEach(function(vt) {
@@ -333,7 +333,7 @@ goog.require('ga_urlutils_service');
                 attribution: 'OpenMapTiles, OpenStreetMap contributors,' +
                     ' swisstopo',
                 subLayersIds: [
-                  // 'OpenMapTiles',
+                  'OpenMapTiles',
                   'ch.swisstopo.swissalti3d-reliefschattierung',
                   'ch.swisstopo.vektorkarte.vt',
                   'ch.bav.haltestellen-oev.vt',
@@ -342,7 +342,7 @@ goog.require('ga_urlutils_service');
                 ],
                 styles: [{
                   id: 'default',
-                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v003/style.json'
+                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v004/style.json'
                 }, {
                   id: 'artist',
                   url: 'https://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
