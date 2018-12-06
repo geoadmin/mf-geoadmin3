@@ -290,7 +290,7 @@
 "modify_existing_vertex_linepolygon": "Cliquer pour supprimer le point (2 points min.)<br/>Cliquer puis bouger le curseur pour déplacer le point ",
 "modify_existing_vertex_marker": "Cliquer puis bouger le curseur pour déplacer le symbole",
 "modify_existing_vertex_measure": "Cliquer pour supprimer le point (2 points min.)<br/>Cliquer puis bouger le curseur pour déplacer le point",
-"modify_icon_category_default_label": "défaut / Signes conventionnels civils",
+"modify_icon_category_default_label": "défaut",
 "modify_icon_category_label": "Signes",
 "modify_icon_label": "Signes",
 "modify_icon_size_label": "Taille",
