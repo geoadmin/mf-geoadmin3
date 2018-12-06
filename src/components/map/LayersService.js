@@ -330,8 +330,10 @@ goog.require('ga_urlutils_service');
                 type: 'aggregate',
                 background: true,
                 serverLayerName: 'ch.swisstopo.leichte-basiskarte.vt',
-                attribution: 'OpenMapTiles, OpenStreetMap contributors,' +
-                    ' swisstopo',
+                attribution: '' +
+                  '<a target="_blank" href="https://openmaptiles.org/">OpenMapTiles</a>, ' +
+                  '<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, ' +
+                  '<a target="_blank" href="https://www.swisstopo.admin.ch/' + lang + '/home.html">swisstopo</a>',
                 subLayersIds: [
                   'OpenMapTiles',
                   'ch.swisstopo.swissalti3d-reliefschattierung',
