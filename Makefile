@@ -173,18 +173,16 @@ AUTOPEP8_CMD=${PYTHON_VENV}/bin/autopep8
 CLOSURE_COMPILER=node_modules/google-closure-compiler/compiler.jar
 
 # Node executables
-FORCE_NODE_VERSION=source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION)
 NODE_BIN=node_modules/.bin
-# Node version is forced at every step to ensure that the default OS version is not used
+# Node version must be forced at every step to ensure that the default OS version is not used
 # as it was causing many syntax errors in node modules (default debian jessie version is 5.9.x, most modules need > 6.x.x)
-LESSC=${FORCE_NODE_VERSION} && ${NODE_BIN}/lessc
-KARMA=${FORCE_NODE_VERSION} && ${NODE_BIN}/karma
-PHANTOMJS=${FORCE_NODE_VERSION} && ${NODE_BIN}/phantomjs
-NG_ANNOTATE=${FORCE_NODE_VERSION} && ${NODE_BIN}/ng-annotate
-BABEL=${FORCE_NODE_VERSION} && ${NODE_BIN}/babel
-POSTCSS=${FORCE_NODE_VERSION} && ${NODE_BIN}/postcss
-HTMLMIN_CMD=${FORCE_NODE_VERSION} && ${NODE_BIN}/html-minifier --minify-css --minify-js --collapse-whitespace --process-conditional-comments --remove-comments --custom-attr-collapse /ng-class/ -o
-ES_LINT=${FORCE_NODE_VERSION} && ${NODE_BIN}/eslint
+LESSC=${NODE_BIN}/lessc
+KARMA=${NODE_BIN}/karma
+PHANTOMJS=${NODE_BIN}/phantomjs
+NG_ANNOTATE=${NODE_BIN}/ng-annotate
+POSTCSS=${NODE_BIN}/postcss
+HTMLMIN_CMD=${NODE_BIN}/html-minifier --minify-css --minify-js --collapse-whitespace --process-conditional-comments --remove-comments --custom-attr-collapse /ng-class/ -o
+ES_LINT=${NODE_BIN}/eslint
 
 MAKO_LAST_VARIABLES = .build-artefacts/last-api-url \
 	    .build-artefacts/last-alti-url \
@@ -305,7 +303,7 @@ endif
 
 .PHONY: env
 env: guard-NVM_DIR .build-artefacts/nvm-version .build-artefacts/node-version
-	source $(HOME)/.bashrc && ${FORCE_NODE_VERSION}
+	source $(HOME)/.bashrc && source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION)
 
 .PHONY: dev
 dev:
@@ -354,23 +352,23 @@ debug: showVariables \
 
 .PHONY: lint
 lint: .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) linttest lintpy
-	${ES_LINT} $(SRC_JS_FILES) --fix
+	source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION) && ${ES_LINT} $(SRC_JS_FILES) --fix
 
 linttest: .build-artefacts/devlibs .build-artefacts/requirements.timestamp
-	${ES_LINT} test/specs/ --fix
+	source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION) && ${ES_LINT} test/specs/ --fix
 
 lintpy: .build-artefacts/requirements.timestamp ${FLAKE8_CMD} ${PYTHON_FILES}
 	${AUTOPEP8_CMD} --in-place --aggressive --aggressive --verbose --max-line-lengt=110 $(PYTHON_FILES)
 
 .PHONY: testdebug
 testdebug: .build-artefacts/app-whitespace.js test/karma-conf-debug.js
-	PHANTOMJS_BIN="${PHANTOMJS}" ${KARMA} start test/karma-conf-debug.js;
+	source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION) && PHANTOMJS_BIN="${PHANTOMJS}" ${KARMA} start test/karma-conf-debug.js;
 	cat .build-artefacts/coverage/coverage.txt; echo;
 	echo "A complete report is available at ${E2E_TARGETURL}${APACHE_BASE_PATH}/src/coverage/index.html"
 
 .PHONY: testrelease
 testrelease: prd/lib/build.js test/karma-conf-release.js .build-artefacts/devlibs
-	PHANTOMJS_BIN="${PHANTOMJS}" ${KARMA} start test/karma-conf-release.js;
+	source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION) && PHANTOMJS_BIN="${PHANTOMJS}" ${KARMA} start test/karma-conf-release.js;
 
 .PHONY: teste2e
 teste2e: saucelabs
@@ -635,8 +633,8 @@ prd/lib/build.js: src/lib/polyfill.min.js \
 
 prd/style/app.css: $(SRC_LESS_FILES)
 	mkdir -p $(dir $@)
-	${LESSC} $(LESS_PARAMETERS) --clean-css src/style/app.less $@
-	${POSTCSS} $@ --use autoprefixer --replace --no-map
+	source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION) && ${LESSC} $(LESS_PARAMETERS) --clean-css src/style/app.less $@
+	source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION) && ${POSTCSS} $@ --use autoprefixer --replace --no-map
 
 prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 			${MAKO_CMD} \
@@ -737,25 +735,25 @@ prd/index.html: src/index.mako.html \
 	    ${MAKO_LAST_VARIABLES_PROD}
 	mkdir -p $(dir $@)
 	$(call buildpage,desktop,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
-	${HTMLMIN_CMD} $@ $@
+	source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION) && ${HTMLMIN_CMD} $@ $@
 
 prd/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    ${MAKO_LAST_VARIABLES_PROD}
 	mkdir -p $(dir $@)
 	$(call buildpage,mobile,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
-	${HTMLMIN_CMD} $@ $@
+	source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION) && ${HTMLMIN_CMD} $@ $@
 
 prd/embed.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    ${MAKO_LAST_VARIABLES_PROD}
 	mkdir -p $(dir $@)
 	$(call buildpage,embed,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
-	${HTMLMIN_CMD} $@ $@
+	source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION) && ${HTMLMIN_CMD} $@ $@
 
 prd/404.html: src/404.html
 	mkdir -p $(dir $@)
-	${HTMLMIN_CMD} $@ $<
+	source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION) && ${HTMLMIN_CMD} $@ $<
 
 prd/img/: src/img/*
 	mkdir -p $@
@@ -783,8 +781,8 @@ src/deps.js: $(SRC_JS_FILES) ${PYTHON_VENV}
 	rm -f tmp
 
 src/style/app.css: $(SRC_LESS_FILES)
-	${LESSC} $(LESS_PARAMETERS) src/style/app.less $@
-	${POSTCSS} $@ --use autoprefixer --replace --no-map
+	source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION) && ${LESSC} $(LESS_PARAMETERS) src/style/app.less $@
+	source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION) && ${POSTCSS} $@ --use autoprefixer --replace --no-map
 
 src/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
@@ -873,7 +871,7 @@ libs:
 $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js): \
 	    .build-artefacts/annotated/%.js: %.js .build-artefacts/devlibs
 	mkdir -p $(dir $@)
-	${NG_ANNOTATE} -a $< > $@
+	source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION) && ${NG_ANNOTATE} -a $< > $@
 
 .build-artefacts/app-whitespace.js: .build-artefacts/js-files
 	java -jar ${CLOSURE_COMPILER} $(SRC_JS_FILES_FOR_COMPILER) \
