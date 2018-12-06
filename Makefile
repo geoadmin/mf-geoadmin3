@@ -291,7 +291,7 @@ showVariables:
 all: showVariables lint debug release apache testdebug testrelease fixrights
 
 .PHONY: user
-user: env
+user:
 	source $(USER_SOURCE) && make all
 
 .PHONY: build
