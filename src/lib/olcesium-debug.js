@@ -6,6 +6,15 @@
    */
 
   /**
+   * @return {?} Any return.
+   */
+  function abstract() {
+    return /** @type {?} */ ((function() {
+      throw new Error('Unimplemented abstract method.');
+    })());
+  }
+
+  /**
    * Inherit the prototype methods from one constructor into another.
    *
    * Usage:
@@ -46,11 +55,12 @@
    * as a strictly increasing sequence. Adapted from goog.getUid.
    *
    * @param {Object} obj The object to get the unique ID for.
-   * @return {number} The unique ID for the object.
+   * @return {string} The unique ID for the object.
+   * @function module:ol.getUid
    * @api
    */
   function getUid(obj) {
-    return obj.ol_uid || (obj.ol_uid = ++uidCounter_);
+    return obj.ol_uid || (obj.ol_uid = String(++uidCounter_));
   }
 
   /**
@@ -112,13 +122,13 @@
   var CollectionEventType = {
     /**
      * Triggered when an item is added to the collection.
-     * @event module:ol/Collection~CollectionEvent#add
+     * @event module:ol/Collection.CollectionEvent#add
      * @api
      */
     ADD: 'add',
     /**
      * Triggered when an item is removed from the collection.
-     * @event module:ol/Collection~CollectionEvent#remove
+     * @event module:ol/Collection.CollectionEvent#remove
      * @api
      */
     REMOVE: 'remove'
@@ -134,7 +144,7 @@
   var ObjectEventType = {
     /**
      * Triggered when a property is changed.
-     * @event module:ol/Object~ObjectEvent#propertychange
+     * @event module:ol/Object.ObjectEvent#propertychange
      * @api
      */
     PROPERTYCHANGE: 'propertychange'
@@ -238,7 +248,7 @@
    * Listener function. This function is called with an event object as argument.
    * When the function returns `false`, event propagation will stop.
    *
-   * @typedef {function(Event|import("./events/Event.js").default): (void|boolean)} ListenerFunction
+   * @typedef {function((Event|import("./events/Event.js").default)): (void|boolean)} ListenerFunction
    * @api
    */
 
@@ -335,7 +345,8 @@
     var listeners = getListeners(target, type);
     if (listeners) {
       for (var i = 0, ii = listeners.length; i < ii; ++i) {
-        target.removeEventListener(type, listeners[i].boundListener);
+        /** @type {import("./events/Target.js").default} */ (target).
+          removeEventListener(type, listeners[i].boundListener);
         clear(listeners[i]);
       }
       listeners.length = 0;
@@ -385,7 +396,8 @@
         target: target,
         type: type
       });
-      target.addEventListener(type, bindListener(listenerObj));
+      /** @type {import("./events/Target.js").default} */ (target).
+        addEventListener(type, bindListener(listenerObj));
       listeners.push(listenerObj);
     }
 
@@ -453,7 +465,8 @@
    */
   function unlistenByKey(key) {
     if (key && key.target) {
-      key.target.removeEventListener(key.type, key.boundListener);
+      /** @type {import("./events/Target.js").default} */ (key.target).
+        removeEventListener(key.type, key.boundListener);
       var listeners = getListeners(key.target, key.type);
       if (listeners) {
         var i = 'deleteIndex' in key ? key.deleteIndex : listeners.indexOf(key);
@@ -1221,6 +1234,8 @@
    * Collection; they trigger events on the appropriate object, not on the
    * Collection as a whole.
    *
+   * @fires CollectionEvent
+   *
    * @template T
    * @api
    */
@@ -1324,7 +1339,7 @@
      * @api
      */
     Collection.prototype.getLength = function getLength () {
-      return /** @type {number} */ (this.get(Property.LENGTH));
+      return this.get(Property.LENGTH);
     };
 
     /**
@@ -1460,6 +1475,558 @@
     if (!assertion) {
       throw new AssertionError(errorCode);
     }
+  }
+
+  /**
+   * @module ol/Feature
+   */
+
+  /**
+   * @typedef {typeof Feature|typeof import("./render/Feature.js").default} FeatureClass
+   */
+
+  /**
+   * @typedef {Feature|import("./render/Feature.js").default} FeatureLike
+   */
+
+  /**
+   * @classdesc
+   * A vector object for geographic features with a geometry and other
+   * attribute properties, similar to the features in vector file formats like
+   * GeoJSON.
+   *
+   * Features can be styled individually with `setStyle`; otherwise they use the
+   * style of their vector layer.
+   *
+   * Note that attribute properties are set as {@link module:ol/Object} properties on
+   * the feature object, so they are observable, and have get/set accessors.
+   *
+   * Typically, a feature has a single geometry property. You can set the
+   * geometry using the `setGeometry` method and get it with `getGeometry`.
+   * It is possible to store more than one geometry on a feature using attribute
+   * properties. By default, the geometry used for rendering is identified by
+   * the property name `geometry`. If you want to use another geometry property
+   * for rendering, use the `setGeometryName` method to change the attribute
+   * property associated with the geometry for the feature.  For example:
+   *
+   * ```js
+   *
+   * import Feature from 'ol/Feature';
+   * import Polygon from 'ol/geom/Polygon';
+   * import Point from 'ol/geom/Point';
+   *
+   * var feature = new Feature({
+   *   geometry: new Polygon(polyCoords),
+   *   labelPoint: new Point(labelCoords),
+   *   name: 'My Polygon'
+   * });
+   *
+   * // get the polygon geometry
+   * var poly = feature.getGeometry();
+   *
+   * // Render the feature as a point using the coordinates from labelPoint
+   * feature.setGeometryName('labelPoint');
+   *
+   * // get the point geometry
+   * var point = feature.getGeometry();
+   * ```
+   *
+   * @api
+   */
+  var Feature = /*@__PURE__*/(function (BaseObject$$1) {
+    function Feature(opt_geometryOrProperties) {
+
+      BaseObject$$1.call(this);
+
+      /**
+       * @private
+       * @type {number|string|undefined}
+       */
+      this.id_ = undefined;
+
+      /**
+       * @type {string}
+       * @private
+       */
+      this.geometryName_ = 'geometry';
+
+      /**
+       * User provided style.
+       * @private
+       * @type {import("./style/Style.js").StyleLike}
+       */
+      this.style_ = null;
+
+      /**
+       * @private
+       * @type {import("./style/Style.js").StyleFunction|undefined}
+       */
+      this.styleFunction_ = undefined;
+
+      /**
+       * @private
+       * @type {?import("./events.js").EventsKey}
+       */
+      this.geometryChangeKey_ = null;
+
+      listen(
+        this, getChangeEventType(this.geometryName_),
+        this.handleGeometryChanged_, this);
+
+      if (opt_geometryOrProperties) {
+        if (typeof /** @type {?} */ (opt_geometryOrProperties).getSimplifiedGeometry === 'function') {
+          var geometry = /** @type {import("./geom/Geometry.js").default} */ (opt_geometryOrProperties);
+          this.setGeometry(geometry);
+        } else {
+          /** @type {Object<string, *>} */
+          var properties = opt_geometryOrProperties;
+          this.setProperties(properties);
+        }
+      }
+    }
+
+    if ( BaseObject$$1 ) Feature.__proto__ = BaseObject$$1;
+    Feature.prototype = Object.create( BaseObject$$1 && BaseObject$$1.prototype );
+    Feature.prototype.constructor = Feature;
+
+    /**
+     * Clone this feature. If the original feature has a geometry it
+     * is also cloned. The feature id is not set in the clone.
+     * @return {Feature} The clone.
+     * @api
+     */
+    Feature.prototype.clone = function clone () {
+      var clone = new Feature(this.getProperties());
+      clone.setGeometryName(this.getGeometryName());
+      var geometry = this.getGeometry();
+      if (geometry) {
+        clone.setGeometry(geometry.clone());
+      }
+      var style = this.getStyle();
+      if (style) {
+        clone.setStyle(style);
+      }
+      return clone;
+    };
+
+    /**
+     * Get the feature's default geometry.  A feature may have any number of named
+     * geometries.  The "default" geometry (the one that is rendered by default) is
+     * set when calling {@link module:ol/Feature~Feature#setGeometry}.
+     * @return {import("./geom/Geometry.js").default|undefined} The default geometry for the feature.
+     * @api
+     * @observable
+     */
+    Feature.prototype.getGeometry = function getGeometry () {
+      return (
+        /** @type {import("./geom/Geometry.js").default|undefined} */ (this.get(this.geometryName_))
+      );
+    };
+
+    /**
+     * Get the feature identifier.  This is a stable identifier for the feature and
+     * is either set when reading data from a remote source or set explicitly by
+     * calling {@link module:ol/Feature~Feature#setId}.
+     * @return {number|string|undefined} Id.
+     * @api
+     */
+    Feature.prototype.getId = function getId () {
+      return this.id_;
+    };
+
+    /**
+     * Get the name of the feature's default geometry.  By default, the default
+     * geometry is named `geometry`.
+     * @return {string} Get the property name associated with the default geometry
+     *     for this feature.
+     * @api
+     */
+    Feature.prototype.getGeometryName = function getGeometryName () {
+      return this.geometryName_;
+    };
+
+    /**
+     * Get the feature's style. Will return what was provided to the
+     * {@link module:ol/Feature~Feature#setStyle} method.
+     * @return {import("./style/Style.js").StyleLike} The feature style.
+     * @api
+     */
+    Feature.prototype.getStyle = function getStyle () {
+      return this.style_;
+    };
+
+    /**
+     * Get the feature's style function.
+     * @return {import("./style/Style.js").StyleFunction|undefined} Return a function
+     * representing the current style of this feature.
+     * @api
+     */
+    Feature.prototype.getStyleFunction = function getStyleFunction () {
+      return this.styleFunction_;
+    };
+
+    /**
+     * @private
+     */
+    Feature.prototype.handleGeometryChange_ = function handleGeometryChange_ () {
+      this.changed();
+    };
+
+    /**
+     * @private
+     */
+    Feature.prototype.handleGeometryChanged_ = function handleGeometryChanged_ () {
+      if (this.geometryChangeKey_) {
+        unlistenByKey(this.geometryChangeKey_);
+        this.geometryChangeKey_ = null;
+      }
+      var geometry = this.getGeometry();
+      if (geometry) {
+        this.geometryChangeKey_ = listen(geometry,
+          EventType.CHANGE, this.handleGeometryChange_, this);
+      }
+      this.changed();
+    };
+
+    /**
+     * Set the default geometry for the feature.  This will update the property
+     * with the name returned by {@link module:ol/Feature~Feature#getGeometryName}.
+     * @param {import("./geom/Geometry.js").default|undefined} geometry The new geometry.
+     * @api
+     * @observable
+     */
+    Feature.prototype.setGeometry = function setGeometry (geometry) {
+      this.set(this.geometryName_, geometry);
+    };
+
+    /**
+     * Set the style for the feature.  This can be a single style object, an array
+     * of styles, or a function that takes a resolution and returns an array of
+     * styles. If it is `null` the feature has no style (a `null` style).
+     * @param {import("./style/Style.js").StyleLike} style Style for this feature.
+     * @api
+     * @fires module:ol/events/Event~Event#event:change
+     */
+    Feature.prototype.setStyle = function setStyle (style) {
+      this.style_ = style;
+      this.styleFunction_ = !style ? undefined : createStyleFunction(style);
+      this.changed();
+    };
+
+    /**
+     * Set the feature id.  The feature id is considered stable and may be used when
+     * requesting features or comparing identifiers returned from a remote source.
+     * The feature id can be used with the
+     * {@link module:ol/source/Vector~VectorSource#getFeatureById} method.
+     * @param {number|string|undefined} id The feature id.
+     * @api
+     * @fires module:ol/events/Event~Event#event:change
+     */
+    Feature.prototype.setId = function setId (id) {
+      this.id_ = id;
+      this.changed();
+    };
+
+    /**
+     * Set the property name to be used when getting the feature's default geometry.
+     * When calling {@link module:ol/Feature~Feature#getGeometry}, the value of the property with
+     * this name will be returned.
+     * @param {string} name The property name of the default geometry.
+     * @api
+     */
+    Feature.prototype.setGeometryName = function setGeometryName (name) {
+      unlisten(
+        this, getChangeEventType(this.geometryName_),
+        this.handleGeometryChanged_, this);
+      this.geometryName_ = name;
+      listen(
+        this, getChangeEventType(this.geometryName_),
+        this.handleGeometryChanged_, this);
+      this.handleGeometryChanged_();
+    };
+
+    return Feature;
+  }(BaseObject));
+
+
+  /**
+   * Convert the provided object into a feature style function.  Functions passed
+   * through unchanged.  Arrays of Style or single style objects wrapped
+   * in a new feature style function.
+   * @param {!import("./style/Style.js").StyleFunction|!Array<import("./style/Style.js").default>|!import("./style/Style.js").default} obj
+   *     A feature style function, a single style, or an array of styles.
+   * @return {import("./style/Style.js").StyleFunction} A style function.
+   */
+  function createStyleFunction(obj) {
+    if (typeof obj === 'function') {
+      return obj;
+    } else {
+      /**
+       * @type {Array<import("./style/Style.js").default>}
+       */
+      var styles;
+      if (Array.isArray(obj)) {
+        styles = obj;
+      } else {
+        assert(typeof /** @type {?} */ (obj).getZIndex === 'function',
+          41); // Expected an `import("./style/Style.js").Style` or an array of `import("./style/Style.js").Style`
+        var style = /** @type {import("./style/Style.js").default} */ (obj);
+        styles = [style];
+      }
+      return function() {
+        return styles;
+      };
+    }
+  }
+
+  /**
+   * @module ol/array
+   */
+
+
+  /**
+   * Performs a binary search on the provided sorted list and returns the index of the item if found. If it can't be found it'll return -1.
+   * https://github.com/darkskyapp/binary-search
+   *
+   * @param {Array<*>} haystack Items to search through.
+   * @param {*} needle The item to look for.
+   * @param {Function=} opt_comparator Comparator function.
+   * @return {number} The index of the item if found, -1 if not.
+   */
+  function binarySearch(haystack, needle, opt_comparator) {
+    var mid, cmp;
+    var comparator = opt_comparator || numberSafeCompareFunction;
+    var low = 0;
+    var high = haystack.length;
+    var found = false;
+
+    while (low < high) {
+      /* Note that "(low + high) >>> 1" may overflow, and results in a typecast
+       * to double (which gives the wrong results). */
+      mid = low + (high - low >> 1);
+      cmp = +comparator(haystack[mid], needle);
+
+      if (cmp < 0.0) { /* Too low. */
+        low = mid + 1;
+
+      } else { /* Key found or too high */
+        high = mid;
+        found = !cmp;
+      }
+    }
+
+    /* Key not found. */
+    return found ? low : ~low;
+  }
+
+
+  /**
+   * Compare function for array sort that is safe for numbers.
+   * @param {*} a The first object to be compared.
+   * @param {*} b The second object to be compared.
+   * @return {number} A negative number, zero, or a positive number as the first
+   *     argument is less than, equal to, or greater than the second.
+   */
+  function numberSafeCompareFunction(a, b) {
+    return a > b ? 1 : a < b ? -1 : 0;
+  }
+
+
+  /**
+   * Whether the array contains the given object.
+   * @param {Array<*>} arr The array to test for the presence of the element.
+   * @param {*} obj The object for which to test.
+   * @return {boolean} The object is in the array.
+   */
+  function includes(arr, obj) {
+    return arr.indexOf(obj) >= 0;
+  }
+
+
+  /**
+   * @param {Array<number>} arr Array.
+   * @param {number} target Target.
+   * @param {number} direction 0 means return the nearest, > 0
+   *    means return the largest nearest, < 0 means return the
+   *    smallest nearest.
+   * @return {number} Index.
+   */
+  function linearFindNearest(arr, target, direction) {
+    var n = arr.length;
+    if (arr[0] <= target) {
+      return 0;
+    } else if (target <= arr[n - 1]) {
+      return n - 1;
+    } else {
+      var i;
+      if (direction > 0) {
+        for (i = 1; i < n; ++i) {
+          if (arr[i] < target) {
+            return i - 1;
+          }
+        }
+      } else if (direction < 0) {
+        for (i = 1; i < n; ++i) {
+          if (arr[i] <= target) {
+            return i;
+          }
+        }
+      } else {
+        for (i = 1; i < n; ++i) {
+          if (arr[i] == target) {
+            return i;
+          } else if (arr[i] < target) {
+            if (arr[i - 1] - target < target - arr[i]) {
+              return i - 1;
+            } else {
+              return i;
+            }
+          }
+        }
+      }
+      return n - 1;
+    }
+  }
+
+
+  /**
+   * @param {Array<*>} arr Array.
+   * @param {number} begin Begin index.
+   * @param {number} end End index.
+   */
+  function reverseSubArray(arr, begin, end) {
+    while (begin < end) {
+      var tmp = arr[begin];
+      arr[begin] = arr[end];
+      arr[end] = tmp;
+      ++begin;
+      --end;
+    }
+  }
+
+
+  /**
+   * @param {Array<VALUE>} arr The array to modify.
+   * @param {!Array<VALUE>|VALUE} data The elements or arrays of elements to add to arr.
+   * @template VALUE
+   */
+  function extend(arr, data) {
+    var extension = Array.isArray(data) ? data : [data];
+    var length = extension.length;
+    for (var i = 0; i < length; i++) {
+      arr[arr.length] = extension[i];
+    }
+  }
+
+
+  /**
+   * @param {Array<VALUE>} arr The array to modify.
+   * @param {VALUE} obj The element to remove.
+   * @template VALUE
+   * @return {boolean} If the element was removed.
+   */
+  function remove(arr, obj) {
+    var i = arr.indexOf(obj);
+    var found = i > -1;
+    if (found) {
+      arr.splice(i, 1);
+    }
+    return found;
+  }
+
+
+  /**
+   * @param {Array<VALUE>} arr The array to search in.
+   * @param {function(VALUE, number, ?) : boolean} func The function to compare.
+   * @template VALUE
+   * @return {VALUE|null} The element found or null.
+   */
+  function find(arr, func) {
+    var length = arr.length >>> 0;
+    var value;
+
+    for (var i = 0; i < length; i++) {
+      value = arr[i];
+      if (func(value, i, arr)) {
+        return value;
+      }
+    }
+    return null;
+  }
+
+
+  /**
+   * @param {Array|Uint8ClampedArray} arr1 The first array to compare.
+   * @param {Array|Uint8ClampedArray} arr2 The second array to compare.
+   * @return {boolean} Whether the two arrays are equal.
+   */
+  function equals(arr1, arr2) {
+    var len1 = arr1.length;
+    if (len1 !== arr2.length) {
+      return false;
+    }
+    for (var i = 0; i < len1; i++) {
+      if (arr1[i] !== arr2[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
+  /**
+   * Sort the passed array such that the relative order of equal elements is preverved.
+   * See https://en.wikipedia.org/wiki/Sorting_algorithm#Stability for details.
+   * @param {Array<*>} arr The array to sort (modifies original).
+   * @param {!function(*, *): number} compareFnc Comparison function.
+   * @api
+   */
+  function stableSort(arr, compareFnc) {
+    var length = arr.length;
+    var tmp = Array(arr.length);
+    var i;
+    for (i = 0; i < length; i++) {
+      tmp[i] = {index: i, value: arr[i]};
+    }
+    tmp.sort(function(a, b) {
+      return compareFnc(a.value, b.value) || a.index - b.index;
+    });
+    for (i = 0; i < arr.length; i++) {
+      arr[i] = tmp[i].value;
+    }
+  }
+
+
+  /**
+   * @param {Array<*>} arr The array to search in.
+   * @param {Function} func Comparison function.
+   * @return {number} Return index.
+   */
+  function findIndex(arr, func) {
+    var index;
+    var found = !arr.every(function(el, idx) {
+      index = idx;
+      return !func(el, idx, arr);
+    });
+    return found ? index : -1;
+  }
+
+
+  /**
+   * @param {Array<*>} arr The array to test.
+   * @param {Function=} opt_func Comparison function.
+   * @param {boolean=} opt_strict Strictly sorted (default false).
+   * @return {boolean} Return index.
+   */
+  function isSorted(arr, opt_func, opt_strict) {
+    var compare = opt_func || numberSafeCompareFunction;
+    return arr.every(function(currentVal, index) {
+      if (index === 0) {
+        return true;
+      }
+      var res = compare(arr[index - 1], currentVal);
+      return !(res > 0 || opt_strict && res === 0);
+    });
   }
 
   /**
@@ -1783,7 +2350,7 @@
    * @return {boolean} The two extents are equivalent.
    * @api
    */
-  function equals(extent1, extent2) {
+  function equals$1(extent1, extent2) {
     return extent1[0] == extent2[0] && extent1[2] == extent2[2] &&
         extent1[1] == extent2[1] && extent1[3] == extent2[3];
   }
@@ -1796,7 +2363,7 @@
    * @return {Extent} A reference to the first (extended) extent.
    * @api
    */
-  function extend(extent1, extent2) {
+  function extend$1(extent1, extent2) {
     if (extent2[0] < extent1[0]) {
       extent1[0] = extent2[0];
     }
@@ -1987,9 +2554,7 @@
     } else {
       assert(false, 13); // Invalid corner
     }
-    return (
-      /** @type {!import("./coordinate.js").Coordinate} */ (coordinate)
-    );
+    return coordinate;
   }
 
 
@@ -2291,6 +2856,45 @@
   }
 
   /**
+   * @module ol/geom/GeometryLayout
+   */
+
+  /**
+   * The coordinate layout for geometries, indicating whether a 3rd or 4th z ('Z')
+   * or measure ('M') coordinate is available. Supported values are `'XY'`,
+   * `'XYZ'`, `'XYM'`, `'XYZM'`.
+   * @enum {string}
+   */
+  var GeometryLayout = {
+    XY: 'XY',
+    XYZ: 'XYZ',
+    XYM: 'XYM',
+    XYZM: 'XYZM'
+  };
+
+  /**
+   * @module ol/geom/GeometryType
+   */
+
+  /**
+   * The geometry type. One of `'Point'`, `'LineString'`, `'LinearRing'`,
+   * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,
+   * `'GeometryCollection'`, `'Circle'`.
+   * @enum {string}
+   */
+  var GeometryType = {
+    POINT: 'Point',
+    LINE_STRING: 'LineString',
+    LINEAR_RING: 'LinearRing',
+    POLYGON: 'Polygon',
+    MULTI_POINT: 'MultiPoint',
+    MULTI_LINE_STRING: 'MultiLineString',
+    MULTI_POLYGON: 'MultiPolygon',
+    GEOMETRY_COLLECTION: 'GeometryCollection',
+    CIRCLE: 'Circle'
+  };
+
+  /**
    * @module ol/geom/flat/transform
    */
 
@@ -2448,7 +3052,7 @@
     } else {
       // … else, use the reference implementation of MDN:
       cosh = function(x) {
-        var y = Math.exp(x);
+        var y = /** @type {Math} */ (Math).exp(x);
         return (y + 1 / y) / 2;
       };
     }
@@ -2609,28 +3213,6 @@
   function lerp(a, b, x) {
     return a + x * (b - a);
   }
-
-  /**
-   * @module ol/geom/GeometryType
-   */
-
-  /**
-   * The geometry type. One of `'Point'`, `'LineString'`, `'LinearRing'`,
-   * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,
-   * `'GeometryCollection'`, `'Circle'`.
-   * @enum {string}
-   */
-  var GeometryType = {
-    POINT: 'Point',
-    LINE_STRING: 'LineString',
-    LINEAR_RING: 'LinearRing',
-    POLYGON: 'Polygon',
-    MULTI_POINT: 'MultiPoint',
-    MULTI_LINE_STRING: 'MultiLineString',
-    MULTI_POLYGON: 'MultiPolygon',
-    GEOMETRY_COLLECTION: 'GeometryCollection',
-    CIRCLE: 'Circle'
-  };
 
   /**
    * @license
@@ -3488,7 +4070,7 @@
    * @param {import("./Projection.js").default} destination Destination projection.
    * @return {import("../proj.js").TransformFunction} transformFn The unregistered transform.
    */
-  function remove(source, destination) {
+  function remove$1(source, destination) {
     var sourceCode = source.getCode();
     var destinationCode = destination.getCode();
     var transform = transforms[sourceCode][destinationCode];
@@ -4247,7 +4829,9 @@
      * @abstract
      * @return {!Geometry} Clone.
      */
-    Geometry.prototype.clone = function clone$$1 () {};
+    Geometry.prototype.clone = function clone$$1 () {
+      return abstract();
+    };
 
     /**
      * @abstract
@@ -4257,7 +4841,9 @@
      * @param {number} minSquaredDistance Minimum squared distance.
      * @return {number} Minimum squared distance.
      */
-    Geometry.prototype.closestPointXY = function closestPointXY (x, y, closestPoint, minSquaredDistance) {};
+    Geometry.prototype.closestPointXY = function closestPointXY (x, y, closestPoint, minSquaredDistance) {
+      return abstract();
+    };
 
     /**
      * @param {number} x X.
@@ -4299,7 +4885,9 @@
      * @protected
      * @return {import("../extent.js").Extent} extent Extent.
      */
-    Geometry.prototype.computeExtent = function computeExtent (extent) {};
+    Geometry.prototype.computeExtent = function computeExtent (extent) {
+      return abstract();
+    };
 
     /**
      * Get the extent of the geometry.
@@ -4323,7 +4911,9 @@
      * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
      * @api
      */
-    Geometry.prototype.rotate = function rotate$$1 (angle, anchor) {};
+    Geometry.prototype.rotate = function rotate$$1 (angle, anchor) {
+      abstract();
+    };
 
     /**
      * Scale the geometry (with an optional origin).  This modifies the geometry
@@ -4336,7 +4926,9 @@
      *     of the geometry extent).
      * @api
      */
-    Geometry.prototype.scale = function scale$$1 (sx, opt_sy, opt_anchor) {};
+    Geometry.prototype.scale = function scale$$1 (sx, opt_sy, opt_anchor) {
+      abstract();
+    };
 
     /**
      * Create a simplified version of this geometry.  For linestrings, this uses
@@ -4360,14 +4952,18 @@
      * @param {number} squaredTolerance Squared tolerance.
      * @return {Geometry} Simplified geometry.
      */
-    Geometry.prototype.getSimplifiedGeometry = function getSimplifiedGeometry (squaredTolerance) {};
+    Geometry.prototype.getSimplifiedGeometry = function getSimplifiedGeometry (squaredTolerance) {
+      return abstract();
+    };
 
     /**
      * Get the type of this geometry.
      * @abstract
      * @return {import("./GeometryType.js").default} Geometry type.
      */
-    Geometry.prototype.getType = function getType () {};
+    Geometry.prototype.getType = function getType () {
+      return abstract();
+    };
 
     /**
      * Apply a transform function to each coordinate of the geometry.
@@ -4377,7 +4973,9 @@
      * @abstract
      * @param {import("../proj.js").TransformFunction} transformFn Transform.
      */
-    Geometry.prototype.applyTransform = function applyTransform$$1 (transformFn) {};
+    Geometry.prototype.applyTransform = function applyTransform$$1 (transformFn) {
+      abstract();
+    };
 
     /**
      * Test if the geometry and the passed extent intersect.
@@ -4385,7 +4983,9 @@
      * @param {import("../extent.js").Extent} extent Extent.
      * @return {boolean} `true` if the geometry and the extent intersect.
      */
-    Geometry.prototype.intersectsExtent = function intersectsExtent (extent) {};
+    Geometry.prototype.intersectsExtent = function intersectsExtent (extent) {
+      return abstract();
+    };
 
     /**
      * Translate the geometry.  This modifies the geometry coordinates in place.  If
@@ -4395,7 +4995,9 @@
      * @param {number} deltaY Delta Y.
      * @api
      */
-    Geometry.prototype.translate = function translate$$1 (deltaX, deltaY) {};
+    Geometry.prototype.translate = function translate$$1 (deltaX, deltaY) {
+      abstract();
+    };
 
     /**
      * Transform each coordinate of the geometry from one coordinate reference
@@ -4435,3828 +5037,6 @@
 
     return Geometry;
   }(BaseObject));
-
-  /**
-   * @module ol/color
-   */
-
-
-  /**
-   * A color represented as a short array [red, green, blue, alpha].
-   * red, green, and blue should be integers in the range 0..255 inclusive.
-   * alpha should be a float in the range 0..1 inclusive. If no alpha value is
-   * given then `1` will be used.
-   * @typedef {Array<number>} Color
-   * @api
-   */
-
-
-  /**
-   * This RegExp matches # followed by 3, 4, 6, or 8 hex digits.
-   * @const
-   * @type {RegExp}
-   * @private
-   */
-  var HEX_COLOR_RE_ = /^#([a-f0-9]{3}|[a-f0-9]{4}(?:[a-f0-9]{2}){0,2})$/i;
-
-
-  /**
-   * Regular expression for matching potential named color style strings.
-   * @const
-   * @type {RegExp}
-   * @private
-   */
-  var NAMED_COLOR_RE_ = /^([a-z]*)$/i;
-
-
-  /**
-   * Return the color as an rgba string.
-   * @param {Color|string} color Color.
-   * @return {string} Rgba string.
-   * @api
-   */
-  function asString(color) {
-    if (typeof color === 'string') {
-      return color;
-    } else {
-      return toString(color);
-    }
-  }
-
-  /**
-   * Return named color as an rgba string.
-   * @param {string} color Named color.
-   * @return {string} Rgb string.
-   */
-  function fromNamed(color) {
-    var el = document.createElement('div');
-    el.style.color = color;
-    if (el.style.color !== '') {
-      document.body.appendChild(el);
-      var rgb = getComputedStyle(el).color;
-      document.body.removeChild(el);
-      return rgb;
-    } else {
-      return '';
-    }
-  }
-
-
-  /**
-   * @param {string} s String.
-   * @return {Color} Color.
-   */
-  var fromString = (
-    function() {
-
-      // We maintain a small cache of parsed strings.  To provide cheap LRU-like
-      // semantics, whenever the cache grows too large we simply delete an
-      // arbitrary 25% of the entries.
-
-      /**
-       * @const
-       * @type {number}
-       */
-      var MAX_CACHE_SIZE = 1024;
-
-      /**
-       * @type {Object<string, Color>}
-       */
-      var cache = {};
-
-      /**
-       * @type {number}
-       */
-      var cacheSize = 0;
-
-      return (
-        /**
-         * @param {string} s String.
-         * @return {Color} Color.
-         */
-        function(s) {
-          var color;
-          if (cache.hasOwnProperty(s)) {
-            color = cache[s];
-          } else {
-            if (cacheSize >= MAX_CACHE_SIZE) {
-              var i = 0;
-              for (var key in cache) {
-                if ((i++ & 3) === 0) {
-                  delete cache[key];
-                  --cacheSize;
-                }
-              }
-            }
-            color = fromStringInternal_(s);
-            cache[s] = color;
-            ++cacheSize;
-          }
-          return color;
-        }
-      );
-
-    })();
-
-  /**
-   * Return the color as an array. This function maintains a cache of calculated
-   * arrays which means the result should not be modified.
-   * @param {Color|string} color Color.
-   * @return {Color} Color.
-   * @api
-   */
-  function asArray(color) {
-    if (Array.isArray(color)) {
-      return color;
-    } else {
-      return fromString(/** @type {string} */ (color));
-    }
-  }
-
-  /**
-   * @param {string} s String.
-   * @private
-   * @return {Color} Color.
-   */
-  function fromStringInternal_(s) {
-    var r, g, b, a, color;
-
-    if (NAMED_COLOR_RE_.exec(s)) {
-      s = fromNamed(s);
-    }
-
-    if (HEX_COLOR_RE_.exec(s)) { // hex
-      var n = s.length - 1; // number of hex digits
-      var d; // number of digits per channel
-      if (n <= 4) {
-        d = 1;
-      } else {
-        d = 2;
-      }
-      var hasAlpha = n === 4 || n === 8;
-      r = parseInt(s.substr(1 + 0 * d, d), 16);
-      g = parseInt(s.substr(1 + 1 * d, d), 16);
-      b = parseInt(s.substr(1 + 2 * d, d), 16);
-      if (hasAlpha) {
-        a = parseInt(s.substr(1 + 3 * d, d), 16);
-      } else {
-        a = 255;
-      }
-      if (d == 1) {
-        r = (r << 4) + r;
-        g = (g << 4) + g;
-        b = (b << 4) + b;
-        if (hasAlpha) {
-          a = (a << 4) + a;
-        }
-      }
-      color = [r, g, b, a / 255];
-    } else if (s.indexOf('rgba(') == 0) { // rgba()
-      color = s.slice(5, -1).split(',').map(Number);
-      normalize(color);
-    } else if (s.indexOf('rgb(') == 0) { // rgb()
-      color = s.slice(4, -1).split(',').map(Number);
-      color.push(1);
-      normalize(color);
-    } else {
-      assert(false, 14); // Invalid color
-    }
-    return (
-      /** @type {Color} */ (color)
-    );
-  }
-
-
-  /**
-   * TODO this function is only used in the test, we probably shouldn't export it
-   * @param {Color} color Color.
-   * @return {Color} Clamped color.
-   */
-  function normalize(color) {
-    color[0] = clamp((color[0] + 0.5) | 0, 0, 255);
-    color[1] = clamp((color[1] + 0.5) | 0, 0, 255);
-    color[2] = clamp((color[2] + 0.5) | 0, 0, 255);
-    color[3] = clamp(color[3], 0, 1);
-    return color;
-  }
-
-
-  /**
-   * @param {Color} color Color.
-   * @return {string} String.
-   */
-  function toString(color) {
-    var r = color[0];
-    if (r != (r | 0)) {
-      r = (r + 0.5) | 0;
-    }
-    var g = color[1];
-    if (g != (g | 0)) {
-      g = (g + 0.5) | 0;
-    }
-    var b = color[2];
-    if (b != (b | 0)) {
-      b = (b + 0.5) | 0;
-    }
-    var a = color[3] === undefined ? 1 : color[3];
-    return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
-  }
-
-  /**
-   * @module ol/colorlike
-   */
-
-
-  /**
-   * A type accepted by CanvasRenderingContext2D.fillStyle
-   * or CanvasRenderingContext2D.strokeStyle.
-   * Represents a color, pattern, or gradient. The origin for patterns and
-   * gradients as fill style is an increment of 512 css pixels from map coordinate
-   * `[0, 0]`. For seamless repeat patterns, width and height of the pattern image
-   * must be a factor of two (2, 4, 8, ..., 512).
-   *
-   * @typedef {string|CanvasPattern|CanvasGradient} ColorLike
-   * @api
-   */
-
-
-  /**
-   * @param {import("./color.js").Color|ColorLike} color Color.
-   * @return {ColorLike} The color as an {@link ol/colorlike~ColorLike}.
-   * @api
-   */
-  function asColorLike(color) {
-    if (isColorLike(color)) {
-      return /** @type {string|CanvasPattern|CanvasGradient} */ (color);
-    } else {
-      return toString(/** @type {import("./color.js").Color} */ (color));
-    }
-  }
-
-
-  /**
-   * @param {?} color The value that is potentially an {@link ol/colorlike~ColorLike}.
-   * @return {boolean} The color is an {@link ol/colorlike~ColorLike}.
-   */
-  function isColorLike(color) {
-    return (
-      typeof color === 'string' ||
-      color instanceof CanvasPattern ||
-      color instanceof CanvasGradient
-    );
-  }
-
-  /**
-   * @module ol/dom
-   */
-
-
-  /**
-   * Create an html canvas element and returns its 2d context.
-   * @param {number=} opt_width Canvas width.
-   * @param {number=} opt_height Canvas height.
-   * @return {CanvasRenderingContext2D} The context.
-   */
-  function createCanvasContext2D(opt_width, opt_height) {
-    var canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-    if (opt_width) {
-      canvas.width = opt_width;
-    }
-    if (opt_height) {
-      canvas.height = opt_height;
-    }
-    return /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
-  }
-
-
-  /**
-   * Get the current computed width for the given element including margin,
-   * padding and border.
-   * Equivalent to jQuery's `$(el).outerWidth(true)`.
-   * @param {!HTMLElement} element Element.
-   * @return {number} The width.
-   */
-  function outerWidth(element) {
-    var width = element.offsetWidth;
-    var style = getComputedStyle(element);
-    width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
-
-    return width;
-  }
-
-
-  /**
-   * Get the current computed height for the given element including margin,
-   * padding and border.
-   * Equivalent to jQuery's `$(el).outerHeight(true)`.
-   * @param {!HTMLElement} element Element.
-   * @return {number} The height.
-   */
-  function outerHeight(element) {
-    var height = element.offsetHeight;
-    var style = getComputedStyle(element);
-    height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
-
-    return height;
-  }
-
-  /**
-   * @param {Node} newNode Node to replace old node
-   * @param {Node} oldNode The node to be replaced
-   */
-  function replaceNode(newNode, oldNode) {
-    var parent = oldNode.parentNode;
-    if (parent) {
-      parent.replaceChild(newNode, oldNode);
-    }
-  }
-
-  /**
-   * @param {Node} node The node to remove.
-   * @returns {Node} The node that was removed or null.
-   */
-  function removeNode(node) {
-    return node && node.parentNode ? node.parentNode.removeChild(node) : null;
-  }
-
-  /**
-   * @param {Node} node The node to remove the children from.
-   */
-  function removeChildren(node) {
-    while (node.lastChild) {
-      node.removeChild(node.lastChild);
-    }
-  }
-
-  /**
-   * @module ol/webgl
-   */
-
-
-  /**
-   * Constants taken from goog.webgl
-   */
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var ONE = 1;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var SRC_ALPHA = 0x0302;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var COLOR_ATTACHMENT0 = 0x8CE0;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var COLOR_BUFFER_BIT = 0x00004000;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var TRIANGLES = 0x0004;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var TRIANGLE_STRIP = 0x0005;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var ONE_MINUS_SRC_ALPHA = 0x0303;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var ARRAY_BUFFER = 0x8892;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var ELEMENT_ARRAY_BUFFER = 0x8893;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var STREAM_DRAW = 0x88E0;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var STATIC_DRAW = 0x88E4;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var DYNAMIC_DRAW = 0x88E8;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var CULL_FACE = 0x0B44;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var BLEND = 0x0BE2;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var STENCIL_TEST = 0x0B90;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var DEPTH_TEST = 0x0B71;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var SCISSOR_TEST = 0x0C11;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var UNSIGNED_BYTE = 0x1401;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var UNSIGNED_SHORT = 0x1403;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var UNSIGNED_INT = 0x1405;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var FLOAT = 0x1406;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var RGBA = 0x1908;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var FRAGMENT_SHADER = 0x8B30;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var VERTEX_SHADER = 0x8B31;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var LINK_STATUS = 0x8B82;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var LINEAR = 0x2601;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var TEXTURE_MAG_FILTER = 0x2800;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var TEXTURE_MIN_FILTER = 0x2801;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var TEXTURE_WRAP_S = 0x2802;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var TEXTURE_WRAP_T = 0x2803;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var TEXTURE_2D = 0x0DE1;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var TEXTURE0 = 0x84C0;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var CLAMP_TO_EDGE = 0x812F;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var COMPILE_STATUS = 0x8B81;
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var FRAMEBUFFER = 0x8D40;
-
-
-  /** end of goog.webgl constants
-   */
-
-
-  /**
-   * @const
-   * @type {Array<string>}
-   */
-  var CONTEXT_IDS = [
-    'experimental-webgl',
-    'webgl',
-    'webkit-3d',
-    'moz-webgl'
-  ];
-
-
-  /**
-   * @param {HTMLCanvasElement} canvas Canvas.
-   * @param {Object=} opt_attributes Attributes.
-   * @return {WebGLRenderingContext} WebGL rendering context.
-   */
-  function getContext(canvas, opt_attributes) {
-    var ii = CONTEXT_IDS.length;
-    for (var i = 0; i < ii; ++i) {
-      try {
-        var context = canvas.getContext(CONTEXT_IDS[i], opt_attributes);
-        if (context) {
-          return /** @type {!WebGLRenderingContext} */ (context);
-        }
-      } catch (e) {
-        // pass
-      }
-    }
-    return null;
-  }
-
-
-  /**
-   * Include debuggable shader sources.  Default is `true`. This should be set to
-   * `false` for production builds.
-   * @type {boolean}
-   */
-  var DEBUG = true;
-
-
-  /**
-   * The maximum supported WebGL texture size in pixels. If WebGL is not
-   * supported, the value is set to `undefined`.
-   * @type {number|undefined}
-   */
-  var MAX_TEXTURE_SIZE; // value is set below
-
-
-  /**
-   * List of supported WebGL extensions.
-   * @type {Array<string>}
-   */
-  var EXTENSIONS; // value is set below
-
-  //TODO Remove side effects
-  if (typeof window !== 'undefined' && 'WebGLRenderingContext' in window) {
-    try {
-      var canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-      var gl = getContext(canvas, {failIfMajorPerformanceCaveat: true});
-      if (gl) {
-        MAX_TEXTURE_SIZE = /** @type {number} */ (gl.getParameter(gl.MAX_TEXTURE_SIZE));
-        EXTENSIONS = gl.getSupportedExtensions();
-      }
-    } catch (e) {
-      // pass
-    }
-  }
-
-  /**
-   * @module ol/has
-   */
-
-  var ua = typeof navigator !== 'undefined' ?
-    navigator.userAgent.toLowerCase() : '';
-
-  /**
-   * User agent string says we are dealing with Firefox as browser.
-   * @type {boolean}
-   */
-  var FIREFOX = ua.indexOf('firefox') !== -1;
-
-  /**
-   * User agent string says we are dealing with Safari as browser.
-   * @type {boolean}
-   */
-  var SAFARI = ua.indexOf('safari') !== -1 && ua.indexOf('chrom') == -1;
-
-  /**
-   * User agent string says we are dealing with a WebKit engine.
-   * @type {boolean}
-   */
-  var WEBKIT = ua.indexOf('webkit') !== -1 && ua.indexOf('edge') == -1;
-
-  /**
-   * User agent string says we are dealing with a Mac as platform.
-   * @type {boolean}
-   */
-  var MAC = ua.indexOf('macintosh') !== -1;
-
-
-  /**
-   * The ratio between physical pixels and device-independent pixels
-   * (dips) on the device (`window.devicePixelRatio`).
-   * @const
-   * @type {number}
-   * @api
-   */
-  var DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
-
-
-  /**
-   * True if the browser's Canvas implementation implements {get,set}LineDash.
-   * @type {boolean}
-   */
-  var CANVAS_LINE_DASH = function() {
-    var has = false;
-    try {
-      has = !!document.createElement('canvas').getContext('2d').setLineDash;
-    } catch (e) {
-      // pass
-    }
-    return has;
-  }();
-
-
-  /**
-   * Is HTML5 geolocation supported in the current browser?
-   * @const
-   * @type {boolean}
-   * @api
-   */
-  var GEOLOCATION = 'geolocation' in navigator;
-
-
-  /**
-   * True if browser supports touch events.
-   * @const
-   * @type {boolean}
-   * @api
-   */
-  var TOUCH = 'ontouchstart' in window;
-
-
-  /**
-   * True if browser supports pointer events.
-   * @const
-   * @type {boolean}
-   */
-  var POINTER = 'PointerEvent' in window;
-
-
-  /**
-   * True if browser supports ms pointer events (IE 10).
-   * @const
-   * @type {boolean}
-   */
-  var MSPOINTER = !!(navigator.msPointerEnabled);
-
-  /**
-   * @module ol/ImageState
-   */
-
-  /**
-   * @enum {number}
-   */
-  var ImageState = {
-    IDLE: 0,
-    LOADING: 1,
-    LOADED: 2,
-    ERROR: 3
-  };
-
-  /**
-   * @module ol/css
-   */
-
-
-  /**
-   * The CSS class for hidden feature.
-   *
-   * @const
-   * @type {string}
-   */
-  var CLASS_HIDDEN = 'ol-hidden';
-
-
-  /**
-   * The CSS class that we'll give the DOM elements to have them selectable.
-   *
-   * @const
-   * @type {string}
-   */
-  var CLASS_SELECTABLE = 'ol-selectable';
-
-
-  /**
-   * The CSS class that we'll give the DOM elements to have them unselectable.
-   *
-   * @const
-   * @type {string}
-   */
-  var CLASS_UNSELECTABLE = 'ol-unselectable';
-
-
-  /**
-   * The CSS class for unsupported feature.
-   *
-   * @const
-   * @type {string}
-   */
-  var CLASS_UNSUPPORTED = 'ol-unsupported';
-
-
-  /**
-   * The CSS class for controls.
-   *
-   * @const
-   * @type {string}
-   */
-  var CLASS_CONTROL = 'ol-control';
-
-
-  /**
-   * The CSS class that we'll give the DOM elements that are collapsed, i.e.
-   * to those elements which usually can be expanded.
-   *
-   * @const
-   * @type {string}
-   */
-  var CLASS_COLLAPSED = 'ol-collapsed';
-
-
-  /**
-   * Get the list of font families from a font spec.  Note that this doesn't work
-   * for font families that have commas in them.
-   * @param {string} The CSS font property.
-   * @return {Object<string>} The font families (or null if the input spec is invalid).
-   */
-  var getFontFamilies = (function() {
-    var style;
-    var cache = {};
-    return function(font) {
-      if (!style) {
-        style = document.createElement('div').style;
-      }
-      if (!(font in cache)) {
-        style.font = font;
-        var family = style.fontFamily;
-        style.font = '';
-        if (!family) {
-          return null;
-        }
-        cache[font] = family.split(/,\s?/);
-      }
-      return cache[font];
-    };
-  })();
-
-  /**
-   * @module ol/structs/LRUCache
-   */
-
-
-  /**
-   * @typedef {Object} Entry
-   * @property {string} key_
-   * @property {Object} newer
-   * @property {Object} older
-   * @property {*} value_
-   */
-
-
-  /**
-   * @classdesc
-   * Implements a Least-Recently-Used cache where the keys do not conflict with
-   * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
-   * items from the cache is the responsibility of the user.
-   *
-   * @fires import("../events/Event.js").Event
-   * @template T
-   */
-  var LRUCache = /*@__PURE__*/(function (EventTarget) {
-    function LRUCache(opt_highWaterMark) {
-
-      EventTarget.call(this);
-
-      /**
-       * @type {number}
-       */
-      this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
-
-      /**
-       * @private
-       * @type {number}
-       */
-      this.count_ = 0;
-
-      /**
-       * @private
-       * @type {!Object<string, Entry>}
-       */
-      this.entries_ = {};
-
-      /**
-       * @private
-       * @type {?Entry}
-       */
-      this.oldest_ = null;
-
-      /**
-       * @private
-       * @type {?Entry}
-       */
-      this.newest_ = null;
-
-    }
-
-    if ( EventTarget ) LRUCache.__proto__ = EventTarget;
-    LRUCache.prototype = Object.create( EventTarget && EventTarget.prototype );
-    LRUCache.prototype.constructor = LRUCache;
-
-
-    /**
-     * @return {boolean} Can expire cache.
-     */
-    LRUCache.prototype.canExpireCache = function canExpireCache () {
-      return this.getCount() > this.highWaterMark;
-    };
-
-
-    /**
-     * FIXME empty description for jsdoc
-     */
-    LRUCache.prototype.clear = function clear () {
-      this.count_ = 0;
-      this.entries_ = {};
-      this.oldest_ = null;
-      this.newest_ = null;
-      this.dispatchEvent(EventType.CLEAR);
-    };
-
-
-    /**
-     * @param {string} key Key.
-     * @return {boolean} Contains key.
-     */
-    LRUCache.prototype.containsKey = function containsKey (key) {
-      return this.entries_.hasOwnProperty(key);
-    };
-
-
-    /**
-     * @param {function(this: S, T, string, LRUCache): ?} f The function
-     *     to call for every entry from the oldest to the newer. This function takes
-     *     3 arguments (the entry value, the entry key and the LRUCache object).
-     *     The return value is ignored.
-     * @param {S=} opt_this The object to use as `this` in `f`.
-     * @template S
-     */
-    LRUCache.prototype.forEach = function forEach (f, opt_this) {
-      var entry = this.oldest_;
-      while (entry) {
-        f.call(opt_this, entry.value_, entry.key_, this);
-        entry = entry.newer;
-      }
-    };
-
-
-    /**
-     * @param {string} key Key.
-     * @return {T} Value.
-     */
-    LRUCache.prototype.get = function get (key) {
-      var entry = this.entries_[key];
-      assert(entry !== undefined,
-        15); // Tried to get a value for a key that does not exist in the cache
-      if (entry === this.newest_) {
-        return entry.value_;
-      } else if (entry === this.oldest_) {
-        this.oldest_ = /** @type {Entry} */ (this.oldest_.newer);
-        this.oldest_.older = null;
-      } else {
-        entry.newer.older = entry.older;
-        entry.older.newer = entry.newer;
-      }
-      entry.newer = null;
-      entry.older = this.newest_;
-      this.newest_.newer = entry;
-      this.newest_ = entry;
-      return entry.value_;
-    };
-
-
-    /**
-     * Remove an entry from the cache.
-     * @param {string} key The entry key.
-     * @return {T} The removed entry.
-     */
-    LRUCache.prototype.remove = function remove (key) {
-      var entry = this.entries_[key];
-      assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
-      if (entry === this.newest_) {
-        this.newest_ = /** @type {Entry} */ (entry.older);
-        if (this.newest_) {
-          this.newest_.newer = null;
-        }
-      } else if (entry === this.oldest_) {
-        this.oldest_ = /** @type {Entry} */ (entry.newer);
-        if (this.oldest_) {
-          this.oldest_.older = null;
-        }
-      } else {
-        entry.newer.older = entry.older;
-        entry.older.newer = entry.newer;
-      }
-      delete this.entries_[key];
-      --this.count_;
-      return entry.value_;
-    };
-
-
-    /**
-     * @return {number} Count.
-     */
-    LRUCache.prototype.getCount = function getCount () {
-      return this.count_;
-    };
-
-
-    /**
-     * @return {Array<string>} Keys.
-     */
-    LRUCache.prototype.getKeys = function getKeys () {
-      var keys = new Array(this.count_);
-      var i = 0;
-      var entry;
-      for (entry = this.newest_; entry; entry = entry.older) {
-        keys[i++] = entry.key_;
-      }
-      return keys;
-    };
-
-
-    /**
-     * @return {Array<T>} Values.
-     */
-    LRUCache.prototype.getValues = function getValues () {
-      var values = new Array(this.count_);
-      var i = 0;
-      var entry;
-      for (entry = this.newest_; entry; entry = entry.older) {
-        values[i++] = entry.value_;
-      }
-      return values;
-    };
-
-
-    /**
-     * @return {T} Last value.
-     */
-    LRUCache.prototype.peekLast = function peekLast () {
-      return this.oldest_.value_;
-    };
-
-
-    /**
-     * @return {string} Last key.
-     */
-    LRUCache.prototype.peekLastKey = function peekLastKey () {
-      return this.oldest_.key_;
-    };
-
-
-    /**
-     * Get the key of the newest item in the cache.  Throws if the cache is empty.
-     * @return {string} The newest key.
-     */
-    LRUCache.prototype.peekFirstKey = function peekFirstKey () {
-      return this.newest_.key_;
-    };
-
-
-    /**
-     * @return {T} value Value.
-     */
-    LRUCache.prototype.pop = function pop () {
-      var entry = this.oldest_;
-      delete this.entries_[entry.key_];
-      if (entry.newer) {
-        entry.newer.older = null;
-      }
-      this.oldest_ = /** @type {Entry} */ (entry.newer);
-      if (!this.oldest_) {
-        this.newest_ = null;
-      }
-      --this.count_;
-      return entry.value_;
-    };
-
-
-    /**
-     * @param {string} key Key.
-     * @param {T} value Value.
-     */
-    LRUCache.prototype.replace = function replace (key, value) {
-      this.get(key); // update `newest_`
-      this.entries_[key].value_ = value;
-    };
-
-
-    /**
-     * @param {string} key Key.
-     * @param {T} value Value.
-     */
-    LRUCache.prototype.set = function set (key, value) {
-      assert(!(key in this.entries_),
-        16); // Tried to set a value for a key that is used already
-      var entry = /** @type {Entry} */ ({
-        key_: key,
-        newer: null,
-        older: this.newest_,
-        value_: value
-      });
-      if (!this.newest_) {
-        this.oldest_ = entry;
-      } else {
-        this.newest_.newer = entry;
-      }
-      this.newest_ = entry;
-      this.entries_[key] = entry;
-      ++this.count_;
-    };
-
-
-    /**
-     * Set a maximum number of entries for the cache.
-     * @param {number} size Cache size.
-     * @api
-     */
-    LRUCache.prototype.setSize = function setSize (size) {
-      this.highWaterMark = size;
-    };
-
-
-    /**
-     * Prune the cache.
-     */
-    LRUCache.prototype.prune = function prune () {
-      while (this.canExpireCache()) {
-        this.pop();
-      }
-    };
-
-    return LRUCache;
-  }(Target));
-
-  /**
-   * @module ol/render/canvas
-   */
-
-
-  /**
-   * @typedef {Object} FillState
-   * @property {import("../colorlike.js").ColorLike} fillStyle
-   */
-
-
-  /**
-   * @typedef {Object} FillStrokeState
-   * @property {import("../colorlike.js").ColorLike} [currentFillStyle]
-   * @property {import("../colorlike.js").ColorLike} [currentStrokeStyle]
-   * @property {string} [currentLineCap]
-   * @property {Array<number>} currentLineDash
-   * @property {number} [currentLineDashOffset]
-   * @property {string} [currentLineJoin]
-   * @property {number} [currentLineWidth]
-   * @property {number} [currentMiterLimit]
-   * @property {number} [lastStroke]
-   * @property {import("../colorlike.js").ColorLike} [fillStyle]
-   * @property {import("../colorlike.js").ColorLike} [strokeStyle]
-   * @property {string} [lineCap]
-   * @property {Array<number>} lineDash
-   * @property {number} [lineDashOffset]
-   * @property {string} [lineJoin]
-   * @property {number} [lineWidth]
-   * @property {number} [miterLimit]
-   */
-
-
-  /**
-   * @typedef {Object} StrokeState
-   * @property {string} lineCap
-   * @property {Array<number>} lineDash
-   * @property {number} lineDashOffset
-   * @property {string} lineJoin
-   * @property {number} lineWidth
-   * @property {number} miterLimit
-   * @property {import("../colorlike.js").ColorLike} strokeStyle
-   */
-
-
-  /**
-   * @typedef {Object} TextState
-   * @property {string} font
-   * @property {string} [textAlign]
-   * @property {string} textBaseline
-   * @property {string} [placement]
-   * @property {number} [maxAngle]
-   * @property {boolean} [overflow]
-   * @property {import("../style/Fill.js").default} [backgroundFill]
-   * @property {import("../style/Stroke.js").default} [backgroundStroke]
-   * @property {number} [scale]
-   * @property {Array<number>} [padding]
-   */
-
-
-  /**
-   * Container for decluttered replay instructions that need to be rendered or
-   * omitted together, i.e. when styles render both an image and text, or for the
-   * characters that form text along lines. The basic elements of this array are
-   * `[minX, minY, maxX, maxY, count]`, where the first four entries are the
-   * rendered extent of the group in pixel space. `count` is the number of styles
-   * in the group, i.e. 2 when an image and a text are grouped, or 1 otherwise.
-   * In addition to these four elements, declutter instruction arrays (i.e. the
-   * arguments to {@link module:ol/render/canvas~drawImage} are appended to the array.
-   * @typedef {Array<*>} DeclutterGroup
-   */
-
-
-  /**
-   * @const
-   * @type {string}
-   */
-  var defaultFont = '10px sans-serif';
-
-
-  /**
-   * @const
-   * @type {import("../color.js").Color}
-   */
-  var defaultFillStyle = [0, 0, 0, 1];
-
-
-  /**
-   * @const
-   * @type {string}
-   */
-  var defaultLineCap = 'round';
-
-
-  /**
-   * @const
-   * @type {Array<number>}
-   */
-  var defaultLineDash = [];
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var defaultLineDashOffset = 0;
-
-
-  /**
-   * @const
-   * @type {string}
-   */
-  var defaultLineJoin = 'round';
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var defaultMiterLimit = 10;
-
-
-  /**
-   * @const
-   * @type {import("../color.js").Color}
-   */
-  var defaultStrokeStyle = [0, 0, 0, 1];
-
-
-  /**
-   * @const
-   * @type {string}
-   */
-  var defaultTextAlign = 'center';
-
-
-  /**
-   * @const
-   * @type {string}
-   */
-  var defaultTextBaseline = 'middle';
-
-
-  /**
-   * @const
-   * @type {Array<number>}
-   */
-  var defaultPadding = [0, 0, 0, 0];
-
-
-  /**
-   * @const
-   * @type {number}
-   */
-  var defaultLineWidth = 1;
-
-
-  /**
-   * The label cache for text rendering. To change the default cache size of 2048
-   * entries, use {@link module:ol/structs/LRUCache#setSize}.
-   * @type {LRUCache<HTMLCanvasElement>}
-   * @api
-   */
-  var labelCache = new LRUCache();
-
-
-  /**
-   * @type {!Object<string, number>}
-   */
-  var checkedFonts = {};
-
-
-  /**
-   * @type {CanvasRenderingContext2D}
-   */
-  var measureContext = null;
-
-
-  /**
-   * @type {!Object<string, number>}
-   */
-  var textHeights = {};
-
-
-  /**
-   * Clears the label cache when a font becomes available.
-   * @param {string} fontSpec CSS font spec.
-   */
-  var checkFont = (function() {
-    var retries = 60;
-    var checked = checkedFonts;
-    var size = '32px ';
-    var referenceFonts = ['monospace', 'serif'];
-    var len = referenceFonts.length;
-    var text = 'wmytzilWMYTZIL@#/&?$%10\uF013';
-    var interval, referenceWidth;
-
-    function isAvailable(font) {
-      var context = getMeasureContext();
-      // Check weight ranges according to
-      // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights
-      for (var weight = 100; weight <= 700; weight += 300) {
-        var fontWeight = weight + ' ';
-        var available = true;
-        for (var i = 0; i < len; ++i) {
-          var referenceFont = referenceFonts[i];
-          context.font = fontWeight + size + referenceFont;
-          referenceWidth = context.measureText(text).width;
-          if (font != referenceFont) {
-            context.font = fontWeight + size + font + ',' + referenceFont;
-            var width = context.measureText(text).width;
-            // If width and referenceWidth are the same, then the fallback was used
-            // instead of the font we wanted, so the font is not available.
-            available = available && width != referenceWidth;
-          }
-        }
-        if (available) {
-          // Consider font available when it is available in one weight range.
-          //FIXME With this we miss rare corner cases, so we should consider
-          //FIXME checking availability for each requested weight range.
-          return true;
-        }
-      }
-      return false;
-    }
-
-    function check() {
-      var done = true;
-      for (var font in checked) {
-        if (checked[font] < retries) {
-          if (isAvailable(font)) {
-            checked[font] = retries;
-            clear(textHeights);
-            // Make sure that loaded fonts are picked up by Safari
-            measureContext = null;
-            labelCache.clear();
-          } else {
-            ++checked[font];
-            done = false;
-          }
-        }
-      }
-      if (done) {
-        clearInterval(interval);
-        interval = undefined;
-      }
-    }
-
-    return function(fontSpec) {
-      var fontFamilies = getFontFamilies(fontSpec);
-      if (!fontFamilies) {
-        return;
-      }
-      for (var i = 0, ii = fontFamilies.length; i < ii; ++i) {
-        var fontFamily = fontFamilies[i];
-        if (!(fontFamily in checked)) {
-          checked[fontFamily] = retries;
-          if (!isAvailable(fontFamily)) {
-            checked[fontFamily] = 0;
-            if (interval === undefined) {
-              interval = setInterval(check, 32);
-            }
-          }
-        }
-      }
-    };
-  })();
-
-
-  /**
-   * @return {CanvasRenderingContext2D} Measure context.
-   */
-  function getMeasureContext() {
-    if (!measureContext) {
-      measureContext = createCanvasContext2D(1, 1);
-    }
-    return measureContext;
-  }
-
-
-  /**
-   * @param {string} font Font to use for measuring.
-   * @return {import("../size.js").Size} Measurement.
-   */
-  var measureTextHeight = (function() {
-    var span;
-    var heights = textHeights;
-    return function(font) {
-      var height = heights[font];
-      if (height == undefined) {
-        if (!span) {
-          span = document.createElement('span');
-          span.textContent = 'M';
-          span.style.margin = span.style.padding = '0 !important';
-          span.style.position = 'absolute !important';
-          span.style.left = '-99999px !important';
-        }
-        span.style.font = font;
-        document.body.appendChild(span);
-        height = heights[font] = span.offsetHeight;
-        document.body.removeChild(span);
-      }
-      return height;
-    };
-  })();
-
-
-  /**
-   * @param {string} font Font.
-   * @param {string} text Text.
-   * @return {number} Width.
-   */
-  function measureTextWidth(font, text) {
-    var measureContext = getMeasureContext();
-    if (font != measureContext.font) {
-      measureContext.font = font;
-    }
-    return measureContext.measureText(text).width;
-  }
-
-
-  /**
-   * @param {CanvasRenderingContext2D} context Context.
-   * @param {number} rotation Rotation.
-   * @param {number} offsetX X offset.
-   * @param {number} offsetY Y offset.
-   */
-  function rotateAtOffset(context, rotation, offsetX, offsetY) {
-    if (rotation !== 0) {
-      context.translate(offsetX, offsetY);
-      context.rotate(rotation);
-      context.translate(-offsetX, -offsetY);
-    }
-  }
-
-
-  var resetTransform = create();
-
-
-  /**
-   * @param {CanvasRenderingContext2D} context Context.
-   * @param {import("../transform.js").Transform|null} transform Transform.
-   * @param {number} opacity Opacity.
-   * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
-   * @param {number} originX Origin X.
-   * @param {number} originY Origin Y.
-   * @param {number} w Width.
-   * @param {number} h Height.
-   * @param {number} x X.
-   * @param {number} y Y.
-   * @param {number} scale Scale.
-   */
-  function drawImage(context,
-    transform, opacity, image, originX, originY, w, h, x, y, scale) {
-    var alpha;
-    if (opacity != 1) {
-      alpha = context.globalAlpha;
-      context.globalAlpha = alpha * opacity;
-    }
-    if (transform) {
-      context.setTransform.apply(context, transform);
-    }
-
-    context.drawImage(image, originX, originY, w, h, x, y, w * scale, h * scale);
-
-    if (alpha) {
-      context.globalAlpha = alpha;
-    }
-    if (transform) {
-      context.setTransform.apply(context, resetTransform);
-    }
-  }
-
-  /**
-   * @module ol/style/Image
-   */
-
-
-  /**
-   * @typedef {Object} Options
-   * @property {number} opacity
-   * @property {boolean} rotateWithView
-   * @property {number} rotation
-   * @property {number} scale
-   */
-
-
-  /**
-   * @classdesc
-   * A base class used for creating subclasses and not instantiated in
-   * apps. Base class for {@link module:ol/style/Icon~Icon}, {@link module:ol/style/Circle~CircleStyle} and
-   * {@link module:ol/style/RegularShape~RegularShape}.
-   * @api
-   */
-  var ImageStyle = function ImageStyle(options) {
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.opacity_ = options.opacity;
-
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.rotateWithView_ = options.rotateWithView;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.rotation_ = options.rotation;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.scale_ = options.scale;
-
-  };
-
-  /**
-   * Clones the style.
-   * @return {ImageStyle} The cloned style.
-   * @api
-   */
-  ImageStyle.prototype.clone = function clone () {
-    return new ImageStyle({
-      opacity: this.getOpacity(),
-      scale: this.getScale(),
-      rotation: this.getRotation(),
-      rotateWithView: this.getRotateWithView()
-    });
-  };
-
-  /**
-   * Get the symbolizer opacity.
-   * @return {number} Opacity.
-   * @api
-   */
-  ImageStyle.prototype.getOpacity = function getOpacity () {
-    return this.opacity_;
-  };
-
-  /**
-   * Determine whether the symbolizer rotates with the map.
-   * @return {boolean} Rotate with map.
-   * @api
-   */
-  ImageStyle.prototype.getRotateWithView = function getRotateWithView () {
-    return this.rotateWithView_;
-  };
-
-  /**
-   * Get the symoblizer rotation.
-   * @return {number} Rotation.
-   * @api
-   */
-  ImageStyle.prototype.getRotation = function getRotation () {
-    return this.rotation_;
-  };
-
-  /**
-   * Get the symbolizer scale.
-   * @return {number} Scale.
-   * @api
-   */
-  ImageStyle.prototype.getScale = function getScale () {
-    return this.scale_;
-  };
-
-  /**
-   * This method is deprecated and always returns false.
-   * @return {boolean} false.
-   * @deprecated
-   * @api
-   */
-  ImageStyle.prototype.getSnapToPixel = function getSnapToPixel () {
-    return false;
-  };
-
-  /**
-   * Get the anchor point in pixels. The anchor determines the center point for the
-   * symbolizer.
-   * @abstract
-   * @return {Array<number>} Anchor.
-   */
-  ImageStyle.prototype.getAnchor = function getAnchor () {};
-
-  /**
-   * Get the image element for the symbolizer.
-   * @abstract
-   * @param {number} pixelRatio Pixel ratio.
-   * @return {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} Image element.
-   */
-  ImageStyle.prototype.getImage = function getImage (pixelRatio) {};
-
-  /**
-   * @abstract
-   * @param {number} pixelRatio Pixel ratio.
-   * @return {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} Image element.
-   */
-  ImageStyle.prototype.getHitDetectionImage = function getHitDetectionImage (pixelRatio) {};
-
-  /**
-   * @abstract
-   * @return {import("../ImageState.js").default} Image state.
-   */
-  ImageStyle.prototype.getImageState = function getImageState () {};
-
-  /**
-   * @abstract
-   * @return {import("../size.js").Size} Image size.
-   */
-  ImageStyle.prototype.getImageSize = function getImageSize () {};
-
-  /**
-   * @abstract
-   * @return {import("../size.js").Size} Size of the hit-detection image.
-   */
-  ImageStyle.prototype.getHitDetectionImageSize = function getHitDetectionImageSize () {};
-
-  /**
-   * Get the origin of the symbolizer.
-   * @abstract
-   * @return {Array<number>} Origin.
-   */
-  ImageStyle.prototype.getOrigin = function getOrigin () {};
-
-  /**
-   * Get the size of the symbolizer (in pixels).
-   * @abstract
-   * @return {import("../size.js").Size} Size.
-   */
-  ImageStyle.prototype.getSize = function getSize () {};
-
-  /**
-   * Set the opacity.
-   *
-   * @param {number} opacity Opacity.
-   * @api
-   */
-  ImageStyle.prototype.setOpacity = function setOpacity (opacity) {
-    this.opacity_ = opacity;
-  };
-
-  /**
-   * Set whether to rotate the style with the view.
-   *
-   * @param {boolean} rotateWithView Rotate with map.
-   * @api
-   */
-  ImageStyle.prototype.setRotateWithView = function setRotateWithView (rotateWithView) {
-    this.rotateWithView_ = rotateWithView;
-  };
-
-  /**
-   * Set the rotation.
-   *
-   * @param {number} rotation Rotation.
-   * @api
-   */
-  ImageStyle.prototype.setRotation = function setRotation (rotation) {
-    this.rotation_ = rotation;
-  };
-  /**
-   * Set the scale.
-   *
-   * @param {number} scale Scale.
-   * @api
-   */
-  ImageStyle.prototype.setScale = function setScale (scale) {
-    this.scale_ = scale;
-  };
-
-  /**
-   * This method is deprecated and does nothing.
-   * @param {boolean} snapToPixel Snap to pixel?
-   * @deprecated
-   * @api
-   */
-  ImageStyle.prototype.setSnapToPixel = function setSnapToPixel (snapToPixel) {};
-
-  /**
-   * @abstract
-   * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
-   * @param {T} thisArg Value to use as `this` when executing `listener`.
-   * @return {import("../events.js").EventsKey|undefined} Listener key.
-   * @template T
-   */
-  ImageStyle.prototype.listenImageChange = function listenImageChange (listener, thisArg) {};
-
-  /**
-   * Load not yet loaded URI.
-   * @abstract
-   */
-  ImageStyle.prototype.load = function load () {};
-
-  /**
-   * @abstract
-   * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
-   * @param {T} thisArg Value to use as `this` when executing `listener`.
-   * @template T
-   */
-  ImageStyle.prototype.unlistenImageChange = function unlistenImageChange (listener, thisArg) {};
-
-  /**
-   * @module ol/style/RegularShape
-   */
-
-
-  /**
-   * Specify radius for regular polygons, or radius1 and radius2 for stars.
-   * @typedef {Object} Options
-   * @property {import("./Fill.js").default} [fill] Fill style.
-   * @property {number} points Number of points for stars and regular polygons. In case of a polygon, the number of points
-   * is the number of sides.
-   * @property {number} [radius] Radius of a regular polygon.
-   * @property {number} [radius1] Outer radius of a star.
-   * @property {number} [radius2] Inner radius of a star.
-   * @property {number} [angle=0] Shape's angle in radians. A value of 0 will have one of the shape's point facing up.
-   * @property {import("./Stroke.js").default} [stroke] Stroke style.
-   * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
-   * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
-   * @property {import("./AtlasManager.js").default} [atlasManager] The atlas manager to use for this symbol. When
-   * using WebGL it is recommended to use an atlas manager to avoid texture switching. If an atlas manager is given, the
-   * symbol is added to an atlas. By default no atlas manager is used.
-   */
-
-
-  /**
-   * @typedef {Object} RenderOptions
-   * @property {import("../colorlike.js").ColorLike} [strokeStyle]
-   * @property {number} strokeWidth
-   * @property {number} size
-   * @property {string} lineCap
-   * @property {Array<number>} lineDash
-   * @property {number} lineDashOffset
-   * @property {string} lineJoin
-   * @property {number} miterLimit
-   */
-
-
-  /**
-   * @classdesc
-   * Set regular shape style for vector features. The resulting shape will be
-   * a regular polygon when `radius` is provided, or a star when `radius1` and
-   * `radius2` are provided.
-   * @api
-   */
-  var RegularShape = /*@__PURE__*/(function (ImageStyle$$1) {
-    function RegularShape(options) {
-      /**
-       * @type {boolean}
-       */
-      var rotateWithView = options.rotateWithView !== undefined ?
-        options.rotateWithView : false;
-
-      ImageStyle$$1.call(this, {
-        opacity: 1,
-        rotateWithView: rotateWithView,
-        rotation: options.rotation !== undefined ? options.rotation : 0,
-        scale: 1
-      });
-
-      /**
-       * @private
-       * @type {Array<string|number>}
-       */
-      this.checksums_ = null;
-
-      /**
-       * @private
-       * @type {HTMLCanvasElement}
-       */
-      this.canvas_ = null;
-
-      /**
-       * @private
-       * @type {HTMLCanvasElement}
-       */
-      this.hitDetectionCanvas_ = null;
-
-      /**
-       * @private
-       * @type {import("./Fill.js").default}
-       */
-      this.fill_ = options.fill !== undefined ? options.fill : null;
-
-      /**
-       * @private
-       * @type {Array<number>}
-       */
-      this.origin_ = [0, 0];
-
-      /**
-       * @private
-       * @type {number}
-       */
-      this.points_ = options.points;
-
-      /**
-       * @protected
-       * @type {number}
-       */
-      this.radius_ = /** @type {number} */ (options.radius !== undefined ?
-        options.radius : options.radius1);
-
-      /**
-       * @private
-       * @type {number|undefined}
-       */
-      this.radius2_ = options.radius2;
-
-      /**
-       * @private
-       * @type {number}
-       */
-      this.angle_ = options.angle !== undefined ? options.angle : 0;
-
-      /**
-       * @private
-       * @type {import("./Stroke.js").default}
-       */
-      this.stroke_ = options.stroke !== undefined ? options.stroke : null;
-
-      /**
-       * @private
-       * @type {Array<number>}
-       */
-      this.anchor_ = null;
-
-      /**
-       * @private
-       * @type {import("../size.js").Size}
-       */
-      this.size_ = null;
-
-      /**
-       * @private
-       * @type {import("../size.js").Size}
-       */
-      this.imageSize_ = null;
-
-      /**
-       * @private
-       * @type {import("../size.js").Size}
-       */
-      this.hitDetectionImageSize_ = null;
-
-      /**
-       * @protected
-       * @type {import("./AtlasManager.js").default|undefined}
-       */
-      this.atlasManager_ = options.atlasManager;
-
-      this.render_(this.atlasManager_);
-
-    }
-
-    if ( ImageStyle$$1 ) RegularShape.__proto__ = ImageStyle$$1;
-    RegularShape.prototype = Object.create( ImageStyle$$1 && ImageStyle$$1.prototype );
-    RegularShape.prototype.constructor = RegularShape;
-
-    /**
-     * Clones the style. If an atlasmanager was provided to the original style it will be used in the cloned style, too.
-     * @return {RegularShape} The cloned style.
-     * @api
-     */
-    RegularShape.prototype.clone = function clone () {
-      var style = new RegularShape({
-        fill: this.getFill() ? this.getFill().clone() : undefined,
-        points: this.getPoints(),
-        radius: this.getRadius(),
-        radius2: this.getRadius2(),
-        angle: this.getAngle(),
-        stroke: this.getStroke() ? this.getStroke().clone() : undefined,
-        rotation: this.getRotation(),
-        rotateWithView: this.getRotateWithView(),
-        atlasManager: this.atlasManager_
-      });
-      style.setOpacity(this.getOpacity());
-      style.setScale(this.getScale());
-      return style;
-    };
-
-    /**
-     * @inheritDoc
-     * @api
-     */
-    RegularShape.prototype.getAnchor = function getAnchor () {
-      return this.anchor_;
-    };
-
-    /**
-     * Get the angle used in generating the shape.
-     * @return {number} Shape's rotation in radians.
-     * @api
-     */
-    RegularShape.prototype.getAngle = function getAngle () {
-      return this.angle_;
-    };
-
-    /**
-     * Get the fill style for the shape.
-     * @return {import("./Fill.js").default} Fill style.
-     * @api
-     */
-    RegularShape.prototype.getFill = function getFill () {
-      return this.fill_;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    RegularShape.prototype.getHitDetectionImage = function getHitDetectionImage (pixelRatio) {
-      return this.hitDetectionCanvas_;
-    };
-
-    /**
-     * @inheritDoc
-     * @api
-     */
-    RegularShape.prototype.getImage = function getImage (pixelRatio) {
-      return this.canvas_;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    RegularShape.prototype.getImageSize = function getImageSize () {
-      return this.imageSize_;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    RegularShape.prototype.getHitDetectionImageSize = function getHitDetectionImageSize () {
-      return this.hitDetectionImageSize_;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    RegularShape.prototype.getImageState = function getImageState () {
-      return ImageState.LOADED;
-    };
-
-    /**
-     * @inheritDoc
-     * @api
-     */
-    RegularShape.prototype.getOrigin = function getOrigin () {
-      return this.origin_;
-    };
-
-    /**
-     * Get the number of points for generating the shape.
-     * @return {number} Number of points for stars and regular polygons.
-     * @api
-     */
-    RegularShape.prototype.getPoints = function getPoints () {
-      return this.points_;
-    };
-
-    /**
-     * Get the (primary) radius for the shape.
-     * @return {number} Radius.
-     * @api
-     */
-    RegularShape.prototype.getRadius = function getRadius () {
-      return this.radius_;
-    };
-
-    /**
-     * Get the secondary radius for the shape.
-     * @return {number|undefined} Radius2.
-     * @api
-     */
-    RegularShape.prototype.getRadius2 = function getRadius2 () {
-      return this.radius2_;
-    };
-
-    /**
-     * @inheritDoc
-     * @api
-     */
-    RegularShape.prototype.getSize = function getSize () {
-      return this.size_;
-    };
-
-    /**
-     * Get the stroke style for the shape.
-     * @return {import("./Stroke.js").default} Stroke style.
-     * @api
-     */
-    RegularShape.prototype.getStroke = function getStroke () {
-      return this.stroke_;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    RegularShape.prototype.listenImageChange = function listenImageChange (listener, thisArg) {
-      return undefined;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    RegularShape.prototype.load = function load () {};
-
-    /**
-     * @inheritDoc
-     */
-    RegularShape.prototype.unlistenImageChange = function unlistenImageChange (listener, thisArg) {};
-
-    /**
-     * @protected
-     * @param {import("./AtlasManager.js").default|undefined} atlasManager An atlas manager.
-     */
-    RegularShape.prototype.render_ = function render_ (atlasManager) {
-      var imageSize;
-      var lineCap = '';
-      var lineJoin = '';
-      var miterLimit = 0;
-      var lineDash = null;
-      var lineDashOffset = 0;
-      var strokeStyle;
-      var strokeWidth = 0;
-
-      if (this.stroke_) {
-        strokeStyle = this.stroke_.getColor();
-        if (strokeStyle === null) {
-          strokeStyle = defaultStrokeStyle;
-        }
-        strokeStyle = asColorLike(strokeStyle);
-        strokeWidth = this.stroke_.getWidth();
-        if (strokeWidth === undefined) {
-          strokeWidth = defaultLineWidth;
-        }
-        lineDash = this.stroke_.getLineDash();
-        lineDashOffset = this.stroke_.getLineDashOffset();
-        if (!CANVAS_LINE_DASH) {
-          lineDash = null;
-          lineDashOffset = 0;
-        }
-        lineJoin = this.stroke_.getLineJoin();
-        if (lineJoin === undefined) {
-          lineJoin = defaultLineJoin;
-        }
-        lineCap = this.stroke_.getLineCap();
-        if (lineCap === undefined) {
-          lineCap = defaultLineCap;
-        }
-        miterLimit = this.stroke_.getMiterLimit();
-        if (miterLimit === undefined) {
-          miterLimit = defaultMiterLimit;
-        }
-      }
-
-      var size = 2 * (this.radius_ + strokeWidth) + 1;
-
-      /** @type {RenderOptions} */
-      var renderOptions = {
-        strokeStyle: strokeStyle,
-        strokeWidth: strokeWidth,
-        size: size,
-        lineCap: lineCap,
-        lineDash: lineDash,
-        lineDashOffset: lineDashOffset,
-        lineJoin: lineJoin,
-        miterLimit: miterLimit
-      };
-
-      if (atlasManager === undefined) {
-        // no atlas manager is used, create a new canvas
-        var context = createCanvasContext2D(size, size);
-        this.canvas_ = context.canvas;
-
-        // canvas.width and height are rounded to the closest integer
-        size = this.canvas_.width;
-        imageSize = size;
-
-        this.draw_(renderOptions, context, 0, 0);
-
-        this.createHitDetectionCanvas_(renderOptions);
-      } else {
-        // an atlas manager is used, add the symbol to an atlas
-        size = Math.round(size);
-
-        var hasCustomHitDetectionImage = !this.fill_;
-        var renderHitDetectionCallback;
-        if (hasCustomHitDetectionImage) {
-          // render the hit-detection image into a separate atlas image
-          renderHitDetectionCallback =
-              this.drawHitDetectionCanvas_.bind(this, renderOptions);
-        }
-
-        var id = this.getChecksum();
-        var info = atlasManager.add(
-          id, size, size, this.draw_.bind(this, renderOptions),
-          renderHitDetectionCallback);
-
-        this.canvas_ = info.image;
-        this.origin_ = [info.offsetX, info.offsetY];
-        imageSize = info.image.width;
-
-        if (hasCustomHitDetectionImage) {
-          this.hitDetectionCanvas_ = info.hitImage;
-          this.hitDetectionImageSize_ =
-              [info.hitImage.width, info.hitImage.height];
-        } else {
-          this.hitDetectionCanvas_ = this.canvas_;
-          this.hitDetectionImageSize_ = [imageSize, imageSize];
-        }
-      }
-
-      this.anchor_ = [size / 2, size / 2];
-      this.size_ = [size, size];
-      this.imageSize_ = [imageSize, imageSize];
-    };
-
-    /**
-     * @private
-     * @param {RenderOptions} renderOptions Render options.
-     * @param {CanvasRenderingContext2D} context The rendering context.
-     * @param {number} x The origin for the symbol (x).
-     * @param {number} y The origin for the symbol (y).
-     */
-    RegularShape.prototype.draw_ = function draw_ (renderOptions, context, x, y) {
-      var i, angle0, radiusC;
-      // reset transform
-      context.setTransform(1, 0, 0, 1, 0, 0);
-
-      // then move to (x, y)
-      context.translate(x, y);
-
-      context.beginPath();
-
-      var points = this.points_;
-      if (points === Infinity) {
-        context.arc(
-          renderOptions.size / 2, renderOptions.size / 2,
-          this.radius_, 0, 2 * Math.PI, true);
-      } else {
-        var radius2 = (this.radius2_ !== undefined) ? this.radius2_
-          : this.radius_;
-        if (radius2 !== this.radius_) {
-          points = 2 * points;
-        }
-        for (i = 0; i <= points; i++) {
-          angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
-          radiusC = i % 2 === 0 ? this.radius_ : radius2;
-          context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
-            renderOptions.size / 2 + radiusC * Math.sin(angle0));
-        }
-      }
-
-
-      if (this.fill_) {
-        var color = this.fill_.getColor();
-        if (color === null) {
-          color = defaultFillStyle;
-        }
-        context.fillStyle = asColorLike(color);
-        context.fill();
-      }
-      if (this.stroke_) {
-        context.strokeStyle = renderOptions.strokeStyle;
-        context.lineWidth = renderOptions.strokeWidth;
-        if (renderOptions.lineDash) {
-          context.setLineDash(renderOptions.lineDash);
-          context.lineDashOffset = renderOptions.lineDashOffset;
-        }
-        context.lineCap = /** @type {CanvasLineCap} */ (renderOptions.lineCap);
-        context.lineJoin = /** @type {CanvasLineJoin} */ (renderOptions.lineJoin);
-        context.miterLimit = renderOptions.miterLimit;
-        context.stroke();
-      }
-      context.closePath();
-    };
-
-    /**
-     * @private
-     * @param {RenderOptions} renderOptions Render options.
-     */
-    RegularShape.prototype.createHitDetectionCanvas_ = function createHitDetectionCanvas_ (renderOptions) {
-      this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
-      if (this.fill_) {
-        this.hitDetectionCanvas_ = this.canvas_;
-        return;
-      }
-
-      // if no fill style is set, create an extra hit-detection image with a
-      // default fill style
-      var context = createCanvasContext2D(renderOptions.size, renderOptions.size);
-      this.hitDetectionCanvas_ = context.canvas;
-
-      this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);
-    };
-
-    /**
-     * @private
-     * @param {RenderOptions} renderOptions Render options.
-     * @param {CanvasRenderingContext2D} context The context.
-     * @param {number} x The origin for the symbol (x).
-     * @param {number} y The origin for the symbol (y).
-     */
-    RegularShape.prototype.drawHitDetectionCanvas_ = function drawHitDetectionCanvas_ (renderOptions, context, x, y) {
-      // reset transform
-      context.setTransform(1, 0, 0, 1, 0, 0);
-
-      // then move to (x, y)
-      context.translate(x, y);
-
-      context.beginPath();
-
-      var points = this.points_;
-      if (points === Infinity) {
-        context.arc(
-          renderOptions.size / 2, renderOptions.size / 2,
-          this.radius_, 0, 2 * Math.PI, true);
-      } else {
-        var radius2 = (this.radius2_ !== undefined) ? this.radius2_
-          : this.radius_;
-        if (radius2 !== this.radius_) {
-          points = 2 * points;
-        }
-        var i, radiusC, angle0;
-        for (i = 0; i <= points; i++) {
-          angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
-          radiusC = i % 2 === 0 ? this.radius_ : radius2;
-          context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
-            renderOptions.size / 2 + radiusC * Math.sin(angle0));
-        }
-      }
-
-      context.fillStyle = asString(defaultFillStyle);
-      context.fill();
-      if (this.stroke_) {
-        context.strokeStyle = renderOptions.strokeStyle;
-        context.lineWidth = renderOptions.strokeWidth;
-        if (renderOptions.lineDash) {
-          context.setLineDash(renderOptions.lineDash);
-          context.lineDashOffset = renderOptions.lineDashOffset;
-        }
-        context.stroke();
-      }
-      context.closePath();
-    };
-
-    /**
-     * @return {string} The checksum.
-     */
-    RegularShape.prototype.getChecksum = function getChecksum () {
-      var strokeChecksum = this.stroke_ ?
-        this.stroke_.getChecksum() : '-';
-      var fillChecksum = this.fill_ ?
-        this.fill_.getChecksum() : '-';
-
-      var recalculate = !this.checksums_ ||
-          (strokeChecksum != this.checksums_[1] ||
-          fillChecksum != this.checksums_[2] ||
-          this.radius_ != this.checksums_[3] ||
-          this.radius2_ != this.checksums_[4] ||
-          this.angle_ != this.checksums_[5] ||
-          this.points_ != this.checksums_[6]);
-
-      if (recalculate) {
-        var checksum = 'r' + strokeChecksum + fillChecksum +
-            (this.radius_ !== undefined ? this.radius_.toString() : '-') +
-            (this.radius2_ !== undefined ? this.radius2_.toString() : '-') +
-            (this.angle_ !== undefined ? this.angle_.toString() : '-') +
-            (this.points_ !== undefined ? this.points_.toString() : '-');
-        this.checksums_ = [checksum, strokeChecksum, fillChecksum,
-          this.radius_, this.radius2_, this.angle_, this.points_];
-      }
-
-      return /** @type {string} */ (this.checksums_[0]);
-    };
-
-    return RegularShape;
-  }(ImageStyle));
-
-  /**
-   * @module ol/style/Circle
-   */
-
-
-  /**
-   * @typedef {Object} Options
-   * @property {import("./Fill.js").default} [fill] Fill style.
-   * @property {number} radius Circle radius.
-   * @property {import("./Stroke.js").default} [stroke] Stroke style.
-   * @property {import("./AtlasManager.js").default} [atlasManager] The atlas manager to use for this circle.
-   * When using WebGL it is recommended to use an atlas manager to avoid texture switching. If an atlas manager is given,
-   * the circle is added to an atlas. By default no atlas manager is used.
-   */
-
-
-  /**
-   * @classdesc
-   * Set circle style for vector features.
-   * @api
-   */
-  var CircleStyle = /*@__PURE__*/(function (RegularShape$$1) {
-    function CircleStyle(opt_options) {
-
-      var options = opt_options || /** @type {Options} */ ({});
-
-      RegularShape$$1.call(this, {
-        points: Infinity,
-        fill: options.fill,
-        radius: options.radius,
-        stroke: options.stroke,
-        atlasManager: options.atlasManager
-      });
-
-    }
-
-    if ( RegularShape$$1 ) CircleStyle.__proto__ = RegularShape$$1;
-    CircleStyle.prototype = Object.create( RegularShape$$1 && RegularShape$$1.prototype );
-    CircleStyle.prototype.constructor = CircleStyle;
-
-    /**
-    * Clones the style.  If an atlasmanager was provided to the original style it will be used in the cloned style, too.
-    * @return {CircleStyle} The cloned style.
-    * @override
-    * @api
-    */
-    CircleStyle.prototype.clone = function clone () {
-      var style = new CircleStyle({
-        fill: this.getFill() ? this.getFill().clone() : undefined,
-        stroke: this.getStroke() ? this.getStroke().clone() : undefined,
-        radius: this.getRadius(),
-        atlasManager: this.atlasManager_
-      });
-      style.setOpacity(this.getOpacity());
-      style.setScale(this.getScale());
-      return style;
-    };
-
-    /**
-    * Set the circle radius.
-    *
-    * @param {number} radius Circle radius.
-    * @api
-    */
-    CircleStyle.prototype.setRadius = function setRadius (radius) {
-      this.radius_ = radius;
-      this.render_(this.atlasManager_);
-    };
-
-    return CircleStyle;
-  }(RegularShape));
-
-  /**
-   * @module ol/style/Fill
-   */
-
-
-  /**
-   * @typedef {Object} Options
-   * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color] A color, gradient or pattern.
-   * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
-   * Default null; if null, the Canvas/renderer default black will be used.
-   */
-
-
-  /**
-   * @classdesc
-   * Set fill style for vector features.
-   * @api
-   */
-  var Fill = function Fill(opt_options) {
-
-    var options = opt_options || {};
-
-    /**
-     * @private
-     * @type {import("../color.js").Color|import("../colorlike.js").ColorLike}
-     */
-    this.color_ = options.color !== undefined ? options.color : null;
-
-    /**
-     * @private
-     * @type {string|undefined}
-     */
-    this.checksum_ = undefined;
-  };
-
-  /**
-   * Clones the style. The color is not cloned if it is an {@link module:ol/colorlike~ColorLike}.
-   * @return {Fill} The cloned style.
-   * @api
-   */
-  Fill.prototype.clone = function clone () {
-    var color = this.getColor();
-    return new Fill({
-      color: Array.isArray(color) ? color.slice() : color || undefined
-    });
-  };
-
-  /**
-   * Get the fill color.
-   * @return {import("../color.js").Color|import("../colorlike.js").ColorLike} Color.
-   * @api
-   */
-  Fill.prototype.getColor = function getColor () {
-    return this.color_;
-  };
-
-  /**
-   * Set the color.
-   *
-   * @param {import("../color.js").Color|import("../colorlike.js").ColorLike} color Color.
-   * @api
-   */
-  Fill.prototype.setColor = function setColor (color) {
-    this.color_ = color;
-    this.checksum_ = undefined;
-  };
-
-  /**
-   * @return {string} The checksum.
-   */
-  Fill.prototype.getChecksum = function getChecksum () {
-    if (this.checksum_ === undefined) {
-      if (
-        this.color_ instanceof CanvasPattern ||
-          this.color_ instanceof CanvasGradient
-      ) {
-        this.checksum_ = getUid(this.color_).toString();
-      } else {
-        this.checksum_ = 'f' + (this.color_ ? asString(this.color_) : '-');
-      }
-    }
-
-    return this.checksum_;
-  };
-
-  /**
-   * @module ol/style/Stroke
-   */
-
-
-  /**
-   * @typedef {Object} Options
-   * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color] A color, gradient or pattern.
-   * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
-   * Default null; if null, the Canvas/renderer default black will be used.
-   * @property {string} [lineCap='round'] Line cap style: `butt`, `round`, or `square`.
-   * @property {string} [lineJoin='round'] Line join style: `bevel`, `round`, or `miter`.
-   * @property {Array<number>} [lineDash] Line dash pattern. Default is `undefined` (no dash).
-   * Please note that Internet Explorer 10 and lower do not support the `setLineDash` method on
-   * the `CanvasRenderingContext2D` and therefore this option will have no visual effect in these browsers.
-   * @property {number} [lineDashOffset=0] Line dash offset.
-   * @property {number} [miterLimit=10] Miter limit.
-   * @property {number} [width] Width.
-   */
-
-
-  /**
-   * @classdesc
-   * Set stroke style for vector features.
-   * Note that the defaults given are the Canvas defaults, which will be used if
-   * option is not defined. The `get` functions return whatever was entered in
-   * the options; they will not return the default.
-   * @api
-   */
-  var Stroke = function Stroke(opt_options) {
-
-    var options = opt_options || {};
-
-    /**
-     * @private
-     * @type {import("../color.js").Color|import("../colorlike.js").ColorLike}
-     */
-    this.color_ = options.color !== undefined ? options.color : null;
-
-    /**
-     * @private
-     * @type {string|undefined}
-     */
-    this.lineCap_ = options.lineCap;
-
-    /**
-     * @private
-     * @type {Array<number>}
-     */
-    this.lineDash_ = options.lineDash !== undefined ? options.lineDash : null;
-
-    /**
-     * @private
-     * @type {number|undefined}
-     */
-    this.lineDashOffset_ = options.lineDashOffset;
-
-    /**
-     * @private
-     * @type {string|undefined}
-     */
-    this.lineJoin_ = options.lineJoin;
-
-    /**
-     * @private
-     * @type {number|undefined}
-     */
-    this.miterLimit_ = options.miterLimit;
-
-    /**
-     * @private
-     * @type {number|undefined}
-     */
-    this.width_ = options.width;
-
-    /**
-     * @private
-     * @type {string|undefined}
-     */
-    this.checksum_ = undefined;
-  };
-
-  /**
-   * Clones the style.
-   * @return {Stroke} The cloned style.
-   * @api
-   */
-  Stroke.prototype.clone = function clone () {
-    var color = this.getColor();
-    return new Stroke({
-      color: Array.isArray(color) ? color.slice() : color || undefined,
-      lineCap: this.getLineCap(),
-      lineDash: this.getLineDash() ? this.getLineDash().slice() : undefined,
-      lineDashOffset: this.getLineDashOffset(),
-      lineJoin: this.getLineJoin(),
-      miterLimit: this.getMiterLimit(),
-      width: this.getWidth()
-    });
-  };
-
-  /**
-   * Get the stroke color.
-   * @return {import("../color.js").Color|import("../colorlike.js").ColorLike} Color.
-   * @api
-   */
-  Stroke.prototype.getColor = function getColor () {
-    return this.color_;
-  };
-
-  /**
-   * Get the line cap type for the stroke.
-   * @return {string|undefined} Line cap.
-   * @api
-   */
-  Stroke.prototype.getLineCap = function getLineCap () {
-    return this.lineCap_;
-  };
-
-  /**
-   * Get the line dash style for the stroke.
-   * @return {Array<number>} Line dash.
-   * @api
-   */
-  Stroke.prototype.getLineDash = function getLineDash () {
-    return this.lineDash_;
-  };
-
-  /**
-   * Get the line dash offset for the stroke.
-   * @return {number|undefined} Line dash offset.
-   * @api
-   */
-  Stroke.prototype.getLineDashOffset = function getLineDashOffset () {
-    return this.lineDashOffset_;
-  };
-
-  /**
-   * Get the line join type for the stroke.
-   * @return {string|undefined} Line join.
-   * @api
-   */
-  Stroke.prototype.getLineJoin = function getLineJoin () {
-    return this.lineJoin_;
-  };
-
-  /**
-   * Get the miter limit for the stroke.
-   * @return {number|undefined} Miter limit.
-   * @api
-   */
-  Stroke.prototype.getMiterLimit = function getMiterLimit () {
-    return this.miterLimit_;
-  };
-
-  /**
-   * Get the stroke width.
-   * @return {number|undefined} Width.
-   * @api
-   */
-  Stroke.prototype.getWidth = function getWidth () {
-    return this.width_;
-  };
-
-  /**
-   * Set the color.
-   *
-   * @param {import("../color.js").Color|import("../colorlike.js").ColorLike} color Color.
-   * @api
-   */
-  Stroke.prototype.setColor = function setColor (color) {
-    this.color_ = color;
-    this.checksum_ = undefined;
-  };
-
-  /**
-   * Set the line cap.
-   *
-   * @param {string|undefined} lineCap Line cap.
-   * @api
-   */
-  Stroke.prototype.setLineCap = function setLineCap (lineCap) {
-    this.lineCap_ = lineCap;
-    this.checksum_ = undefined;
-  };
-
-  /**
-   * Set the line dash.
-   *
-   * Please note that Internet Explorer 10 and lower [do not support][mdn] the
-   * `setLineDash` method on the `CanvasRenderingContext2D` and therefore this
-   * property will have no visual effect in these browsers.
-   *
-   * [mdn]: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash#Browser_compatibility
-   *
-   * @param {Array<number>} lineDash Line dash.
-   * @api
-   */
-  Stroke.prototype.setLineDash = function setLineDash (lineDash) {
-    this.lineDash_ = lineDash;
-    this.checksum_ = undefined;
-  };
-
-  /**
-   * Set the line dash offset.
-   *
-   * @param {number|undefined} lineDashOffset Line dash offset.
-   * @api
-   */
-  Stroke.prototype.setLineDashOffset = function setLineDashOffset (lineDashOffset) {
-    this.lineDashOffset_ = lineDashOffset;
-    this.checksum_ = undefined;
-  };
-
-  /**
-   * Set the line join.
-   *
-   * @param {string|undefined} lineJoin Line join.
-   * @api
-   */
-  Stroke.prototype.setLineJoin = function setLineJoin (lineJoin) {
-    this.lineJoin_ = lineJoin;
-    this.checksum_ = undefined;
-  };
-
-  /**
-   * Set the miter limit.
-   *
-   * @param {number|undefined} miterLimit Miter limit.
-   * @api
-   */
-  Stroke.prototype.setMiterLimit = function setMiterLimit (miterLimit) {
-    this.miterLimit_ = miterLimit;
-    this.checksum_ = undefined;
-  };
-
-  /**
-   * Set the width.
-   *
-   * @param {number|undefined} width Width.
-   * @api
-   */
-  Stroke.prototype.setWidth = function setWidth (width) {
-    this.width_ = width;
-    this.checksum_ = undefined;
-  };
-
-  /**
-   * @return {string} The checksum.
-   */
-  Stroke.prototype.getChecksum = function getChecksum () {
-    if (this.checksum_ === undefined) {
-      this.checksum_ = 's';
-      if (this.color_) {
-        if (typeof this.color_ === 'string') {
-          this.checksum_ += this.color_;
-        } else {
-          this.checksum_ += getUid(this.color_).toString();
-        }
-      } else {
-        this.checksum_ += '-';
-      }
-      this.checksum_ += ',' +
-          (this.lineCap_ !== undefined ?
-            this.lineCap_.toString() : '-') + ',' +
-          (this.lineDash_ ?
-            this.lineDash_.toString() : '-') + ',' +
-          (this.lineDashOffset_ !== undefined ?
-            this.lineDashOffset_ : '-') + ',' +
-          (this.lineJoin_ !== undefined ?
-            this.lineJoin_ : '-') + ',' +
-          (this.miterLimit_ !== undefined ?
-            this.miterLimit_.toString() : '-') + ',' +
-          (this.width_ !== undefined ?
-            this.width_.toString() : '-');
-    }
-
-    return this.checksum_;
-  };
-
-  /**
-   * @module ol/style/Style
-   */
-
-
-  /**
-   * A function that takes an {@link module:ol/Feature} and a `{number}`
-   * representing the view's resolution. The function should return a
-   * {@link module:ol/style/Style} or an array of them. This way e.g. a
-   * vector layer can be styled.
-   *
-   * @typedef {function((import("../Feature.js").default|import("../render/Feature.js").default), number):
-   *     (Style|Array<Style>)} StyleFunction
-   */
-
-
-  /**
-   * A function that takes an {@link module:ol/Feature} as argument and returns an
-   * {@link module:ol/geom/Geometry} that will be rendered and styled for the feature.
-   *
-   * @typedef {function((import("../Feature.js").default|import("../render/Feature.js").default)):
-   *     (import("../geom/Geometry.js").default|import("../render/Feature.js").default|undefined)} GeometryFunction
-   */
-
-
-  /**
-   * Custom renderer function. Takes two arguments:
-   *
-   * 1. The pixel coordinates of the geometry in GeoJSON notation.
-   * 2. The {@link module:ol/render~State} of the layer renderer.
-   *
-   * @typedef {function((import("../coordinate.js").Coordinate|Array<import("../coordinate.js").Coordinate>|Array<Array<import("../coordinate.js").Coordinate>>),import("../render.js").State)}
-   * RenderFunction
-   */
-
-
-  /**
-   * @typedef {Object} Options
-   * @property {string|import("../geom/Geometry.js").default|GeometryFunction} [geometry] Feature property or geometry
-   * or function returning a geometry to render for this style.
-   * @property {import("./Fill.js").default} [fill] Fill style.
-   * @property {import("./Image.js").default} [image] Image style.
-   * @property {RenderFunction} [renderer] Custom renderer. When configured, `fill`, `stroke` and `image` will be
-   * ignored, and the provided function will be called with each render frame for each geometry.
-   * @property {import("./Stroke.js").default} [stroke] Stroke style.
-   * @property {import("./Text.js").default} [text] Text style.
-   * @property {number} [zIndex] Z index.
-   */
-
-
-  /**
-   * @classdesc
-   * Container for vector feature rendering styles. Any changes made to the style
-   * or its children through `set*()` methods will not take effect until the
-   * feature or layer that uses the style is re-rendered.
-   * @api
-   */
-  var Style = function Style(opt_options) {
-
-    var options = opt_options || {};
-
-    /**
-     * @private
-     * @type {string|import("../geom/Geometry.js").default|GeometryFunction}
-     */
-    this.geometry_ = null;
-
-    /**
-     * @private
-     * @type {!GeometryFunction}
-     */
-    this.geometryFunction_ = defaultGeometryFunction;
-
-    if (options.geometry !== undefined) {
-      this.setGeometry(options.geometry);
-    }
-
-    /**
-     * @private
-     * @type {import("./Fill.js").default}
-     */
-    this.fill_ = options.fill !== undefined ? options.fill : null;
-
-    /**
-       * @private
-       * @type {import("./Image.js").default}
-       */
-    this.image_ = options.image !== undefined ? options.image : null;
-
-    /**
-     * @private
-     * @type {RenderFunction|null}
-     */
-    this.renderer_ = options.renderer !== undefined ? options.renderer : null;
-
-    /**
-     * @private
-     * @type {import("./Stroke.js").default}
-     */
-    this.stroke_ = options.stroke !== undefined ? options.stroke : null;
-
-    /**
-     * @private
-     * @type {import("./Text.js").default}
-     */
-    this.text_ = options.text !== undefined ? options.text : null;
-
-    /**
-     * @private
-     * @type {number|undefined}
-     */
-    this.zIndex_ = options.zIndex;
-
-  };
-
-  /**
-   * Clones the style.
-   * @return {Style} The cloned style.
-   * @api
-   */
-  Style.prototype.clone = function clone () {
-    var geometry = this.getGeometry();
-    if (geometry instanceof Geometry) {
-      geometry = geometry.clone();
-    }
-    return new Style({
-      geometry: geometry,
-      fill: this.getFill() ? this.getFill().clone() : undefined,
-      image: this.getImage() ? this.getImage().clone() : undefined,
-      stroke: this.getStroke() ? this.getStroke().clone() : undefined,
-      text: this.getText() ? this.getText().clone() : undefined,
-      zIndex: this.getZIndex()
-    });
-  };
-
-  /**
-   * Get the custom renderer function that was configured with
-   * {@link #setRenderer} or the `renderer` constructor option.
-   * @return {RenderFunction|null} Custom renderer function.
-   * @api
-   */
-  Style.prototype.getRenderer = function getRenderer () {
-    return this.renderer_;
-  };
-
-  /**
-   * Sets a custom renderer function for this style. When set, `fill`, `stroke`
-   * and `image` options of the style will be ignored.
-   * @param {RenderFunction|null} renderer Custom renderer function.
-   * @api
-   */
-  Style.prototype.setRenderer = function setRenderer (renderer) {
-    this.renderer_ = renderer;
-  };
-
-  /**
-   * Get the geometry to be rendered.
-   * @return {string|import("../geom/Geometry.js").default|GeometryFunction}
-   * Feature property or geometry or function that returns the geometry that will
-   * be rendered with this style.
-   * @api
-   */
-  Style.prototype.getGeometry = function getGeometry () {
-    return this.geometry_;
-  };
-
-  /**
-   * Get the function used to generate a geometry for rendering.
-   * @return {!GeometryFunction} Function that is called with a feature
-   * and returns the geometry to render instead of the feature's geometry.
-   * @api
-   */
-  Style.prototype.getGeometryFunction = function getGeometryFunction () {
-    return this.geometryFunction_;
-  };
-
-  /**
-   * Get the fill style.
-   * @return {import("./Fill.js").default} Fill style.
-   * @api
-   */
-  Style.prototype.getFill = function getFill () {
-    return this.fill_;
-  };
-
-  /**
-   * Set the fill style.
-   * @param {import("./Fill.js").default} fill Fill style.
-   * @api
-   */
-  Style.prototype.setFill = function setFill (fill) {
-    this.fill_ = fill;
-  };
-
-  /**
-   * Get the image style.
-   * @return {import("./Image.js").default} Image style.
-   * @api
-   */
-  Style.prototype.getImage = function getImage () {
-    return this.image_;
-  };
-
-  /**
-   * Set the image style.
-   * @param {import("./Image.js").default} image Image style.
-   * @api
-   */
-  Style.prototype.setImage = function setImage (image) {
-    this.image_ = image;
-  };
-
-  /**
-   * Get the stroke style.
-   * @return {import("./Stroke.js").default} Stroke style.
-   * @api
-   */
-  Style.prototype.getStroke = function getStroke () {
-    return this.stroke_;
-  };
-
-  /**
-   * Set the stroke style.
-   * @param {import("./Stroke.js").default} stroke Stroke style.
-   * @api
-   */
-  Style.prototype.setStroke = function setStroke (stroke) {
-    this.stroke_ = stroke;
-  };
-
-  /**
-   * Get the text style.
-   * @return {import("./Text.js").default} Text style.
-   * @api
-   */
-  Style.prototype.getText = function getText () {
-    return this.text_;
-  };
-
-  /**
-   * Set the text style.
-   * @param {import("./Text.js").default} text Text style.
-   * @api
-   */
-  Style.prototype.setText = function setText (text) {
-    this.text_ = text;
-  };
-
-  /**
-   * Get the z-index for the style.
-   * @return {number|undefined} ZIndex.
-   * @api
-   */
-  Style.prototype.getZIndex = function getZIndex () {
-    return this.zIndex_;
-  };
-
-  /**
-   * Set a geometry that is rendered instead of the feature's geometry.
-   *
-   * @param {string|import("../geom/Geometry.js").default|GeometryFunction} geometry
-   *   Feature property or geometry or function returning a geometry to render
-   *   for this style.
-   * @api
-   */
-  Style.prototype.setGeometry = function setGeometry (geometry) {
-    if (typeof geometry === 'function') {
-      this.geometryFunction_ = geometry;
-    } else if (typeof geometry === 'string') {
-      this.geometryFunction_ = function(feature) {
-        return (
-          /** @type {import("../geom/Geometry.js").default} */ (feature.get(geometry))
-        );
-      };
-    } else if (!geometry) {
-      this.geometryFunction_ = defaultGeometryFunction;
-    } else if (geometry !== undefined) {
-      this.geometryFunction_ = function() {
-        return (
-          /** @type {import("../geom/Geometry.js").default} */ (geometry)
-        );
-      };
-    }
-    this.geometry_ = geometry;
-  };
-
-  /**
-   * Set the z-index.
-   *
-   * @param {number|undefined} zIndex ZIndex.
-   * @api
-   */
-  Style.prototype.setZIndex = function setZIndex (zIndex) {
-    this.zIndex_ = zIndex;
-  };
-
-
-  /**
-   * Convert the provided object into a style function.  Functions passed through
-   * unchanged.  Arrays of Style or single style objects wrapped in a
-   * new style function.
-   * @param {StyleFunction|Array<Style>|Style} obj
-   *     A style function, a single style, or an array of styles.
-   * @return {StyleFunction} A style function.
-   */
-  function toFunction(obj) {
-    var styleFunction;
-
-    if (typeof obj === 'function') {
-      styleFunction = obj;
-    } else {
-      /**
-       * @type {Array<Style>}
-       */
-      var styles;
-      if (Array.isArray(obj)) {
-        styles = obj;
-      } else {
-        assert(obj instanceof Style,
-          41); // Expected an `Style` or an array of `Style`
-        styles = [obj];
-      }
-      styleFunction = function() {
-        return styles;
-      };
-    }
-    return styleFunction;
-  }
-
-
-  /**
-   * @type {Array<Style>}
-   */
-  var defaultStyles = null;
-
-
-  /**
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
-   * @param {number} resolution Resolution.
-   * @return {Array<Style>} Style.
-   */
-  function createDefaultStyle(feature, resolution) {
-    // We don't use an immediately-invoked function
-    // and a closure so we don't get an error at script evaluation time in
-    // browsers that do not support Canvas. (import("./Circle.js").CircleStyle does
-    // canvas.getContext('2d') at construction time, which will cause an.error
-    // in such browsers.)
-    if (!defaultStyles) {
-      var fill = new Fill({
-        color: 'rgba(255,255,255,0.4)'
-      });
-      var stroke = new Stroke({
-        color: '#3399CC',
-        width: 1.25
-      });
-      defaultStyles = [
-        new Style({
-          image: new CircleStyle({
-            fill: fill,
-            stroke: stroke,
-            radius: 5
-          }),
-          fill: fill,
-          stroke: stroke
-        })
-      ];
-    }
-    return defaultStyles;
-  }
-
-
-  /**
-   * Default styles for editing features.
-   * @return {Object<import("../geom/GeometryType.js").default, Array<Style>>} Styles
-   */
-  function createEditingStyle() {
-    /** @type {Object<import("../geom/GeometryType.js").default, Array<Style>>} */
-    var styles = {};
-    var white = [255, 255, 255, 1];
-    var blue = [0, 153, 255, 1];
-    var width = 3;
-    styles[GeometryType.POLYGON] = [
-      new Style({
-        fill: new Fill({
-          color: [255, 255, 255, 0.5]
-        })
-      })
-    ];
-    styles[GeometryType.MULTI_POLYGON] =
-        styles[GeometryType.POLYGON];
-
-    styles[GeometryType.LINE_STRING] = [
-      new Style({
-        stroke: new Stroke({
-          color: white,
-          width: width + 2
-        })
-      }),
-      new Style({
-        stroke: new Stroke({
-          color: blue,
-          width: width
-        })
-      })
-    ];
-    styles[GeometryType.MULTI_LINE_STRING] =
-        styles[GeometryType.LINE_STRING];
-
-    styles[GeometryType.CIRCLE] =
-        styles[GeometryType.POLYGON].concat(
-          styles[GeometryType.LINE_STRING]
-        );
-
-
-    styles[GeometryType.POINT] = [
-      new Style({
-        image: new CircleStyle({
-          radius: width * 2,
-          fill: new Fill({
-            color: blue
-          }),
-          stroke: new Stroke({
-            color: white,
-            width: width / 2
-          })
-        }),
-        zIndex: Infinity
-      })
-    ];
-    styles[GeometryType.MULTI_POINT] =
-        styles[GeometryType.POINT];
-
-    styles[GeometryType.GEOMETRY_COLLECTION] =
-        styles[GeometryType.POLYGON].concat(
-          styles[GeometryType.LINE_STRING],
-          styles[GeometryType.POINT]
-        );
-
-    return styles;
-  }
-
-
-  /**
-   * Function that is called with a feature and returns its default geometry.
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature to get the geometry for.
-   * @return {import("../geom/Geometry.js").default|import("../render/Feature.js").default|undefined} Geometry to render.
-   */
-  function defaultGeometryFunction(feature) {
-    return feature.getGeometry();
-  }
-
-  /**
-   * @module ol/Feature
-   */
-
-  /**
-   * @classdesc
-   * A vector object for geographic features with a geometry and other
-   * attribute properties, similar to the features in vector file formats like
-   * GeoJSON.
-   *
-   * Features can be styled individually with `setStyle`; otherwise they use the
-   * style of their vector layer.
-   *
-   * Note that attribute properties are set as {@link module:ol/Object} properties on
-   * the feature object, so they are observable, and have get/set accessors.
-   *
-   * Typically, a feature has a single geometry property. You can set the
-   * geometry using the `setGeometry` method and get it with `getGeometry`.
-   * It is possible to store more than one geometry on a feature using attribute
-   * properties. By default, the geometry used for rendering is identified by
-   * the property name `geometry`. If you want to use another geometry property
-   * for rendering, use the `setGeometryName` method to change the attribute
-   * property associated with the geometry for the feature.  For example:
-   *
-   * ```js
-   *
-   * import Feature from 'ol/Feature';
-   * import Polygon from 'ol/geom/Polygon';
-   * import Point from 'ol/geom/Point';
-   *
-   * var feature = new Feature({
-   *   geometry: new Polygon(polyCoords),
-   *   labelPoint: new Point(labelCoords),
-   *   name: 'My Polygon'
-   * });
-   *
-   * // get the polygon geometry
-   * var poly = feature.getGeometry();
-   *
-   * // Render the feature as a point using the coordinates from labelPoint
-   * feature.setGeometryName('labelPoint');
-   *
-   * // get the point geometry
-   * var point = feature.getGeometry();
-   * ```
-   *
-   * @api
-   */
-  var Feature = /*@__PURE__*/(function (BaseObject$$1) {
-    function Feature(opt_geometryOrProperties) {
-
-      BaseObject$$1.call(this);
-
-      /**
-       * @private
-       * @type {number|string|undefined}
-       */
-      this.id_ = undefined;
-
-      /**
-       * @type {string}
-       * @private
-       */
-      this.geometryName_ = 'geometry';
-
-      /**
-       * User provided style.
-       * @private
-       * @type {Style|Array<Style>|import("./style/Style.js").StyleFunction}
-       */
-      this.style_ = null;
-
-      /**
-       * @private
-       * @type {import("./style/Style.js").StyleFunction|undefined}
-       */
-      this.styleFunction_ = undefined;
-
-      /**
-       * @private
-       * @type {?import("./events.js").EventsKey}
-       */
-      this.geometryChangeKey_ = null;
-
-      listen(
-        this, getChangeEventType(this.geometryName_),
-        this.handleGeometryChanged_, this);
-
-      if (opt_geometryOrProperties !== undefined) {
-        if (opt_geometryOrProperties instanceof Geometry) {
-
-          var geometry = /** @type {Geometry} */ (opt_geometryOrProperties);
-          this.setGeometry(geometry);
-        } else {
-          /** @type {Object<string, *>} */
-          var properties = opt_geometryOrProperties;
-          this.setProperties(properties);
-        }
-      }
-    }
-
-    if ( BaseObject$$1 ) Feature.__proto__ = BaseObject$$1;
-    Feature.prototype = Object.create( BaseObject$$1 && BaseObject$$1.prototype );
-    Feature.prototype.constructor = Feature;
-
-    /**
-     * Clone this feature. If the original feature has a geometry it
-     * is also cloned. The feature id is not set in the clone.
-     * @return {Feature} The clone.
-     * @api
-     */
-    Feature.prototype.clone = function clone () {
-      var clone = new Feature(this.getProperties());
-      clone.setGeometryName(this.getGeometryName());
-      var geometry = this.getGeometry();
-      if (geometry) {
-        clone.setGeometry(geometry.clone());
-      }
-      var style = this.getStyle();
-      if (style) {
-        clone.setStyle(style);
-      }
-      return clone;
-    };
-
-    /**
-     * Get the feature's default geometry.  A feature may have any number of named
-     * geometries.  The "default" geometry (the one that is rendered by default) is
-     * set when calling {@link module:ol/Feature~Feature#setGeometry}.
-     * @return {Geometry|undefined} The default geometry for the feature.
-     * @api
-     * @observable
-     */
-    Feature.prototype.getGeometry = function getGeometry () {
-      return (
-        /** @type {Geometry|undefined} */ (this.get(this.geometryName_))
-      );
-    };
-
-    /**
-     * Get the feature identifier.  This is a stable identifier for the feature and
-     * is either set when reading data from a remote source or set explicitly by
-     * calling {@link module:ol/Feature~Feature#setId}.
-     * @return {number|string|undefined} Id.
-     * @api
-     */
-    Feature.prototype.getId = function getId () {
-      return this.id_;
-    };
-
-    /**
-     * Get the name of the feature's default geometry.  By default, the default
-     * geometry is named `geometry`.
-     * @return {string} Get the property name associated with the default geometry
-     *     for this feature.
-     * @api
-     */
-    Feature.prototype.getGeometryName = function getGeometryName () {
-      return this.geometryName_;
-    };
-
-    /**
-     * Get the feature's style. Will return what was provided to the
-     * {@link module:ol/Feature~Feature#setStyle} method.
-     * @return {Style|Array<Style>|import("./style/Style.js").StyleFunction} The feature style.
-     * @api
-     */
-    Feature.prototype.getStyle = function getStyle () {
-      return this.style_;
-    };
-
-    /**
-     * Get the feature's style function.
-     * @return {import("./style/Style.js").StyleFunction|undefined} Return a function
-     * representing the current style of this feature.
-     * @api
-     */
-    Feature.prototype.getStyleFunction = function getStyleFunction () {
-      return this.styleFunction_;
-    };
-
-    /**
-     * @private
-     */
-    Feature.prototype.handleGeometryChange_ = function handleGeometryChange_ () {
-      this.changed();
-    };
-
-    /**
-     * @private
-     */
-    Feature.prototype.handleGeometryChanged_ = function handleGeometryChanged_ () {
-      if (this.geometryChangeKey_) {
-        unlistenByKey(this.geometryChangeKey_);
-        this.geometryChangeKey_ = null;
-      }
-      var geometry = this.getGeometry();
-      if (geometry) {
-        this.geometryChangeKey_ = listen(geometry,
-          EventType.CHANGE, this.handleGeometryChange_, this);
-      }
-      this.changed();
-    };
-
-    /**
-     * Set the default geometry for the feature.  This will update the property
-     * with the name returned by {@link module:ol/Feature~Feature#getGeometryName}.
-     * @param {Geometry|undefined} geometry The new geometry.
-     * @api
-     * @observable
-     */
-    Feature.prototype.setGeometry = function setGeometry (geometry) {
-      this.set(this.geometryName_, geometry);
-    };
-
-    /**
-     * Set the style for the feature.  This can be a single style object, an array
-     * of styles, or a function that takes a resolution and returns an array of
-     * styles. If it is `null` the feature has no style (a `null` style).
-     * @param {Style|Array<Style>|import("./style/Style.js").StyleFunction} style Style for this feature.
-     * @api
-     * @fires module:ol/events/Event~Event#event:change
-     */
-    Feature.prototype.setStyle = function setStyle (style) {
-      this.style_ = style;
-      this.styleFunction_ = !style ? undefined : createStyleFunction(style);
-      this.changed();
-    };
-
-    /**
-     * Set the feature id.  The feature id is considered stable and may be used when
-     * requesting features or comparing identifiers returned from a remote source.
-     * The feature id can be used with the
-     * {@link module:ol/source/Vector~VectorSource#getFeatureById} method.
-     * @param {number|string|undefined} id The feature id.
-     * @api
-     * @fires module:ol/events/Event~Event#event:change
-     */
-    Feature.prototype.setId = function setId (id) {
-      this.id_ = id;
-      this.changed();
-    };
-
-    /**
-     * Set the property name to be used when getting the feature's default geometry.
-     * When calling {@link module:ol/Feature~Feature#getGeometry}, the value of the property with
-     * this name will be returned.
-     * @param {string} name The property name of the default geometry.
-     * @api
-     */
-    Feature.prototype.setGeometryName = function setGeometryName (name) {
-      unlisten(
-        this, getChangeEventType(this.geometryName_),
-        this.handleGeometryChanged_, this);
-      this.geometryName_ = name;
-      listen(
-        this, getChangeEventType(this.geometryName_),
-        this.handleGeometryChanged_, this);
-      this.handleGeometryChanged_();
-    };
-
-    return Feature;
-  }(BaseObject));
-
-
-  /**
-   * Convert the provided object into a feature style function.  Functions passed
-   * through unchanged.  Arrays of Style or single style objects wrapped
-   * in a new feature style function.
-   * @param {import("./style/Style.js").StyleFunction|!Array<Style>|!Style} obj
-   *     A feature style function, a single style, or an array of styles.
-   * @return {import("./style/Style.js").StyleFunction} A style function.
-   */
-  function createStyleFunction(obj) {
-    if (typeof obj === 'function') {
-      return obj;
-    } else {
-      /**
-       * @type {Array<Style>}
-       */
-      var styles;
-      if (Array.isArray(obj)) {
-        styles = obj;
-      } else {
-        assert(obj instanceof Style,
-          41); // Expected an `import("./style/Style.js").Style` or an array of `import("./style/Style.js").Style`
-        styles = [obj];
-      }
-      return function() {
-        return styles;
-      };
-    }
-  }
-
-  /**
-   * @module ol/GeolocationProperty
-   */
-
-  /**
-   * @enum {string}
-   */
-  var GeolocationProperty = {
-    ACCURACY: 'accuracy',
-    ACCURACY_GEOMETRY: 'accuracyGeometry',
-    ALTITUDE: 'altitude',
-    ALTITUDE_ACCURACY: 'altitudeAccuracy',
-    HEADING: 'heading',
-    POSITION: 'position',
-    PROJECTION: 'projection',
-    SPEED: 'speed',
-    TRACKING: 'tracking',
-    TRACKING_OPTIONS: 'trackingOptions'
-  };
-
-  /**
-   * @module ol/array
-   */
-
-
-  /**
-   * Performs a binary search on the provided sorted list and returns the index of the item if found. If it can't be found it'll return -1.
-   * https://github.com/darkskyapp/binary-search
-   *
-   * @param {Array<*>} haystack Items to search through.
-   * @param {*} needle The item to look for.
-   * @param {Function=} opt_comparator Comparator function.
-   * @return {number} The index of the item if found, -1 if not.
-   */
-  function binarySearch(haystack, needle, opt_comparator) {
-    var mid, cmp;
-    var comparator = opt_comparator || numberSafeCompareFunction;
-    var low = 0;
-    var high = haystack.length;
-    var found = false;
-
-    while (low < high) {
-      /* Note that "(low + high) >>> 1" may overflow, and results in a typecast
-       * to double (which gives the wrong results). */
-      mid = low + (high - low >> 1);
-      cmp = +comparator(haystack[mid], needle);
-
-      if (cmp < 0.0) { /* Too low. */
-        low = mid + 1;
-
-      } else { /* Key found or too high */
-        high = mid;
-        found = !cmp;
-      }
-    }
-
-    /* Key not found. */
-    return found ? low : ~low;
-  }
-
-
-  /**
-   * Compare function for array sort that is safe for numbers.
-   * @param {*} a The first object to be compared.
-   * @param {*} b The second object to be compared.
-   * @return {number} A negative number, zero, or a positive number as the first
-   *     argument is less than, equal to, or greater than the second.
-   */
-  function numberSafeCompareFunction(a, b) {
-    return a > b ? 1 : a < b ? -1 : 0;
-  }
-
-
-  /**
-   * Whether the array contains the given object.
-   * @param {Array<*>} arr The array to test for the presence of the element.
-   * @param {*} obj The object for which to test.
-   * @return {boolean} The object is in the array.
-   */
-  function includes(arr, obj) {
-    return arr.indexOf(obj) >= 0;
-  }
-
-
-  /**
-   * @param {Array<number>} arr Array.
-   * @param {number} target Target.
-   * @param {number} direction 0 means return the nearest, > 0
-   *    means return the largest nearest, < 0 means return the
-   *    smallest nearest.
-   * @return {number} Index.
-   */
-  function linearFindNearest(arr, target, direction) {
-    var n = arr.length;
-    if (arr[0] <= target) {
-      return 0;
-    } else if (target <= arr[n - 1]) {
-      return n - 1;
-    } else {
-      var i;
-      if (direction > 0) {
-        for (i = 1; i < n; ++i) {
-          if (arr[i] < target) {
-            return i - 1;
-          }
-        }
-      } else if (direction < 0) {
-        for (i = 1; i < n; ++i) {
-          if (arr[i] <= target) {
-            return i;
-          }
-        }
-      } else {
-        for (i = 1; i < n; ++i) {
-          if (arr[i] == target) {
-            return i;
-          } else if (arr[i] < target) {
-            if (arr[i - 1] - target < target - arr[i]) {
-              return i - 1;
-            } else {
-              return i;
-            }
-          }
-        }
-      }
-      return n - 1;
-    }
-  }
-
-
-  /**
-   * @param {Array<*>} arr Array.
-   * @param {number} begin Begin index.
-   * @param {number} end End index.
-   */
-  function reverseSubArray(arr, begin, end) {
-    while (begin < end) {
-      var tmp = arr[begin];
-      arr[begin] = arr[end];
-      arr[end] = tmp;
-      ++begin;
-      --end;
-    }
-  }
-
-
-  /**
-   * @param {Array<VALUE>} arr The array to modify.
-   * @param {!Array<VALUE>|VALUE} data The elements or arrays of elements to add to arr.
-   * @template VALUE
-   */
-  function extend$1(arr, data) {
-    var extension = Array.isArray(data) ? data : [data];
-    var length = extension.length;
-    for (var i = 0; i < length; i++) {
-      arr[arr.length] = extension[i];
-    }
-  }
-
-
-  /**
-   * @param {Array<VALUE>} arr The array to modify.
-   * @param {VALUE} obj The element to remove.
-   * @template VALUE
-   * @return {boolean} If the element was removed.
-   */
-  function remove$1(arr, obj) {
-    var i = arr.indexOf(obj);
-    var found = i > -1;
-    if (found) {
-      arr.splice(i, 1);
-    }
-    return found;
-  }
-
-
-  /**
-   * @param {Array<VALUE>} arr The array to search in.
-   * @param {function(VALUE, number, ?) : boolean} func The function to compare.
-   * @template VALUE
-   * @return {VALUE|null} The element found or null.
-   */
-  function find(arr, func) {
-    var length = arr.length >>> 0;
-    var value;
-
-    for (var i = 0; i < length; i++) {
-      value = arr[i];
-      if (func(value, i, arr)) {
-        return value;
-      }
-    }
-    return null;
-  }
-
-
-  /**
-   * @param {Array|Uint8ClampedArray} arr1 The first array to compare.
-   * @param {Array|Uint8ClampedArray} arr2 The second array to compare.
-   * @return {boolean} Whether the two arrays are equal.
-   */
-  function equals$1(arr1, arr2) {
-    var len1 = arr1.length;
-    if (len1 !== arr2.length) {
-      return false;
-    }
-    for (var i = 0; i < len1; i++) {
-      if (arr1[i] !== arr2[i]) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-
-  /**
-   * Sort the passed array such that the relative order of equal elements is preverved.
-   * See https://en.wikipedia.org/wiki/Sorting_algorithm#Stability for details.
-   * @param {Array<*>} arr The array to sort (modifies original).
-   * @param {!function(*, *): number} compareFnc Comparison function.
-   * @api
-   */
-  function stableSort(arr, compareFnc) {
-    var length = arr.length;
-    var tmp = Array(arr.length);
-    var i;
-    for (i = 0; i < length; i++) {
-      tmp[i] = {index: i, value: arr[i]};
-    }
-    tmp.sort(function(a, b) {
-      return compareFnc(a.value, b.value) || a.index - b.index;
-    });
-    for (i = 0; i < arr.length; i++) {
-      arr[i] = tmp[i].value;
-    }
-  }
-
-
-  /**
-   * @param {Array<*>} arr The array to search in.
-   * @param {Function} func Comparison function.
-   * @return {number} Return index.
-   */
-  function findIndex(arr, func) {
-    var index;
-    var found = !arr.every(function(el, idx) {
-      index = idx;
-      return !func(el, idx, arr);
-    });
-    return found ? index : -1;
-  }
-
-
-  /**
-   * @param {Array<*>} arr The array to test.
-   * @param {Function=} opt_func Comparison function.
-   * @param {boolean=} opt_strict Strictly sorted (default false).
-   * @return {boolean} Return index.
-   */
-  function isSorted(arr, opt_func, opt_strict) {
-    var compare = opt_func || numberSafeCompareFunction;
-    return arr.every(function(currentVal, index) {
-      if (index === 0) {
-        return true;
-      }
-      var res = compare(arr[index - 1], currentVal);
-      return !(res > 0 || opt_strict && res === 0);
-    });
-  }
-
-  /**
-   * @module ol/geom/GeometryLayout
-   */
-
-  /**
-   * The coordinate layout for geometries, indicating whether a 3rd or 4th z ('Z')
-   * or measure ('M') coordinate is available. Supported values are `'XY'`,
-   * `'XYZ'`, `'XYM'`, `'XYZM'`.
-   * @enum {string}
-   */
-  var GeometryLayout = {
-    XY: 'XY',
-    XYZ: 'XYZ',
-    XYM: 'XYM',
-    XYZM: 'XYZM'
-  };
 
   /**
    * @module ol/geom/SimpleGeometry
@@ -8311,7 +5091,9 @@
      * @abstract
      * @return {Array} Coordinates.
      */
-    SimpleGeometry.prototype.getCoordinates = function getCoordinates () {};
+    SimpleGeometry.prototype.getCoordinates = function getCoordinates () {
+      return abstract();
+    };
 
     /**
      * Return the first coordinate of the geometry.
@@ -8339,7 +5121,7 @@
     };
 
     /**
-     * Return the {@link module:ol/geom/GeometryLayout~GeometryLayout layout} of the geometry.
+     * Return the {@link module:ol/geom/GeometryLayout layout} of the geometry.
      * @return {GeometryLayout} Layout.
      * @api
      */
@@ -8405,7 +5187,7 @@
     /**
      * @param {GeometryLayout} layout Layout.
      * @param {Array<number>} flatCoordinates Flat coordinates.
-      */
+     */
     SimpleGeometry.prototype.setFlatCoordinates = function setFlatCoordinates (layout, flatCoordinates) {
       this.stride = getStrideForLayout(layout);
       this.layout = layout;
@@ -8417,7 +5199,9 @@
      * @param {!Array} coordinates Coordinates.
      * @param {GeometryLayout=} opt_layout Layout.
      */
-    SimpleGeometry.prototype.setCoordinates = function setCoordinates (coordinates, opt_layout) {};
+    SimpleGeometry.prototype.setCoordinates = function setCoordinates (coordinates, opt_layout) {
+      abstract();
+    };
 
     /**
      * @param {GeometryLayout|undefined} layout Layout.
@@ -9428,9 +6212,9 @@
       this.maxDeltaRevision_ = -1;
 
       if (opt_layout !== undefined && !Array.isArray(coordinates[0])) {
-        this.setFlatCoordinates(opt_layout, coordinates);
+        this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
       } else {
-        this.setCoordinates(coordinates, opt_layout);
+        this.setCoordinates(/** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates), opt_layout);
       }
 
     }
@@ -9508,7 +6292,9 @@
     /**
      * @inheritDoc
      */
-    LinearRing.prototype.intersectsExtent = function intersectsExtent (extent) {};
+    LinearRing.prototype.intersectsExtent = function intersectsExtent (extent) {
+      return false;
+    };
 
     /**
      * Set the coordinates of the linear ring.
@@ -9979,7 +6765,9 @@
     }
     for (var i = 1, ii = ends.length; i < ii; ++i) {
       if (linearRingContainsExtent(flatCoordinates, ends[i - 1], ends[i], stride, extent)) {
-        return false;
+        if (!intersectsLineString(flatCoordinates, ends[i - 1], ends[i], stride, extent)) {
+          return false;
+        }
       }
     }
     return true;
@@ -10226,10 +7014,10 @@
       this.orientedFlatCoordinates_ = null;
 
       if (opt_layout !== undefined && opt_ends) {
-        this.setFlatCoordinates(opt_layout, coordinates);
+        this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
         this.ends_ = opt_ends;
       } else {
-        this.setCoordinates(coordinates, opt_layout);
+        this.setCoordinates(/** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (coordinates), opt_layout);
       }
 
     }
@@ -10247,7 +7035,7 @@
       if (!this.flatCoordinates) {
         this.flatCoordinates = linearRing$$1.getFlatCoordinates().slice();
       } else {
-        extend$1(this.flatCoordinates, linearRing$$1.getFlatCoordinates());
+        extend(this.flatCoordinates, linearRing$$1.getFlatCoordinates());
       }
       this.ends_.push(this.flatCoordinates.length);
       this.changed();
@@ -10493,7 +7281,7 @@
     /** @type {Array<number>} */
     var flatCoordinates = [];
     for (var i = 0; i < n; ++i) {
-      extend$1(flatCoordinates, offset(center, radius, 2 * Math.PI * i / n, opt_sphereRadius));
+      extend(flatCoordinates, offset(center, radius, 2 * Math.PI * i / n, opt_sphereRadius));
     }
     flatCoordinates.push(flatCoordinates[0], flatCoordinates[1]);
     return new Polygon(flatCoordinates, GeometryLayout.XY, [flatCoordinates.length]);
@@ -10570,8 +7358,470 @@
   }
 
   /**
+   * @module ol/webgl
+   */
+
+
+  /**
+   * Constants taken from goog.webgl
+   */
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var ONE = 1;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var SRC_ALPHA = 0x0302;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var COLOR_ATTACHMENT0 = 0x8CE0;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var COLOR_BUFFER_BIT = 0x00004000;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var TRIANGLES = 0x0004;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var TRIANGLE_STRIP = 0x0005;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var ONE_MINUS_SRC_ALPHA = 0x0303;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var ARRAY_BUFFER = 0x8892;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var ELEMENT_ARRAY_BUFFER = 0x8893;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var STREAM_DRAW = 0x88E0;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var STATIC_DRAW = 0x88E4;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var DYNAMIC_DRAW = 0x88E8;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var CULL_FACE = 0x0B44;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var BLEND = 0x0BE2;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var STENCIL_TEST = 0x0B90;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var DEPTH_TEST = 0x0B71;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var SCISSOR_TEST = 0x0C11;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var UNSIGNED_BYTE = 0x1401;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var UNSIGNED_SHORT = 0x1403;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var UNSIGNED_INT = 0x1405;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var FLOAT = 0x1406;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var RGBA = 0x1908;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var FRAGMENT_SHADER = 0x8B30;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var VERTEX_SHADER = 0x8B31;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var LINK_STATUS = 0x8B82;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var LINEAR = 0x2601;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var TEXTURE_MAG_FILTER = 0x2800;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var TEXTURE_MIN_FILTER = 0x2801;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var TEXTURE_WRAP_S = 0x2802;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var TEXTURE_WRAP_T = 0x2803;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var TEXTURE_2D = 0x0DE1;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var TEXTURE0 = 0x84C0;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var CLAMP_TO_EDGE = 0x812F;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var COMPILE_STATUS = 0x8B81;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var FRAMEBUFFER = 0x8D40;
+
+
+  /** end of goog.webgl constants
+   */
+
+
+  /**
+   * @const
+   * @type {Array<string>}
+   */
+  var CONTEXT_IDS = [
+    'experimental-webgl',
+    'webgl',
+    'webkit-3d',
+    'moz-webgl'
+  ];
+
+
+  /**
+   * @param {HTMLCanvasElement} canvas Canvas.
+   * @param {Object=} opt_attributes Attributes.
+   * @return {WebGLRenderingContext} WebGL rendering context.
+   */
+  function getContext(canvas, opt_attributes) {
+    var ii = CONTEXT_IDS.length;
+    for (var i = 0; i < ii; ++i) {
+      try {
+        var context = canvas.getContext(CONTEXT_IDS[i], opt_attributes);
+        if (context) {
+          return /** @type {!WebGLRenderingContext} */ (context);
+        }
+      } catch (e) {
+        // pass
+      }
+    }
+    return null;
+  }
+
+
+  /**
+   * Include debuggable shader sources.  Default is `true`. This should be set to
+   * `false` for production builds.
+   * @type {boolean}
+   */
+  var DEBUG = true;
+
+
+  /**
+   * The maximum supported WebGL texture size in pixels. If WebGL is not
+   * supported, the value is set to `undefined`.
+   * @type {number|undefined}
+   */
+  var MAX_TEXTURE_SIZE; // value is set below
+
+
+  /**
+   * List of supported WebGL extensions.
+   * @type {Array<string>}
+   */
+  var EXTENSIONS; // value is set below
+
+  //TODO Remove side effects
+  if (typeof window !== 'undefined' && 'WebGLRenderingContext' in window) {
+    try {
+      var canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+      var gl = getContext(canvas, {failIfMajorPerformanceCaveat: true});
+      if (gl) {
+        MAX_TEXTURE_SIZE = /** @type {number} */ (gl.getParameter(gl.MAX_TEXTURE_SIZE));
+        EXTENSIONS = gl.getSupportedExtensions();
+      }
+    } catch (e) {
+      // pass
+    }
+  }
+
+  /**
+   * @module ol/has
+   */
+
+  var ua = typeof navigator !== 'undefined' ?
+    navigator.userAgent.toLowerCase() : '';
+
+  /**
+   * User agent string says we are dealing with Firefox as browser.
+   * @type {boolean}
+   */
+  var FIREFOX = ua.indexOf('firefox') !== -1;
+
+  /**
+   * User agent string says we are dealing with Safari as browser.
+   * @type {boolean}
+   */
+  var SAFARI = ua.indexOf('safari') !== -1 && ua.indexOf('chrom') == -1;
+
+  /**
+   * User agent string says we are dealing with a WebKit engine.
+   * @type {boolean}
+   */
+  var WEBKIT = ua.indexOf('webkit') !== -1 && ua.indexOf('edge') == -1;
+
+  /**
+   * User agent string says we are dealing with a Mac as platform.
+   * @type {boolean}
+   */
+  var MAC = ua.indexOf('macintosh') !== -1;
+
+
+  /**
+   * The ratio between physical pixels and device-independent pixels
+   * (dips) on the device (`window.devicePixelRatio`).
+   * @const
+   * @type {number}
+   * @api
+   */
+  var DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
+
+
+  /**
+   * True if the browser's Canvas implementation implements {get,set}LineDash.
+   * @type {boolean}
+   */
+  var CANVAS_LINE_DASH = function() {
+    var has = false;
+    try {
+      has = !!document.createElement('canvas').getContext('2d').setLineDash;
+    } catch (e) {
+      // pass
+    }
+    return has;
+  }();
+
+
+  /**
+   * Is HTML5 geolocation supported in the current browser?
+   * @const
+   * @type {boolean}
+   * @api
+   */
+  var GEOLOCATION = 'geolocation' in navigator;
+
+
+  /**
+   * True if browser supports touch events.
+   * @const
+   * @type {boolean}
+   * @api
+   */
+  var TOUCH = 'ontouchstart' in window;
+
+
+  /**
+   * True if browser supports pointer events.
+   * @const
+   * @type {boolean}
+   */
+  var POINTER = 'PointerEvent' in window;
+
+
+  /**
+   * True if browser supports ms pointer events (IE 10).
+   * @const
+   * @type {boolean}
+   */
+  var MSPOINTER = !!(navigator.msPointerEnabled);
+
+  /**
    * @module ol/Geolocation
    */
+
+
+  /**
+   * @enum {string}
+   */
+  var Property$1 = {
+    ACCURACY: 'accuracy',
+    ACCURACY_GEOMETRY: 'accuracyGeometry',
+    ALTITUDE: 'altitude',
+    ALTITUDE_ACCURACY: 'altitudeAccuracy',
+    HEADING: 'heading',
+    POSITION: 'position',
+    PROJECTION: 'projection',
+    SPEED: 'speed',
+    TRACKING: 'tracking',
+    TRACKING_OPTIONS: 'trackingOptions'
+  };
+
+
+  /**
+   * @classdesc
+   * Events emitted on Geolocation error.
+   */
+  var GeolocationError = /*@__PURE__*/(function (Event$$1) {
+    function GeolocationError(error) {
+      Event$$1.call(this, EventType.ERROR);
+
+      /**
+       * @type {number}
+       */
+      this.code = error.code;
+
+      /**
+       * @type {string}
+       */
+      this.message = error.message;
+    }
+
+    if ( Event$$1 ) GeolocationError.__proto__ = Event$$1;
+    GeolocationError.prototype = Object.create( Event$$1 && Event$$1.prototype );
+    GeolocationError.prototype.constructor = GeolocationError;
+
+    return GeolocationError;
+  }(Event));
 
 
   /**
@@ -10635,10 +7885,10 @@
       this.watchId_ = undefined;
 
       listen(
-        this, getChangeEventType(GeolocationProperty.PROJECTION),
+        this, getChangeEventType(Property$1.PROJECTION),
         this.handleProjectionChanged_, this);
       listen(
-        this, getChangeEventType(GeolocationProperty.TRACKING),
+        this, getChangeEventType(Property$1.TRACKING),
         this.handleTrackingChanged_, this);
 
       if (options.projection !== undefined) {
@@ -10673,7 +7923,7 @@
         this.transform_ = getTransformFromProjections(
           get$2('EPSG:4326'), projection);
         if (this.position_) {
-          this.set(GeolocationProperty.POSITION, this.transform_(this.position_));
+          this.set(Property$1.POSITION, this.transform_(this.position_));
         }
       }
     };
@@ -10702,13 +7952,13 @@
      */
     Geolocation.prototype.positionChange_ = function positionChange_ (position) {
       var coords = position.coords;
-      this.set(GeolocationProperty.ACCURACY, coords.accuracy);
-      this.set(GeolocationProperty.ALTITUDE,
+      this.set(Property$1.ACCURACY, coords.accuracy);
+      this.set(Property$1.ALTITUDE,
         coords.altitude === null ? undefined : coords.altitude);
-      this.set(GeolocationProperty.ALTITUDE_ACCURACY,
+      this.set(Property$1.ALTITUDE_ACCURACY,
         coords.altitudeAccuracy === null ?
           undefined : coords.altitudeAccuracy);
-      this.set(GeolocationProperty.HEADING, coords.heading === null ?
+      this.set(Property$1.HEADING, coords.heading === null ?
         undefined : toRadians(coords.heading));
       if (!this.position_) {
         this.position_ = [coords.longitude, coords.latitude];
@@ -10717,12 +7967,12 @@
         this.position_[1] = coords.latitude;
       }
       var projectedPosition = this.transform_(this.position_);
-      this.set(GeolocationProperty.POSITION, projectedPosition);
-      this.set(GeolocationProperty.SPEED,
+      this.set(Property$1.POSITION, projectedPosition);
+      this.set(Property$1.SPEED,
         coords.speed === null ? undefined : coords.speed);
       var geometry = circular(this.position_, coords.accuracy);
       geometry.applyTransform(this.transform_);
-      this.set(GeolocationProperty.ACCURACY_GEOMETRY, geometry);
+      this.set(Property$1.ACCURACY_GEOMETRY, geometry);
       this.changed();
     };
 
@@ -10737,12 +7987,8 @@
      * @param {PositionError} error error object.
      */
     Geolocation.prototype.positionError_ = function positionError_ (error) {
-      var event = {
-        type: EventType.ERROR,
-        target: undefined
-      };
       this.setTracking(false);
-      this.dispatchEvent(event);
+      this.dispatchEvent(new GeolocationError(error));
     };
 
     /**
@@ -10753,7 +7999,7 @@
      * @api
      */
     Geolocation.prototype.getAccuracy = function getAccuracy () {
-      return /** @type {number|undefined} */ (this.get(GeolocationProperty.ACCURACY));
+      return /** @type {number|undefined} */ (this.get(Property$1.ACCURACY));
     };
 
     /**
@@ -10764,7 +8010,7 @@
      */
     Geolocation.prototype.getAccuracyGeometry = function getAccuracyGeometry () {
       return (
-        /** @type {?import("./geom/Polygon.js").default} */ (this.get(GeolocationProperty.ACCURACY_GEOMETRY) || null)
+        /** @type {?import("./geom/Polygon.js").default} */ (this.get(Property$1.ACCURACY_GEOMETRY) || null)
       );
     };
 
@@ -10776,7 +8022,7 @@
      * @api
      */
     Geolocation.prototype.getAltitude = function getAltitude () {
-      return /** @type {number|undefined} */ (this.get(GeolocationProperty.ALTITUDE));
+      return /** @type {number|undefined} */ (this.get(Property$1.ALTITUDE));
     };
 
     /**
@@ -10787,7 +8033,7 @@
      * @api
      */
     Geolocation.prototype.getAltitudeAccuracy = function getAltitudeAccuracy () {
-      return /** @type {number|undefined} */ (this.get(GeolocationProperty.ALTITUDE_ACCURACY));
+      return /** @type {number|undefined} */ (this.get(Property$1.ALTITUDE_ACCURACY));
     };
 
     /**
@@ -10799,7 +8045,7 @@
      * @api
      */
     Geolocation.prototype.getHeading = function getHeading () {
-      return /** @type {number|undefined} */ (this.get(GeolocationProperty.HEADING));
+      return /** @type {number|undefined} */ (this.get(Property$1.HEADING));
     };
 
     /**
@@ -10811,7 +8057,7 @@
      */
     Geolocation.prototype.getPosition = function getPosition () {
       return (
-        /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(GeolocationProperty.POSITION))
+        /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(Property$1.POSITION))
       );
     };
 
@@ -10824,7 +8070,7 @@
      */
     Geolocation.prototype.getProjection = function getProjection () {
       return (
-        /** @type {import("./proj/Projection.js").default|undefined} */ (this.get(GeolocationProperty.PROJECTION))
+        /** @type {import("./proj/Projection.js").default|undefined} */ (this.get(Property$1.PROJECTION))
       );
     };
 
@@ -10836,7 +8082,7 @@
      * @api
      */
     Geolocation.prototype.getSpeed = function getSpeed () {
-      return /** @type {number|undefined} */ (this.get(GeolocationProperty.SPEED));
+      return /** @type {number|undefined} */ (this.get(Property$1.SPEED));
     };
 
     /**
@@ -10846,7 +8092,7 @@
      * @api
      */
     Geolocation.prototype.getTracking = function getTracking () {
-      return /** @type {boolean} */ (this.get(GeolocationProperty.TRACKING));
+      return /** @type {boolean} */ (this.get(Property$1.TRACKING));
     };
 
     /**
@@ -10859,7 +8105,7 @@
      * @api
      */
     Geolocation.prototype.getTrackingOptions = function getTrackingOptions () {
-      return /** @type {PositionOptions|undefined} */ (this.get(GeolocationProperty.TRACKING_OPTIONS));
+      return /** @type {PositionOptions|undefined} */ (this.get(Property$1.TRACKING_OPTIONS));
     };
 
     /**
@@ -10870,7 +8116,7 @@
      * @api
      */
     Geolocation.prototype.setProjection = function setProjection (projection) {
-      this.set(GeolocationProperty.PROJECTION, get$2(projection));
+      this.set(Property$1.PROJECTION, get$2(projection));
     };
 
     /**
@@ -10880,7 +8126,7 @@
      * @api
      */
     Geolocation.prototype.setTracking = function setTracking (tracking) {
-      this.set(GeolocationProperty.TRACKING, tracking);
+      this.set(Property$1.TRACKING, tracking);
     };
 
     /**
@@ -10893,7 +8139,7 @@
      * @api
      */
     Geolocation.prototype.setTrackingOptions = function setTrackingOptions (options) {
-      this.set(GeolocationProperty.TRACKING_OPTIONS, options);
+      this.set(Property$1.TRACKING_OPTIONS, options);
     };
 
     return Geolocation;
@@ -11603,9 +8849,9 @@
       this.maxDeltaRevision_ = -1;
 
       if (opt_layout !== undefined && !Array.isArray(coordinates[0])) {
-        this.setFlatCoordinates(opt_layout, coordinates);
+        this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
       } else {
-        this.setCoordinates(coordinates, opt_layout);
+        this.setCoordinates(/** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates), opt_layout);
       }
 
     }
@@ -11623,7 +8869,7 @@
       if (!this.flatCoordinates) {
         this.flatCoordinates = coordinate.slice();
       } else {
-        extend$1(this.flatCoordinates, coordinate);
+        extend(this.flatCoordinates, coordinate);
       }
       this.changed();
     };
@@ -11989,6 +9235,596 @@
      * @api
      */
     RENDERCOMPLETE: 'rendercomplete'
+  };
+
+  /**
+   * @module ol/color
+   */
+
+
+  /**
+   * A color represented as a short array [red, green, blue, alpha].
+   * red, green, and blue should be integers in the range 0..255 inclusive.
+   * alpha should be a float in the range 0..1 inclusive. If no alpha value is
+   * given then `1` will be used.
+   * @typedef {Array<number>} Color
+   * @api
+   */
+
+
+  /**
+   * This RegExp matches # followed by 3, 4, 6, or 8 hex digits.
+   * @const
+   * @type {RegExp}
+   * @private
+   */
+  var HEX_COLOR_RE_ = /^#([a-f0-9]{3}|[a-f0-9]{4}(?:[a-f0-9]{2}){0,2})$/i;
+
+
+  /**
+   * Regular expression for matching potential named color style strings.
+   * @const
+   * @type {RegExp}
+   * @private
+   */
+  var NAMED_COLOR_RE_ = /^([a-z]*)$/i;
+
+
+  /**
+   * Return the color as an rgba string.
+   * @param {Color|string} color Color.
+   * @return {string} Rgba string.
+   * @api
+   */
+  function asString(color) {
+    if (typeof color === 'string') {
+      return color;
+    } else {
+      return toString(color);
+    }
+  }
+
+  /**
+   * Return named color as an rgba string.
+   * @param {string} color Named color.
+   * @return {string} Rgb string.
+   */
+  function fromNamed(color) {
+    var el = document.createElement('div');
+    el.style.color = color;
+    if (el.style.color !== '') {
+      document.body.appendChild(el);
+      var rgb = getComputedStyle(el).color;
+      document.body.removeChild(el);
+      return rgb;
+    } else {
+      return '';
+    }
+  }
+
+
+  /**
+   * @param {string} s String.
+   * @return {Color} Color.
+   */
+  var fromString = (
+    function() {
+
+      // We maintain a small cache of parsed strings.  To provide cheap LRU-like
+      // semantics, whenever the cache grows too large we simply delete an
+      // arbitrary 25% of the entries.
+
+      /**
+       * @const
+       * @type {number}
+       */
+      var MAX_CACHE_SIZE = 1024;
+
+      /**
+       * @type {Object<string, Color>}
+       */
+      var cache = {};
+
+      /**
+       * @type {number}
+       */
+      var cacheSize = 0;
+
+      return (
+        /**
+         * @param {string} s String.
+         * @return {Color} Color.
+         */
+        function(s) {
+          var color;
+          if (cache.hasOwnProperty(s)) {
+            color = cache[s];
+          } else {
+            if (cacheSize >= MAX_CACHE_SIZE) {
+              var i = 0;
+              for (var key in cache) {
+                if ((i++ & 3) === 0) {
+                  delete cache[key];
+                  --cacheSize;
+                }
+              }
+            }
+            color = fromStringInternal_(s);
+            cache[s] = color;
+            ++cacheSize;
+          }
+          return color;
+        }
+      );
+
+    })();
+
+  /**
+   * Return the color as an array. This function maintains a cache of calculated
+   * arrays which means the result should not be modified.
+   * @param {Color|string} color Color.
+   * @return {Color} Color.
+   * @api
+   */
+  function asArray(color) {
+    if (Array.isArray(color)) {
+      return color;
+    } else {
+      return fromString(color);
+    }
+  }
+
+  /**
+   * @param {string} s String.
+   * @private
+   * @return {Color} Color.
+   */
+  function fromStringInternal_(s) {
+    var r, g, b, a, color;
+
+    if (NAMED_COLOR_RE_.exec(s)) {
+      s = fromNamed(s);
+    }
+
+    if (HEX_COLOR_RE_.exec(s)) { // hex
+      var n = s.length - 1; // number of hex digits
+      var d; // number of digits per channel
+      if (n <= 4) {
+        d = 1;
+      } else {
+        d = 2;
+      }
+      var hasAlpha = n === 4 || n === 8;
+      r = parseInt(s.substr(1 + 0 * d, d), 16);
+      g = parseInt(s.substr(1 + 1 * d, d), 16);
+      b = parseInt(s.substr(1 + 2 * d, d), 16);
+      if (hasAlpha) {
+        a = parseInt(s.substr(1 + 3 * d, d), 16);
+      } else {
+        a = 255;
+      }
+      if (d == 1) {
+        r = (r << 4) + r;
+        g = (g << 4) + g;
+        b = (b << 4) + b;
+        if (hasAlpha) {
+          a = (a << 4) + a;
+        }
+      }
+      color = [r, g, b, a / 255];
+    } else if (s.indexOf('rgba(') == 0) { // rgba()
+      color = s.slice(5, -1).split(',').map(Number);
+      normalize(color);
+    } else if (s.indexOf('rgb(') == 0) { // rgb()
+      color = s.slice(4, -1).split(',').map(Number);
+      color.push(1);
+      normalize(color);
+    } else {
+      assert(false, 14); // Invalid color
+    }
+    return color;
+  }
+
+
+  /**
+   * TODO this function is only used in the test, we probably shouldn't export it
+   * @param {Color} color Color.
+   * @return {Color} Clamped color.
+   */
+  function normalize(color) {
+    color[0] = clamp((color[0] + 0.5) | 0, 0, 255);
+    color[1] = clamp((color[1] + 0.5) | 0, 0, 255);
+    color[2] = clamp((color[2] + 0.5) | 0, 0, 255);
+    color[3] = clamp(color[3], 0, 1);
+    return color;
+  }
+
+
+  /**
+   * @param {Color} color Color.
+   * @return {string} String.
+   */
+  function toString(color) {
+    var r = color[0];
+    if (r != (r | 0)) {
+      r = (r + 0.5) | 0;
+    }
+    var g = color[1];
+    if (g != (g | 0)) {
+      g = (g + 0.5) | 0;
+    }
+    var b = color[2];
+    if (b != (b | 0)) {
+      b = (b + 0.5) | 0;
+    }
+    var a = color[3] === undefined ? 1 : color[3];
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+  }
+
+  /**
+   * @module ol/style/Fill
+   */
+
+
+  /**
+   * @typedef {Object} Options
+   * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color] A color, gradient or pattern.
+   * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
+   * Default null; if null, the Canvas/renderer default black will be used.
+   */
+
+
+  /**
+   * @classdesc
+   * Set fill style for vector features.
+   * @api
+   */
+  var Fill = function Fill(opt_options) {
+
+    var options = opt_options || {};
+
+    /**
+     * @private
+     * @type {import("../color.js").Color|import("../colorlike.js").ColorLike}
+     */
+    this.color_ = options.color !== undefined ? options.color : null;
+
+    /**
+     * @private
+     * @type {string|undefined}
+     */
+    this.checksum_ = undefined;
+  };
+
+  /**
+   * Clones the style. The color is not cloned if it is an {@link module:ol/colorlike~ColorLike}.
+   * @return {Fill} The cloned style.
+   * @api
+   */
+  Fill.prototype.clone = function clone () {
+    var color = this.getColor();
+    return new Fill({
+      color: Array.isArray(color) ? color.slice() : color || undefined
+    });
+  };
+
+  /**
+   * Get the fill color.
+   * @return {import("../color.js").Color|import("../colorlike.js").ColorLike} Color.
+   * @api
+   */
+  Fill.prototype.getColor = function getColor () {
+    return this.color_;
+  };
+
+  /**
+   * Set the color.
+   *
+   * @param {import("../color.js").Color|import("../colorlike.js").ColorLike} color Color.
+   * @api
+   */
+  Fill.prototype.setColor = function setColor (color) {
+    this.color_ = color;
+    this.checksum_ = undefined;
+  };
+
+  /**
+   * @return {string} The checksum.
+   */
+  Fill.prototype.getChecksum = function getChecksum () {
+    if (this.checksum_ === undefined) {
+      var color = this.color_;
+      if (color) {
+        if (Array.isArray(color) || typeof color == 'string') {
+          this.checksum_ = 'f' + asString(/** @type {import("../color.js").Color|string} */ (color));
+        } else {
+          this.checksum_ = getUid(this.color_);
+        }
+      } else {
+        this.checksum_ = 'f-';
+      }
+    }
+
+    return this.checksum_;
+  };
+
+  /**
+   * @module ol/style/Stroke
+   */
+
+
+  /**
+   * @typedef {Object} Options
+   * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color] A color, gradient or pattern.
+   * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
+   * Default null; if null, the Canvas/renderer default black will be used.
+   * @property {string} [lineCap='round'] Line cap style: `butt`, `round`, or `square`.
+   * @property {string} [lineJoin='round'] Line join style: `bevel`, `round`, or `miter`.
+   * @property {Array<number>} [lineDash] Line dash pattern. Default is `undefined` (no dash).
+   * Please note that Internet Explorer 10 and lower do not support the `setLineDash` method on
+   * the `CanvasRenderingContext2D` and therefore this option will have no visual effect in these browsers.
+   * @property {number} [lineDashOffset=0] Line dash offset.
+   * @property {number} [miterLimit=10] Miter limit.
+   * @property {number} [width] Width.
+   */
+
+
+  /**
+   * @classdesc
+   * Set stroke style for vector features.
+   * Note that the defaults given are the Canvas defaults, which will be used if
+   * option is not defined. The `get` functions return whatever was entered in
+   * the options; they will not return the default.
+   * @api
+   */
+  var Stroke = function Stroke(opt_options) {
+
+    var options = opt_options || {};
+
+    /**
+     * @private
+     * @type {import("../color.js").Color|import("../colorlike.js").ColorLike}
+     */
+    this.color_ = options.color !== undefined ? options.color : null;
+
+    /**
+     * @private
+     * @type {string|undefined}
+     */
+    this.lineCap_ = options.lineCap;
+
+    /**
+     * @private
+     * @type {Array<number>}
+     */
+    this.lineDash_ = options.lineDash !== undefined ? options.lineDash : null;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.lineDashOffset_ = options.lineDashOffset;
+
+    /**
+     * @private
+     * @type {string|undefined}
+     */
+    this.lineJoin_ = options.lineJoin;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.miterLimit_ = options.miterLimit;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.width_ = options.width;
+
+    /**
+     * @private
+     * @type {string|undefined}
+     */
+    this.checksum_ = undefined;
+  };
+
+  /**
+   * Clones the style.
+   * @return {Stroke} The cloned style.
+   * @api
+   */
+  Stroke.prototype.clone = function clone () {
+    var color = this.getColor();
+    return new Stroke({
+      color: Array.isArray(color) ? color.slice() : color || undefined,
+      lineCap: this.getLineCap(),
+      lineDash: this.getLineDash() ? this.getLineDash().slice() : undefined,
+      lineDashOffset: this.getLineDashOffset(),
+      lineJoin: this.getLineJoin(),
+      miterLimit: this.getMiterLimit(),
+      width: this.getWidth()
+    });
+  };
+
+  /**
+   * Get the stroke color.
+   * @return {import("../color.js").Color|import("../colorlike.js").ColorLike} Color.
+   * @api
+   */
+  Stroke.prototype.getColor = function getColor () {
+    return this.color_;
+  };
+
+  /**
+   * Get the line cap type for the stroke.
+   * @return {string|undefined} Line cap.
+   * @api
+   */
+  Stroke.prototype.getLineCap = function getLineCap () {
+    return this.lineCap_;
+  };
+
+  /**
+   * Get the line dash style for the stroke.
+   * @return {Array<number>} Line dash.
+   * @api
+   */
+  Stroke.prototype.getLineDash = function getLineDash () {
+    return this.lineDash_;
+  };
+
+  /**
+   * Get the line dash offset for the stroke.
+   * @return {number|undefined} Line dash offset.
+   * @api
+   */
+  Stroke.prototype.getLineDashOffset = function getLineDashOffset () {
+    return this.lineDashOffset_;
+  };
+
+  /**
+   * Get the line join type for the stroke.
+   * @return {string|undefined} Line join.
+   * @api
+   */
+  Stroke.prototype.getLineJoin = function getLineJoin () {
+    return this.lineJoin_;
+  };
+
+  /**
+   * Get the miter limit for the stroke.
+   * @return {number|undefined} Miter limit.
+   * @api
+   */
+  Stroke.prototype.getMiterLimit = function getMiterLimit () {
+    return this.miterLimit_;
+  };
+
+  /**
+   * Get the stroke width.
+   * @return {number|undefined} Width.
+   * @api
+   */
+  Stroke.prototype.getWidth = function getWidth () {
+    return this.width_;
+  };
+
+  /**
+   * Set the color.
+   *
+   * @param {import("../color.js").Color|import("../colorlike.js").ColorLike} color Color.
+   * @api
+   */
+  Stroke.prototype.setColor = function setColor (color) {
+    this.color_ = color;
+    this.checksum_ = undefined;
+  };
+
+  /**
+   * Set the line cap.
+   *
+   * @param {string|undefined} lineCap Line cap.
+   * @api
+   */
+  Stroke.prototype.setLineCap = function setLineCap (lineCap) {
+    this.lineCap_ = lineCap;
+    this.checksum_ = undefined;
+  };
+
+  /**
+   * Set the line dash.
+   *
+   * Please note that Internet Explorer 10 and lower [do not support][mdn] the
+   * `setLineDash` method on the `CanvasRenderingContext2D` and therefore this
+   * property will have no visual effect in these browsers.
+   *
+   * [mdn]: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash#Browser_compatibility
+   *
+   * @param {Array<number>} lineDash Line dash.
+   * @api
+   */
+  Stroke.prototype.setLineDash = function setLineDash (lineDash) {
+    this.lineDash_ = lineDash;
+    this.checksum_ = undefined;
+  };
+
+  /**
+   * Set the line dash offset.
+   *
+   * @param {number|undefined} lineDashOffset Line dash offset.
+   * @api
+   */
+  Stroke.prototype.setLineDashOffset = function setLineDashOffset (lineDashOffset) {
+    this.lineDashOffset_ = lineDashOffset;
+    this.checksum_ = undefined;
+  };
+
+  /**
+   * Set the line join.
+   *
+   * @param {string|undefined} lineJoin Line join.
+   * @api
+   */
+  Stroke.prototype.setLineJoin = function setLineJoin (lineJoin) {
+    this.lineJoin_ = lineJoin;
+    this.checksum_ = undefined;
+  };
+
+  /**
+   * Set the miter limit.
+   *
+   * @param {number|undefined} miterLimit Miter limit.
+   * @api
+   */
+  Stroke.prototype.setMiterLimit = function setMiterLimit (miterLimit) {
+    this.miterLimit_ = miterLimit;
+    this.checksum_ = undefined;
+  };
+
+  /**
+   * Set the width.
+   *
+   * @param {number|undefined} width Width.
+   * @api
+   */
+  Stroke.prototype.setWidth = function setWidth (width) {
+    this.width_ = width;
+    this.checksum_ = undefined;
+  };
+
+  /**
+   * @return {string} The checksum.
+   */
+  Stroke.prototype.getChecksum = function getChecksum () {
+    if (this.checksum_ === undefined) {
+      this.checksum_ = 's';
+      if (this.color_) {
+        if (typeof this.color_ === 'string') {
+          this.checksum_ += this.color_;
+        } else {
+          this.checksum_ += getUid(this.color_);
+        }
+      } else {
+        this.checksum_ += '-';
+      }
+      this.checksum_ += ',' +
+          (this.lineCap_ !== undefined ?
+            this.lineCap_.toString() : '-') + ',' +
+          (this.lineDash_ ?
+            this.lineDash_.toString() : '-') + ',' +
+          (this.lineDashOffset_ !== undefined ?
+            this.lineDashOffset_ : '-') + ',' +
+          (this.lineJoin_ !== undefined ?
+            this.lineJoin_ : '-') + ',' +
+          (this.miterLimit_ !== undefined ?
+            this.miterLimit_.toString() : '-') + ',' +
+          (this.width_ !== undefined ?
+            this.width_.toString() : '-');
+    }
+
+    return this.checksum_;
   };
 
   /**
@@ -12519,7 +10355,6 @@
   });
 
   /**
-   * TODO can be configurable
    * @type {Array<number>}
    * @private
    */
@@ -12600,6 +10435,11 @@
    * Note that the default's `textAlign` configuration will not work well for
    * `latLabelPosition` configurations that position labels close to the left of
    * the viewport.
+   * @property {Array<number>} [intervals=[90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.01, 0.005, 0.002, 0.001]]
+   * Intervals (in degrees) for the graticule. Example to limit graticules to 30 and 10 degrees intervals:
+   * ```js
+   * [30, 10]
+   * ```
    */
 
 
@@ -12806,6 +10646,12 @@
       this.meridiansLabels_ = [];
       this.parallelsLabels_ = [];
     }
+
+    /**
+     * @type {Array<number>}
+     * @private
+     */
+    this.intervals_ = options.intervals !== undefined ? options.intervals : INTERVALS;
 
     this.setMap(options.map !== undefined ? options.map : null);
   };
@@ -13018,8 +10864,8 @@
     var p1 = [];
     /** @type {Array<number>} **/
     var p2 = [];
-    for (var i = 0, ii = INTERVALS.length; i < ii; ++i) {
-      var delta = INTERVALS[i] / 2;
+    for (var i = 0, ii = this.intervals_.length; i < ii; ++i) {
+      var delta = this.intervals_[i] / 2;
       p1[0] = centerLon - delta;
       p1[1] = centerLat - delta;
       p2[0] = centerLon + delta;
@@ -13030,7 +10876,7 @@
       if (dist <= target) {
         break;
       }
-      interval = INTERVALS[i];
+      interval = this.intervals_[i];
     }
     return interval;
   };
@@ -13267,7 +11113,9 @@
      * @abstract
      * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
      */
-    ImageBase.prototype.getImage = function getImage () {};
+    ImageBase.prototype.getImage = function getImage () {
+      return abstract();
+    };
 
     /**
      * @return {number} PixelRatio.
@@ -13294,10 +11142,26 @@
      * Load not yet loaded URI.
      * @abstract
      */
-    ImageBase.prototype.load = function load () {};
+    ImageBase.prototype.load = function load () {
+      abstract();
+    };
 
     return ImageBase;
   }(Target));
+
+  /**
+   * @module ol/ImageState
+   */
+
+  /**
+   * @enum {number}
+   */
+  var ImageState = {
+    IDLE: 0,
+    LOADING: 1,
+    LOADED: 2,
+    ERROR: 3
+  };
 
   /**
    * @module ol/Image
@@ -13452,7 +11316,7 @@
    * If any error occurs during drawing, the "done" callback should be called with
    * that error.
    *
-   * @typedef {function(function(Error))} Loader
+   * @typedef {function(function(Error=))} Loader
    */
 
 
@@ -13498,7 +11362,7 @@
 
     /**
      * Handle async drawing complete.
-     * @param {Error} err Any error during drawing.
+     * @param {Error=} err Any error during drawing.
      * @private
      */
     ImageCanvas.prototype.handleLoad_ = function handleLoad_ (err) {
@@ -13546,7 +11410,6 @@
     /**
      * Indicates that tile loading failed
      * @type {number}
-     * @api
      */
     ERROR: 3,
     EMPTY: 4,
@@ -13732,7 +11595,7 @@
       /**
        * Lookup of start times for rendering transitions.  If the start time is
        * equal to -1, the transition is complete.
-       * @type {Object<number, number>}
+       * @type {Object<string, number>}
        */
       this.transitionStarts_ = {};
 
@@ -13858,7 +11721,7 @@
 
     /**
      * Get the alpha value for rendering.
-     * @param {number} id An id for the renderer.
+     * @param {string} id An id for the renderer.
      * @param {number} time The render frame time.
      * @return {number} A number between 0 and 1.
      */
@@ -13886,7 +11749,7 @@
      * Determine if a tile is in an alpha transition.  A tile is considered in
      * transition if tile.getAlpha() has not yet been called or has been called
      * and returned 1.
-     * @param {number} id An id for the renderer.
+     * @param {string} id An id for the renderer.
      * @return {boolean} The tile is in transition.
      */
     Tile.prototype.inTransition = function inTransition (id) {
@@ -13898,7 +11761,7 @@
 
     /**
      * Mark a transition as complete.
-     * @param {number} id An id for the renderer.
+     * @param {string} id An id for the renderer.
      */
     Tile.prototype.endTransition = function endTransition (id) {
       if (this.transition_) {
@@ -13910,14 +11773,91 @@
   }(Target));
 
   /**
+   * @module ol/dom
+   */
+
+
+  /**
+   * Create an html canvas element and returns its 2d context.
+   * @param {number=} opt_width Canvas width.
+   * @param {number=} opt_height Canvas height.
+   * @return {CanvasRenderingContext2D} The context.
+   */
+  function createCanvasContext2D(opt_width, opt_height) {
+    var canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    if (opt_width) {
+      canvas.width = opt_width;
+    }
+    if (opt_height) {
+      canvas.height = opt_height;
+    }
+    return /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
+  }
+
+
+  /**
+   * Get the current computed width for the given element including margin,
+   * padding and border.
+   * Equivalent to jQuery's `$(el).outerWidth(true)`.
+   * @param {!HTMLElement} element Element.
+   * @return {number} The width.
+   */
+  function outerWidth(element) {
+    var width = element.offsetWidth;
+    var style = getComputedStyle(element);
+    width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
+
+    return width;
+  }
+
+
+  /**
+   * Get the current computed height for the given element including margin,
+   * padding and border.
+   * Equivalent to jQuery's `$(el).outerHeight(true)`.
+   * @param {!HTMLElement} element Element.
+   * @return {number} The height.
+   */
+  function outerHeight(element) {
+    var height = element.offsetHeight;
+    var style = getComputedStyle(element);
+    height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
+
+    return height;
+  }
+
+  /**
+   * @param {Node} newNode Node to replace old node
+   * @param {Node} oldNode The node to be replaced
+   */
+  function replaceNode(newNode, oldNode) {
+    var parent = oldNode.parentNode;
+    if (parent) {
+      parent.replaceChild(newNode, oldNode);
+    }
+  }
+
+  /**
+   * @param {Node} node The node to remove.
+   * @returns {Node} The node that was removed or null.
+   */
+  function removeNode(node) {
+    return node && node.parentNode ? node.parentNode.removeChild(node) : null;
+  }
+
+  /**
+   * @param {Node} node The node to remove the children from.
+   */
+  function removeChildren(node) {
+    while (node.lastChild) {
+      node.removeChild(node.lastChild);
+    }
+  }
+
+  /**
    * @module ol/ImageTile
    */
 
-  /**
-   * @typedef {function(new: ImageTile, import("./tilecoord.js").TileCoord,
-   * TileState, string, ?string, import("./Tile.js").LoadFunction)} TileClass
-   * @api
-   */
 
   var ImageTile = /*@__PURE__*/(function (Tile$$1) {
     function ImageTile(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
@@ -14015,8 +11955,8 @@
      * @private
      */
     ImageTile.prototype.handleImageLoad_ = function handleImageLoad_ () {
-      if (this.image_ instanceof HTMLImageElement &&
-        this.image_.naturalWidth && this.image_.naturalHeight) {
+      var image = /** @type {HTMLImageElement} */ (this.image_);
+      if (image.naturalWidth && image.naturalHeight) {
         this.state = TileState.LOADED;
       } else {
         this.state = TileState.EMPTY;
@@ -14813,6 +12753,7 @@
      * @return {Object} The copied event.
      */
     MsSource.prototype.prepareEvent_ = function prepareEvent_ (inEvent) {
+      /** @type {MSPointerEvent|Object} */
       var e = inEvent;
       if (typeof inEvent.pointerType === 'number') {
         e = this.dispatcher.cloneEvent(inEvent, inEvent);
@@ -14966,12 +12907,12 @@
       /**
        * @type {number}
        */
-      this.buttons = this.getButtons_(eventDict);
+      this.buttons = getButtons(eventDict);
 
       /**
        * @type {number}
        */
-      this.pressure = this.getPressure_(eventDict, this.buttons);
+      this.pressure = getPressure(eventDict, this.buttons);
 
       // MouseEvent related properties
 
@@ -15101,67 +13042,67 @@
     PointerEvent.prototype = Object.create( _Event && _Event.prototype );
     PointerEvent.prototype.constructor = PointerEvent;
 
-    /**
-     * @private
-     * @param {Object<string, ?>} eventDict The event dictionary.
-     * @return {number} Button indicator.
-     */
-    PointerEvent.prototype.getButtons_ = function getButtons_ (eventDict) {
-      // According to the w3c spec,
-      // http://www.w3.org/TR/DOM-Level-3-Events/#events-MouseEvent-button
-      // MouseEvent.button == 0 can mean either no mouse button depressed, or the
-      // left mouse button depressed.
-      //
-      // As of now, the only way to distinguish between the two states of
-      // MouseEvent.button is by using the deprecated MouseEvent.which property, as
-      // this maps mouse buttons to positive integers > 0, and uses 0 to mean that
-      // no mouse button is held.
-      //
-      // MouseEvent.which is derived from MouseEvent.button at MouseEvent creation,
-      // but initMouseEvent does not expose an argument with which to set
-      // MouseEvent.which. Calling initMouseEvent with a buttonArg of 0 will set
-      // MouseEvent.button == 0 and MouseEvent.which == 1, breaking the expectations
-      // of app developers.
-      //
-      // The only way to propagate the correct state of MouseEvent.which and
-      // MouseEvent.button to a new MouseEvent.button == 0 and MouseEvent.which == 0
-      // is to call initMouseEvent with a buttonArg value of -1.
-      //
-      // This is fixed with DOM Level 4's use of buttons
-      var buttons;
-      if (eventDict.buttons || HAS_BUTTONS) {
-        buttons = eventDict.buttons;
-      } else {
-        switch (eventDict.which) {
-          case 1: buttons = 1; break;
-          case 2: buttons = 4; break;
-          case 3: buttons = 2; break;
-          default: buttons = 0;
-        }
-      }
-      return buttons;
-    };
-
-    /**
-     * @private
-     * @param {Object<string, ?>} eventDict The event dictionary.
-     * @param {number} buttons Button indicator.
-     * @return {number} The pressure.
-     */
-    PointerEvent.prototype.getPressure_ = function getPressure_ (eventDict, buttons) {
-      // Spec requires that pointers without pressure specified use 0.5 for down
-      // state and 0 for up state.
-      var pressure = 0;
-      if (eventDict.pressure) {
-        pressure = eventDict.pressure;
-      } else {
-        pressure = buttons ? 0.5 : 0;
-      }
-      return pressure;
-    };
-
     return PointerEvent;
   }(Event));
+
+
+  /**
+   * @param {Object<string, ?>} eventDict The event dictionary.
+   * @return {number} Button indicator.
+   */
+  function getButtons(eventDict) {
+    // According to the w3c spec,
+    // http://www.w3.org/TR/DOM-Level-3-Events/#events-MouseEvent-button
+    // MouseEvent.button == 0 can mean either no mouse button depressed, or the
+    // left mouse button depressed.
+    //
+    // As of now, the only way to distinguish between the two states of
+    // MouseEvent.button is by using the deprecated MouseEvent.which property, as
+    // this maps mouse buttons to positive integers > 0, and uses 0 to mean that
+    // no mouse button is held.
+    //
+    // MouseEvent.which is derived from MouseEvent.button at MouseEvent creation,
+    // but initMouseEvent does not expose an argument with which to set
+    // MouseEvent.which. Calling initMouseEvent with a buttonArg of 0 will set
+    // MouseEvent.button == 0 and MouseEvent.which == 1, breaking the expectations
+    // of app developers.
+    //
+    // The only way to propagate the correct state of MouseEvent.which and
+    // MouseEvent.button to a new MouseEvent.button == 0 and MouseEvent.which == 0
+    // is to call initMouseEvent with a buttonArg value of -1.
+    //
+    // This is fixed with DOM Level 4's use of buttons
+    var buttons;
+    if (eventDict.buttons || HAS_BUTTONS) {
+      buttons = eventDict.buttons;
+    } else {
+      switch (eventDict.which) {
+        case 1: buttons = 1; break;
+        case 2: buttons = 4; break;
+        case 3: buttons = 2; break;
+        default: buttons = 0;
+      }
+    }
+    return buttons;
+  }
+
+
+  /**
+   * @param {Object<string, ?>} eventDict The event dictionary.
+   * @param {number} buttons Button indicator.
+   * @return {number} The pressure.
+   */
+  function getPressure(eventDict, buttons) {
+    // Spec requires that pointers without pressure specified use 0.5 for down
+    // state and 0 for up state.
+    var pressure = 0;
+    if (eventDict.pressure) {
+      pressure = eventDict.pressure;
+    } else {
+      pressure = buttons ? 0.5 : 0;
+    }
+    return pressure;
+  }
 
 
   /**
@@ -15276,9 +13217,9 @@
 
       /**
        * @private
-       * @type {number|undefined}
+       * @type {?}
        */
-      this.resetId_ = undefined;
+      this.resetId_;
 
       /**
        * Mouse event timeout: This should be long enough to
@@ -15443,12 +13384,12 @@
       if (count >= touchList.length) {
         var d = [];
         for (var i = 0; i < count; ++i) {
-          var key = keys[i];
+          var key = Number(keys[i]);
           var value = this.pointerMap[key];
           // Never remove pointerId == 1, which is mouse.
           // Touch identifiers are 2 smaller than their pointerId, which is the
           // index in pointermap.
-          if (key != /** @type {string} */ (POINTER_ID) && !this.findTouch_(touchList, key - 2)) {
+          if (key != POINTER_ID && !this.findTouch_(touchList, key - 2)) {
             d.push(value.out);
           }
         }
@@ -15491,7 +13432,7 @@
       this.dispatcher.move(event, browserEvent);
       if (outEvent && outTarget !== event.target) {
         outEvent.relatedTarget = event.target;
-        event.relatedTarget = outTarget;
+        /** @type {Object} */ (event).relatedTarget = outTarget;
         // recover from retargeting by shadow
         outEvent.target = outTarget;
         if (event.target) {
@@ -15499,8 +13440,8 @@
           this.dispatcher.enterOver(event, browserEvent);
         } else {
           // clean up case when finger leaves the screen
-          event.target = outTarget;
-          event.relatedTarget = null;
+          /** @type {Object} */ (event).target = outTarget;
+          /** @type {Object} */ (event).relatedTarget = null;
           this.cancelOut_(browserEvent, event);
         }
       }
@@ -15558,7 +13499,7 @@
 
         setTimeout(function() {
           // remove touch after timeout
-          remove$1(lts, lt);
+          remove(lts, lt);
         }, this.dedupTimeout_);
       }
     };
@@ -15930,7 +13871,7 @@
      */
     PointerEventHandler.prototype.wrapMouseEvent = function wrapMouseEvent (eventType, event) {
       var pointerEvent = this.makeEvent(
-        eventType, MouseSource.prepareEvent(event, this), event);
+        eventType, prepareEvent(event, this), event);
       return pointerEvent;
     };
 
@@ -15962,10 +13903,10 @@
       this.map_ = map;
 
       /**
-       * @type {number}
+       * @type {any}
        * @private
        */
-      this.clickTimeoutId_ = 0;
+      this.clickTimeoutId_;
 
       /**
        * @type {boolean}
@@ -16057,17 +13998,17 @@
       var newEvent = new MapBrowserPointerEvent(
         MapBrowserEventType.CLICK, this.map_, pointerEvent);
       this.dispatchEvent(newEvent);
-      if (this.clickTimeoutId_ !== 0) {
+      if (this.clickTimeoutId_ !== undefined) {
         // double-click
         clearTimeout(this.clickTimeoutId_);
-        this.clickTimeoutId_ = 0;
+        this.clickTimeoutId_ = undefined;
         newEvent = new MapBrowserPointerEvent(
           MapBrowserEventType.DBLCLICK, this.map_, pointerEvent);
         this.dispatchEvent(newEvent);
       } else {
         // click
-        this.clickTimeoutId_ = window.setTimeout(function() {
-          this.clickTimeoutId_ = 0;
+        this.clickTimeoutId_ = setTimeout(function() {
+          this.clickTimeoutId_ = undefined;
           var newEvent = new MapBrowserPointerEvent(
             MapBrowserEventType.SINGLECLICK, this.map_, pointerEvent);
           this.dispatchEvent(newEvent);
@@ -17898,7 +15839,7 @@
      * The size is pixel dimensions of the box to fit the extent into.
      * In most cases you will want to use the map size, that is `map.getSize()`.
      * Takes care of the map angle.
-     * @param {SimpleGeometry|import("./extent.js").Extent} geometryOrExtent The geometry or
+     * @param {import("./geom/SimpleGeometry.js").default|import("./extent.js").Extent} geometryOrExtent The geometry or
      *     extent to fit the view to.
      * @param {FitOptions=} opt_options Options.
      * @api
@@ -17909,11 +15850,11 @@
       if (!size) {
         size = this.getSizeFromViewport_();
       }
-      /** @type {SimpleGeometry} */
+      /** @type {import("./geom/SimpleGeometry.js").default} */
       var geometry;
-      if (!(geometryOrExtent instanceof SimpleGeometry)) {
-        assert(Array.isArray(geometryOrExtent),
-          24); // Invalid extent or geometry provided as `geometry`
+      assert(Array.isArray(geometryOrExtent) || typeof /** @type {?} */ (geometryOrExtent).getSimplifiedGeometry === 'function',
+        24); // Invalid extent or geometry provided as `geometry`
+      if (Array.isArray(geometryOrExtent)) {
         assert(!isEmpty$1(geometryOrExtent),
           25); // Cannot fit empty extent provided as `geometry`
         geometry = fromExtent(geometryOrExtent);
@@ -18313,8 +16254,8 @@
       BaseObject$$1.call(this);
 
       /**
-      * @type {Object<string, *>}
-      */
+       * @type {Object<string, *>}
+       */
       var properties = assign({}, options);
       properties[LayerProperty.OPACITY] =
          options.opacity !== undefined ? options.opacity : 1;
@@ -18329,19 +16270,16 @@
       this.setProperties(properties);
 
       /**
-      * @type {import("./Layer.js").State}
-      * @private
-      */
-      this.state_ = /** @type {import("./Layer.js").State} */ ({
-        layer: /** @type {import("./Layer.js").default} */ (this),
-        managed: true
-      });
+       * @type {import("./Layer.js").State}
+       * @private
+       */
+      this.state_ = null;
 
       /**
-      * The layer type.
-      * @type {import("../LayerType.js").default}
-      * @protected;
-      */
+       * The layer type.
+       * @type {import("../LayerType.js").default}
+       * @protected;
+       */
       this.type;
 
     }
@@ -18351,172 +16289,184 @@
     BaseLayer.prototype.constructor = BaseLayer;
 
     /**
-    * Get the layer type (used when creating a layer renderer).
-    * @return {import("../LayerType.js").default} The layer type.
-    */
+     * Get the layer type (used when creating a layer renderer).
+     * @return {import("../LayerType.js").default} The layer type.
+     */
     BaseLayer.prototype.getType = function getType () {
       return this.type;
     };
 
     /**
-    * @return {import("./Layer.js").State} Layer state.
-    */
+     * @return {import("./Layer.js").State} Layer state.
+     */
     BaseLayer.prototype.getLayerState = function getLayerState () {
-      this.state_.opacity = clamp(this.getOpacity(), 0, 1);
-      this.state_.sourceState = this.getSourceState();
-      this.state_.visible = this.getVisible();
-      this.state_.extent = this.getExtent();
-      this.state_.zIndex = this.getZIndex() || 0;
-      this.state_.maxResolution = this.getMaxResolution();
-      this.state_.minResolution = Math.max(this.getMinResolution(), 0);
+      /** @type {import("./Layer.js").State} */
+      var state = this.state_ || /** @type {?} */ ({
+        layer: this,
+        managed: true
+      });
+      state.opacity = clamp(this.getOpacity(), 0, 1);
+      state.sourceState = this.getSourceState();
+      state.visible = this.getVisible();
+      state.extent = this.getExtent();
+      state.zIndex = this.getZIndex() || 0;
+      state.maxResolution = this.getMaxResolution();
+      state.minResolution = Math.max(this.getMinResolution(), 0);
+      this.state_ = state;
 
-      return this.state_;
+      return state;
     };
 
     /**
-    * @abstract
-    * @param {Array<import("./Layer.js").default>=} opt_array Array of layers (to be
-    *     modified in place).
-    * @return {Array<import("./Layer.js").default>} Array of layers.
-    */
-    BaseLayer.prototype.getLayersArray = function getLayersArray (opt_array) {};
+     * @abstract
+     * @param {Array<import("./Layer.js").default>=} opt_array Array of layers (to be
+     *     modified in place).
+     * @return {Array<import("./Layer.js").default>} Array of layers.
+     */
+    BaseLayer.prototype.getLayersArray = function getLayersArray (opt_array) {
+      return abstract();
+    };
 
     /**
-    * @abstract
-    * @param {Array<import("./Layer.js").State>=} opt_states Optional list of layer
-    *     states (to be modified in place).
-    * @return {Array<import("./Layer.js").State>} List of layer states.
-    */
-    BaseLayer.prototype.getLayerStatesArray = function getLayerStatesArray (opt_states) {};
+     * @abstract
+     * @param {Array<import("./Layer.js").State>=} opt_states Optional list of layer
+     *     states (to be modified in place).
+     * @return {Array<import("./Layer.js").State>} List of layer states.
+     */
+    BaseLayer.prototype.getLayerStatesArray = function getLayerStatesArray (opt_states) {
+      return abstract();
+    };
 
     /**
-    * Return the {@link module:ol/extent~Extent extent} of the layer or `undefined` if it
-    * will be visible regardless of extent.
-    * @return {import("../extent.js").Extent|undefined} The layer extent.
-    * @observable
-    * @api
-    */
+     * Return the {@link module:ol/extent~Extent extent} of the layer or `undefined` if it
+     * will be visible regardless of extent.
+     * @return {import("../extent.js").Extent|undefined} The layer extent.
+     * @observable
+     * @api
+     */
     BaseLayer.prototype.getExtent = function getExtent () {
       return (
-      /** @type {import("../extent.js").Extent|undefined} */ (this.get(LayerProperty.EXTENT))
+        /** @type {import("../extent.js").Extent|undefined} */ (this.get(LayerProperty.EXTENT))
       );
     };
 
     /**
-    * Return the maximum resolution of the layer.
-    * @return {number} The maximum resolution of the layer.
-    * @observable
-    * @api
-    */
+     * Return the maximum resolution of the layer.
+     * @return {number} The maximum resolution of the layer.
+     * @observable
+     * @api
+     */
     BaseLayer.prototype.getMaxResolution = function getMaxResolution () {
       return /** @type {number} */ (this.get(LayerProperty.MAX_RESOLUTION));
     };
 
     /**
-    * Return the minimum resolution of the layer.
-    * @return {number} The minimum resolution of the layer.
-    * @observable
-    * @api
-    */
+     * Return the minimum resolution of the layer.
+     * @return {number} The minimum resolution of the layer.
+     * @observable
+     * @api
+     */
     BaseLayer.prototype.getMinResolution = function getMinResolution () {
       return /** @type {number} */ (this.get(LayerProperty.MIN_RESOLUTION));
     };
 
     /**
-    * Return the opacity of the layer (between 0 and 1).
-    * @return {number} The opacity of the layer.
-    * @observable
-    * @api
-    */
+     * Return the opacity of the layer (between 0 and 1).
+     * @return {number} The opacity of the layer.
+     * @observable
+     * @api
+     */
     BaseLayer.prototype.getOpacity = function getOpacity () {
       return /** @type {number} */ (this.get(LayerProperty.OPACITY));
     };
 
     /**
-    * @abstract
-    * @return {import("../source/State.js").default} Source state.
-    */
-    BaseLayer.prototype.getSourceState = function getSourceState () {};
+     * @abstract
+     * @return {import("../source/State.js").default} Source state.
+     */
+    BaseLayer.prototype.getSourceState = function getSourceState () {
+      return abstract();
+    };
 
     /**
-    * Return the visibility of the layer (`true` or `false`).
-    * @return {boolean} The visibility of the layer.
-    * @observable
-    * @api
-    */
+     * Return the visibility of the layer (`true` or `false`).
+     * @return {boolean} The visibility of the layer.
+     * @observable
+     * @api
+     */
     BaseLayer.prototype.getVisible = function getVisible () {
       return /** @type {boolean} */ (this.get(LayerProperty.VISIBLE));
     };
 
     /**
-    * Return the Z-index of the layer, which is used to order layers before
-    * rendering. The default Z-index is 0.
-    * @return {number} The Z-index of the layer.
-    * @observable
-    * @api
-    */
+     * Return the Z-index of the layer, which is used to order layers before
+     * rendering. The default Z-index is 0.
+     * @return {number} The Z-index of the layer.
+     * @observable
+     * @api
+     */
     BaseLayer.prototype.getZIndex = function getZIndex () {
       return /** @type {number} */ (this.get(LayerProperty.Z_INDEX));
     };
 
     /**
-    * Set the extent at which the layer is visible.  If `undefined`, the layer
-    * will be visible at all extents.
-    * @param {import("../extent.js").Extent|undefined} extent The extent of the layer.
-    * @observable
-    * @api
-    */
+     * Set the extent at which the layer is visible.  If `undefined`, the layer
+     * will be visible at all extents.
+     * @param {import("../extent.js").Extent|undefined} extent The extent of the layer.
+     * @observable
+     * @api
+     */
     BaseLayer.prototype.setExtent = function setExtent (extent) {
       this.set(LayerProperty.EXTENT, extent);
     };
 
     /**
-    * Set the maximum resolution at which the layer is visible.
-    * @param {number} maxResolution The maximum resolution of the layer.
-    * @observable
-    * @api
-    */
+     * Set the maximum resolution at which the layer is visible.
+     * @param {number} maxResolution The maximum resolution of the layer.
+     * @observable
+     * @api
+     */
     BaseLayer.prototype.setMaxResolution = function setMaxResolution (maxResolution) {
       this.set(LayerProperty.MAX_RESOLUTION, maxResolution);
     };
 
     /**
-    * Set the minimum resolution at which the layer is visible.
-    * @param {number} minResolution The minimum resolution of the layer.
-    * @observable
-    * @api
-    */
+     * Set the minimum resolution at which the layer is visible.
+     * @param {number} minResolution The minimum resolution of the layer.
+     * @observable
+     * @api
+     */
     BaseLayer.prototype.setMinResolution = function setMinResolution (minResolution) {
       this.set(LayerProperty.MIN_RESOLUTION, minResolution);
     };
 
     /**
-    * Set the opacity of the layer, allowed values range from 0 to 1.
-    * @param {number} opacity The opacity of the layer.
-    * @observable
-    * @api
-    */
+     * Set the opacity of the layer, allowed values range from 0 to 1.
+     * @param {number} opacity The opacity of the layer.
+     * @observable
+     * @api
+     */
     BaseLayer.prototype.setOpacity = function setOpacity (opacity) {
       this.set(LayerProperty.OPACITY, opacity);
     };
 
     /**
-    * Set the visibility of the layer (`true` or `false`).
-    * @param {boolean} visible The visibility of the layer.
-    * @observable
-    * @api
-    */
+     * Set the visibility of the layer (`true` or `false`).
+     * @param {boolean} visible The visibility of the layer.
+     * @observable
+     * @api
+     */
     BaseLayer.prototype.setVisible = function setVisible (visible) {
       this.set(LayerProperty.VISIBLE, visible);
     };
 
     /**
-    * Set Z-index of the layer, which is used to order layers before rendering.
-    * The default Z-index is 0.
-    * @param {number} zindex The z-index of the layer.
-    * @observable
-    * @api
-    */
+     * Set Z-index of the layer, which is used to order layers before rendering.
+     * The default Z-index is 0.
+     * @param {number} zindex The z-index of the layer.
+     * @observable
+     * @api
+     */
     BaseLayer.prototype.setZIndex = function setZIndex (zindex) {
       this.set(LayerProperty.Z_INDEX, zindex);
     };
@@ -18566,7 +16516,7 @@
    * @enum {string}
    * @private
    */
-  var Property$1 = {
+  var Property$2 = {
     LAYERS: 'layers'
   };
 
@@ -18603,16 +16553,15 @@
       this.listenerKeys_ = {};
 
       listen(this,
-        getChangeEventType(Property$1.LAYERS),
+        getChangeEventType(Property$2.LAYERS),
         this.handleLayersChanged_, this);
 
       if (layers) {
         if (Array.isArray(layers)) {
           layers = new Collection(layers.slice(), {unique: true});
         } else {
-          assert(layers instanceof Collection,
+          assert(typeof /** @type {?} */ (layers).getArray === 'function',
             43); // Expected `layers` to be an array or a `Collection`
-          layers = layers;
         }
       } else {
         layers = new Collection(undefined, {unique: true});
@@ -18634,7 +16583,6 @@
     };
 
     /**
-     * @param {import("../events/Event.js").default} event Event.
      * @private
      */
     LayerGroup.prototype.handleLayersChanged_ = function handleLayersChanged_ () {
@@ -18655,7 +16603,7 @@
       var layersArray = layers.getArray();
       for (var i = 0, ii = layersArray.length; i < ii; i++) {
         var layer = layersArray[i];
-        this.listenerKeys_[getUid(layer).toString()] = [
+        this.listenerKeys_[getUid(layer)] = [
           listen(layer, ObjectEventType.PROPERTYCHANGE, this.handleLayerChange_, this),
           listen(layer, EventType.CHANGE, this.handleLayerChange_, this)
         ];
@@ -18670,8 +16618,7 @@
      */
     LayerGroup.prototype.handleLayersAdd_ = function handleLayersAdd_ (collectionEvent) {
       var layer = /** @type {import("./Base.js").default} */ (collectionEvent.element);
-      var key = getUid(layer).toString();
-      this.listenerKeys_[key] = [
+      this.listenerKeys_[getUid(layer)] = [
         listen(layer, ObjectEventType.PROPERTYCHANGE, this.handleLayerChange_, this),
         listen(layer, EventType.CHANGE, this.handleLayerChange_, this)
       ];
@@ -18684,7 +16631,7 @@
      */
     LayerGroup.prototype.handleLayersRemove_ = function handleLayersRemove_ (collectionEvent) {
       var layer = /** @type {import("./Base.js").default} */ (collectionEvent.element);
-      var key = getUid(layer).toString();
+      var key = getUid(layer);
       this.listenerKeys_[key].forEach(unlistenByKey);
       delete this.listenerKeys_[key];
       this.changed();
@@ -18700,7 +16647,7 @@
      */
     LayerGroup.prototype.getLayers = function getLayers () {
       return (
-        /** @type {!import("../Collection.js").default<import("./Base.js").default>} */ (this.get(Property$1.LAYERS))
+        /** @type {!import("../Collection.js").default<import("./Base.js").default>} */ (this.get(Property$2.LAYERS))
       );
     };
 
@@ -18713,7 +16660,7 @@
      * @api
      */
     LayerGroup.prototype.setLayers = function setLayers (layers) {
-      this.set(Property$1.LAYERS, layers);
+      this.set(Property$2.LAYERS, layers);
     };
 
     /**
@@ -18865,7 +16812,7 @@
    * @property {null|import("./extent.js").Extent} extent
    * @property {import("./coordinate.js").Coordinate} focus
    * @property {number} index
-   * @property {Object<number, import("./layer/Layer.js").State>} layerStates
+   * @property {Object<string, import("./layer/Layer.js").State>} layerStates
    * @property {Array<import("./layer/Layer.js").State>} layerStatesArray
    * @property {import("./transform.js").Transform} pixelToCoordinateTransform
    * @property {Array<PostRenderFunction>} postRenderFunctions
@@ -18911,7 +16858,7 @@
    * @typedef {Object} MapOptions
    * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
    * Controls initially added to the map. If not specified,
-   * {@link module:ol/control/util~defaults} is used.
+   * {@link module:ol/control~defaults} is used.
    * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
    * physical pixels and device-independent pixels (dips) on the device.
    * @property {Collection<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
@@ -18925,7 +16872,7 @@
    * map target (i.e. the user-provided div for the map). If this is not
    * `document`, the target element needs to be focused for key events to be
    * emitted, requiring that the target element has a `tabindex` attribute.
-   * @property {Array<import("./layer/Base.js").default>|Collection<import("./layer/Base.js").default>} [layers]
+   * @property {Array<import("./layer/Base.js").default>|Collection<import("./layer/Base.js").default>|LayerGroup} [layers]
    * Layers. If this is not defined, a map with no layers will be rendered. Note
    * that layers are rendered in the order supplied, so if you want, for example,
    * a vector layer to appear on top of a tile layer, it must come after the tile
@@ -19287,6 +17234,10 @@
     PluggableMap.prototype = Object.create( BaseObject$$1 && BaseObject$$1.prototype );
     PluggableMap.prototype.constructor = PluggableMap;
 
+    /**
+     * @abstract
+     * @return {import("./renderer/Map.js").default} The map renderer
+     */
     PluggableMap.prototype.createRenderer = function createRenderer () {
       throw new Error('Use a map type that has a createRenderer method');
     };
@@ -19369,7 +17320,7 @@
      * callback with each intersecting feature. Layers included in the detection can
      * be configured through the `layerFilter` option in `opt_options`.
      * @param {import("./pixel.js").Pixel} pixel Pixel.
-     * @param {function(this: S, (import("./Feature.js").default|import("./render/Feature.js").default),
+     * @param {function(this: S, import("./Feature.js").FeatureLike,
      *     import("./layer/Layer.js").default): T} callback Feature callback. The callback will be
      *     called with two arguments. The first argument is one
      *     {@link module:ol/Feature feature} or
@@ -19388,7 +17339,8 @@
         return;
       }
       var coordinate = this.getCoordinateFromPixel(pixel);
-      opt_options = opt_options !== undefined ? opt_options : {};
+      opt_options = opt_options !== undefined ? opt_options :
+        /** @type {AtPixelOptions} */ ({});
       var hitTolerance = opt_options.hitTolerance !== undefined ?
         opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
       var layerFilter = opt_options.layerFilter !== undefined ?
@@ -19402,7 +17354,7 @@
      * Get all features that intersect a pixel on the viewport.
      * @param {import("./pixel.js").Pixel} pixel Pixel.
      * @param {AtPixelOptions=} opt_options Optional options.
-     * @return {Array<import("./Feature.js").default|import("./render/Feature.js").default>} The detected features or
+     * @return {Array<import("./Feature.js").FeatureLike>} The detected features or
      * `null` if none were found.
      * @api
      */
@@ -19460,7 +17412,8 @@
         return false;
       }
       var coordinate = this.getCoordinateFromPixel(pixel);
-      opt_options = opt_options !== undefined ? opt_options : {};
+      opt_options = opt_options !== undefined ? opt_options :
+        /** @type {AtPixelOptions} */ ({});
       var layerFilter = opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
       var hitTolerance = opt_options.hitTolerance !== undefined ?
         opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
@@ -19486,7 +17439,10 @@
      */
     PluggableMap.prototype.getEventPixel = function getEventPixel (event) {
       var viewportPosition = this.viewport_.getBoundingClientRect();
-      var eventPosition = event.changedTouches ? event.changedTouches[0] : event;
+      var eventPosition = 'changedTouches' in event ?
+        /** @type {TouchEvent} */ (event).changedTouches[0] :
+        /** @type {MouseEvent} */ (event);
+
       return [
         eventPosition.clientX - viewportPosition.left,
         eventPosition.clientY - viewportPosition.top
@@ -20048,7 +18004,7 @@
         if (previousFrameState) {
           var moveStart = !this.previousExtent_ ||
                       (!isEmpty$1(this.previousExtent_) &&
-                      !equals(frameState.extent, this.previousExtent_));
+                      !equals$1(frameState.extent, this.previousExtent_));
           if (moveStart) {
             this.dispatchEvent(
               new MapEvent(MapEventType.MOVESTART, this, previousFrameState));
@@ -20059,7 +18015,7 @@
         var idle = this.previousExtent_ &&
             !frameState.viewHints[ViewHint.ANIMATING] &&
             !frameState.viewHints[ViewHint.INTERACTING] &&
-            !equals(frameState.extent, this.previousExtent_);
+            !equals$1(frameState.extent, this.previousExtent_);
 
         if (idle) {
           this.dispatchEvent(new MapEvent(MapEventType.MOVEEND, this, frameState));
@@ -20118,8 +18074,7 @@
      * @param {import("./Feature.js").default} feature Feature.
      */
     PluggableMap.prototype.skipFeature = function skipFeature (feature) {
-      var featureUid = getUid(feature).toString();
-      this.skippedFeatureUids_[featureUid] = true;
+      this.skippedFeatureUids_[getUid(feature)] = true;
       this.render();
     };
 
@@ -20154,8 +18109,7 @@
      * @param {import("./Feature.js").default} feature Feature.
      */
     PluggableMap.prototype.unskipFeature = function unskipFeature (feature) {
-      var featureUid = getUid(feature).toString();
-      delete this.skippedFeatureUids_[featureUid];
+      delete this.skippedFeatureUids_[getUid(feature)];
       this.render();
     };
 
@@ -20184,8 +18138,8 @@
      */
     var values = {};
 
-    var layerGroup = (options.layers instanceof LayerGroup) ?
-      options.layers : new LayerGroup({layers: options.layers});
+    var layerGroup = options.layers && typeof /** @type {?} */ (options.layers).getLayers === 'function' ?
+      /** @type {LayerGroup} */ (options.layers) : new LayerGroup({layers: /** @type {Collection} */ (options.layers)});
     values[MapProperty.LAYERGROUP] = layerGroup;
 
     values[MapProperty.TARGET] = options.target;
@@ -20198,9 +18152,9 @@
       if (Array.isArray(options.controls)) {
         controls = new Collection(options.controls.slice());
       } else {
-        assert(options.controls instanceof Collection,
+        assert(typeof /** @type {?} */ (options.controls).getArray === 'function',
           47); // Expected `controls` to be an array or an `import("./Collection.js").Collection`
-        controls = options.controls;
+        controls = /** @type {Collection} */ (options.controls);
       }
     }
 
@@ -20209,9 +18163,9 @@
       if (Array.isArray(options.interactions)) {
         interactions = new Collection(options.interactions.slice());
       } else {
-        assert(options.interactions instanceof Collection,
+        assert(typeof /** @type {?} */ (options.interactions).getArray === 'function',
           48); // Expected `interactions` to be an array or an `import("./Collection.js").Collection`
-        interactions = options.interactions;
+        interactions = /** @type {Collection} */ (options.interactions);
       }
     }
 
@@ -20220,7 +18174,7 @@
       if (Array.isArray(options.overlays)) {
         overlays = new Collection(options.overlays.slice());
       } else {
-        assert(options.overlays instanceof Collection,
+        assert(typeof /** @type {?} */ (options.overlays).getArray === 'function',
           49); // Expected `overlays` to be an array or an `import("./Collection.js").Collection`
         overlays = options.overlays;
       }
@@ -20245,12 +18199,14 @@
   function getLoading(layers) {
     for (var i = 0, ii = layers.length; i < ii; ++i) {
       var layer = layers[i];
-      if (layer instanceof LayerGroup) {
-        return getLoading(layer.getLayers().getArray());
-      }
-      var source = layers[i].getSource();
-      if (source && source.loading) {
-        return true;
+      if (typeof /** @type {?} */ (layer).getLayers === 'function') {
+        return getLoading(/** @type {LayerGroup} */ (layer).getLayers().getArray());
+      } else {
+        var source = /** @type {import("./layer/Layer.js").default} */ (
+          layer).getSource();
+        if (source && source.loading) {
+          return true;
+        }
       }
     }
     return false;
@@ -20406,6 +18362,92 @@
   }(BaseObject));
 
   /**
+   * @module ol/css
+   */
+
+
+  /**
+   * The CSS class for hidden feature.
+   *
+   * @const
+   * @type {string}
+   */
+  var CLASS_HIDDEN = 'ol-hidden';
+
+
+  /**
+   * The CSS class that we'll give the DOM elements to have them selectable.
+   *
+   * @const
+   * @type {string}
+   */
+  var CLASS_SELECTABLE = 'ol-selectable';
+
+
+  /**
+   * The CSS class that we'll give the DOM elements to have them unselectable.
+   *
+   * @const
+   * @type {string}
+   */
+  var CLASS_UNSELECTABLE = 'ol-unselectable';
+
+
+  /**
+   * The CSS class for unsupported feature.
+   *
+   * @const
+   * @type {string}
+   */
+  var CLASS_UNSUPPORTED = 'ol-unsupported';
+
+
+  /**
+   * The CSS class for controls.
+   *
+   * @const
+   * @type {string}
+   */
+  var CLASS_CONTROL = 'ol-control';
+
+
+  /**
+   * The CSS class that we'll give the DOM elements that are collapsed, i.e.
+   * to those elements which usually can be expanded.
+   *
+   * @const
+   * @type {string}
+   */
+  var CLASS_COLLAPSED = 'ol-collapsed';
+
+
+  /**
+   * Get the list of font families from a font spec.  Note that this doesn't work
+   * for font families that have commas in them.
+   * @param {string} The CSS font property.
+   * @return {Object<string>} The font families (or null if the input spec is invalid).
+   */
+  var getFontFamilies = (function() {
+    var style;
+    var cache = {};
+    return function(font) {
+      if (!style) {
+        style = document.createElement('div').style;
+      }
+      if (!(font in cache)) {
+        style.font = font;
+        var family = style.fontFamily;
+        style.font = '';
+        if (!family) {
+          return null;
+        }
+        cache[font] = family.split(/,\s?/);
+      }
+      return cache[font];
+    };
+  })();
+
+  /**
    * @module ol/layer/Layer
    */
 
@@ -20433,7 +18475,7 @@
 
   /**
    * @typedef {Object} State
-   * @property {import("./Layer.js").default} layer
+   * @property {import("./Base.js").default} layer
    * @property {number} opacity
    * @property {SourceState} sourceState
    * @property {boolean} visible
@@ -20591,13 +18633,14 @@
       }
       if (map) {
         this.mapPrecomposeKey_ = listen(map, RenderEventType.PRECOMPOSE, function(evt) {
+          var renderEvent = /** @type {import("../render/Event.js").default} */ (evt);
           var layerState = this.getLayerState();
           layerState.managed = false;
           if (this.getZIndex() === undefined) {
             layerState.zIndex = Infinity;
           }
-          evt.frameState.layerStatesArray.push(layerState);
-          evt.frameState.layerStates[getUid(this)] = layerState;
+          renderEvent.frameState.layerStatesArray.push(layerState);
+          renderEvent.frameState.layerStates[getUid(this)] = layerState;
         }, this);
         this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
         this.changed();
@@ -20642,9 +18685,9 @@
    * @property {HTMLElement|string} [target] Specify a target if you
    * want the control to be rendered outside of the map's
    * viewport.
-   * @property {boolean} [collapsible=true] Specify if attributions can
-   * be collapsed. If you use an OSM source, should be set to `false` — see
-   * {@link https://www.openstreetmap.org/copyright OSM Copyright} —
+   * @property {boolean} [collapsible] Specify if attributions can
+   * be collapsed. If not specified, sources control this behavior with their
+   * `attributionsCollapsible` setting.
    * @property {boolean} [collapsed=true] Specify if attributions should
    * be collapsed at startup.
    * @property {string} [tipLabel='Attributions'] Text label to use for the button tip.
@@ -20691,6 +18734,12 @@
        * @type {boolean}
        */
       this.collapsed_ = options.collapsed !== undefined ? options.collapsed : true;
+
+      /**
+       * @private
+       * @type {boolean}
+       */
+      this.overrideCollapsible_ = options.collapsible !== undefined;
 
       /**
        * @private
@@ -20771,12 +18820,12 @@
     Attribution.prototype.constructor = Attribution;
 
     /**
-     * Get a list of visible attributions.
+     * Collect a list of visible attributions and set the collapsible state.
      * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
      * @return {Array<string>} Attributions.
      * @private
      */
-    Attribution.prototype.getSourceAttributions_ = function getSourceAttributions_ (frameState) {
+    Attribution.prototype.collectSourceAttributions_ = function collectSourceAttributions_ (frameState) {
       /**
        * Used to determine if an attribution already exists.
        * @type {!Object<string, boolean>}
@@ -20797,7 +18846,7 @@
           continue;
         }
 
-        var source = layerState.layer.getSource();
+        var source = /** @type {import("../layer/Layer.js").default} */ (layerState.layer).getSource();
         if (!source) {
           continue;
         }
@@ -20810,6 +18859,10 @@
         var attributions = attributionGetter(frameState);
         if (!attributions) {
           continue;
+        }
+
+        if (!this.overrideCollapsible_ && source.getAttributionsCollapsible() === false) {
+          this.setCollapsible(false);
         }
 
         if (Array.isArray(attributions)) {
@@ -20842,7 +18895,7 @@
         return;
       }
 
-      var attributions = this.getSourceAttributions_(frameState);
+      var attributions = this.collectSourceAttributions_(frameState);
 
       var visible = attributions.length > 0;
       if (this.renderedVisible_ != visible) {
@@ -20850,7 +18903,7 @@
         this.renderedVisible_ = visible;
       }
 
-      if (equals$1(attributions, this.renderedAttributions_)) {
+      if (equals(attributions, this.renderedAttributions_)) {
         return;
       }
 
@@ -21364,6 +19417,10 @@
     function Interaction(options) {
       BaseObject$$1.call(this);
 
+      if (options.handleEvent) {
+        this.handleEvent = options.handleEvent;
+      }
+
       /**
        * @private
        * @type {import("../PluggableMap.js").default}
@@ -21371,12 +19428,6 @@
       this.map_ = null;
 
       this.setActive(true);
-
-      /**
-       * @type {function(import("../MapBrowserEvent.js").default):boolean}
-       */
-      this.handleEvent = options.handleEvent;
-
     }
 
     if ( BaseObject$$1 ) Interaction.__proto__ = BaseObject$$1;
@@ -21400,6 +19451,16 @@
      */
     Interaction.prototype.getMap = function getMap () {
       return this.map_;
+    };
+
+    /**
+     * Handles the {@link module:ol/MapBrowserEvent map browser event}.
+     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+     * @return {boolean} `false` to stop event propagation.
+     * @api
+     */
+    Interaction.prototype.handleEvent = function handleEvent (mapBrowserEvent) {
+      return true;
     };
 
     /**
@@ -21662,7 +19723,7 @@
    * @api
    */
   var altKeyOnly = function(mapBrowserEvent) {
-    var originalEvent = mapBrowserEvent.originalEvent;
+    var originalEvent = /** @type {KeyboardEvent|MouseEvent|TouchEvent} */ (mapBrowserEvent.originalEvent);
     return (
       originalEvent.altKey &&
         !(originalEvent.metaKey || originalEvent.ctrlKey) &&
@@ -21679,7 +19740,7 @@
    * @api
    */
   var altShiftKeysOnly = function(mapBrowserEvent) {
-    var originalEvent = mapBrowserEvent.originalEvent;
+    var originalEvent = /** @type {KeyboardEvent|MouseEvent|TouchEvent} */ (mapBrowserEvent.originalEvent);
     return (
       originalEvent.altKey &&
         !(originalEvent.metaKey || originalEvent.ctrlKey) &&
@@ -21732,7 +19793,7 @@
    * @return {boolean} The result.
    */
   var mouseActionButton = function(mapBrowserEvent) {
-    var originalEvent = mapBrowserEvent.originalEvent;
+    var originalEvent = /** @type {MouseEvent} */ (mapBrowserEvent.originalEvent);
     return originalEvent.button == 0 &&
         !(WEBKIT && MAC && originalEvent.ctrlKey);
   };
@@ -21794,7 +19855,7 @@
    * @api
    */
   var noModifierKeys = function(mapBrowserEvent) {
-    var originalEvent = mapBrowserEvent.originalEvent;
+    var originalEvent = /** @type {KeyboardEvent|MouseEvent|TouchEvent} */ (mapBrowserEvent.originalEvent);
     return (
       !originalEvent.altKey &&
         !(originalEvent.metaKey || originalEvent.ctrlKey) &&
@@ -21812,7 +19873,7 @@
    * @api
    */
   var platformModifierKeyOnly = function(mapBrowserEvent) {
-    var originalEvent = mapBrowserEvent.originalEvent;
+    var originalEvent = /** @type {KeyboardEvent|MouseEvent|TouchEvent} */ (mapBrowserEvent.originalEvent);
     return !originalEvent.altKey &&
       (MAC ? originalEvent.metaKey : originalEvent.ctrlKey) &&
       !originalEvent.shiftKey;
@@ -21828,7 +19889,7 @@
    * @api
    */
   var shiftKeyOnly = function(mapBrowserEvent) {
-    var originalEvent = mapBrowserEvent.originalEvent;
+    var originalEvent = /** @type {KeyboardEvent|MouseEvent|TouchEvent} */ (mapBrowserEvent.originalEvent);
     return (
       !originalEvent.altKey &&
         !(originalEvent.metaKey || originalEvent.ctrlKey) &&
@@ -21846,7 +19907,7 @@
    */
   var targetNotEditable = function(mapBrowserEvent) {
     var target = mapBrowserEvent.originalEvent.target;
-    var tagName = target.tagName;
+    var tagName = /** @type {Element} */ (target).tagName;
     return (
       tagName !== 'INPUT' &&
         tagName !== 'SELECT' &&
@@ -21862,11 +19923,10 @@
    * @api
    */
   var mouseOnly = function(mapBrowserEvent) {
-    assert(mapBrowserEvent.pointerEvent, 56); // mapBrowserEvent must originate from a pointer event
+    var pointerEvent = /** @type {import("../MapBrowserPointerEvent").default} */ (mapBrowserEvent).pointerEvent;
+    assert(pointerEvent !== undefined, 56); // mapBrowserEvent must originate from a pointer event
     // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
-    return (
-      /** @type {import("../MapBrowserEvent.js").default} */ (mapBrowserEvent).pointerEvent.pointerType == 'mouse'
-    );
+    return pointerEvent.pointerType == 'mouse';
   };
 
 
@@ -21880,7 +19940,8 @@
    * @api
    */
   var primaryAction = function(mapBrowserEvent) {
-    var pointerEvent = mapBrowserEvent.pointerEvent;
+    var pointerEvent = /** @type {import("../MapBrowserPointerEvent").default} */ (mapBrowserEvent).pointerEvent;
+    assert(pointerEvent !== undefined, 56); // mapBrowserEvent must originate from a pointer event
     return pointerEvent.isPrimary && pointerEvent.button === 0;
   };
 
@@ -21890,41 +19951,11 @@
 
 
   /**
-   * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
-   * @this {PointerInteraction}
-   */
-  var handleDragEvent = VOID;
-
-
-  /**
-   * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
-   * @return {boolean} Capture dragging.
-   * @this {PointerInteraction}
-   */
-  var handleUpEvent = FALSE;
-
-
-  /**
-   * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
-   * @return {boolean} Capture dragging.
-   * @this {PointerInteraction}
-   */
-  var handleDownEvent = FALSE;
-
-
-  /**
-   * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
-   * @this {PointerInteraction}
-   */
-  var handleMoveEvent = VOID;
-
-
-  /**
    * @typedef {Object} Options
-   * @property {function(MapBrowserPointerEvent):boolean} [handleDownEvent]
+   * @property {function(import("../MapBrowserPointerEvent.js").default):boolean} [handleDownEvent]
    * Function handling "down" events. If the function returns `true` then a drag
    * sequence is started.
-   * @property {function(MapBrowserPointerEvent)} [handleDragEvent]
+   * @property {function(import("../MapBrowserPointerEvent.js").default)} [handleDragEvent]
    * Function handling "drag" events. This function is called on "move" events
    * during a drag sequence.
    * @property {function(import("../MapBrowserEvent.js").default):boolean} [handleEvent]
@@ -21932,14 +19963,14 @@
    * dispatched to the map. The function may return `false` to prevent the
    * propagation of the event to other interactions in the map's interactions
    * chain.
-   * @property {function(MapBrowserPointerEvent)} [handleMoveEvent]
+   * @property {function(import("../MapBrowserPointerEvent.js").default)} [handleMoveEvent]
    * Function handling "move" events. This function is called on "move" events,
    * also during a drag sequence (so during a drag sequence both the
    * `handleDragEvent` function and this function are called).
-   * @property {function(MapBrowserPointerEvent):boolean} [handleUpEvent]
+   * @property {function(import("../MapBrowserPointerEvent.js").default):boolean} [handleUpEvent]
    *  Function handling "up" events. If the function returns `false` then the
    * current drag sequence is stopped.
-   * @property {function(boolean):boolean} stopDown
+   * @property {function(boolean):boolean} [stopDown]
    * Should the down event be propagated to other interactions, or should be
    * stopped?
    */
@@ -21961,51 +19992,33 @@
 
       var options = opt_options ? opt_options : {};
 
-      Interaction$$1.call(this, {
-        handleEvent: options.handleEvent || handleEvent$1
-      });
+      Interaction$$1.call(/** @type {import("./Interaction.js").InteractionOptions} */ this, (options));
 
-      /**
-       * @type {function(MapBrowserPointerEvent):boolean}
-       * @private
-       */
-      this.handleDownEvent_ = options.handleDownEvent ?
-        options.handleDownEvent : handleDownEvent;
+      if (options.handleDownEvent) {
+        this.handleDownEvent = options.handleDownEvent;
+      }
 
-      /**
-       * @type {function(MapBrowserPointerEvent)}
-       * @private
-       */
-      this.handleDragEvent_ = options.handleDragEvent ?
-        options.handleDragEvent : handleDragEvent;
+      if (options.handleDragEvent) {
+        this.handleDragEvent = options.handleDragEvent;
+      }
 
-      /**
-       * @type {function(MapBrowserPointerEvent)}
-       * @private
-       */
-      this.handleMoveEvent_ = options.handleMoveEvent ?
-        options.handleMoveEvent : handleMoveEvent;
+      if (options.handleMoveEvent) {
+        this.handleMoveEvent = options.handleMoveEvent;
+      }
 
-      /**
-       * @type {function(MapBrowserPointerEvent):boolean}
-       * @private
-       */
-      this.handleUpEvent_ = options.handleUpEvent ?
-        options.handleUpEvent : handleUpEvent;
+      if (options.handleUpEvent) {
+        this.handleUpEvent = options.handleUpEvent;
+      }
+
+      if (options.stopDown) {
+        this.stopDown = options.stopDown;
+      }
 
       /**
        * @type {boolean}
        * @protected
        */
       this.handlingDownUpSequence = false;
-
-      /**
-       * This function is used to determine if "down" events should be propagated
-       * to other interactions or should be stopped.
-       * @type {function(boolean):boolean}
-       * @protected
-       */
-      this.stopDown = options.stopDown ? options.stopDown : stopDown;
 
       /**
        * @type {!Object<string, import("../pointer/PointerEvent.js").default>}
@@ -22026,7 +20039,87 @@
     PointerInteraction.prototype.constructor = PointerInteraction;
 
     /**
-     * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
+     * Handle pointer down events.
+     * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+     * @return {boolean} If the event was consumed.
+     * @protected
+     */
+    PointerInteraction.prototype.handleDownEvent = function handleDownEvent (mapBrowserEvent) {
+      return false;
+    };
+
+    /**
+     * Handle pointer drag events.
+     * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+     * @protected
+     */
+    PointerInteraction.prototype.handleDragEvent = function handleDragEvent (mapBrowserEvent) {};
+
+    /**
+     * Handles the {@link module:ol/MapBrowserEvent map browser event} and may call into
+     * other functions, if event sequences like e.g. 'drag' or 'down-up' etc. are
+     * detected.
+     * @override
+     * @api
+     */
+    PointerInteraction.prototype.handleEvent = function handleEvent (mapBrowserEvent) {
+      if (!(/** @type {import("../MapBrowserPointerEvent.js").default} */ (mapBrowserEvent).pointerEvent)) {
+        return true;
+      }
+
+      var stopEvent = false;
+      this.updateTrackedPointers_(mapBrowserEvent);
+      if (this.handlingDownUpSequence) {
+        if (mapBrowserEvent.type == MapBrowserEventType.POINTERDRAG) {
+          this.handleDragEvent(mapBrowserEvent);
+        } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERUP) {
+          var handledUp = this.handleUpEvent(mapBrowserEvent);
+          this.handlingDownUpSequence = handledUp && this.targetPointers.length > 0;
+        }
+      } else {
+        if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
+          var handled = this.handleDownEvent(mapBrowserEvent);
+          if (handled) {
+            mapBrowserEvent.preventDefault();
+          }
+          this.handlingDownUpSequence = handled;
+          stopEvent = this.stopDown(handled);
+        } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE) {
+          this.handleMoveEvent(mapBrowserEvent);
+        }
+      }
+      return !stopEvent;
+    };
+
+    /**
+     * Handle pointer move events.
+     * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+     * @protected
+     */
+    PointerInteraction.prototype.handleMoveEvent = function handleMoveEvent (mapBrowserEvent) {};
+
+    /**
+     * Handle pointer up events.
+     * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+     * @return {boolean} If the event was consumed.
+     * @protected
+     */
+    PointerInteraction.prototype.handleUpEvent = function handleUpEvent (mapBrowserEvent) {
+      return false;
+    };
+
+    /**
+     * This function is used to determine if "down" events should be propagated
+     * to other interactions or should be stopped.
+     * @param {boolean} handled Was the event handled by the interaction?
+     * @return {boolean} Should the `down` event be stopped?
+     */
+    PointerInteraction.prototype.stopDown = function stopDown (handled) {
+      return handled;
+    };
+
+    /**
+     * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
      * @private
      */
     PointerInteraction.prototype.updateTrackedPointers_ = function updateTrackedPointers_ (mapBrowserEvent) {
@@ -22068,7 +20161,7 @@
 
 
   /**
-   * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
+   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} Whether the event is a pointerdown, pointerdrag
    *     or pointerup event.
    */
@@ -22077,53 +20170,6 @@
     return type === MapBrowserEventType.POINTERDOWN ||
       type === MapBrowserEventType.POINTERDRAG ||
       type === MapBrowserEventType.POINTERUP;
-  }
-
-
-  /**
-   * Handles the {@link module:ol/MapBrowserEvent map browser event} and may call into
-   * other functions, if event sequences like e.g. 'drag' or 'down-up' etc. are
-   * detected.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
-   * @return {boolean} `false` to stop event propagation.
-   * @this {PointerInteraction}
-   * @api
-   */
-  function handleEvent$1(mapBrowserEvent) {
-    if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
-      return true;
-    }
-
-    var stopEvent = false;
-    this.updateTrackedPointers_(mapBrowserEvent);
-    if (this.handlingDownUpSequence) {
-      if (mapBrowserEvent.type == MapBrowserEventType.POINTERDRAG) {
-        this.handleDragEvent_(mapBrowserEvent);
-      } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERUP) {
-        var handledUp = this.handleUpEvent_(mapBrowserEvent);
-        this.handlingDownUpSequence = handledUp && this.targetPointers.length > 0;
-      }
-    } else {
-      if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
-        var handled = this.handleDownEvent_(mapBrowserEvent);
-        if (handled) {
-          mapBrowserEvent.preventDefault();
-        }
-        this.handlingDownUpSequence = handled;
-        stopEvent = this.stopDown(handled);
-      } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE) {
-        this.handleMoveEvent_(mapBrowserEvent);
-      }
-    }
-    return !stopEvent;
-  }
-
-  /**
-   * @param {boolean} handled Was the event handled by the interaction?
-   * @return {boolean} Should the `down` event be stopped?
-   */
-  function stopDown(handled) {
-    return handled;
   }
 
   /**
@@ -22149,9 +20195,6 @@
     function DragPan(opt_options) {
 
       PointerInteraction$$1.call(this, {
-        handleDownEvent: handleDownEvent$1,
-        handleDragEvent: handleDragEvent$1,
-        handleUpEvent: handleUpEvent$1,
         stopDown: FALSE
       });
 
@@ -22196,113 +20239,105 @@
     DragPan.prototype = Object.create( PointerInteraction$$1 && PointerInteraction$$1.prototype );
     DragPan.prototype.constructor = DragPan;
 
-    return DragPan;
-  }(PointerInteraction));
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @this {DragPan}
-   */
-  function handleDragEvent$1(mapBrowserEvent) {
-    if (!this.panning_) {
-      this.panning_ = true;
-      this.getMap().getView().setHint(ViewHint.INTERACTING, 1);
-    }
-    var targetPointers = this.targetPointers;
-    var centroid$$1 = centroid(targetPointers);
-    if (targetPointers.length == this.lastPointersCount_) {
-      if (this.kinetic_) {
-        this.kinetic_.update(centroid$$1[0], centroid$$1[1]);
+    /**
+     * @inheritDoc
+     */
+    DragPan.prototype.handleDragEvent = function handleDragEvent (mapBrowserEvent) {
+      if (!this.panning_) {
+        this.panning_ = true;
+        this.getMap().getView().setHint(ViewHint.INTERACTING, 1);
       }
-      if (this.lastCentroid) {
-        var deltaX = this.lastCentroid[0] - centroid$$1[0];
-        var deltaY = centroid$$1[1] - this.lastCentroid[1];
-        var map = mapBrowserEvent.map;
-        var view = map.getView();
-        var center = [deltaX, deltaY];
-        scale$2(center, view.getResolution());
-        rotate$2(center, view.getRotation());
-        add$2(center, view.getCenter());
-        center = view.constrainCenter(center);
-        view.setCenter(center);
-      }
-    } else if (this.kinetic_) {
-      // reset so we don't overestimate the kinetic energy after
-      // after one finger down, tiny drag, second finger down
-      this.kinetic_.begin();
-    }
-    this.lastCentroid = centroid$$1;
-    this.lastPointersCount_ = targetPointers.length;
-  }
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {DragPan}
-   */
-  function handleUpEvent$1(mapBrowserEvent) {
-    var map = mapBrowserEvent.map;
-    var view = map.getView();
-    if (this.targetPointers.length === 0) {
-      if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
-        var distance$$1 = this.kinetic_.getDistance();
-        var angle = this.kinetic_.getAngle();
-        var center = /** @type {!import("../coordinate.js").Coordinate} */ (view.getCenter());
-        var centerpx = map.getPixelFromCoordinate(center);
-        var dest = map.getCoordinateFromPixel([
-          centerpx[0] - distance$$1 * Math.cos(angle),
-          centerpx[1] - distance$$1 * Math.sin(angle)
-        ]);
-        view.animate({
-          center: view.constrainCenter(dest),
-          duration: 500,
-          easing: easeOut
-        });
-      }
-      if (this.panning_) {
-        this.panning_ = false;
-        view.setHint(ViewHint.INTERACTING, -1);
-      }
-      return false;
-    } else {
-      if (this.kinetic_) {
+      var targetPointers = this.targetPointers;
+      var centroid$$1 = centroid(targetPointers);
+      if (targetPointers.length == this.lastPointersCount_) {
+        if (this.kinetic_) {
+          this.kinetic_.update(centroid$$1[0], centroid$$1[1]);
+        }
+        if (this.lastCentroid) {
+          var deltaX = this.lastCentroid[0] - centroid$$1[0];
+          var deltaY = centroid$$1[1] - this.lastCentroid[1];
+          var map = mapBrowserEvent.map;
+          var view = map.getView();
+          var center = [deltaX, deltaY];
+          scale$2(center, view.getResolution());
+          rotate$2(center, view.getRotation());
+          add$2(center, view.getCenter());
+          center = view.constrainCenter(center);
+          view.setCenter(center);
+        }
+      } else if (this.kinetic_) {
         // reset so we don't overestimate the kinetic energy after
-        // after one finger up, tiny drag, second finger up
+        // after one finger down, tiny drag, second finger down
         this.kinetic_.begin();
       }
-      this.lastCentroid = null;
-      return true;
-    }
-  }
+      this.lastCentroid = centroid$$1;
+      this.lastPointersCount_ = targetPointers.length;
+    };
 
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Start drag sequence?
-   * @this {DragPan}
-   */
-  function handleDownEvent$1(mapBrowserEvent) {
-    if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
+    /**
+     * @inheritDoc
+     */
+    DragPan.prototype.handleUpEvent = function handleUpEvent (mapBrowserEvent) {
       var map = mapBrowserEvent.map;
       var view = map.getView();
-      this.lastCentroid = null;
-      // stop any current animation
-      if (view.getAnimating()) {
-        view.setCenter(mapBrowserEvent.frameState.viewState.center);
+      if (this.targetPointers.length === 0) {
+        if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
+          var distance$$1 = this.kinetic_.getDistance();
+          var angle = this.kinetic_.getAngle();
+          var center = /** @type {!import("../coordinate.js").Coordinate} */ (view.getCenter());
+          var centerpx = map.getPixelFromCoordinate(center);
+          var dest = map.getCoordinateFromPixel([
+            centerpx[0] - distance$$1 * Math.cos(angle),
+            centerpx[1] - distance$$1 * Math.sin(angle)
+          ]);
+          view.animate({
+            center: view.constrainCenter(dest),
+            duration: 500,
+            easing: easeOut
+          });
+        }
+        if (this.panning_) {
+          this.panning_ = false;
+          view.setHint(ViewHint.INTERACTING, -1);
+        }
+        return false;
+      } else {
+        if (this.kinetic_) {
+          // reset so we don't overestimate the kinetic energy after
+          // after one finger up, tiny drag, second finger up
+          this.kinetic_.begin();
+        }
+        this.lastCentroid = null;
+        return true;
       }
-      if (this.kinetic_) {
-        this.kinetic_.begin();
+    };
+
+    /**
+     * @inheritDoc
+     */
+    DragPan.prototype.handleDownEvent = function handleDownEvent (mapBrowserEvent) {
+      if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
+        var map = mapBrowserEvent.map;
+        var view = map.getView();
+        this.lastCentroid = null;
+        // stop any current animation
+        if (view.getAnimating()) {
+          view.setCenter(mapBrowserEvent.frameState.viewState.center);
+        }
+        if (this.kinetic_) {
+          this.kinetic_.begin();
+        }
+        // No kinetic as soon as more than one pointer on the screen is
+        // detected. This is to prevent nasty pans after pinch.
+        this.noKinetic_ = this.targetPointers.length > 1;
+        return true;
+      } else {
+        return false;
       }
-      // No kinetic as soon as more than one pointer on the screen is
-      // detected. This is to prevent nasty pans after pinch.
-      this.noKinetic_ = this.targetPointers.length > 1;
-      return true;
-    } else {
-      return false;
-    }
-  }
+    };
+
+    return DragPan;
+  }(PointerInteraction));
 
   /**
    * @module ol/interaction/DragRotate
@@ -22334,9 +20369,6 @@
       var options = opt_options ? opt_options : {};
 
       PointerInteraction$$1.call(this, {
-        handleDownEvent: handleDownEvent$2,
-        handleDragEvent: handleDragEvent$2,
-        handleUpEvent: handleUpEvent$2,
         stopDown: FALSE
       });
 
@@ -22364,75 +20396,69 @@
     DragRotate.prototype = Object.create( PointerInteraction$$1 && PointerInteraction$$1.prototype );
     DragRotate.prototype.constructor = DragRotate;
 
+    /**
+     * @inheritDoc
+     */
+    DragRotate.prototype.handleDragEvent = function handleDragEvent (mapBrowserEvent) {
+      if (!mouseOnly(mapBrowserEvent)) {
+        return;
+      }
+
+      var map = mapBrowserEvent.map;
+      var view = map.getView();
+      if (view.getConstraints().rotation === disable) {
+        return;
+      }
+      var size = map.getSize();
+      var offset = mapBrowserEvent.pixel;
+      var theta =
+          Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
+      if (this.lastAngle_ !== undefined) {
+        var delta = theta - this.lastAngle_;
+        var rotation = view.getRotation();
+        rotateWithoutConstraints(view, rotation - delta);
+      }
+      this.lastAngle_ = theta;
+    };
+
+
+    /**
+     * @inheritDoc
+     */
+    DragRotate.prototype.handleUpEvent = function handleUpEvent (mapBrowserEvent) {
+      if (!mouseOnly(mapBrowserEvent)) {
+        return true;
+      }
+
+      var map = mapBrowserEvent.map;
+      var view = map.getView();
+      view.setHint(ViewHint.INTERACTING, -1);
+      var rotation = view.getRotation();
+      rotate$3(view, rotation, undefined, this.duration_);
+      return false;
+    };
+
+
+    /**
+     * @inheritDoc
+     */
+    DragRotate.prototype.handleDownEvent = function handleDownEvent (mapBrowserEvent) {
+      if (!mouseOnly(mapBrowserEvent)) {
+        return false;
+      }
+
+      if (mouseActionButton(mapBrowserEvent) && this.condition_(mapBrowserEvent)) {
+        var map = mapBrowserEvent.map;
+        map.getView().setHint(ViewHint.INTERACTING, 1);
+        this.lastAngle_ = undefined;
+        return true;
+      } else {
+        return false;
+      }
+    };
+
     return DragRotate;
   }(PointerInteraction));
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @this {DragRotate}
-   */
-  function handleDragEvent$2(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return;
-    }
-
-    var map = mapBrowserEvent.map;
-    var view = map.getView();
-    if (view.getConstraints().rotation === disable) {
-      return;
-    }
-    var size = map.getSize();
-    var offset = mapBrowserEvent.pixel;
-    var theta =
-        Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
-    if (this.lastAngle_ !== undefined) {
-      var delta = theta - this.lastAngle_;
-      var rotation = view.getRotation();
-      rotateWithoutConstraints(view, rotation - delta);
-    }
-    this.lastAngle_ = theta;
-  }
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {DragRotate}
-   */
-  function handleUpEvent$2(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return true;
-    }
-
-    var map = mapBrowserEvent.map;
-    var view = map.getView();
-    view.setHint(ViewHint.INTERACTING, -1);
-    var rotation = view.getRotation();
-    rotate$3(view, rotation, undefined, this.duration_);
-    return false;
-  }
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Start drag sequence?
-   * @this {DragRotate}
-   */
-  function handleDownEvent$2(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return false;
-    }
-
-    if (mouseActionButton(mapBrowserEvent) && this.condition_(mapBrowserEvent)) {
-      var map = mapBrowserEvent.map;
-      map.getView().setHint(ViewHint.INTERACTING, 1);
-      this.lastAngle_ = undefined;
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   /**
    * @module ol/render/Box
@@ -22666,11 +20692,7 @@
   var DragBox = /*@__PURE__*/(function (PointerInteraction$$1) {
     function DragBox(opt_options) {
 
-      PointerInteraction$$1.call(this, {
-        handleDownEvent: handleDownEvent$3,
-        handleDragEvent: handleDragEvent$3,
-        handleUpEvent: handleUpEvent$3
-      });
+      PointerInteraction$$1.call(this);
 
       var options = opt_options ? opt_options : {};
 
@@ -22710,12 +20732,27 @@
       * @type {EndCondition}
       */
       this.boxEndCondition_ = options.boxEndCondition ?
-        options.boxEndCondition : defaultBoxEndCondition;
+        options.boxEndCondition : this.defaultBoxEndCondition;
     }
 
     if ( PointerInteraction$$1 ) DragBox.__proto__ = PointerInteraction$$1;
     DragBox.prototype = Object.create( PointerInteraction$$1 && PointerInteraction$$1.prototype );
     DragBox.prototype.constructor = DragBox;
+
+    /**
+     * The default condition for determining whether the boxend event
+     * should fire.
+     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent The originating MapBrowserEvent
+     *     leading to the box end.
+     * @param {import("../pixel.js").Pixel} startPixel The starting pixel of the box.
+     * @param {import("../pixel.js").Pixel} endPixel The end pixel of the box.
+     * @return {boolean} Whether or not the boxend condition should be fired.
+     */
+    DragBox.prototype.defaultBoxEndCondition = function defaultBoxEndCondition (mapBrowserEvent, startPixel, endPixel) {
+      var width = endPixel[0] - startPixel[0];
+      var height = endPixel[1] - startPixel[1];
+      return width * width + height * height >= this.minArea_;
+    };
 
     /**
     * Returns geometry of last drawn box.
@@ -22726,86 +20763,61 @@
       return this.box_.getGeometry();
     };
 
+    /**
+     * @inheritDoc
+     */
+    DragBox.prototype.handleDragEvent = function handleDragEvent (mapBrowserEvent) {
+      if (!mouseOnly(mapBrowserEvent)) {
+        return;
+      }
+
+      this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
+
+      this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXDRAG,
+        mapBrowserEvent.coordinate, mapBrowserEvent));
+    };
+
+    /**
+     * @inheritDoc
+     */
+    DragBox.prototype.handleUpEvent = function handleUpEvent (mapBrowserEvent) {
+      if (!mouseOnly(mapBrowserEvent)) {
+        return true;
+      }
+
+      this.box_.setMap(null);
+
+      if (this.boxEndCondition_(mapBrowserEvent, this.startPixel_, mapBrowserEvent.pixel)) {
+        this.onBoxEnd_(mapBrowserEvent);
+        this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXEND,
+          mapBrowserEvent.coordinate, mapBrowserEvent));
+      }
+      return false;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    DragBox.prototype.handleDownEvent = function handleDownEvent (mapBrowserEvent) {
+      if (!mouseOnly(mapBrowserEvent)) {
+        return false;
+      }
+
+      if (mouseActionButton(mapBrowserEvent) &&
+          this.condition_(mapBrowserEvent)) {
+        this.startPixel_ = mapBrowserEvent.pixel;
+        this.box_.setMap(mapBrowserEvent.map);
+        this.box_.setPixels(this.startPixel_, this.startPixel_);
+        this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXSTART,
+          mapBrowserEvent.coordinate, mapBrowserEvent));
+        return true;
+      } else {
+        return false;
+      }
+    };
+
     return DragBox;
   }(PointerInteraction));
-
-
-  /**
-   * The default condition for determining whether the boxend event
-   * should fire.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent The originating MapBrowserEvent
-   *     leading to the box end.
-   * @param {import("../pixel.js").Pixel} startPixel The starting pixel of the box.
-   * @param {import("../pixel.js").Pixel} endPixel The end pixel of the box.
-   * @return {boolean} Whether or not the boxend condition should be fired.
-   * @this {DragBox}
-   */
-  function defaultBoxEndCondition(mapBrowserEvent, startPixel, endPixel) {
-    var width = endPixel[0] - startPixel[0];
-    var height = endPixel[1] - startPixel[1];
-    return width * width + height * height >= this.minArea_;
-  }
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @this {DragBox}
-   */
-  function handleDragEvent$3(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return;
-    }
-
-    this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
-
-    this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXDRAG,
-      mapBrowserEvent.coordinate, mapBrowserEvent));
-  }
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {DragBox}
-   */
-  function handleUpEvent$3(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return true;
-    }
-
-    this.box_.setMap(null);
-
-    if (this.boxEndCondition_(mapBrowserEvent, this.startPixel_, mapBrowserEvent.pixel)) {
-      this.onBoxEnd_(mapBrowserEvent);
-      this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXEND,
-        mapBrowserEvent.coordinate, mapBrowserEvent));
-    }
-    return false;
-  }
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Start drag sequence?
-   * @this {DragBox}
-   */
-  function handleDownEvent$3(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return false;
-    }
-
-    if (mouseActionButton(mapBrowserEvent) &&
-        this.condition_(mapBrowserEvent)) {
-      this.startPixel_ = mapBrowserEvent.pixel;
-      this.box_.setMap(mapBrowserEvent.map);
-      this.box_.setPixels(this.startPixel_, this.startPixel_);
-      this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXSTART,
-        mapBrowserEvent.coordinate, mapBrowserEvent));
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   /**
    * @module ol/interaction/DragZoom
@@ -22952,7 +20964,7 @@
     function KeyboardPan(opt_options) {
 
       Interaction$$1.call(this, {
-        handleEvent: handleEvent$2
+        handleEvent: handleEvent$1
       });
 
       var options = opt_options || {};
@@ -23005,7 +21017,7 @@
    * @return {boolean} `false` to stop event propagation.
    * @this {KeyboardPan}
    */
-  function handleEvent$2(mapBrowserEvent) {
+  function handleEvent$1(mapBrowserEvent) {
     var stopEvent = false;
     if (mapBrowserEvent.type == EventType.KEYDOWN) {
       var keyEvent = /** @type {KeyboardEvent} */ (mapBrowserEvent.originalEvent);
@@ -23064,14 +21076,14 @@
    * {@link module:ol/Map~Map}. `document` never loses focus but, for any other
    * element, focus will have to be on, and returned to, this element if the keys
    * are to function.
-   * See also {@link moudle:ol/interaction/KeyboardPan~KeyboardPan}.
+   * See also {@link module:ol/interaction/KeyboardPan~KeyboardPan}.
    * @api
    */
   var KeyboardZoom = /*@__PURE__*/(function (Interaction$$1) {
     function KeyboardZoom(opt_options) {
 
       Interaction$$1.call(this, {
-        handleEvent: handleEvent$3
+        handleEvent: handleEvent$2
       });
 
       var options = opt_options ? opt_options : {};
@@ -23112,7 +21124,7 @@
    * @return {boolean} `false` to stop event propagation.
    * @this {KeyboardZoom}
    */
-  function handleEvent$3(mapBrowserEvent) {
+  function handleEvent$2(mapBrowserEvent) {
     var stopEvent = false;
     if (mapBrowserEvent.type == EventType.KEYDOWN ||
         mapBrowserEvent.type == EventType.KEYPRESS) {
@@ -23177,11 +21189,9 @@
   var MouseWheelZoom = /*@__PURE__*/(function (Interaction$$1) {
     function MouseWheelZoom(opt_options) {
 
-      Interaction$$1.call(this, {
-        handleEvent: handleEvent$4
-      });
+      var options = opt_options ? opt_options : {};
 
-      var options = opt_options || {};
+      Interaction$$1.call(/** @type {import("./Interaction.js").InteractionOptions} */ this, (options));
 
       /**
        * @private
@@ -23233,9 +21243,9 @@
 
       /**
        * @private
-       * @type {number|undefined}
+       * @type {?}
        */
-      this.timeoutId_ = undefined;
+      this.timeoutId_;
 
       /**
        * @private
@@ -23251,9 +21261,9 @@
       this.trackpadEventGap_ = 400;
 
       /**
-       * @type {number|undefined}
+       * @type {?}
        */
-      this.trackpadTimeoutId_ = undefined;
+      this.trackpadTimeoutId_;
 
       /**
        * The number of delta values per zoom level
@@ -23282,6 +21292,127 @@
       this.trackpadTimeoutId_ = undefined;
       var view = this.getMap().getView();
       view.setHint(ViewHint.INTERACTING, -1);
+    };
+
+    /**
+     * Handles the {@link module:ol/MapBrowserEvent map browser event} (if it was a mousewheel-event) and eventually
+     * zooms the map.
+     * @override
+     */
+    MouseWheelZoom.prototype.handleEvent = function handleEvent (mapBrowserEvent) {
+      if (!this.condition_(mapBrowserEvent)) {
+        return true;
+      }
+      var type = mapBrowserEvent.type;
+      if (type !== EventType.WHEEL && type !== EventType.MOUSEWHEEL) {
+        return true;
+      }
+
+      mapBrowserEvent.preventDefault();
+
+      var map = mapBrowserEvent.map;
+      var wheelEvent = /** @type {WheelEvent} */ (mapBrowserEvent.originalEvent);
+
+      if (this.useAnchor_) {
+        this.lastAnchor_ = mapBrowserEvent.coordinate;
+      }
+
+      // Delta normalisation inspired by
+      // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
+      var delta;
+      if (mapBrowserEvent.type == EventType.WHEEL) {
+        delta = wheelEvent.deltaY;
+        if (FIREFOX &&
+            wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
+          delta /= DEVICE_PIXEL_RATIO;
+        }
+        if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
+          delta *= 40;
+        }
+      } else if (mapBrowserEvent.type == EventType.MOUSEWHEEL) {
+        delta = -wheelEvent.wheelDeltaY;
+        if (SAFARI) {
+          delta /= 3;
+        }
+      }
+
+      if (delta === 0) {
+        return false;
+      }
+
+      var now = Date.now();
+
+      if (this.startTime_ === undefined) {
+        this.startTime_ = now;
+      }
+
+      if (!this.mode_ || now - this.startTime_ > this.trackpadEventGap_) {
+        this.mode_ = Math.abs(delta) < 4 ?
+          Mode.TRACKPAD :
+          Mode.WHEEL;
+      }
+
+      if (this.mode_ === Mode.TRACKPAD) {
+        var view = map.getView();
+        if (this.trackpadTimeoutId_) {
+          clearTimeout(this.trackpadTimeoutId_);
+        } else {
+          view.setHint(ViewHint.INTERACTING, 1);
+        }
+        this.trackpadTimeoutId_ = setTimeout(this.decrementInteractingHint_.bind(this), this.trackpadEventGap_);
+        var resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
+        var minResolution = view.getMinResolution();
+        var maxResolution = view.getMaxResolution();
+        var rebound = 0;
+        if (resolution < minResolution) {
+          resolution = Math.max(resolution, minResolution / this.trackpadZoomBuffer_);
+          rebound = 1;
+        } else if (resolution > maxResolution) {
+          resolution = Math.min(resolution, maxResolution * this.trackpadZoomBuffer_);
+          rebound = -1;
+        }
+        if (this.lastAnchor_) {
+          var center = view.calculateCenterZoom(resolution, this.lastAnchor_);
+          view.setCenter(view.constrainCenter(center));
+        }
+        view.setResolution(resolution);
+
+        if (rebound === 0 && this.constrainResolution_) {
+          view.animate({
+            resolution: view.constrainResolution(resolution, delta > 0 ? -1 : 1),
+            easing: easeOut,
+            anchor: this.lastAnchor_,
+            duration: this.duration_
+          });
+        }
+
+        if (rebound > 0) {
+          view.animate({
+            resolution: minResolution,
+            easing: easeOut,
+            anchor: this.lastAnchor_,
+            duration: 500
+          });
+        } else if (rebound < 0) {
+          view.animate({
+            resolution: maxResolution,
+            easing: easeOut,
+            anchor: this.lastAnchor_,
+            duration: 500
+          });
+        }
+        this.startTime_ = now;
+        return false;
+      }
+
+      this.delta_ += delta;
+
+      var timeLeft = Math.max(this.timeout_ - (now - this.startTime_), 0);
+
+      clearTimeout(this.timeoutId_);
+      this.timeoutId_ = setTimeout(this.handleWheelZoom_.bind(this, map), timeLeft);
+
+      return false;
     };
 
     /**
@@ -23319,130 +21450,6 @@
     return MouseWheelZoom;
   }(Interaction));
 
-
-  /**
-   * Handles the {@link module:ol/MapBrowserEvent map browser event} (if it was a
-   * mousewheel-event) and eventually zooms the map.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
-   * @return {boolean} Allow event propagation.
-   * @this {MouseWheelZoom}
-   */
-  function handleEvent$4(mapBrowserEvent) {
-    if (!this.condition_(mapBrowserEvent)) {
-      return true;
-    }
-    var type = mapBrowserEvent.type;
-    if (type !== EventType.WHEEL && type !== EventType.MOUSEWHEEL) {
-      return true;
-    }
-
-    mapBrowserEvent.preventDefault();
-
-    var map = mapBrowserEvent.map;
-    var wheelEvent = /** @type {WheelEvent} */ (mapBrowserEvent.originalEvent);
-
-    if (this.useAnchor_) {
-      this.lastAnchor_ = mapBrowserEvent.coordinate;
-    }
-
-    // Delta normalisation inspired by
-    // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
-    var delta;
-    if (mapBrowserEvent.type == EventType.WHEEL) {
-      delta = wheelEvent.deltaY;
-      if (FIREFOX &&
-          wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
-        delta /= DEVICE_PIXEL_RATIO;
-      }
-      if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
-        delta *= 40;
-      }
-    } else if (mapBrowserEvent.type == EventType.MOUSEWHEEL) {
-      delta = -wheelEvent.wheelDeltaY;
-      if (SAFARI) {
-        delta /= 3;
-      }
-    }
-
-    if (delta === 0) {
-      return false;
-    }
-
-    var now = Date.now();
-
-    if (this.startTime_ === undefined) {
-      this.startTime_ = now;
-    }
-
-    if (!this.mode_ || now - this.startTime_ > this.trackpadEventGap_) {
-      this.mode_ = Math.abs(delta) < 4 ?
-        Mode.TRACKPAD :
-        Mode.WHEEL;
-    }
-
-    if (this.mode_ === Mode.TRACKPAD) {
-      var view = map.getView();
-      if (this.trackpadTimeoutId_) {
-        clearTimeout(this.trackpadTimeoutId_);
-      } else {
-        view.setHint(ViewHint.INTERACTING, 1);
-      }
-      this.trackpadTimeoutId_ = setTimeout(this.decrementInteractingHint_.bind(this), this.trackpadEventGap_);
-      var resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
-      var minResolution = view.getMinResolution();
-      var maxResolution = view.getMaxResolution();
-      var rebound = 0;
-      if (resolution < minResolution) {
-        resolution = Math.max(resolution, minResolution / this.trackpadZoomBuffer_);
-        rebound = 1;
-      } else if (resolution > maxResolution) {
-        resolution = Math.min(resolution, maxResolution * this.trackpadZoomBuffer_);
-        rebound = -1;
-      }
-      if (this.lastAnchor_) {
-        var center = view.calculateCenterZoom(resolution, this.lastAnchor_);
-        view.setCenter(view.constrainCenter(center));
-      }
-      view.setResolution(resolution);
-
-      if (rebound === 0 && this.constrainResolution_) {
-        view.animate({
-          resolution: view.constrainResolution(resolution, delta > 0 ? -1 : 1),
-          easing: easeOut,
-          anchor: this.lastAnchor_,
-          duration: this.duration_
-        });
-      }
-
-      if (rebound > 0) {
-        view.animate({
-          resolution: minResolution,
-          easing: easeOut,
-          anchor: this.lastAnchor_,
-          duration: 500
-        });
-      } else if (rebound < 0) {
-        view.animate({
-          resolution: maxResolution,
-          easing: easeOut,
-          anchor: this.lastAnchor_,
-          duration: 500
-        });
-      }
-      this.startTime_ = now;
-      return false;
-    }
-
-    this.delta_ += delta;
-
-    var timeLeft = Math.max(this.timeout_ - (now - this.startTime_), 0);
-
-    clearTimeout(this.timeoutId_);
-    this.timeoutId_ = setTimeout(this.handleWheelZoom_.bind(this, map), timeLeft);
-
-    return false;
-  }
-
   /**
    * @module ol/interaction/PinchRotate
    */
@@ -23465,14 +21472,15 @@
   var PinchRotate = /*@__PURE__*/(function (PointerInteraction$$1) {
     function PinchRotate(opt_options) {
 
-      PointerInteraction$$1.call(this, {
-        handleDownEvent: handleDownEvent$4,
-        handleDragEvent: handleDragEvent$4,
-        handleUpEvent: handleUpEvent$4,
-        stopDown: FALSE
-      });
+      var options = opt_options ? opt_options : {};
 
-      var options = opt_options || {};
+      var pointerOptions = /** @type {import("./Pointer.js").Options} */ (options);
+
+      if (!pointerOptions.stopDown) {
+        pointerOptions.stopDown = FALSE;
+      }
+
+      PointerInteraction$$1.call(this, pointerOptions);
 
       /**
        * @private
@@ -23516,101 +21524,93 @@
     PinchRotate.prototype = Object.create( PointerInteraction$$1 && PointerInteraction$$1.prototype );
     PinchRotate.prototype.constructor = PinchRotate;
 
-    return PinchRotate;
-  }(PointerInteraction));
+    /**
+     * @inheritDoc
+     */
+    PinchRotate.prototype.handleDragEvent = function handleDragEvent (mapBrowserEvent) {
+      var rotationDelta = 0.0;
 
+      var touch0 = this.targetPointers[0];
+      var touch1 = this.targetPointers[1];
 
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @this {PinchRotate}
-   */
-  function handleDragEvent$4(mapBrowserEvent) {
-    var rotationDelta = 0.0;
+      // angle between touches
+      var angle = Math.atan2(
+        touch1.clientY - touch0.clientY,
+        touch1.clientX - touch0.clientX);
 
-    var touch0 = this.targetPointers[0];
-    var touch1 = this.targetPointers[1];
-
-    // angle between touches
-    var angle = Math.atan2(
-      touch1.clientY - touch0.clientY,
-      touch1.clientX - touch0.clientX);
-
-    if (this.lastAngle_ !== undefined) {
-      var delta = angle - this.lastAngle_;
-      this.rotationDelta_ += delta;
-      if (!this.rotating_ &&
-          Math.abs(this.rotationDelta_) > this.threshold_) {
-        this.rotating_ = true;
+      if (this.lastAngle_ !== undefined) {
+        var delta = angle - this.lastAngle_;
+        this.rotationDelta_ += delta;
+        if (!this.rotating_ &&
+            Math.abs(this.rotationDelta_) > this.threshold_) {
+          this.rotating_ = true;
+        }
+        rotationDelta = delta;
       }
-      rotationDelta = delta;
-    }
-    this.lastAngle_ = angle;
+      this.lastAngle_ = angle;
 
-    var map = mapBrowserEvent.map;
-    var view = map.getView();
-    if (view.getConstraints().rotation === disable) {
-      return;
-    }
-
-    // rotate anchor point.
-    // FIXME: should be the intersection point between the lines:
-    //     touch0,touch1 and previousTouch0,previousTouch1
-    var viewportPosition = map.getViewport().getBoundingClientRect();
-    var centroid$$1 = centroid(this.targetPointers);
-    centroid$$1[0] -= viewportPosition.left;
-    centroid$$1[1] -= viewportPosition.top;
-    this.anchor_ = map.getCoordinateFromPixel(centroid$$1);
-
-    // rotate
-    if (this.rotating_) {
-      var rotation = view.getRotation();
-      map.render();
-      rotateWithoutConstraints(view, rotation + rotationDelta, this.anchor_);
-    }
-  }
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {PinchRotate}
-   */
-  function handleUpEvent$4(mapBrowserEvent) {
-    if (this.targetPointers.length < 2) {
       var map = mapBrowserEvent.map;
       var view = map.getView();
-      view.setHint(ViewHint.INTERACTING, -1);
+      if (view.getConstraints().rotation === disable) {
+        return;
+      }
+
+      // rotate anchor point.
+      // FIXME: should be the intersection point between the lines:
+      //     touch0,touch1 and previousTouch0,previousTouch1
+      var viewportPosition = map.getViewport().getBoundingClientRect();
+      var centroid$$1 = centroid(this.targetPointers);
+      centroid$$1[0] -= viewportPosition.left;
+      centroid$$1[1] -= viewportPosition.top;
+      this.anchor_ = map.getCoordinateFromPixel(centroid$$1);
+
+      // rotate
       if (this.rotating_) {
         var rotation = view.getRotation();
-        rotate$3(view, rotation, this.anchor_, this.duration_);
+        map.render();
+        rotateWithoutConstraints(view, rotation + rotationDelta, this.anchor_);
       }
-      return false;
-    } else {
-      return true;
-    }
-  }
+    };
 
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Start drag sequence?
-   * @this {PinchRotate}
-   */
-  function handleDownEvent$4(mapBrowserEvent) {
-    if (this.targetPointers.length >= 2) {
-      var map = mapBrowserEvent.map;
-      this.anchor_ = null;
-      this.lastAngle_ = undefined;
-      this.rotating_ = false;
-      this.rotationDelta_ = 0.0;
-      if (!this.handlingDownUpSequence) {
-        map.getView().setHint(ViewHint.INTERACTING, 1);
+    /**
+     * @inheritDoc
+     */
+    PinchRotate.prototype.handleUpEvent = function handleUpEvent (mapBrowserEvent) {
+      if (this.targetPointers.length < 2) {
+        var map = mapBrowserEvent.map;
+        var view = map.getView();
+        view.setHint(ViewHint.INTERACTING, -1);
+        if (this.rotating_) {
+          var rotation = view.getRotation();
+          rotate$3(view, rotation, this.anchor_, this.duration_);
+        }
+        return false;
+      } else {
+        return true;
       }
-      return true;
-    } else {
-      return false;
-    }
-  }
+    };
+
+    /**
+     * @inheritDoc
+     */
+    PinchRotate.prototype.handleDownEvent = function handleDownEvent (mapBrowserEvent) {
+      if (this.targetPointers.length >= 2) {
+        var map = mapBrowserEvent.map;
+        this.anchor_ = null;
+        this.lastAngle_ = undefined;
+        this.rotating_ = false;
+        this.rotationDelta_ = 0.0;
+        if (!this.handlingDownUpSequence) {
+          map.getView().setHint(ViewHint.INTERACTING, 1);
+        }
+        return true;
+      } else {
+        return false;
+      }
+    };
+
+    return PinchRotate;
+  }(PointerInteraction));
 
   /**
    * @module ol/interaction/PinchZoom
@@ -23634,14 +21634,15 @@
   var PinchZoom = /*@__PURE__*/(function (PointerInteraction$$1) {
     function PinchZoom(opt_options) {
 
-      PointerInteraction$$1.call(this, {
-        handleDownEvent: handleDownEvent$5,
-        handleDragEvent: handleDragEvent$5,
-        handleUpEvent: handleUpEvent$5,
-        stopDown: FALSE
-      });
-
       var options = opt_options ? opt_options : {};
+
+      var pointerOptions = /** @type {import("./Pointer.js").Options} */ (options);
+
+      if (!pointerOptions.stopDown) {
+        pointerOptions.stopDown = FALSE;
+      }
+
+      PointerInteraction$$1.call(this, pointerOptions);
 
       /**
        * @private
@@ -23679,108 +21680,100 @@
     PinchZoom.prototype = Object.create( PointerInteraction$$1 && PointerInteraction$$1.prototype );
     PinchZoom.prototype.constructor = PinchZoom;
 
-    return PinchZoom;
-  }(PointerInteraction));
+    /**
+     * @inheritDoc
+     */
+    PinchZoom.prototype.handleDragEvent = function handleDragEvent (mapBrowserEvent) {
+      var scaleDelta = 1.0;
+
+      var touch0 = this.targetPointers[0];
+      var touch1 = this.targetPointers[1];
+      var dx = touch0.clientX - touch1.clientX;
+      var dy = touch0.clientY - touch1.clientY;
+
+      // distance between touches
+      var distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (this.lastDistance_ !== undefined) {
+        scaleDelta = this.lastDistance_ / distance;
+      }
+      this.lastDistance_ = distance;
 
 
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @this {PinchZoom}
-   */
-  function handleDragEvent$5(mapBrowserEvent) {
-    var scaleDelta = 1.0;
-
-    var touch0 = this.targetPointers[0];
-    var touch1 = this.targetPointers[1];
-    var dx = touch0.clientX - touch1.clientX;
-    var dy = touch0.clientY - touch1.clientY;
-
-    // distance between touches
-    var distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (this.lastDistance_ !== undefined) {
-      scaleDelta = this.lastDistance_ / distance;
-    }
-    this.lastDistance_ = distance;
-
-
-    var map = mapBrowserEvent.map;
-    var view = map.getView();
-    var resolution = view.getResolution();
-    var maxResolution = view.getMaxResolution();
-    var minResolution = view.getMinResolution();
-    var newResolution = resolution * scaleDelta;
-    if (newResolution > maxResolution) {
-      scaleDelta = maxResolution / resolution;
-      newResolution = maxResolution;
-    } else if (newResolution < minResolution) {
-      scaleDelta = minResolution / resolution;
-      newResolution = minResolution;
-    }
-
-    if (scaleDelta != 1.0) {
-      this.lastScaleDelta_ = scaleDelta;
-    }
-
-    // scale anchor point.
-    var viewportPosition = map.getViewport().getBoundingClientRect();
-    var centroid$$1 = centroid(this.targetPointers);
-    centroid$$1[0] -= viewportPosition.left;
-    centroid$$1[1] -= viewportPosition.top;
-    this.anchor_ = map.getCoordinateFromPixel(centroid$$1);
-
-    // scale, bypass the resolution constraint
-    map.render();
-    zoomWithoutConstraints(view, newResolution, this.anchor_);
-  }
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {PinchZoom}
-   */
-  function handleUpEvent$5(mapBrowserEvent) {
-    if (this.targetPointers.length < 2) {
       var map = mapBrowserEvent.map;
       var view = map.getView();
-      view.setHint(ViewHint.INTERACTING, -1);
       var resolution = view.getResolution();
-      if (this.constrainResolution_ ||
-          resolution < view.getMinResolution() ||
-          resolution > view.getMaxResolution()) {
-        // Zoom to final resolution, with an animation, and provide a
-        // direction not to zoom out/in if user was pinching in/out.
-        // Direction is > 0 if pinching out, and < 0 if pinching in.
-        var direction = this.lastScaleDelta_ - 1;
-        zoom(view, resolution, this.anchor_, this.duration_, direction);
+      var maxResolution = view.getMaxResolution();
+      var minResolution = view.getMinResolution();
+      var newResolution = resolution * scaleDelta;
+      if (newResolution > maxResolution) {
+        scaleDelta = maxResolution / resolution;
+        newResolution = maxResolution;
+      } else if (newResolution < minResolution) {
+        scaleDelta = minResolution / resolution;
+        newResolution = minResolution;
       }
-      return false;
-    } else {
-      return true;
-    }
-  }
 
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Start drag sequence?
-   * @this {PinchZoom}
-   */
-  function handleDownEvent$5(mapBrowserEvent) {
-    if (this.targetPointers.length >= 2) {
-      var map = mapBrowserEvent.map;
-      this.anchor_ = null;
-      this.lastDistance_ = undefined;
-      this.lastScaleDelta_ = 1;
-      if (!this.handlingDownUpSequence) {
-        map.getView().setHint(ViewHint.INTERACTING, 1);
+      if (scaleDelta != 1.0) {
+        this.lastScaleDelta_ = scaleDelta;
       }
-      return true;
-    } else {
-      return false;
-    }
-  }
+
+      // scale anchor point.
+      var viewportPosition = map.getViewport().getBoundingClientRect();
+      var centroid$$1 = centroid(this.targetPointers);
+      centroid$$1[0] -= viewportPosition.left;
+      centroid$$1[1] -= viewportPosition.top;
+      this.anchor_ = map.getCoordinateFromPixel(centroid$$1);
+
+      // scale, bypass the resolution constraint
+      map.render();
+      zoomWithoutConstraints(view, newResolution, this.anchor_);
+    };
+
+    /**
+     * @inheritDoc
+     */
+    PinchZoom.prototype.handleUpEvent = function handleUpEvent (mapBrowserEvent) {
+      if (this.targetPointers.length < 2) {
+        var map = mapBrowserEvent.map;
+        var view = map.getView();
+        view.setHint(ViewHint.INTERACTING, -1);
+        var resolution = view.getResolution();
+        if (this.constrainResolution_ ||
+            resolution < view.getMinResolution() ||
+            resolution > view.getMaxResolution()) {
+          // Zoom to final resolution, with an animation, and provide a
+          // direction not to zoom out/in if user was pinching in/out.
+          // Direction is > 0 if pinching out, and < 0 if pinching in.
+          var direction = this.lastScaleDelta_ - 1;
+          zoom(view, resolution, this.anchor_, this.duration_, direction);
+        }
+        return false;
+      } else {
+        return true;
+      }
+    };
+
+    /**
+     * @inheritDoc
+     */
+    PinchZoom.prototype.handleDownEvent = function handleDownEvent (mapBrowserEvent) {
+      if (this.targetPointers.length >= 2) {
+        var map = mapBrowserEvent.map;
+        this.anchor_ = null;
+        this.lastDistance_ = undefined;
+        this.lastScaleDelta_ = 1;
+        if (!this.handlingDownUpSequence) {
+          map.getView().setHint(ViewHint.INTERACTING, 1);
+        }
+        return true;
+      } else {
+        return false;
+      }
+    };
+
+    return PinchZoom;
+  }(PointerInteraction));
 
   /**
    * @module ol/interaction/DragAndDrop
@@ -23789,14 +21782,14 @@
 
   /**
    * @typedef {Object} Options
-   * @property {Array<function(new: import("../format/Feature.js").default)>} [formatConstructors] Format constructors.
+   * @property {Array<typeof import("../format/Feature.js").default>} [formatConstructors] Format constructors.
    * @property {import("../source/Vector.js").default} [source] Optional vector source where features will be added.  If a source is provided
    * all existing features will be removed and new features will be added when
    * they are dropped on the target.  If you want to add features to a vector
    * source without removing the existing features (append only), instead of
    * providing the source option listen for the "addfeatures" event.
    * @property {import("../proj.js").ProjectionLike} [projection] Target projection. By default, the map's view's projection is used.
-   * @property {Element} [target] The element that is used as the drop target, default is the viewport element.
+   * @property {HTMLElement} [target] The element that is used as the drop target, default is the viewport element.
    */
 
 
@@ -23825,7 +21818,7 @@
 
       /**
        * The features parsed from dropped data.
-       * @type {Array<import("../Feature.js").default>|undefined}
+       * @type {Array<import("../Feature.js").FeatureLike>|undefined}
        * @api
        */
       this.features = opt_features;
@@ -23872,7 +21865,7 @@
 
       /**
        * @private
-       * @type {Array<function(new: import("../format/Feature.js").default)>}
+       * @type {Array<typeof import("../format/Feature.js").default>}
        */
       this.formatConstructors_ = options.formatConstructors ?
         options.formatConstructors : [];
@@ -23898,7 +21891,7 @@
 
       /**
        * @private
-       * @type {Element}
+       * @type {HTMLElement}
        */
       this.target = options.target ? options.target : null;
 
@@ -23925,15 +21918,7 @@
       var formatConstructors = this.formatConstructors_;
       var features = [];
       for (var i = 0, ii = formatConstructors.length; i < ii; ++i) {
-        /**
-         * Avoid "cannot instantiate abstract class" error.
-         * @type {Function}
-         */
-        var formatConstructor = formatConstructors[i];
-        /**
-         * @type {import("../format/Feature.js").default}
-         */
-        var format = new formatConstructor();
+        var format = new formatConstructors[i]();
         features = this.tryReadFeatures_(format, result, {
           featureProjection: projection
         });
@@ -23995,7 +21980,7 @@
      * @param {string} text Text.
      * @param {import("../format/Feature.js").ReadOptions} options Read options.
      * @private
-     * @return {Array<import("../Feature.js").default>} Features.
+     * @return {Array<import("../Feature.js").FeatureLike>} Features.
      */
     DragAndDrop.prototype.tryReadFeatures_ = function tryReadFeatures_ (format, text, options) {
       try {
@@ -24074,11 +22059,7 @@
 
       var options = opt_options ? opt_options : {};
 
-      PointerInteraction$$1.call(this, {
-        handleDownEvent: handleDownEvent$6,
-        handleDragEvent: handleDragEvent$6,
-        handleUpEvent: handleUpEvent$6
-      });
+      PointerInteraction$$1.call(/** @type {import("./Pointer.js").Options} */ this, (options));
 
       /**
        * @private
@@ -24116,83 +22097,75 @@
     DragRotateAndZoom.prototype = Object.create( PointerInteraction$$1 && PointerInteraction$$1.prototype );
     DragRotateAndZoom.prototype.constructor = DragRotateAndZoom;
 
+    /**
+     * @inheritDoc
+     */
+    DragRotateAndZoom.prototype.handleDragEvent = function handleDragEvent (mapBrowserEvent) {
+      if (!mouseOnly(mapBrowserEvent)) {
+        return;
+      }
+
+      var map = mapBrowserEvent.map;
+      var size = map.getSize();
+      var offset = mapBrowserEvent.pixel;
+      var deltaX = offset[0] - size[0] / 2;
+      var deltaY = size[1] / 2 - offset[1];
+      var theta = Math.atan2(deltaY, deltaX);
+      var magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      var view = map.getView();
+      if (view.getConstraints().rotation !== disable && this.lastAngle_ !== undefined) {
+        var angleDelta = theta - this.lastAngle_;
+        rotateWithoutConstraints(view, view.getRotation() - angleDelta);
+      }
+      this.lastAngle_ = theta;
+      if (this.lastMagnitude_ !== undefined) {
+        var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
+        zoomWithoutConstraints(view, resolution);
+      }
+      if (this.lastMagnitude_ !== undefined) {
+        this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;
+      }
+      this.lastMagnitude_ = magnitude;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    DragRotateAndZoom.prototype.handleUpEvent = function handleUpEvent (mapBrowserEvent) {
+      if (!mouseOnly(mapBrowserEvent)) {
+        return true;
+      }
+
+      var map = mapBrowserEvent.map;
+      var view = map.getView();
+      view.setHint(ViewHint.INTERACTING, -1);
+      var direction = this.lastScaleDelta_ - 1;
+      rotate$3(view, view.getRotation());
+      zoom(view, view.getResolution(), undefined, this.duration_, direction);
+      this.lastScaleDelta_ = 0;
+      return false;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    DragRotateAndZoom.prototype.handleDownEvent = function handleDownEvent (mapBrowserEvent) {
+      if (!mouseOnly(mapBrowserEvent)) {
+        return false;
+      }
+
+      if (this.condition_(mapBrowserEvent)) {
+        mapBrowserEvent.map.getView().setHint(ViewHint.INTERACTING, 1);
+        this.lastAngle_ = undefined;
+        this.lastMagnitude_ = undefined;
+        return true;
+      } else {
+        return false;
+      }
+    };
+
     return DragRotateAndZoom;
   }(PointerInteraction));
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @this {DragRotateAndZoom}
-   */
-  function handleDragEvent$6(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return;
-    }
-
-    var map = mapBrowserEvent.map;
-    var size = map.getSize();
-    var offset = mapBrowserEvent.pixel;
-    var deltaX = offset[0] - size[0] / 2;
-    var deltaY = size[1] / 2 - offset[1];
-    var theta = Math.atan2(deltaY, deltaX);
-    var magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-    var view = map.getView();
-    if (view.getConstraints().rotation !== disable && this.lastAngle_ !== undefined) {
-      var angleDelta = theta - this.lastAngle_;
-      rotateWithoutConstraints(view, view.getRotation() - angleDelta);
-    }
-    this.lastAngle_ = theta;
-    if (this.lastMagnitude_ !== undefined) {
-      var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
-      zoomWithoutConstraints(view, resolution);
-    }
-    if (this.lastMagnitude_ !== undefined) {
-      this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;
-    }
-    this.lastMagnitude_ = magnitude;
-  }
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {DragRotateAndZoom}
-   */
-  function handleUpEvent$6(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return true;
-    }
-
-    var map = mapBrowserEvent.map;
-    var view = map.getView();
-    view.setHint(ViewHint.INTERACTING, -1);
-    var direction = this.lastScaleDelta_ - 1;
-    rotate$3(view, view.getRotation());
-    zoom(view, view.getResolution(), undefined, this.duration_, direction);
-    this.lastScaleDelta_ = 0;
-    return false;
-  }
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Start drag sequence?
-   * @this {DragRotateAndZoom}
-   */
-  function handleDownEvent$6(mapBrowserEvent) {
-    if (!mouseOnly(mapBrowserEvent)) {
-      return false;
-    }
-
-    if (this.condition_(mapBrowserEvent)) {
-      mapBrowserEvent.map.getView().setHint(ViewHint.INTERACTING, 1);
-      this.lastAngle_ = undefined;
-      this.lastMagnitude_ = undefined;
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   /**
    * @module ol/geom/Circle
@@ -24382,7 +22355,9 @@
     /**
      * @inheritDoc
      */
-    Circle.prototype.getCoordinates = function getCoordinates () {};
+    Circle.prototype.getCoordinates = function getCoordinates () {
+      return null;
+    };
 
     /**
      * @inheritDoc
@@ -24461,20 +22436,21 @@
       this.maxDeltaRevision_ = -1;
 
       if (Array.isArray(coordinates[0])) {
-        this.setCoordinates(coordinates, opt_layout);
+        this.setCoordinates(/** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (coordinates), opt_layout);
       } else if (opt_layout !== undefined && opt_ends) {
-        this.setFlatCoordinates(opt_layout, coordinates);
+        this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
         this.ends_ = opt_ends;
       } else {
         var layout = this.getLayout();
+        var lineStrings = /** @type {Array<LineString>} */ (coordinates);
         var flatCoordinates = [];
         var ends = [];
-        for (var i = 0, ii = coordinates.length; i < ii; ++i) {
-          var lineString = coordinates[i];
+        for (var i = 0, ii = lineStrings.length; i < ii; ++i) {
+          var lineString = lineStrings[i];
           if (i === 0) {
             layout = lineString.getLayout();
           }
-          extend$1(flatCoordinates, lineString.getFlatCoordinates());
+          extend(flatCoordinates, lineString.getFlatCoordinates());
           ends.push(flatCoordinates.length);
         }
         this.setFlatCoordinates(layout, flatCoordinates);
@@ -24496,7 +22472,7 @@
       if (!this.flatCoordinates) {
         this.flatCoordinates = lineString.getFlatCoordinates().slice();
       } else {
-        extend$1(this.flatCoordinates, lineString.getFlatCoordinates().slice());
+        extend(this.flatCoordinates, lineString.getFlatCoordinates().slice());
       }
       this.ends_.push(this.flatCoordinates.length);
       this.changed();
@@ -24629,7 +22605,7 @@
         var end = ends[i];
         var midpoint = interpolatePoint(
           flatCoordinates, offset, end, stride, 0.5);
-        extend$1(midpoints, midpoint);
+        extend(midpoints, midpoint);
         offset = end;
       }
       return midpoints;
@@ -24718,7 +22694,7 @@
       if (!this.flatCoordinates) {
         this.flatCoordinates = point.getFlatCoordinates().slice();
       } else {
-        extend$1(this.flatCoordinates, point.getFlatCoordinates());
+        extend(this.flatCoordinates, point.getFlatCoordinates());
       }
       this.changed();
     };
@@ -24929,10 +22905,11 @@
 
       if (!opt_endss && !Array.isArray(coordinates[0])) {
         var layout = this.getLayout();
+        var polygons = /** @type {Array<Polygon>} */ (coordinates);
         var flatCoordinates = [];
         var endss = [];
-        for (var i = 0, ii = coordinates.length; i < ii; ++i) {
-          var polygon = coordinates[i];
+        for (var i = 0, ii = polygons.length; i < ii; ++i) {
+          var polygon = polygons[i];
           if (i === 0) {
             layout = polygon.getLayout();
           }
@@ -24941,7 +22918,7 @@
           for (var j = 0, jj = ends.length; j < jj; ++j) {
             ends[j] += offset;
           }
-          extend$1(flatCoordinates, polygon.getFlatCoordinates());
+          extend(flatCoordinates, polygon.getFlatCoordinates());
           endss.push(ends);
         }
         opt_layout = layout;
@@ -24949,10 +22926,11 @@
         opt_endss = endss;
       }
       if (opt_layout !== undefined && opt_endss) {
-        this.setFlatCoordinates(opt_layout, coordinates);
+        this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
         this.endss_ = opt_endss;
       } else {
-        this.setCoordinates(coordinates, opt_layout);
+        this.setCoordinates(/** @type {Array<Array<Array<import("../coordinate.js").Coordinate>>>} */ (coordinates),
+          opt_layout);
       }
 
     }
@@ -24975,7 +22953,7 @@
         this.endss_.push();
       } else {
         var offset = this.flatCoordinates.length;
-        extend$1(this.flatCoordinates, polygon.getFlatCoordinates());
+        extend(this.flatCoordinates, polygon.getFlatCoordinates());
         ends = polygon.getEnds().slice();
         for (var i = 0, ii = ends.length; i < ii; ++i) {
           ends[i] += offset;
@@ -25245,6 +23223,2070 @@
   };
 
   /**
+   * @module ol/colorlike
+   */
+
+
+  /**
+   * A type accepted by CanvasRenderingContext2D.fillStyle
+   * or CanvasRenderingContext2D.strokeStyle.
+   * Represents a color, pattern, or gradient. The origin for patterns and
+   * gradients as fill style is an increment of 512 css pixels from map coordinate
+   * `[0, 0]`. For seamless repeat patterns, width and height of the pattern image
+   * must be a factor of two (2, 4, 8, ..., 512).
+   *
+   * @typedef {string|CanvasPattern|CanvasGradient} ColorLike
+   * @api
+   */
+
+
+  /**
+   * @param {import("./color.js").Color|ColorLike} color Color.
+   * @return {ColorLike} The color as an {@link ol/colorlike~ColorLike}.
+   * @api
+   */
+  function asColorLike(color) {
+    if (Array.isArray(color)) {
+      return toString(color);
+    } else {
+      return color;
+    }
+  }
+
+  /**
+   * @module ol/structs/LRUCache
+   */
+
+
+  /**
+   * @typedef {Object} Entry
+   * @property {string} key_
+   * @property {Object} newer
+   * @property {Object} older
+   * @property {*} value_
+   */
+
+
+  /**
+   * @classdesc
+   * Implements a Least-Recently-Used cache where the keys do not conflict with
+   * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
+   * items from the cache is the responsibility of the user.
+   *
+   * @fires import("../events/Event.js").Event
+   * @template T
+   */
+  var LRUCache = /*@__PURE__*/(function (EventTarget) {
+    function LRUCache(opt_highWaterMark) {
+
+      EventTarget.call(this);
+
+      /**
+       * @type {number}
+       */
+      this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.count_ = 0;
+
+      /**
+       * @private
+       * @type {!Object<string, Entry>}
+       */
+      this.entries_ = {};
+
+      /**
+       * @private
+       * @type {?Entry}
+       */
+      this.oldest_ = null;
+
+      /**
+       * @private
+       * @type {?Entry}
+       */
+      this.newest_ = null;
+
+    }
+
+    if ( EventTarget ) LRUCache.__proto__ = EventTarget;
+    LRUCache.prototype = Object.create( EventTarget && EventTarget.prototype );
+    LRUCache.prototype.constructor = LRUCache;
+
+
+    /**
+     * @return {boolean} Can expire cache.
+     */
+    LRUCache.prototype.canExpireCache = function canExpireCache () {
+      return this.getCount() > this.highWaterMark;
+    };
+
+
+    /**
+     * FIXME empty description for jsdoc
+     */
+    LRUCache.prototype.clear = function clear () {
+      this.count_ = 0;
+      this.entries_ = {};
+      this.oldest_ = null;
+      this.newest_ = null;
+      this.dispatchEvent(EventType.CLEAR);
+    };
+
+
+    /**
+     * @param {string} key Key.
+     * @return {boolean} Contains key.
+     */
+    LRUCache.prototype.containsKey = function containsKey (key) {
+      return this.entries_.hasOwnProperty(key);
+    };
+
+
+    /**
+     * @param {function(this: S, T, string, LRUCache): ?} f The function
+     *     to call for every entry from the oldest to the newer. This function takes
+     *     3 arguments (the entry value, the entry key and the LRUCache object).
+     *     The return value is ignored.
+     * @param {S=} opt_this The object to use as `this` in `f`.
+     * @template S
+     */
+    LRUCache.prototype.forEach = function forEach (f, opt_this) {
+      var entry = this.oldest_;
+      while (entry) {
+        f.call(opt_this, entry.value_, entry.key_, this);
+        entry = entry.newer;
+      }
+    };
+
+
+    /**
+     * @param {string} key Key.
+     * @return {T} Value.
+     */
+    LRUCache.prototype.get = function get (key) {
+      var entry = this.entries_[key];
+      assert(entry !== undefined,
+        15); // Tried to get a value for a key that does not exist in the cache
+      if (entry === this.newest_) {
+        return entry.value_;
+      } else if (entry === this.oldest_) {
+        this.oldest_ = /** @type {Entry} */ (this.oldest_.newer);
+        this.oldest_.older = null;
+      } else {
+        entry.newer.older = entry.older;
+        entry.older.newer = entry.newer;
+      }
+      entry.newer = null;
+      entry.older = this.newest_;
+      this.newest_.newer = entry;
+      this.newest_ = entry;
+      return entry.value_;
+    };
+
+
+    /**
+     * Remove an entry from the cache.
+     * @param {string} key The entry key.
+     * @return {T} The removed entry.
+     */
+    LRUCache.prototype.remove = function remove (key) {
+      var entry = this.entries_[key];
+      assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
+      if (entry === this.newest_) {
+        this.newest_ = /** @type {Entry} */ (entry.older);
+        if (this.newest_) {
+          this.newest_.newer = null;
+        }
+      } else if (entry === this.oldest_) {
+        this.oldest_ = /** @type {Entry} */ (entry.newer);
+        if (this.oldest_) {
+          this.oldest_.older = null;
+        }
+      } else {
+        entry.newer.older = entry.older;
+        entry.older.newer = entry.newer;
+      }
+      delete this.entries_[key];
+      --this.count_;
+      return entry.value_;
+    };
+
+
+    /**
+     * @return {number} Count.
+     */
+    LRUCache.prototype.getCount = function getCount () {
+      return this.count_;
+    };
+
+
+    /**
+     * @return {Array<string>} Keys.
+     */
+    LRUCache.prototype.getKeys = function getKeys () {
+      var keys = new Array(this.count_);
+      var i = 0;
+      var entry;
+      for (entry = this.newest_; entry; entry = entry.older) {
+        keys[i++] = entry.key_;
+      }
+      return keys;
+    };
+
+
+    /**
+     * @return {Array<T>} Values.
+     */
+    LRUCache.prototype.getValues = function getValues () {
+      var values = new Array(this.count_);
+      var i = 0;
+      var entry;
+      for (entry = this.newest_; entry; entry = entry.older) {
+        values[i++] = entry.value_;
+      }
+      return values;
+    };
+
+
+    /**
+     * @return {T} Last value.
+     */
+    LRUCache.prototype.peekLast = function peekLast () {
+      return this.oldest_.value_;
+    };
+
+
+    /**
+     * @return {string} Last key.
+     */
+    LRUCache.prototype.peekLastKey = function peekLastKey () {
+      return this.oldest_.key_;
+    };
+
+
+    /**
+     * Get the key of the newest item in the cache.  Throws if the cache is empty.
+     * @return {string} The newest key.
+     */
+    LRUCache.prototype.peekFirstKey = function peekFirstKey () {
+      return this.newest_.key_;
+    };
+
+
+    /**
+     * @return {T} value Value.
+     */
+    LRUCache.prototype.pop = function pop () {
+      var entry = this.oldest_;
+      delete this.entries_[entry.key_];
+      if (entry.newer) {
+        entry.newer.older = null;
+      }
+      this.oldest_ = /** @type {Entry} */ (entry.newer);
+      if (!this.oldest_) {
+        this.newest_ = null;
+      }
+      --this.count_;
+      return entry.value_;
+    };
+
+
+    /**
+     * @param {string} key Key.
+     * @param {T} value Value.
+     */
+    LRUCache.prototype.replace = function replace (key, value) {
+      this.get(key); // update `newest_`
+      this.entries_[key].value_ = value;
+    };
+
+
+    /**
+     * @param {string} key Key.
+     * @param {T} value Value.
+     */
+    LRUCache.prototype.set = function set (key, value) {
+      assert(!(key in this.entries_),
+        16); // Tried to set a value for a key that is used already
+      var entry = /** @type {Entry} */ ({
+        key_: key,
+        newer: null,
+        older: this.newest_,
+        value_: value
+      });
+      if (!this.newest_) {
+        this.oldest_ = entry;
+      } else {
+        this.newest_.newer = entry;
+      }
+      this.newest_ = entry;
+      this.entries_[key] = entry;
+      ++this.count_;
+    };
+
+
+    /**
+     * Set a maximum number of entries for the cache.
+     * @param {number} size Cache size.
+     * @api
+     */
+    LRUCache.prototype.setSize = function setSize (size) {
+      this.highWaterMark = size;
+    };
+
+
+    /**
+     * Prune the cache.
+     */
+    LRUCache.prototype.prune = function prune () {
+      while (this.canExpireCache()) {
+        this.pop();
+      }
+    };
+
+    return LRUCache;
+  }(Target));
+
+  /**
+   * @module ol/render/canvas
+   */
+
+
+  /**
+   * @typedef {Object} FillState
+   * @property {import("../colorlike.js").ColorLike} fillStyle
+   */
+
+
+  /**
+   * @typedef {Object} FillStrokeState
+   * @property {import("../colorlike.js").ColorLike} [currentFillStyle]
+   * @property {import("../colorlike.js").ColorLike} [currentStrokeStyle]
+   * @property {string} [currentLineCap]
+   * @property {Array<number>} currentLineDash
+   * @property {number} [currentLineDashOffset]
+   * @property {string} [currentLineJoin]
+   * @property {number} [currentLineWidth]
+   * @property {number} [currentMiterLimit]
+   * @property {number} [lastStroke]
+   * @property {import("../colorlike.js").ColorLike} [fillStyle]
+   * @property {import("../colorlike.js").ColorLike} [strokeStyle]
+   * @property {string} [lineCap]
+   * @property {Array<number>} lineDash
+   * @property {number} [lineDashOffset]
+   * @property {string} [lineJoin]
+   * @property {number} [lineWidth]
+   * @property {number} [miterLimit]
+   */
+
+
+  /**
+   * @typedef {Object} StrokeState
+   * @property {string} lineCap
+   * @property {Array<number>} lineDash
+   * @property {number} lineDashOffset
+   * @property {string} lineJoin
+   * @property {number} lineWidth
+   * @property {number} miterLimit
+   * @property {import("../colorlike.js").ColorLike} strokeStyle
+   */
+
+
+  /**
+   * @typedef {Object} TextState
+   * @property {string} font
+   * @property {string} [textAlign]
+   * @property {string} textBaseline
+   * @property {string} [placement]
+   * @property {number} [maxAngle]
+   * @property {boolean} [overflow]
+   * @property {import("../style/Fill.js").default} [backgroundFill]
+   * @property {import("../style/Stroke.js").default} [backgroundStroke]
+   * @property {number} [scale]
+   * @property {Array<number>} [padding]
+   */
+
+
+  /**
+   * Container for decluttered replay instructions that need to be rendered or
+   * omitted together, i.e. when styles render both an image and text, or for the
+   * characters that form text along lines. The basic elements of this array are
+   * `[minX, minY, maxX, maxY, count]`, where the first four entries are the
+   * rendered extent of the group in pixel space. `count` is the number of styles
+   * in the group, i.e. 2 when an image and a text are grouped, or 1 otherwise.
+   * In addition to these four elements, declutter instruction arrays (i.e. the
+   * arguments to {@link module:ol/render/canvas~drawImage} are appended to the array.
+   * @typedef {Array<*>} DeclutterGroup
+   */
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  var defaultFont = '10px sans-serif';
+
+
+  /**
+   * @const
+   * @type {import("../color.js").Color}
+   */
+  var defaultFillStyle = [0, 0, 0, 1];
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  var defaultLineCap = 'round';
+
+
+  /**
+   * @const
+   * @type {Array<number>}
+   */
+  var defaultLineDash = [];
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var defaultLineDashOffset = 0;
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  var defaultLineJoin = 'round';
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var defaultMiterLimit = 10;
+
+
+  /**
+   * @const
+   * @type {import("../color.js").Color}
+   */
+  var defaultStrokeStyle = [0, 0, 0, 1];
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  var defaultTextAlign = 'center';
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  var defaultTextBaseline = 'middle';
+
+
+  /**
+   * @const
+   * @type {Array<number>}
+   */
+  var defaultPadding = [0, 0, 0, 0];
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  var defaultLineWidth = 1;
+
+
+  /**
+   * The label cache for text rendering. To change the default cache size of 2048
+   * entries, use {@link module:ol/structs/LRUCache#setSize}.
+   * @type {LRUCache<HTMLCanvasElement>}
+   * @api
+   */
+  var labelCache = new LRUCache();
+
+
+  /**
+   * @type {!Object<string, number>}
+   */
+  var checkedFonts = {};
+
+
+  /**
+   * @type {CanvasRenderingContext2D}
+   */
+  var measureContext = null;
+
+
+  /**
+   * @type {!Object<string, number>}
+   */
+  var textHeights = {};
+
+
+  /**
+   * Clears the label cache when a font becomes available.
+   * @param {string} fontSpec CSS font spec.
+   */
+  var checkFont = (function() {
+    var retries = 60;
+    var checked = checkedFonts;
+    var size = '32px ';
+    var referenceFonts = ['monospace', 'serif'];
+    var len = referenceFonts.length;
+    var text = 'wmytzilWMYTZIL@#/&?$%10\uF013';
+    var interval, referenceWidth;
+
+    function isAvailable(font) {
+      var context = getMeasureContext();
+      // Check weight ranges according to
+      // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights
+      for (var weight = 100; weight <= 700; weight += 300) {
+        var fontWeight = weight + ' ';
+        var available = true;
+        for (var i = 0; i < len; ++i) {
+          var referenceFont = referenceFonts[i];
+          context.font = fontWeight + size + referenceFont;
+          referenceWidth = context.measureText(text).width;
+          if (font != referenceFont) {
+            context.font = fontWeight + size + font + ',' + referenceFont;
+            var width = context.measureText(text).width;
+            // If width and referenceWidth are the same, then the fallback was used
+            // instead of the font we wanted, so the font is not available.
+            available = available && width != referenceWidth;
+          }
+        }
+        if (available) {
+          // Consider font available when it is available in one weight range.
+          //FIXME With this we miss rare corner cases, so we should consider
+          //FIXME checking availability for each requested weight range.
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function check() {
+      var done = true;
+      for (var font in checked) {
+        if (checked[font] < retries) {
+          if (isAvailable(font)) {
+            checked[font] = retries;
+            clear(textHeights);
+            // Make sure that loaded fonts are picked up by Safari
+            measureContext = null;
+            labelCache.clear();
+          } else {
+            ++checked[font];
+            done = false;
+          }
+        }
+      }
+      if (done) {
+        clearInterval(interval);
+        interval = undefined;
+      }
+    }
+
+    return function(fontSpec) {
+      var fontFamilies = getFontFamilies(fontSpec);
+      if (!fontFamilies) {
+        return;
+      }
+      for (var i = 0, ii = fontFamilies.length; i < ii; ++i) {
+        var fontFamily = fontFamilies[i];
+        if (!(fontFamily in checked)) {
+          checked[fontFamily] = retries;
+          if (!isAvailable(fontFamily)) {
+            checked[fontFamily] = 0;
+            if (interval === undefined) {
+              interval = setInterval(check, 32);
+            }
+          }
+        }
+      }
+    };
+  })();
+
+
+  /**
+   * @return {CanvasRenderingContext2D} Measure context.
+   */
+  function getMeasureContext() {
+    if (!measureContext) {
+      measureContext = createCanvasContext2D(1, 1);
+    }
+    return measureContext;
+  }
+
+
+  /**
+   * @param {string} font Font to use for measuring.
+   * @return {import("../size.js").Size} Measurement.
+   */
+  var measureTextHeight = (function() {
+    var span;
+    var heights = textHeights;
+    return function(font) {
+      var height = heights[font];
+      if (height == undefined) {
+        if (!span) {
+          span = document.createElement('span');
+          span.textContent = 'M';
+          span.style.margin = span.style.padding = '0 !important';
+          span.style.position = 'absolute !important';
+          span.style.left = '-99999px !important';
+        }
+        span.style.font = font;
+        document.body.appendChild(span);
+        height = heights[font] = span.offsetHeight;
+        document.body.removeChild(span);
+      }
+      return height;
+    };
+  })();
+
+
+  /**
+   * @param {string} font Font.
+   * @param {string} text Text.
+   * @return {number} Width.
+   */
+  function measureTextWidth(font, text) {
+    var measureContext = getMeasureContext();
+    if (font != measureContext.font) {
+      measureContext.font = font;
+    }
+    return measureContext.measureText(text).width;
+  }
+
+
+  /**
+   * @param {CanvasRenderingContext2D} context Context.
+   * @param {number} rotation Rotation.
+   * @param {number} offsetX X offset.
+   * @param {number} offsetY Y offset.
+   */
+  function rotateAtOffset(context, rotation, offsetX, offsetY) {
+    if (rotation !== 0) {
+      context.translate(offsetX, offsetY);
+      context.rotate(rotation);
+      context.translate(-offsetX, -offsetY);
+    }
+  }
+
+
+  var resetTransform = create();
+
+
+  /**
+   * @param {CanvasRenderingContext2D} context Context.
+   * @param {import("../transform.js").Transform|null} transform Transform.
+   * @param {number} opacity Opacity.
+   * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
+   * @param {number} originX Origin X.
+   * @param {number} originY Origin Y.
+   * @param {number} w Width.
+   * @param {number} h Height.
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @param {number} scale Scale.
+   */
+  function drawImage(context,
+    transform, opacity, image, originX, originY, w, h, x, y, scale) {
+    var alpha;
+    if (opacity != 1) {
+      alpha = context.globalAlpha;
+      context.globalAlpha = alpha * opacity;
+    }
+    if (transform) {
+      context.setTransform.apply(context, transform);
+    }
+
+    context.drawImage(image, originX, originY, w, h, x, y, w * scale, h * scale);
+
+    if (alpha) {
+      context.globalAlpha = alpha;
+    }
+    if (transform) {
+      context.setTransform.apply(context, resetTransform);
+    }
+  }
+
+  /**
+   * @module ol/style/Image
+   */
+
+
+  /**
+   * @typedef {Object} Options
+   * @property {number} opacity
+   * @property {boolean} rotateWithView
+   * @property {number} rotation
+   * @property {number} scale
+   */
+
+
+  /**
+   * @classdesc
+   * A base class used for creating subclasses and not instantiated in
+   * apps. Base class for {@link module:ol/style/Icon~Icon}, {@link module:ol/style/Circle~CircleStyle} and
+   * {@link module:ol/style/RegularShape~RegularShape}.
+   * @abstract
+   * @api
+   */
+  var ImageStyle = function ImageStyle(options) {
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.opacity_ = options.opacity;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.rotateWithView_ = options.rotateWithView;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.rotation_ = options.rotation;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.scale_ = options.scale;
+
+  };
+
+  /**
+   * Clones the style.
+   * @return {ImageStyle} The cloned style.
+   * @api
+   */
+  ImageStyle.prototype.clone = function clone () {
+    return new ImageStyle({
+      opacity: this.getOpacity(),
+      scale: this.getScale(),
+      rotation: this.getRotation(),
+      rotateWithView: this.getRotateWithView()
+    });
+  };
+
+  /**
+   * Get the symbolizer opacity.
+   * @return {number} Opacity.
+   * @api
+   */
+  ImageStyle.prototype.getOpacity = function getOpacity () {
+    return this.opacity_;
+  };
+
+  /**
+   * Determine whether the symbolizer rotates with the map.
+   * @return {boolean} Rotate with map.
+   * @api
+   */
+  ImageStyle.prototype.getRotateWithView = function getRotateWithView () {
+    return this.rotateWithView_;
+  };
+
+  /**
+   * Get the symoblizer rotation.
+   * @return {number} Rotation.
+   * @api
+   */
+  ImageStyle.prototype.getRotation = function getRotation () {
+    return this.rotation_;
+  };
+
+  /**
+   * Get the symbolizer scale.
+   * @return {number} Scale.
+   * @api
+   */
+  ImageStyle.prototype.getScale = function getScale () {
+    return this.scale_;
+  };
+
+  /**
+   * This method is deprecated and always returns false.
+   * @return {boolean} false.
+   * @deprecated
+   * @api
+   */
+  ImageStyle.prototype.getSnapToPixel = function getSnapToPixel () {
+    return false;
+  };
+
+  /**
+   * Get the anchor point in pixels. The anchor determines the center point for the
+   * symbolizer.
+   * @abstract
+   * @return {Array<number>} Anchor.
+   */
+  ImageStyle.prototype.getAnchor = function getAnchor () {
+    return abstract();
+  };
+
+  /**
+   * Get the image element for the symbolizer.
+   * @abstract
+   * @param {number} pixelRatio Pixel ratio.
+   * @return {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} Image element.
+   */
+  ImageStyle.prototype.getImage = function getImage (pixelRatio) {
+    return abstract();
+  };
+
+  /**
+   * @abstract
+   * @param {number} pixelRatio Pixel ratio.
+   * @return {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} Image element.
+   */
+  ImageStyle.prototype.getHitDetectionImage = function getHitDetectionImage (pixelRatio) {
+    return abstract();
+  };
+
+  /**
+   * @abstract
+   * @return {import("../ImageState.js").default} Image state.
+   */
+  ImageStyle.prototype.getImageState = function getImageState () {
+    return abstract();
+  };
+
+  /**
+   * @abstract
+   * @return {import("../size.js").Size} Image size.
+   */
+  ImageStyle.prototype.getImageSize = function getImageSize () {
+    return abstract();
+  };
+
+  /**
+   * @abstract
+   * @return {import("../size.js").Size} Size of the hit-detection image.
+   */
+  ImageStyle.prototype.getHitDetectionImageSize = function getHitDetectionImageSize () {
+    return abstract();
+  };
+
+  /**
+   * Get the origin of the symbolizer.
+   * @abstract
+   * @return {Array<number>} Origin.
+   */
+  ImageStyle.prototype.getOrigin = function getOrigin () {
+    return abstract();
+  };
+
+  /**
+   * Get the size of the symbolizer (in pixels).
+   * @abstract
+   * @return {import("../size.js").Size} Size.
+   */
+  ImageStyle.prototype.getSize = function getSize () {
+    return abstract();
+  };
+
+  /**
+   * Set the opacity.
+   *
+   * @param {number} opacity Opacity.
+   * @api
+   */
+  ImageStyle.prototype.setOpacity = function setOpacity (opacity) {
+    this.opacity_ = opacity;
+  };
+
+  /**
+   * Set whether to rotate the style with the view.
+   *
+   * @param {boolean} rotateWithView Rotate with map.
+   * @api
+   */
+  ImageStyle.prototype.setRotateWithView = function setRotateWithView (rotateWithView) {
+    this.rotateWithView_ = rotateWithView;
+  };
+
+  /**
+   * Set the rotation.
+   *
+   * @param {number} rotation Rotation.
+   * @api
+   */
+  ImageStyle.prototype.setRotation = function setRotation (rotation) {
+    this.rotation_ = rotation;
+  };
+  /**
+   * Set the scale.
+   *
+   * @param {number} scale Scale.
+   * @api
+   */
+  ImageStyle.prototype.setScale = function setScale (scale) {
+    this.scale_ = scale;
+  };
+
+  /**
+   * This method is deprecated and does nothing.
+   * @param {boolean} snapToPixel Snap to pixel?
+   * @deprecated
+   * @api
+   */
+  ImageStyle.prototype.setSnapToPixel = function setSnapToPixel (snapToPixel) {};
+
+  /**
+   * @abstract
+   * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
+   * @param {T} thisArg Value to use as `this` when executing `listener`.
+   * @return {import("../events.js").EventsKey|undefined} Listener key.
+   * @template T
+   */
+  ImageStyle.prototype.listenImageChange = function listenImageChange (listener, thisArg) {
+    return abstract();
+  };
+
+  /**
+   * Load not yet loaded URI.
+   * @abstract
+   */
+  ImageStyle.prototype.load = function load () {
+    abstract();
+  };
+
+  /**
+   * @abstract
+   * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
+   * @param {T} thisArg Value to use as `this` when executing `listener`.
+   * @template T
+   */
+  ImageStyle.prototype.unlistenImageChange = function unlistenImageChange (listener, thisArg) {
+    abstract();
+  };
+
+  /**
+   * @module ol/style/RegularShape
+   */
+
+
+  /**
+   * Specify radius for regular polygons, or radius1 and radius2 for stars.
+   * @typedef {Object} Options
+   * @property {import("./Fill.js").default} [fill] Fill style.
+   * @property {number} points Number of points for stars and regular polygons. In case of a polygon, the number of points
+   * is the number of sides.
+   * @property {number} [radius] Radius of a regular polygon.
+   * @property {number} [radius1] Outer radius of a star.
+   * @property {number} [radius2] Inner radius of a star.
+   * @property {number} [angle=0] Shape's angle in radians. A value of 0 will have one of the shape's point facing up.
+   * @property {import("./Stroke.js").default} [stroke] Stroke style.
+   * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
+   * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
+   * @property {import("./AtlasManager.js").default} [atlasManager] The atlas manager to use for this symbol. When
+   * using WebGL it is recommended to use an atlas manager to avoid texture switching. If an atlas manager is given, the
+   * symbol is added to an atlas. By default no atlas manager is used.
+   */
+
+
+  /**
+   * @typedef {Object} RenderOptions
+   * @property {import("../colorlike.js").ColorLike} [strokeStyle]
+   * @property {number} strokeWidth
+   * @property {number} size
+   * @property {string} lineCap
+   * @property {Array<number>} lineDash
+   * @property {number} lineDashOffset
+   * @property {string} lineJoin
+   * @property {number} miterLimit
+   */
+
+
+  /**
+   * @classdesc
+   * Set regular shape style for vector features. The resulting shape will be
+   * a regular polygon when `radius` is provided, or a star when `radius1` and
+   * `radius2` are provided.
+   * @api
+   */
+  var RegularShape = /*@__PURE__*/(function (ImageStyle$$1) {
+    function RegularShape(options) {
+      /**
+       * @type {boolean}
+       */
+      var rotateWithView = options.rotateWithView !== undefined ?
+        options.rotateWithView : false;
+
+      ImageStyle$$1.call(this, {
+        opacity: 1,
+        rotateWithView: rotateWithView,
+        rotation: options.rotation !== undefined ? options.rotation : 0,
+        scale: 1
+      });
+
+      /**
+       * @private
+       * @type {Array<string|number>}
+       */
+      this.checksums_ = null;
+
+      /**
+       * @private
+       * @type {HTMLCanvasElement}
+       */
+      this.canvas_ = null;
+
+      /**
+       * @private
+       * @type {HTMLCanvasElement}
+       */
+      this.hitDetectionCanvas_ = null;
+
+      /**
+       * @private
+       * @type {import("./Fill.js").default}
+       */
+      this.fill_ = options.fill !== undefined ? options.fill : null;
+
+      /**
+       * @private
+       * @type {Array<number>}
+       */
+      this.origin_ = [0, 0];
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.points_ = options.points;
+
+      /**
+       * @protected
+       * @type {number}
+       */
+      this.radius_ = /** @type {number} */ (options.radius !== undefined ?
+        options.radius : options.radius1);
+
+      /**
+       * @private
+       * @type {number|undefined}
+       */
+      this.radius2_ = options.radius2;
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.angle_ = options.angle !== undefined ? options.angle : 0;
+
+      /**
+       * @private
+       * @type {import("./Stroke.js").default}
+       */
+      this.stroke_ = options.stroke !== undefined ? options.stroke : null;
+
+      /**
+       * @private
+       * @type {Array<number>}
+       */
+      this.anchor_ = null;
+
+      /**
+       * @private
+       * @type {import("../size.js").Size}
+       */
+      this.size_ = null;
+
+      /**
+       * @private
+       * @type {import("../size.js").Size}
+       */
+      this.imageSize_ = null;
+
+      /**
+       * @private
+       * @type {import("../size.js").Size}
+       */
+      this.hitDetectionImageSize_ = null;
+
+      /**
+       * @protected
+       * @type {import("./AtlasManager.js").default|undefined}
+       */
+      this.atlasManager_ = options.atlasManager;
+
+      this.render_(this.atlasManager_);
+
+    }
+
+    if ( ImageStyle$$1 ) RegularShape.__proto__ = ImageStyle$$1;
+    RegularShape.prototype = Object.create( ImageStyle$$1 && ImageStyle$$1.prototype );
+    RegularShape.prototype.constructor = RegularShape;
+
+    /**
+     * Clones the style. If an atlasmanager was provided to the original style it will be used in the cloned style, too.
+     * @return {RegularShape} The cloned style.
+     * @api
+     */
+    RegularShape.prototype.clone = function clone () {
+      var style = new RegularShape({
+        fill: this.getFill() ? this.getFill().clone() : undefined,
+        points: this.getPoints(),
+        radius: this.getRadius(),
+        radius2: this.getRadius2(),
+        angle: this.getAngle(),
+        stroke: this.getStroke() ? this.getStroke().clone() : undefined,
+        rotation: this.getRotation(),
+        rotateWithView: this.getRotateWithView(),
+        atlasManager: this.atlasManager_
+      });
+      style.setOpacity(this.getOpacity());
+      style.setScale(this.getScale());
+      return style;
+    };
+
+    /**
+     * @inheritDoc
+     * @api
+     */
+    RegularShape.prototype.getAnchor = function getAnchor () {
+      return this.anchor_;
+    };
+
+    /**
+     * Get the angle used in generating the shape.
+     * @return {number} Shape's rotation in radians.
+     * @api
+     */
+    RegularShape.prototype.getAngle = function getAngle () {
+      return this.angle_;
+    };
+
+    /**
+     * Get the fill style for the shape.
+     * @return {import("./Fill.js").default} Fill style.
+     * @api
+     */
+    RegularShape.prototype.getFill = function getFill () {
+      return this.fill_;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    RegularShape.prototype.getHitDetectionImage = function getHitDetectionImage (pixelRatio) {
+      return this.hitDetectionCanvas_;
+    };
+
+    /**
+     * @inheritDoc
+     * @api
+     */
+    RegularShape.prototype.getImage = function getImage (pixelRatio) {
+      return this.canvas_;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    RegularShape.prototype.getImageSize = function getImageSize () {
+      return this.imageSize_;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    RegularShape.prototype.getHitDetectionImageSize = function getHitDetectionImageSize () {
+      return this.hitDetectionImageSize_;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    RegularShape.prototype.getImageState = function getImageState () {
+      return ImageState.LOADED;
+    };
+
+    /**
+     * @inheritDoc
+     * @api
+     */
+    RegularShape.prototype.getOrigin = function getOrigin () {
+      return this.origin_;
+    };
+
+    /**
+     * Get the number of points for generating the shape.
+     * @return {number} Number of points for stars and regular polygons.
+     * @api
+     */
+    RegularShape.prototype.getPoints = function getPoints () {
+      return this.points_;
+    };
+
+    /**
+     * Get the (primary) radius for the shape.
+     * @return {number} Radius.
+     * @api
+     */
+    RegularShape.prototype.getRadius = function getRadius () {
+      return this.radius_;
+    };
+
+    /**
+     * Get the secondary radius for the shape.
+     * @return {number|undefined} Radius2.
+     * @api
+     */
+    RegularShape.prototype.getRadius2 = function getRadius2 () {
+      return this.radius2_;
+    };
+
+    /**
+     * @inheritDoc
+     * @api
+     */
+    RegularShape.prototype.getSize = function getSize () {
+      return this.size_;
+    };
+
+    /**
+     * Get the stroke style for the shape.
+     * @return {import("./Stroke.js").default} Stroke style.
+     * @api
+     */
+    RegularShape.prototype.getStroke = function getStroke () {
+      return this.stroke_;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    RegularShape.prototype.listenImageChange = function listenImageChange (listener, thisArg) {
+      return undefined;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    RegularShape.prototype.load = function load () {};
+
+    /**
+     * @inheritDoc
+     */
+    RegularShape.prototype.unlistenImageChange = function unlistenImageChange (listener, thisArg) {};
+
+    /**
+     * @protected
+     * @param {import("./AtlasManager.js").default|undefined} atlasManager An atlas manager.
+     */
+    RegularShape.prototype.render_ = function render_ (atlasManager) {
+      var imageSize;
+      var lineCap = '';
+      var lineJoin = '';
+      var miterLimit = 0;
+      var lineDash = null;
+      var lineDashOffset = 0;
+      var strokeStyle;
+      var strokeWidth = 0;
+
+      if (this.stroke_) {
+        strokeStyle = this.stroke_.getColor();
+        if (strokeStyle === null) {
+          strokeStyle = defaultStrokeStyle;
+        }
+        strokeStyle = asColorLike(strokeStyle);
+        strokeWidth = this.stroke_.getWidth();
+        if (strokeWidth === undefined) {
+          strokeWidth = defaultLineWidth;
+        }
+        lineDash = this.stroke_.getLineDash();
+        lineDashOffset = this.stroke_.getLineDashOffset();
+        if (!CANVAS_LINE_DASH) {
+          lineDash = null;
+          lineDashOffset = 0;
+        }
+        lineJoin = this.stroke_.getLineJoin();
+        if (lineJoin === undefined) {
+          lineJoin = defaultLineJoin;
+        }
+        lineCap = this.stroke_.getLineCap();
+        if (lineCap === undefined) {
+          lineCap = defaultLineCap;
+        }
+        miterLimit = this.stroke_.getMiterLimit();
+        if (miterLimit === undefined) {
+          miterLimit = defaultMiterLimit;
+        }
+      }
+
+      var size = 2 * (this.radius_ + strokeWidth) + 1;
+
+      /** @type {RenderOptions} */
+      var renderOptions = {
+        strokeStyle: strokeStyle,
+        strokeWidth: strokeWidth,
+        size: size,
+        lineCap: lineCap,
+        lineDash: lineDash,
+        lineDashOffset: lineDashOffset,
+        lineJoin: lineJoin,
+        miterLimit: miterLimit
+      };
+
+      if (atlasManager === undefined) {
+        // no atlas manager is used, create a new canvas
+        var context = createCanvasContext2D(size, size);
+        this.canvas_ = context.canvas;
+
+        // canvas.width and height are rounded to the closest integer
+        size = this.canvas_.width;
+        imageSize = size;
+
+        this.draw_(renderOptions, context, 0, 0);
+
+        this.createHitDetectionCanvas_(renderOptions);
+      } else {
+        // an atlas manager is used, add the symbol to an atlas
+        size = Math.round(size);
+
+        var hasCustomHitDetectionImage = !this.fill_;
+        var renderHitDetectionCallback;
+        if (hasCustomHitDetectionImage) {
+          // render the hit-detection image into a separate atlas image
+          renderHitDetectionCallback =
+              this.drawHitDetectionCanvas_.bind(this, renderOptions);
+        }
+
+        var id = this.getChecksum();
+        var info = atlasManager.add(
+          id, size, size, this.draw_.bind(this, renderOptions),
+          renderHitDetectionCallback);
+
+        this.canvas_ = info.image;
+        this.origin_ = [info.offsetX, info.offsetY];
+        imageSize = info.image.width;
+
+        if (hasCustomHitDetectionImage) {
+          this.hitDetectionCanvas_ = info.hitImage;
+          this.hitDetectionImageSize_ =
+              [info.hitImage.width, info.hitImage.height];
+        } else {
+          this.hitDetectionCanvas_ = this.canvas_;
+          this.hitDetectionImageSize_ = [imageSize, imageSize];
+        }
+      }
+
+      this.anchor_ = [size / 2, size / 2];
+      this.size_ = [size, size];
+      this.imageSize_ = [imageSize, imageSize];
+    };
+
+    /**
+     * @private
+     * @param {RenderOptions} renderOptions Render options.
+     * @param {CanvasRenderingContext2D} context The rendering context.
+     * @param {number} x The origin for the symbol (x).
+     * @param {number} y The origin for the symbol (y).
+     */
+    RegularShape.prototype.draw_ = function draw_ (renderOptions, context, x, y) {
+      var i, angle0, radiusC;
+      // reset transform
+      context.setTransform(1, 0, 0, 1, 0, 0);
+
+      // then move to (x, y)
+      context.translate(x, y);
+
+      context.beginPath();
+
+      var points = this.points_;
+      if (points === Infinity) {
+        context.arc(
+          renderOptions.size / 2, renderOptions.size / 2,
+          this.radius_, 0, 2 * Math.PI, true);
+      } else {
+        var radius2 = (this.radius2_ !== undefined) ? this.radius2_
+          : this.radius_;
+        if (radius2 !== this.radius_) {
+          points = 2 * points;
+        }
+        for (i = 0; i <= points; i++) {
+          angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
+          radiusC = i % 2 === 0 ? this.radius_ : radius2;
+          context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
+            renderOptions.size / 2 + radiusC * Math.sin(angle0));
+        }
+      }
+
+
+      if (this.fill_) {
+        var color = this.fill_.getColor();
+        if (color === null) {
+          color = defaultFillStyle;
+        }
+        context.fillStyle = asColorLike(color);
+        context.fill();
+      }
+      if (this.stroke_) {
+        context.strokeStyle = renderOptions.strokeStyle;
+        context.lineWidth = renderOptions.strokeWidth;
+        if (renderOptions.lineDash) {
+          context.setLineDash(renderOptions.lineDash);
+          context.lineDashOffset = renderOptions.lineDashOffset;
+        }
+        context.lineCap = /** @type {CanvasLineCap} */ (renderOptions.lineCap);
+        context.lineJoin = /** @type {CanvasLineJoin} */ (renderOptions.lineJoin);
+        context.miterLimit = renderOptions.miterLimit;
+        context.stroke();
+      }
+      context.closePath();
+    };
+
+    /**
+     * @private
+     * @param {RenderOptions} renderOptions Render options.
+     */
+    RegularShape.prototype.createHitDetectionCanvas_ = function createHitDetectionCanvas_ (renderOptions) {
+      this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
+      if (this.fill_) {
+        this.hitDetectionCanvas_ = this.canvas_;
+        return;
+      }
+
+      // if no fill style is set, create an extra hit-detection image with a
+      // default fill style
+      var context = createCanvasContext2D(renderOptions.size, renderOptions.size);
+      this.hitDetectionCanvas_ = context.canvas;
+
+      this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);
+    };
+
+    /**
+     * @private
+     * @param {RenderOptions} renderOptions Render options.
+     * @param {CanvasRenderingContext2D} context The context.
+     * @param {number} x The origin for the symbol (x).
+     * @param {number} y The origin for the symbol (y).
+     */
+    RegularShape.prototype.drawHitDetectionCanvas_ = function drawHitDetectionCanvas_ (renderOptions, context, x, y) {
+      // reset transform
+      context.setTransform(1, 0, 0, 1, 0, 0);
+
+      // then move to (x, y)
+      context.translate(x, y);
+
+      context.beginPath();
+
+      var points = this.points_;
+      if (points === Infinity) {
+        context.arc(
+          renderOptions.size / 2, renderOptions.size / 2,
+          this.radius_, 0, 2 * Math.PI, true);
+      } else {
+        var radius2 = (this.radius2_ !== undefined) ? this.radius2_
+          : this.radius_;
+        if (radius2 !== this.radius_) {
+          points = 2 * points;
+        }
+        var i, radiusC, angle0;
+        for (i = 0; i <= points; i++) {
+          angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
+          radiusC = i % 2 === 0 ? this.radius_ : radius2;
+          context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
+            renderOptions.size / 2 + radiusC * Math.sin(angle0));
+        }
+      }
+
+      context.fillStyle = asString(defaultFillStyle);
+      context.fill();
+      if (this.stroke_) {
+        context.strokeStyle = renderOptions.strokeStyle;
+        context.lineWidth = renderOptions.strokeWidth;
+        if (renderOptions.lineDash) {
+          context.setLineDash(renderOptions.lineDash);
+          context.lineDashOffset = renderOptions.lineDashOffset;
+        }
+        context.stroke();
+      }
+      context.closePath();
+    };
+
+    /**
+     * @return {string} The checksum.
+     */
+    RegularShape.prototype.getChecksum = function getChecksum () {
+      var strokeChecksum = this.stroke_ ?
+        this.stroke_.getChecksum() : '-';
+      var fillChecksum = this.fill_ ?
+        this.fill_.getChecksum() : '-';
+
+      var recalculate = !this.checksums_ ||
+          (strokeChecksum != this.checksums_[1] ||
+          fillChecksum != this.checksums_[2] ||
+          this.radius_ != this.checksums_[3] ||
+          this.radius2_ != this.checksums_[4] ||
+          this.angle_ != this.checksums_[5] ||
+          this.points_ != this.checksums_[6]);
+
+      if (recalculate) {
+        var checksum = 'r' + strokeChecksum + fillChecksum +
+            (this.radius_ !== undefined ? this.radius_.toString() : '-') +
+            (this.radius2_ !== undefined ? this.radius2_.toString() : '-') +
+            (this.angle_ !== undefined ? this.angle_.toString() : '-') +
+            (this.points_ !== undefined ? this.points_.toString() : '-');
+        this.checksums_ = [checksum, strokeChecksum, fillChecksum,
+          this.radius_, this.radius2_, this.angle_, this.points_];
+      }
+
+      return /** @type {string} */ (this.checksums_[0]);
+    };
+
+    return RegularShape;
+  }(ImageStyle));
+
+  /**
+   * @module ol/style/Circle
+   */
+
+
+  /**
+   * @typedef {Object} Options
+   * @property {import("./Fill.js").default} [fill] Fill style.
+   * @property {number} radius Circle radius.
+   * @property {import("./Stroke.js").default} [stroke] Stroke style.
+   * @property {import("./AtlasManager.js").default} [atlasManager] The atlas manager to use for this circle.
+   * When using WebGL it is recommended to use an atlas manager to avoid texture switching. If an atlas manager is given,
+   * the circle is added to an atlas. By default no atlas manager is used.
+   */
+
+
+  /**
+   * @classdesc
+   * Set circle style for vector features.
+   * @api
+   */
+  var CircleStyle = /*@__PURE__*/(function (RegularShape$$1) {
+    function CircleStyle(opt_options) {
+
+      var options = opt_options || /** @type {Options} */ ({});
+
+      RegularShape$$1.call(this, {
+        points: Infinity,
+        fill: options.fill,
+        radius: options.radius,
+        stroke: options.stroke,
+        atlasManager: options.atlasManager
+      });
+
+    }
+
+    if ( RegularShape$$1 ) CircleStyle.__proto__ = RegularShape$$1;
+    CircleStyle.prototype = Object.create( RegularShape$$1 && RegularShape$$1.prototype );
+    CircleStyle.prototype.constructor = CircleStyle;
+
+    /**
+    * Clones the style.  If an atlasmanager was provided to the original style it will be used in the cloned style, too.
+    * @return {CircleStyle} The cloned style.
+    * @override
+    * @api
+    */
+    CircleStyle.prototype.clone = function clone () {
+      var style = new CircleStyle({
+        fill: this.getFill() ? this.getFill().clone() : undefined,
+        stroke: this.getStroke() ? this.getStroke().clone() : undefined,
+        radius: this.getRadius(),
+        atlasManager: this.atlasManager_
+      });
+      style.setOpacity(this.getOpacity());
+      style.setScale(this.getScale());
+      return style;
+    };
+
+    /**
+    * Set the circle radius.
+    *
+    * @param {number} radius Circle radius.
+    * @api
+    */
+    CircleStyle.prototype.setRadius = function setRadius (radius) {
+      this.radius_ = radius;
+      this.render_(this.atlasManager_);
+    };
+
+    return CircleStyle;
+  }(RegularShape));
+
+  /**
+   * @module ol/style/Style
+   */
+
+
+  /**
+   * A function that takes an {@link module:ol/Feature} and a `{number}`
+   * representing the view's resolution. The function should return a
+   * {@link module:ol/style/Style} or an array of them. This way e.g. a
+   * vector layer can be styled.
+   *
+   * @typedef {function(import("../Feature.js").FeatureLike, number):(Style|Array<Style>)} StyleFunction
+   */
+
+  /**
+   * A {@link Style}, an array of {@link Style}, or a {@link StyleFunction}.
+   * @typedef {Style|Array<Style>|StyleFunction} StyleLike
+   */
+
+  /**
+   * A function that takes an {@link module:ol/Feature} as argument and returns an
+   * {@link module:ol/geom/Geometry} that will be rendered and styled for the feature.
+   *
+   * @typedef {function(import("../Feature.js").FeatureLike):
+   *     (import("../geom/Geometry.js").default|import("../render/Feature.js").default|undefined)} GeometryFunction
+   */
+
+
+  /**
+   * Custom renderer function. Takes two arguments:
+   *
+   * 1. The pixel coordinates of the geometry in GeoJSON notation.
+   * 2. The {@link module:ol/render~State} of the layer renderer.
+   *
+   * @typedef {function((import("../coordinate.js").Coordinate|Array<import("../coordinate.js").Coordinate>|Array<Array<import("../coordinate.js").Coordinate>>),import("../render.js").State)}
+   * RenderFunction
+   */
+
+
+  /**
+   * @typedef {Object} Options
+   * @property {string|import("../geom/Geometry.js").default|GeometryFunction} [geometry] Feature property or geometry
+   * or function returning a geometry to render for this style.
+   * @property {import("./Fill.js").default} [fill] Fill style.
+   * @property {import("./Image.js").default} [image] Image style.
+   * @property {RenderFunction} [renderer] Custom renderer. When configured, `fill`, `stroke` and `image` will be
+   * ignored, and the provided function will be called with each render frame for each geometry.
+   * @property {import("./Stroke.js").default} [stroke] Stroke style.
+   * @property {import("./Text.js").default} [text] Text style.
+   * @property {number} [zIndex] Z index.
+   */
+
+  /**
+   * @classdesc
+   * Container for vector feature rendering styles. Any changes made to the style
+   * or its children through `set*()` methods will not take effect until the
+   * feature or layer that uses the style is re-rendered.
+   * @api
+   */
+  var Style = function Style(opt_options) {
+
+    var options = opt_options || {};
+
+    /**
+     * @private
+     * @type {string|import("../geom/Geometry.js").default|GeometryFunction}
+     */
+    this.geometry_ = null;
+
+    /**
+     * @private
+     * @type {!GeometryFunction}
+     */
+    this.geometryFunction_ = defaultGeometryFunction;
+
+    if (options.geometry !== undefined) {
+      this.setGeometry(options.geometry);
+    }
+
+    /**
+     * @private
+     * @type {import("./Fill.js").default}
+     */
+    this.fill_ = options.fill !== undefined ? options.fill : null;
+
+    /**
+       * @private
+       * @type {import("./Image.js").default}
+       */
+    this.image_ = options.image !== undefined ? options.image : null;
+
+    /**
+     * @private
+     * @type {RenderFunction|null}
+     */
+    this.renderer_ = options.renderer !== undefined ? options.renderer : null;
+
+    /**
+     * @private
+     * @type {import("./Stroke.js").default}
+     */
+    this.stroke_ = options.stroke !== undefined ? options.stroke : null;
+
+    /**
+     * @private
+     * @type {import("./Text.js").default}
+     */
+    this.text_ = options.text !== undefined ? options.text : null;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.zIndex_ = options.zIndex;
+
+  };
+
+  /**
+   * Clones the style.
+   * @return {Style} The cloned style.
+   * @api
+   */
+  Style.prototype.clone = function clone () {
+    var geometry = this.getGeometry();
+    if (geometry && typeof geometry === 'object') {
+      geometry = /** @type {import("../geom/Geometry.js").default} */ (geometry).clone();
+    }
+    return new Style({
+      geometry: geometry,
+      fill: this.getFill() ? this.getFill().clone() : undefined,
+      image: this.getImage() ? this.getImage().clone() : undefined,
+      stroke: this.getStroke() ? this.getStroke().clone() : undefined,
+      text: this.getText() ? this.getText().clone() : undefined,
+      zIndex: this.getZIndex()
+    });
+  };
+
+  /**
+   * Get the custom renderer function that was configured with
+   * {@link #setRenderer} or the `renderer` constructor option.
+   * @return {RenderFunction|null} Custom renderer function.
+   * @api
+   */
+  Style.prototype.getRenderer = function getRenderer () {
+    return this.renderer_;
+  };
+
+  /**
+   * Sets a custom renderer function for this style. When set, `fill`, `stroke`
+   * and `image` options of the style will be ignored.
+   * @param {RenderFunction|null} renderer Custom renderer function.
+   * @api
+   */
+  Style.prototype.setRenderer = function setRenderer (renderer) {
+    this.renderer_ = renderer;
+  };
+
+  /**
+   * Get the geometry to be rendered.
+   * @return {string|import("../geom/Geometry.js").default|GeometryFunction}
+   * Feature property or geometry or function that returns the geometry that will
+   * be rendered with this style.
+   * @api
+   */
+  Style.prototype.getGeometry = function getGeometry () {
+    return this.geometry_;
+  };
+
+  /**
+   * Get the function used to generate a geometry for rendering.
+   * @return {!GeometryFunction} Function that is called with a feature
+   * and returns the geometry to render instead of the feature's geometry.
+   * @api
+   */
+  Style.prototype.getGeometryFunction = function getGeometryFunction () {
+    return this.geometryFunction_;
+  };
+
+  /**
+   * Get the fill style.
+   * @return {import("./Fill.js").default} Fill style.
+   * @api
+   */
+  Style.prototype.getFill = function getFill () {
+    return this.fill_;
+  };
+
+  /**
+   * Set the fill style.
+   * @param {import("./Fill.js").default} fill Fill style.
+   * @api
+   */
+  Style.prototype.setFill = function setFill (fill) {
+    this.fill_ = fill;
+  };
+
+  /**
+   * Get the image style.
+   * @return {import("./Image.js").default} Image style.
+   * @api
+   */
+  Style.prototype.getImage = function getImage () {
+    return this.image_;
+  };
+
+  /**
+   * Set the image style.
+   * @param {import("./Image.js").default} image Image style.
+   * @api
+   */
+  Style.prototype.setImage = function setImage (image) {
+    this.image_ = image;
+  };
+
+  /**
+   * Get the stroke style.
+   * @return {import("./Stroke.js").default} Stroke style.
+   * @api
+   */
+  Style.prototype.getStroke = function getStroke () {
+    return this.stroke_;
+  };
+
+  /**
+   * Set the stroke style.
+   * @param {import("./Stroke.js").default} stroke Stroke style.
+   * @api
+   */
+  Style.prototype.setStroke = function setStroke (stroke) {
+    this.stroke_ = stroke;
+  };
+
+  /**
+   * Get the text style.
+   * @return {import("./Text.js").default} Text style.
+   * @api
+   */
+  Style.prototype.getText = function getText () {
+    return this.text_;
+  };
+
+  /**
+   * Set the text style.
+   * @param {import("./Text.js").default} text Text style.
+   * @api
+   */
+  Style.prototype.setText = function setText (text) {
+    this.text_ = text;
+  };
+
+  /**
+   * Get the z-index for the style.
+   * @return {number|undefined} ZIndex.
+   * @api
+   */
+  Style.prototype.getZIndex = function getZIndex () {
+    return this.zIndex_;
+  };
+
+  /**
+   * Set a geometry that is rendered instead of the feature's geometry.
+   *
+   * @param {string|import("../geom/Geometry.js").default|GeometryFunction} geometry
+   *   Feature property or geometry or function returning a geometry to render
+   *   for this style.
+   * @api
+   */
+  Style.prototype.setGeometry = function setGeometry (geometry) {
+    if (typeof geometry === 'function') {
+      this.geometryFunction_ = geometry;
+    } else if (typeof geometry === 'string') {
+      this.geometryFunction_ = function(feature) {
+        return (
+          /** @type {import("../geom/Geometry.js").default} */ (feature.get(geometry))
+        );
+      };
+    } else if (!geometry) {
+      this.geometryFunction_ = defaultGeometryFunction;
+    } else if (geometry !== undefined) {
+      this.geometryFunction_ = function() {
+        return (
+          /** @type {import("../geom/Geometry.js").default} */ (geometry)
+        );
+      };
+    }
+    this.geometry_ = geometry;
+  };
+
+  /**
+   * Set the z-index.
+   *
+   * @param {number|undefined} zIndex ZIndex.
+   * @api
+   */
+  Style.prototype.setZIndex = function setZIndex (zIndex) {
+    this.zIndex_ = zIndex;
+  };
+
+
+  /**
+   * Convert the provided object into a style function.  Functions passed through
+   * unchanged.  Arrays of Style or single style objects wrapped in a
+   * new style function.
+   * @param {StyleFunction|Array<Style>|Style} obj
+   *     A style function, a single style, or an array of styles.
+   * @return {StyleFunction} A style function.
+   */
+  function toFunction(obj) {
+    var styleFunction;
+
+    if (typeof obj === 'function') {
+      styleFunction = obj;
+    } else {
+      /**
+       * @type {Array<Style>}
+       */
+      var styles;
+      if (Array.isArray(obj)) {
+        styles = obj;
+      } else {
+        assert(typeof /** @type {?} */ (obj).getZIndex === 'function',
+          41); // Expected an `Style` or an array of `Style`
+        var style = /** @type {Style} */ (obj);
+        styles = [style];
+      }
+      styleFunction = function() {
+        return styles;
+      };
+    }
+    return styleFunction;
+  }
+
+
+  /**
+   * @type {Array<Style>}
+   */
+  var defaultStyles = null;
+
+
+  /**
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
+   * @param {number} resolution Resolution.
+   * @return {Array<Style>} Style.
+   */
+  function createDefaultStyle(feature, resolution) {
+    // We don't use an immediately-invoked function
+    // and a closure so we don't get an error at script evaluation time in
+    // browsers that do not support Canvas. (import("./Circle.js").CircleStyle does
+    // canvas.getContext('2d') at construction time, which will cause an.error
+    // in such browsers.)
+    if (!defaultStyles) {
+      var fill = new Fill({
+        color: 'rgba(255,255,255,0.4)'
+      });
+      var stroke = new Stroke({
+        color: '#3399CC',
+        width: 1.25
+      });
+      defaultStyles = [
+        new Style({
+          image: new CircleStyle({
+            fill: fill,
+            stroke: stroke,
+            radius: 5
+          }),
+          fill: fill,
+          stroke: stroke
+        })
+      ];
+    }
+    return defaultStyles;
+  }
+
+
+  /**
+   * Default styles for editing features.
+   * @return {Object<import("../geom/GeometryType.js").default, Array<Style>>} Styles
+   */
+  function createEditingStyle() {
+    /** @type {Object<import("../geom/GeometryType.js").default, Array<Style>>} */
+    var styles = {};
+    var white = [255, 255, 255, 1];
+    var blue = [0, 153, 255, 1];
+    var width = 3;
+    styles[GeometryType.POLYGON] = [
+      new Style({
+        fill: new Fill({
+          color: [255, 255, 255, 0.5]
+        })
+      })
+    ];
+    styles[GeometryType.MULTI_POLYGON] =
+        styles[GeometryType.POLYGON];
+
+    styles[GeometryType.LINE_STRING] = [
+      new Style({
+        stroke: new Stroke({
+          color: white,
+          width: width + 2
+        })
+      }),
+      new Style({
+        stroke: new Stroke({
+          color: blue,
+          width: width
+        })
+      })
+    ];
+    styles[GeometryType.MULTI_LINE_STRING] =
+        styles[GeometryType.LINE_STRING];
+
+    styles[GeometryType.CIRCLE] =
+        styles[GeometryType.POLYGON].concat(
+          styles[GeometryType.LINE_STRING]
+        );
+
+
+    styles[GeometryType.POINT] = [
+      new Style({
+        image: new CircleStyle({
+          radius: width * 2,
+          fill: new Fill({
+            color: blue
+          }),
+          stroke: new Stroke({
+            color: white,
+            width: width / 2
+          })
+        }),
+        zIndex: Infinity
+      })
+    ];
+    styles[GeometryType.MULTI_POINT] =
+        styles[GeometryType.POINT];
+
+    styles[GeometryType.GEOMETRY_COLLECTION] =
+        styles[GeometryType.POLYGON].concat(
+          styles[GeometryType.LINE_STRING],
+          styles[GeometryType.POINT]
+        );
+
+    return styles;
+  }
+
+
+  /**
+   * Function that is called with a feature and returns its default geometry.
+   * @param {import("../Feature.js").FeatureLike} feature Feature to get the geometry for.
+   * @return {import("../geom/Geometry.js").default|import("../render/Feature.js").default|undefined} Geometry to render.
+   */
+  function defaultGeometryFunction(feature) {
+    return feature.getGeometry();
+  }
+
+  /**
    * @module ol/layer/Vector
    */
 
@@ -25282,7 +25324,7 @@
    * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
    * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
    * means higher priority.
-   * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style] Layer style. See
+   * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
    * {@link module:ol/style} for default style which will be used if this is not defined.
    * @property {boolean} [updateWhileAnimating=false] When set to `true` and `renderMode`
    * is `vector`, feature batches will be recreated during animations. This means that no
@@ -25297,25 +25339,9 @@
 
   /**
    * @enum {string}
-   * Render mode for vector layers:
-   *  * `'image'`: Vector layers are rendered as images. Great performance, but
-   *    point symbols and texts are always rotated with the view and pixels are
-   *    scaled during zoom animations.
-   *  * `'vector'`: Vector layers are rendered as vectors. Most accurate rendering
-   *    even during animations, but slower performance.
-   * @api
-   */
-  var RenderType = {
-    IMAGE: 'image',
-    VECTOR: 'vector'
-  };
-
-
-  /**
-   * @enum {string}
    * @private
    */
-  var Property$2 = {
+  var Property$3 = {
     RENDER_ORDER: 'renderOrder'
   };
 
@@ -25357,7 +25383,7 @@
 
       /**
       * User provided style.
-      * @type {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction}
+      * @type {import("../style/Style.js").StyleLike}
       * @private
       */
       this.style_ = null;
@@ -25431,14 +25457,14 @@
     */
     VectorLayer.prototype.getRenderOrder = function getRenderOrder () {
       return (
-      /** @type {import("../render.js").OrderFunction|null|undefined} */ (this.get(Property$2.RENDER_ORDER))
+      /** @type {import("../render.js").OrderFunction|null|undefined} */ (this.get(Property$3.RENDER_ORDER))
       );
     };
 
     /**
     * Get the style for features.  This returns whatever was passed to the `style`
     * option at construction or to the `setStyle` method.
-    * @return {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction}
+    * @return {import("../style/Style.js").StyleLike}
     *     Layer style.
     * @api
     */
@@ -25476,7 +25502,7 @@
     *     Render order.
     */
     VectorLayer.prototype.setRenderOrder = function setRenderOrder (renderOrder) {
-      this.set(Property$2.RENDER_ORDER, renderOrder);
+      this.set(Property$3.RENDER_ORDER, renderOrder);
     };
 
     /**
@@ -25545,7 +25571,7 @@
    *
    * The function is responsible for loading the features and adding them to the
    * source.
-   * @typedef {function(this:(VectorSource|import("./VectorTile.js").default), import("./extent.js").Extent, number,
+   * @typedef {function(this:(import("./source/Vector").default|import("./VectorTile.js").default), import("./extent.js").Extent, number,
    *                    import("./proj/Projection.js").default)} FeatureLoader
    * @api
    */
@@ -25567,10 +25593,10 @@
   /**
    * @param {string|FeatureUrlFunction} url Feature URL service.
    * @param {import("./format/Feature.js").default} format Feature format.
-   * @param {function(this:import("./VectorTile.js").default, Array<import("./Feature.js").default>, import("./proj/Projection.js").default, import("./extent.js").Extent)|function(this:VectorSource, Array<import("./Feature.js").default>)} success
+   * @param {function(this:import("./VectorTile.js").default, Array<import("./Feature.js").default>, import("./proj/Projection.js").default, import("./extent.js").Extent)|function(this:import("./source/Vector").default, Array<import("./Feature.js").default>)} success
    *     Function called with the loaded features and optionally with the data
    *     projection. Called with the vector tile or source as `this`.
-   * @param {function(this:import("./VectorTile.js").default)|function(this:VectorSource)} failure
+   * @param {function(this:import("./VectorTile.js").default)|function(this:import("./source/Vector").default)} failure
    *     Function called when loading failed. Called with the vector tile or
    *     source as `this`.
    * @return {FeatureLoader} The feature loader.
@@ -25581,7 +25607,7 @@
        * @param {import("./extent.js").Extent} extent Extent.
        * @param {number} resolution Resolution.
        * @param {import("./proj/Projection.js").default} projection Projection.
-       * @this {VectorSource|import("./VectorTile.js").default}
+       * @this {import("./source/Vector").default|import("./VectorTile.js").default}
        */
       function(extent, resolution, projection) {
         var xhr = new XMLHttpRequest();
@@ -25649,11 +25675,12 @@
        * @param {Array<import("./Feature.js").default>} features The loaded features.
        * @param {import("./proj/Projection.js").default} dataProjection Data
        * projection.
-       * @this {VectorSource|import("./VectorTile.js").default}
+       * @this {import("./source/Vector").default|import("./VectorTile.js").default}
        */
       function(features, dataProjection) {
-        if (this instanceof VectorSource) {
-          this.addFeatures(features);
+        var sourceOrTile = /** @type {?} */ (this);
+        if (typeof sourceOrTile.addFeatures === 'function') {
+          /** @type {import("./source/Vector").default} */ (sourceOrTile).addFeatures(features);
         }
       }, /* FIXME handle error */ VOID);
   }
@@ -25746,9 +25773,10 @@
   /**
    * @typedef {Object} Options
    * @property {AttributionLike} [attributions]
+   * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
    * @property {import("../proj.js").ProjectionLike} projection
-   * @property {SourceState} [state]
-   * @property {boolean} [wrapX]
+   * @property {SourceState} [state='ready']
+   * @property {boolean} [wrapX=false]
    */
 
 
@@ -25759,6 +25787,7 @@
    * Base class for {@link module:ol/layer/Layer~Layer} sources.
    *
    * A generic `change` event is triggered when the state of the source changes.
+   * @abstract
    * @api
    */
   var Source = /*@__PURE__*/(function (BaseObject$$1) {
@@ -25767,16 +25796,23 @@
       BaseObject$$1.call(this);
 
       /**
-      * @private
-      * @type {import("../proj/Projection.js").default}
-      */
+       * @private
+       * @type {import("../proj/Projection.js").default}
+       */
       this.projection_ = get$2(options.projection);
 
       /**
-      * @private
-      * @type {?Attribution}
-      */
-      this.attributions_ = this.adaptAttributions_(options.attributions);
+       * @private
+       * @type {?Attribution}
+       */
+      this.attributions_ = adaptAttributions(options.attributions);
+
+      /**
+       * @private
+       * @type {boolean}
+       */
+      this.attributionsCollapsible_ = options.attributionsCollapsible !== undefined ?
+        options.attributionsCollapsible : true;
 
       /**
        * This source is currently loading data. Sources that defer loading to the
@@ -25786,16 +25822,16 @@
       this.loading = false;
 
       /**
-      * @private
-      * @type {SourceState}
-      */
+       * @private
+       * @type {SourceState}
+       */
       this.state_ = options.state !== undefined ?
         options.state : SourceState.READY;
 
       /**
-      * @private
-      * @type {boolean}
-      */
+       * @private
+       * @type {boolean}
+       */
       this.wrapX_ = options.wrapX !== undefined ? options.wrapX : false;
 
     }
@@ -25805,93 +25841,78 @@
     Source.prototype.constructor = Source;
 
     /**
-    * Turns the attributions option into an attributions function.
-    * @param {AttributionLike|undefined} attributionLike The attribution option.
-    * @return {?Attribution} An attribution function (or null).
-    */
-    Source.prototype.adaptAttributions_ = function adaptAttributions_ (attributionLike) {
-      if (!attributionLike) {
-        return null;
-      }
-      if (Array.isArray(attributionLike)) {
-        return function(frameState) {
-          return attributionLike;
-        };
-      }
-
-      if (typeof attributionLike === 'function') {
-        return attributionLike;
-      }
-
-      return function(frameState) {
-        return [attributionLike];
-      };
-    };
-
-    /**
-    * Get the attribution function for the source.
-    * @return {?Attribution} Attribution function.
-    */
+     * Get the attribution function for the source.
+     * @return {?Attribution} Attribution function.
+     */
     Source.prototype.getAttributions = function getAttributions () {
       return this.attributions_;
     };
 
     /**
-    * Get the projection of the source.
-    * @return {import("../proj/Projection.js").default} Projection.
-    * @api
-    */
+     * @return {boolean} Aattributions are collapsible.
+     */
+    Source.prototype.getAttributionsCollapsible = function getAttributionsCollapsible () {
+      return this.attributionsCollapsible_;
+    };
+
+    /**
+     * Get the projection of the source.
+     * @return {import("../proj/Projection.js").default} Projection.
+     * @api
+     */
     Source.prototype.getProjection = function getProjection () {
       return this.projection_;
     };
 
     /**
-    * @abstract
-    * @return {Array<number>|undefined} Resolutions.
-    */
-    Source.prototype.getResolutions = function getResolutions () {};
+     * @abstract
+     * @return {Array<number>|undefined} Resolutions.
+     */
+    Source.prototype.getResolutions = function getResolutions () {
+      return abstract();
+    };
 
     /**
-    * Get the state of the source, see {@link module:ol/source/State~State} for possible states.
-    * @return {SourceState} State.
-    * @api
-    */
+     * Get the state of the source, see {@link module:ol/source/State~State} for possible states.
+     * @return {SourceState} State.
+     * @api
+     */
     Source.prototype.getState = function getState () {
       return this.state_;
     };
 
     /**
-    * @return {boolean|undefined} Wrap X.
-    */
+     * @return {boolean|undefined} Wrap X.
+     */
     Source.prototype.getWrapX = function getWrapX () {
       return this.wrapX_;
     };
 
     /**
-    * Refreshes the source and finally dispatches a 'change' event.
-    * @api
-    */
+     * Refreshes the source and finally dispatches a 'change' event.
+     * @api
+     */
     Source.prototype.refresh = function refresh () {
       this.changed();
     };
 
     /**
-    * Set the attributions of the source.
-    * @param {AttributionLike|undefined} attributions Attributions.
-    *     Can be passed as `string`, `Array<string>`, `{@link module:ol/source/Source~Attribution}`,
-    *     or `undefined`.
-    * @api
-    */
+     * Set the attributions of the source.
+     * @param {AttributionLike|undefined} attributions Attributions.
+     *     Can be passed as `string`, `Array<string>`, `{@link module:ol/source/Source~Attribution}`,
+     *     or `undefined`.
+     * @api
+     */
     Source.prototype.setAttributions = function setAttributions (attributions) {
-      this.attributions_ = this.adaptAttributions_(attributions);
+      this.attributions_ = adaptAttributions(attributions);
       this.changed();
     };
 
     /**
-    * Set the state of the source.
-    * @param {SourceState} state State.
-    * @protected
-    */
+     * Set the state of the source.
+     * @param {SourceState} state State.
+     * @protected
+     */
     Source.prototype.setState = function setState (state) {
       this.state_ = state;
       this.changed();
@@ -25900,17 +25921,30 @@
     return Source;
   }(BaseObject));
 
+
   /**
-   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {number} resolution Resolution.
-   * @param {number} rotation Rotation.
-   * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {Object<string, boolean>} skippedFeatureUids Skipped feature uids.
-   * @param {function((import("../Feature.js").default|import("../render/Feature.js").default)): T} callback Feature callback.
-   * @return {T|void} Callback result.
-   * @template T
+   * Turns the attributions option into an attributions function.
+   * @param {AttributionLike|undefined} attributionLike The attribution option.
+   * @return {?Attribution} An attribution function (or null).
    */
-  Source.prototype.forEachFeatureAtCoordinate = VOID;
+  function adaptAttributions(attributionLike) {
+    if (!attributionLike) {
+      return null;
+    }
+    if (Array.isArray(attributionLike)) {
+      return function(frameState) {
+        return attributionLike;
+      };
+    }
+
+    if (typeof attributionLike === 'function') {
+      return attributionLike;
+    }
+
+    return function(frameState) {
+      return [attributionLike];
+    };
+  }
 
   /**
    * @module ol/source/VectorEventType
@@ -25922,21 +25956,21 @@
   var VectorEventType = {
     /**
      * Triggered when a feature is added to the source.
-     * @event ol/source/Vector~VectorSourceEvent#addfeature
+     * @event ol/source/Vector.VectorSourceEvent#addfeature
      * @api
      */
     ADDFEATURE: 'addfeature',
 
     /**
      * Triggered when a feature is updated.
-     * @event ol/source/Vector~VectorSourceEvent#changefeature
+     * @event ol/source/Vector.VectorSourceEvent#changefeature
      * @api
      */
     CHANGEFEATURE: 'changefeature',
 
     /**
      * Triggered when the clear method is called on the source.
-     * @event ol/source/Vector~VectorSourceEvent#clear
+     * @event ol/source/Vector.VectorSourceEvent#clear
      * @api
      */
     CLEAR: 'clear',
@@ -25944,7 +25978,7 @@
     /**
      * Triggered when a feature is removed from the source.
      * See {@link module:ol/source/Vector#clear source.clear()} for exceptions.
-     * @event ol/source/Vector~VectorSourceEvent#removefeature
+     * @event ol/source/Vector.VectorSourceEvent#removefeature
      * @api
      */
     REMOVEFEATURE: 'removefeature'
@@ -26612,7 +26646,7 @@
      * A mapping between the objects added to this rbush wrapper
      * and the objects that are actually added to the internal rbush.
      * @private
-     * @type {Object<number, Entry>}
+     * @type {Object<string, Entry>}
      */
     this.items_ = {};
 
@@ -26688,7 +26722,7 @@
   RBush.prototype.update = function update (extent, value) {
     var item = this.items_[getUid(value)];
     var bbox = [item.minX, item.minY, item.maxX, item.maxY];
-    if (!equals(bbox, extent)) {
+    if (!equals$1(bbox, extent)) {
       this.remove(value);
       this.insert(extent, value);
     }
@@ -26796,8 +26830,7 @@
    * @return {import("../extent.js").Extent} Extent.
    */
   RBush.prototype.getExtent = function getExtent (opt_extent) {
-    // FIXME add getExtent() to rbush
-    var data = this.rbush_.data;
+    var data = this.rbush_.toJSON();
     return createOrUpdate(data.minX, data.minY, data.maxX, data.maxY, opt_extent);
   };
 
@@ -26949,7 +26982,7 @@
    * by this source are suitable for editing. See {@link module:ol/source/VectorTile~VectorTile} for
    * vector data that is optimized for rendering.
    *
-   * @fires ol/source/Vector~VectorSourceEvent
+   * @fires ol/source/Vector.VectorSourceEvent
    * @api
    */
   var VectorSource = /*@__PURE__*/(function (Source$$1) {
@@ -27050,11 +27083,11 @@
       this.featuresCollection_ = null;
 
       var collection, features;
-      if (options.features instanceof Collection) {
+      if (Array.isArray(options.features)) {
+        features = options.features;
+      } else if (options.features) {
         collection = options.features;
         features = collection.getArray();
-      } else if (Array.isArray(options.features)) {
-        features = options.features;
       }
       if (!useSpatialIndex && collection === undefined) {
         collection = new Collection(features);
@@ -27093,7 +27126,7 @@
      * @protected
      */
     VectorSource.prototype.addFeatureInternal = function addFeatureInternal (feature) {
-      var featureKey = getUid(feature).toString();
+      var featureKey = getUid(feature);
 
       if (!this.addToIndex_(featureKey, feature)) {
         return;
@@ -27179,7 +27212,7 @@
 
       for (var i = 0, length = features.length; i < length; i++) {
         var feature = features[i];
-        var featureKey = getUid(feature).toString();
+        var featureKey = getUid(feature);
         if (this.addToIndex_(featureKey, feature)) {
           newFeatures.push(feature);
         }
@@ -27187,7 +27220,7 @@
 
       for (var i$1 = 0, length$1 = newFeatures.length; i$1 < length$1; i$1++) {
         var feature$1 = newFeatures[i$1];
-        var featureKey$1 = getUid(feature$1).toString();
+        var featureKey$1 = getUid(feature$1);
         this.setupChangeEvents_(featureKey$1, feature$1);
 
         var geometry = feature$1.getGeometry();
@@ -27265,7 +27298,7 @@
 
     /**
      * Remove all features from the source.
-     * @param {boolean=} opt_fast Skip dispatching of {@link module:ol/source/Vector~VectorSourceEvent#removefeature} events.
+     * @param {boolean=} opt_fast Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#removefeature} events.
      * @api
      */
     VectorSource.prototype.clear = function clear$$1 (opt_fast) {
@@ -27434,7 +27467,7 @@
       } else if (this.featuresRtree_) {
         features = this.featuresRtree_.getAll();
         if (!isEmpty(this.nullGeometryFeatures_)) {
-          extend$1(features, getValues(this.nullGeometryFeatures_));
+          extend(features, getValues(this.nullGeometryFeatures_));
         }
       }
       return (
@@ -27579,12 +27612,6 @@
 
 
     /**
-     * @override
-     */
-    VectorSource.prototype.getResolutions = function getResolutions () {};
-
-
-    /**
      * Get the url associated with this source.
      *
      * @return {string|import("../featureloader.js").FeatureUrlFunction|undefined} The url.
@@ -27601,7 +27628,7 @@
      */
     VectorSource.prototype.handleFeatureChange_ = function handleFeatureChange_ (event) {
       var feature = /** @type {import("../Feature.js").default} */ (event.target);
-      var featureKey = getUid(feature).toString();
+      var featureKey = getUid(feature);
       var geometry = feature.getGeometry();
       if (!geometry) {
         if (!(featureKey in this.nullGeometryFeatures_)) {
@@ -27657,8 +27684,7 @@
       if (id !== undefined) {
         return id in this.idIndex_;
       } else {
-        var featureKey = getUid(feature).toString();
-        return featureKey in this.undefIdIndex_;
+        return getUid(feature) in this.undefIdIndex_;
       }
     };
 
@@ -27694,7 +27720,7 @@
         if (!alreadyLoaded) {
           this$1.loader_.call(this$1, extentToLoad, resolution, projection);
           loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
-          this$1.loading = true;
+          this$1.loading = this$1.loader_ !== VOID;
         }
       };
 
@@ -27711,7 +27737,7 @@
       var loadedExtentsRtree = this.loadedExtentsRtree_;
       var obj;
       loadedExtentsRtree.forEachInExtent(extent, function(object) {
-        if (equals(object.extent, extent)) {
+        if (equals$1(object.extent, extent)) {
           obj = object;
           return true;
         }
@@ -27730,7 +27756,7 @@
      * @api
      */
     VectorSource.prototype.removeFeature = function removeFeature (feature) {
-      var featureKey = getUid(feature).toString();
+      var featureKey = getUid(feature);
       if (featureKey in this.nullGeometryFeatures_) {
         delete this.nullGeometryFeatures_[featureKey];
       } else {
@@ -27749,7 +27775,7 @@
      * @protected
      */
     VectorSource.prototype.removeFeatureInternal = function removeFeatureInternal (feature) {
-      var featureKey = getUid(feature).toString();
+      var featureKey = getUid(feature);
       this.featureChangeKeys_[featureKey].forEach(unlistenByKey);
       delete this.featureChangeKeys_[featureKey];
       var id = feature.getId();
@@ -27829,7 +27855,7 @@
    * @property {import("../events/condition.js").Condition} [finishCondition] A function
    * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
    * boolean to indicate whether the drawing can be finished.
-   * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style]
+   * @property {import("../style/Style.js").StyleLike} [style]
    * Style for sketch features.
    * @property {GeometryFunction} [geometryFunction]
    * Function that is called when a geometry's coordinates are updated.
@@ -27855,11 +27881,35 @@
 
 
   /**
+   * Coordinate type when drawing points.
+   * @typedef {import("../coordinate.js").Coordinate} PointCoordType
+   */
+
+
+  /**
+   * Coordinate type when drawing lines.
+   * @typedef {Array<import("../coordinate.js").Coordinate>} LineCoordType
+   */
+
+
+  /**
+   * Coordinate type when drawing polygons.
+   * @typedef {Array<Array<import("../coordinate.js").Coordinate>>} PolyCoordType
+   */
+
+
+  /**
+   * Types used for drawing coordinates.
+   * @typedef {PointCoordType|LineCoordType|PolyCoordType} SketchCoordType
+   */
+
+
+  /**
    * Function that takes an array of coordinates and an optional existing geometry as
    * arguments, and returns a geometry. The optional existing geometry is the
    * geometry that is returned when the function is called without a second
    * argument.
-   * @typedef {function(!Array<import("../coordinate.js").Coordinate>, import("../geom/SimpleGeometry.js").default=):
+   * @typedef {function(!SketchCoordType, import("../geom/SimpleGeometry.js").default=):
    *     import("../geom/SimpleGeometry.js").default} GeometryFunction
    */
 
@@ -27933,12 +27983,12 @@
   var Draw = /*@__PURE__*/(function (PointerInteraction$$1) {
     function Draw(options) {
 
-      PointerInteraction$$1.call(this, {
-        handleDownEvent: handleDownEvent$7,
-        handleEvent: handleEvent$5,
-        handleUpEvent: handleUpEvent$7,
-        stopDown: FALSE
-      });
+      var pointerOptions = /** @type {import("./Pointer.js").Options} */ (options);
+      if (!pointerOptions.stopDown) {
+        pointerOptions.stopDown = FALSE;
+      }
+
+      PointerInteraction$$1.call(this, pointerOptions);
 
       /**
        * @type {boolean}
@@ -27953,7 +28003,7 @@
       this.downPx_ = null;
 
       /**
-       * @type {number|undefined}
+       * @type {?}
        * @private
        */
       this.downTimeout_;
@@ -28043,8 +28093,7 @@
       if (!geometryFunction) {
         if (this.type_ === GeometryType.CIRCLE) {
           /**
-           * @param {!Array<import("../coordinate.js").Coordinate>} coordinates
-           *     The coordinates.
+           * @param {!LineCoordType} coordinates The coordinates.
            * @param {import("../geom/SimpleGeometry.js").default=} opt_geometry Optional geometry.
            * @return {import("../geom/SimpleGeometry.js").default} A geometry.
            */
@@ -28067,8 +28116,7 @@
             Constructor = Polygon;
           }
           /**
-           * @param {!Array<import("../coordinate.js").Coordinate>} coordinates
-           *     The coordinates.
+           * @param {!LineCoordType} coordinates The coordinates.
            * @param {import("../geom/SimpleGeometry.js").default=} opt_geometry Optional geometry.
            * @return {import("../geom/SimpleGeometry.js").default} A geometry.
            */
@@ -28129,7 +28177,7 @@
 
       /**
        * Sketch coordinates. Used when drawing a line or polygon.
-       * @type {import("../coordinate.js").Coordinate|Array<import("../coordinate.js").Coordinate>|Array<Array<import("../coordinate.js").Coordinate>>}
+       * @type {SketchCoordType}
        * @private
        */
       this.sketchCoords_ = null;
@@ -28143,7 +28191,7 @@
 
       /**
        * Sketch line coordinates. Used when drawing a polygon or circle.
-       * @type {Array<import("../coordinate.js").Coordinate>}
+       * @type {LineCoordType}
        * @private
        */
       this.sketchLineCoords_ = null;
@@ -28226,6 +28274,123 @@
     };
 
     /**
+     * Handles the {@link module:ol/MapBrowserEvent map browser event} and may actually draw or finish the drawing.
+     * @override
+     * @api
+     */
+    Draw.prototype.handleEvent = function handleEvent (event) {
+      if (event.originalEvent.type === EventType.CONTEXTMENU) {
+        // Avoid context menu for long taps when drawing on mobile
+        event.preventDefault();
+      }
+      this.freehand_ = this.mode_ !== Mode$1.POINT && this.freehandCondition_(event);
+      var move = event.type === MapBrowserEventType.POINTERMOVE;
+      var pass = true;
+      if (!this.freehand_ && this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
+        var now = Date.now();
+        if (now - this.lastDragTime_ >= this.dragVertexDelay_) {
+          this.downPx_ = event.pixel;
+          this.shouldHandle_ = !this.freehand_;
+          move = true;
+        } else {
+          this.lastDragTime_ = undefined;
+        }
+        if (this.shouldHandle_ && this.downTimeout_ !== undefined) {
+          clearTimeout(this.downTimeout_);
+          this.downTimeout_ = undefined;
+        }
+      }
+      if (this.freehand_ &&
+          event.type === MapBrowserEventType.POINTERDRAG &&
+          this.sketchFeature_ !== null) {
+        this.addToDrawing_(event);
+        pass = false;
+      } else if (this.freehand_ &&
+          event.type === MapBrowserEventType.POINTERDOWN) {
+        pass = false;
+      } else if (move) {
+        pass = event.type === MapBrowserEventType.POINTERMOVE;
+        if (pass && this.freehand_) {
+          pass = this.handlePointerMove_(event);
+        } else if (/** @type {MapBrowserPointerEvent} */ (event).pointerEvent.pointerType == POINTER_TYPE ||
+            (event.type === MapBrowserEventType.POINTERDRAG && this.downTimeout_ === undefined)) {
+          this.handlePointerMove_(event);
+        }
+      } else if (event.type === MapBrowserEventType.DBLCLICK) {
+        pass = false;
+      }
+
+      return PointerInteraction$$1.prototype.handleEvent.call(this, event) && pass;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    Draw.prototype.handleDownEvent = function handleDownEvent (event) {
+      this.shouldHandle_ = !this.freehand_;
+
+      if (this.freehand_) {
+        this.downPx_ = event.pixel;
+        if (!this.finishCoordinate_) {
+          this.startDrawing_(event);
+        }
+        return true;
+      } else if (this.condition_(event)) {
+        this.lastDragTime_ = Date.now();
+        this.downTimeout_ = setTimeout(function() {
+          this.handlePointerMove_(new MapBrowserPointerEvent(
+            MapBrowserEventType.POINTERMOVE, event.map, event.pointerEvent, false, event.frameState));
+        }.bind(this), this.dragVertexDelay_);
+        this.downPx_ = event.pixel;
+        return true;
+      } else {
+        return false;
+      }
+    };
+
+
+    /**
+     * @inheritDoc
+     */
+    Draw.prototype.handleUpEvent = function handleUpEvent (event) {
+      var pass = true;
+
+      if (this.downTimeout_) {
+        clearTimeout(this.downTimeout_);
+        this.downTimeout_ = undefined;
+      }
+
+      this.handlePointerMove_(event);
+
+      var circleMode = this.mode_ === Mode$1.CIRCLE;
+
+      if (this.shouldHandle_) {
+        if (!this.finishCoordinate_) {
+          this.startDrawing_(event);
+          if (this.mode_ === Mode$1.POINT) {
+            this.finishDrawing();
+          }
+        } else if (this.freehand_ || circleMode) {
+          this.finishDrawing();
+        } else if (this.atFinish_(event)) {
+          if (this.finishCondition_(event)) {
+            this.finishDrawing();
+          }
+        } else {
+          this.addToDrawing_(event);
+        }
+        pass = false;
+      } else if (this.freehand_) {
+        this.finishCoordinate_ = null;
+        this.abortDrawing_();
+      }
+      if (!pass && this.stopClick_) {
+        event.stopPropagation();
+      }
+      return pass;
+    };
+
+    /**
      * Handle move events.
      * @param {import("../MapBrowserEvent.js").default} event A move event.
      * @return {boolean} Pass the event to other interactions.
@@ -28270,10 +28435,9 @@
         if (this.mode_ === Mode$1.LINE_STRING) {
           potentiallyDone = this.sketchCoords_.length > this.minPoints_;
         } else if (this.mode_ === Mode$1.POLYGON) {
-          potentiallyDone = this.sketchCoords_[0].length >
-              this.minPoints_;
-          potentiallyFinishCoordinates = [this.sketchCoords_[0][0],
-            this.sketchCoords_[0][this.sketchCoords_[0].length - 2]];
+          var sketchCoords = /** @type {PolyCoordType} */ (this.sketchCoords_);
+          potentiallyDone = sketchCoords[0].length > this.minPoints_;
+          potentiallyFinishCoordinates = [sketchCoords[0][0], sketchCoords[0][sketchCoords[0].length - 2]];
         }
         if (potentiallyDone) {
           var map = event.map;
@@ -28352,7 +28516,7 @@
       if (this.mode_ === Mode$1.POINT) {
         last = this.sketchCoords_;
       } else if (this.mode_ === Mode$1.POLYGON) {
-        coordinates = this.sketchCoords_[0];
+        coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
         last = coordinates[coordinates.length - 1];
         if (this.atFinish_(event)) {
           // snap to finish
@@ -28364,18 +28528,19 @@
       }
       last[0] = coordinate[0];
       last[1] = coordinate[1];
-      this.geometryFunction_(/** @type {!Array<import("../coordinate.js").Coordinate>} */ (this.sketchCoords_), geometry);
+      this.geometryFunction_(/** @type {!LineCoordType} */ (this.sketchCoords_), geometry);
       if (this.sketchPoint_) {
         var sketchPointGeom = /** @type {Point} */ (this.sketchPoint_.getGeometry());
         sketchPointGeom.setCoordinates(coordinate);
       }
+      /** @type {LineString} */
       var sketchLineGeom;
-      if (geometry instanceof Polygon &&
+      if (geometry.getType() == GeometryType.POLYGON &&
           this.mode_ !== Mode$1.POLYGON) {
         if (!this.sketchLine_) {
           this.sketchLine_ = new Feature();
         }
-        var ring = geometry.getLinearRing(0);
+        var ring = /** @type {Polygon} */ (geometry).getLinearRing(0);
         sketchLineGeom = /** @type {LineString} */ (this.sketchLine_.getGeometry());
         if (!sketchLineGeom) {
           sketchLineGeom = new LineString(ring.getFlatCoordinates(), ring.getLayout());
@@ -28404,7 +28569,7 @@
       var coordinates;
       if (this.mode_ === Mode$1.LINE_STRING) {
         this.finishCoordinate_ = coordinate.slice();
-        coordinates = this.sketchCoords_;
+        coordinates = /** @type {LineCoordType} */ (this.sketchCoords_);
         if (coordinates.length >= this.maxPoints_) {
           if (this.freehand_) {
             coordinates.pop();
@@ -28415,7 +28580,7 @@
         coordinates.push(coordinate.slice());
         this.geometryFunction_(coordinates, geometry);
       } else if (this.mode_ === Mode$1.POLYGON) {
-        coordinates = this.sketchCoords_[0];
+        coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
         if (coordinates.length >= this.maxPoints_) {
           if (this.freehand_) {
             coordinates.pop();
@@ -28444,16 +28609,18 @@
         return;
       }
       var geometry = /** @type {import("../geom/SimpleGeometry.js").default} */ (this.sketchFeature_.getGeometry());
-      var coordinates, sketchLineGeom;
+      var coordinates;
+      /** @type {LineString} */
+      var sketchLineGeom;
       if (this.mode_ === Mode$1.LINE_STRING) {
-        coordinates = this.sketchCoords_;
+        coordinates = /** @type {LineCoordType} */ (this.sketchCoords_);
         coordinates.splice(-2, 1);
         this.geometryFunction_(coordinates, geometry);
         if (coordinates.length >= 2) {
           this.finishCoordinate_ = coordinates[coordinates.length - 2].slice();
         }
       } else if (this.mode_ === Mode$1.POLYGON) {
-        coordinates = this.sketchCoords_[0];
+        coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
         coordinates.splice(-2, 1);
         sketchLineGeom = /** @type {LineString} */ (this.sketchLine_.getGeometry());
         sketchLineGeom.setCoordinates(coordinates);
@@ -28486,18 +28653,18 @@
         this.geometryFunction_(coordinates, geometry);
       } else if (this.mode_ === Mode$1.POLYGON) {
         // remove the redundant last point in ring
-        coordinates[0].pop();
+        /** @type {PolyCoordType} */ (coordinates)[0].pop();
         this.geometryFunction_(coordinates, geometry);
         coordinates = geometry.getCoordinates();
       }
 
       // cast multi-part geometries
       if (this.type_ === GeometryType.MULTI_POINT) {
-        sketchFeature.setGeometry(new MultiPoint([coordinates]));
+        sketchFeature.setGeometry(new MultiPoint([/** @type {PointCoordType} */(coordinates)]));
       } else if (this.type_ === GeometryType.MULTI_LINE_STRING) {
-        sketchFeature.setGeometry(new MultiLineString([coordinates]));
+        sketchFeature.setGeometry(new MultiLineString([/** @type {LineCoordType} */(coordinates)]));
       } else if (this.type_ === GeometryType.MULTI_POLYGON) {
-        sketchFeature.setGeometry(new MultiPolygon([coordinates]));
+        sketchFeature.setGeometry(new MultiPolygon([/** @type {PolyCoordType} */(coordinates)]));
       }
 
       // First dispatch event to allow full set up of feature
@@ -28524,7 +28691,7 @@
         this.sketchFeature_ = null;
         this.sketchPoint_ = null;
         this.sketchLine_ = null;
-        this.overlay_.getSource().clear(true);
+        /** @type {VectorSource} */ (this.overlay_.getSource()).clear(true);
       }
       return sketchFeature;
     };
@@ -28536,7 +28703,7 @@
      * @param {!Feature} feature Feature to be extended.
      * @api
      */
-    Draw.prototype.extend = function extend$$1 (feature) {
+    Draw.prototype.extend = function extend (feature) {
       var geometry = feature.getGeometry();
       var lineString = /** @type {LineString} */ (geometry);
       this.sketchFeature_ = feature;
@@ -28563,7 +28730,7 @@
       if (this.sketchPoint_) {
         sketchFeatures.push(this.sketchPoint_);
       }
-      var overlaySource = this.overlay_.getSource();
+      var overlaySource = /** @type {VectorSource} */ (this.overlay_.getSource());
       overlaySource.clear(true);
       overlaySource.addFeatures(sketchFeatures);
     };
@@ -28596,132 +28763,6 @@
 
 
   /**
-   * Handles the {@link module:ol/MapBrowserEvent map browser event} and may actually
-   * draw or finish the drawing.
-   * @param {import("../MapBrowserEvent.js").default} event Map browser event.
-   * @return {boolean} `false` to stop event propagation.
-   * @this {Draw}
-   * @api
-   */
-  function handleEvent$5(event) {
-    if (event.originalEvent.type === EventType.CONTEXTMENU) {
-      // Avoid context menu for long taps when drawing on mobile
-      event.preventDefault();
-    }
-    this.freehand_ = this.mode_ !== Mode$1.POINT && this.freehandCondition_(event);
-    var move = event.type === MapBrowserEventType.POINTERMOVE;
-    var pass = true;
-    if (!this.freehand_ && this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
-      var now = Date.now();
-      if (now - this.lastDragTime_ >= this.dragVertexDelay_) {
-        this.downPx_ = event.pixel;
-        this.shouldHandle_ = !this.freehand_;
-        move = true;
-      } else {
-        this.lastDragTime_ = undefined;
-      }
-      if (this.shouldHandle_ && this.downTimeout_) {
-        clearTimeout(this.downTimeout_);
-        this.downTimeout_ = undefined;
-      }
-    }
-    if (this.freehand_ &&
-        event.type === MapBrowserEventType.POINTERDRAG &&
-        this.sketchFeature_ !== null) {
-      this.addToDrawing_(event);
-      pass = false;
-    } else if (this.freehand_ &&
-        event.type === MapBrowserEventType.POINTERDOWN) {
-      pass = false;
-    } else if (move) {
-      pass = event.type === MapBrowserEventType.POINTERMOVE;
-      if (pass && this.freehand_) {
-        pass = this.handlePointerMove_(event);
-      } else if (event.pointerEvent.pointerType == POINTER_TYPE ||
-          (event.type === MapBrowserEventType.POINTERDRAG && !this.downTimeout_)) {
-        this.handlePointerMove_(event);
-      }
-    } else if (event.type === MapBrowserEventType.DBLCLICK) {
-      pass = false;
-    }
-
-    return handleEvent$1.call(this, event) && pass;
-  }
-
-
-  /**
-   * @param {MapBrowserPointerEvent} event Event.
-   * @return {boolean} Start drag sequence?
-   * @this {Draw}
-   */
-  function handleDownEvent$7(event) {
-    this.shouldHandle_ = !this.freehand_;
-
-    if (this.freehand_) {
-      this.downPx_ = event.pixel;
-      if (!this.finishCoordinate_) {
-        this.startDrawing_(event);
-      }
-      return true;
-    } else if (this.condition_(event)) {
-      this.lastDragTime_ = Date.now();
-      this.downTimeout_ = setTimeout(function() {
-        this.handlePointerMove_(new MapBrowserPointerEvent(
-          MapBrowserEventType.POINTERMOVE, event.map, event.pointerEvent, event.frameState));
-      }.bind(this), this.dragVertexDelay_);
-      this.downPx_ = event.pixel;
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-
-  /**
-   * @param {MapBrowserPointerEvent} event Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {Draw}
-   */
-  function handleUpEvent$7(event) {
-    var pass = true;
-
-    if (this.downTimeout_) {
-      clearTimeout(this.downTimeout_);
-      this.downTimeout_ = undefined;
-    }
-
-    this.handlePointerMove_(event);
-
-    var circleMode = this.mode_ === Mode$1.CIRCLE;
-
-    if (this.shouldHandle_) {
-      if (!this.finishCoordinate_) {
-        this.startDrawing_(event);
-        if (this.mode_ === Mode$1.POINT) {
-          this.finishDrawing();
-        }
-      } else if (this.freehand_ || circleMode) {
-        this.finishDrawing();
-      } else if (this.atFinish_(event)) {
-        if (this.finishCondition_(event)) {
-          this.finishDrawing();
-        }
-      } else {
-        this.addToDrawing_(event);
-      }
-      pass = false;
-    } else if (this.freehand_) {
-      this.finishCoordinate_ = null;
-      this.abortDrawing_();
-    }
-    if (!pass && this.stopClick_) {
-      event.stopPropagation();
-    }
-    return pass;
-  }
-
-
-  /**
    * Create a `geometryFunction` for `type: 'Circle'` that will create a regular
    * polygon with a user specified number of sides and start angle instead of an
    * `import("../geom/Circle.js").Circle` geometry.
@@ -28736,8 +28777,8 @@
    */
   function createRegularPolygon(opt_sides, opt_angle) {
     return function(coordinates, opt_geometry) {
-      var center = coordinates[0];
-      var end = coordinates[1];
+      var center = /** @type {LineCoordType} */ (coordinates)[0];
+      var end = /** @type {LineCoordType} */ (coordinates)[1];
       var radius = Math.sqrt(
         squaredDistance$1(center, end));
       var geometry = opt_geometry ? /** @type {Polygon} */ (opt_geometry) :
@@ -28764,7 +28805,7 @@
   function createBox() {
     return (
       function(coordinates, opt_geometry) {
-        var extent = boundingExtent(coordinates);
+        var extent = boundingExtent(/** @type {LineCoordType} */ (coordinates));
         var boxCoordinates = [[
           getBottomLeft(extent),
           getBottomRight(extent),
@@ -28818,12 +28859,12 @@
    * @typedef {Object} Options
    * @property {import("../extent.js").Extent} [extent] Initial extent. Defaults to no
    * initial extent.
-   * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [boxStyle]
+   * @property {import("../style/Style.js").StyleLike} [boxStyle]
    * Style for the drawn extent box. Defaults to
    * {@link module:ol/style/Style~createEditing()['Polygon']}
    * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
    * pointer close enough to a segment or vertex for editing.
-   * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [pointerStyle]
+   * @property {import("../style/Style.js").StyleLike} [pointerStyle]
    * Style for the cursor used to draw the extent. Defaults to
    * {@link module:ol/style/Style~createEditing()['Point']}
    * @property {boolean} [wrapX=false] Wrap the drawn extent across multiple maps
@@ -28881,14 +28922,9 @@
   var ExtentInteraction = /*@__PURE__*/(function (PointerInteraction$$1) {
     function ExtentInteraction(opt_options) {
 
-      PointerInteraction$$1.call(this, {
-        handleDownEvent: handleDownEvent$8,
-        handleDragEvent: handleDragEvent$7,
-        handleEvent: handleEvent$6,
-        handleUpEvent: handleUpEvent$8
-      });
-
       var options = opt_options || {};
+
+      PointerInteraction$$1.call(/** @type {import("./Pointer.js").Options} */ this, (options));
 
       /**
        * Extent of the drawn box
@@ -29048,7 +29084,7 @@
           extentFeature = new Feature(fromExtent(extent));
         }
         this.extentFeature_ = extentFeature;
-        this.extentOverlay_.getSource().addFeature(extentFeature);
+        /** @type {VectorSource} */ (this.extentOverlay_.getSource()).addFeature(extentFeature);
       } else {
         if (!extent) {
           extentFeature.setGeometry(undefined);
@@ -29069,12 +29105,111 @@
       if (!vertexFeature) {
         vertexFeature = new Feature(new Point(vertex));
         this.vertexFeature_ = vertexFeature;
-        this.vertexOverlay_.getSource().addFeature(vertexFeature);
+        /** @type {VectorSource} */ (this.vertexOverlay_.getSource()).addFeature(vertexFeature);
       } else {
         var geometry = /** @type {Point} */ (vertexFeature.getGeometry());
         geometry.setCoordinates(vertex);
       }
       return vertexFeature;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ExtentInteraction.prototype.handleEvent = function handleEvent (mapBrowserEvent) {
+      if (!(/** @type {import("../MapBrowserPointerEvent.js").default} */ (mapBrowserEvent).pointerEvent)) {
+        return true;
+      }
+      //display pointer (if not dragging)
+      if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE && !this.handlingDownUpSequence) {
+        this.handlePointerMove_(mapBrowserEvent);
+      }
+      //call pointer to determine up/down/drag
+      PointerInteraction$$1.prototype.handleEvent.call(this, mapBrowserEvent);
+      //return false to stop propagation
+      return false;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ExtentInteraction.prototype.handleDownEvent = function handleDownEvent (mapBrowserEvent) {
+      var pixel = mapBrowserEvent.pixel;
+      var map = mapBrowserEvent.map;
+
+      var extent = this.getExtent();
+      var vertex = this.snapToVertex_(pixel, map);
+
+      //find the extent corner opposite the passed corner
+      var getOpposingPoint = function(point) {
+        var x_ = null;
+        var y_ = null;
+        if (point[0] == extent[0]) {
+          x_ = extent[2];
+        } else if (point[0] == extent[2]) {
+          x_ = extent[0];
+        }
+        if (point[1] == extent[1]) {
+          y_ = extent[3];
+        } else if (point[1] == extent[3]) {
+          y_ = extent[1];
+        }
+        if (x_ !== null && y_ !== null) {
+          return [x_, y_];
+        }
+        return null;
+      };
+      if (vertex && extent) {
+        var x = (vertex[0] == extent[0] || vertex[0] == extent[2]) ? vertex[0] : null;
+        var y = (vertex[1] == extent[1] || vertex[1] == extent[3]) ? vertex[1] : null;
+
+        //snap to point
+        if (x !== null && y !== null) {
+          this.pointerHandler_ = getPointHandler(getOpposingPoint(vertex));
+        //snap to edge
+        } else if (x !== null) {
+          this.pointerHandler_ = getEdgeHandler(
+            getOpposingPoint([x, extent[1]]),
+            getOpposingPoint([x, extent[3]])
+          );
+        } else if (y !== null) {
+          this.pointerHandler_ = getEdgeHandler(
+            getOpposingPoint([extent[0], y]),
+            getOpposingPoint([extent[2], y])
+          );
+        }
+      //no snap - new bbox
+      } else {
+        vertex = map.getCoordinateFromPixel(pixel);
+        this.setExtent([vertex[0], vertex[1], vertex[0], vertex[1]]);
+        this.pointerHandler_ = getPointHandler(vertex);
+      }
+      return true; //event handled; start downup sequence
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ExtentInteraction.prototype.handleDragEvent = function handleDragEvent (mapBrowserEvent) {
+      if (this.pointerHandler_) {
+        var pixelCoordinate = mapBrowserEvent.coordinate;
+        this.setExtent(this.pointerHandler_(pixelCoordinate));
+        this.createOrUpdatePointerFeature_(pixelCoordinate);
+      }
+      return true;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ExtentInteraction.prototype.handleUpEvent = function handleUpEvent (mapBrowserEvent) {
+      this.pointerHandler_ = null;
+      //If bbox is zero area, set to null;
+      var extent = this.getExtent();
+      if (!extent || getArea(extent) === 0) {
+        this.setExtent(null);
+      }
+      return false; //Stop handling downup sequence
     };
 
     /**
@@ -29111,113 +29246,6 @@
 
     return ExtentInteraction;
   }(PointerInteraction));
-
-  /**
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Propagate event?
-   * @this {ExtentInteraction}
-   */
-  function handleEvent$6(mapBrowserEvent) {
-    if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
-      return true;
-    }
-    //display pointer (if not dragging)
-    if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE && !this.handlingDownUpSequence) {
-      this.handlePointerMove_(mapBrowserEvent);
-    }
-    //call pointer to determine up/down/drag
-    handleEvent$1.call(this, mapBrowserEvent);
-    //return false to stop propagation
-    return false;
-  }
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Event handled?
-   * @this {ExtentInteraction}
-   */
-  function handleDownEvent$8(mapBrowserEvent) {
-    var pixel = mapBrowserEvent.pixel;
-    var map = mapBrowserEvent.map;
-
-    var extent = this.getExtent();
-    var vertex = this.snapToVertex_(pixel, map);
-
-    //find the extent corner opposite the passed corner
-    var getOpposingPoint = function(point) {
-      var x_ = null;
-      var y_ = null;
-      if (point[0] == extent[0]) {
-        x_ = extent[2];
-      } else if (point[0] == extent[2]) {
-        x_ = extent[0];
-      }
-      if (point[1] == extent[1]) {
-        y_ = extent[3];
-      } else if (point[1] == extent[3]) {
-        y_ = extent[1];
-      }
-      if (x_ !== null && y_ !== null) {
-        return [x_, y_];
-      }
-      return null;
-    };
-    if (vertex && extent) {
-      var x = (vertex[0] == extent[0] || vertex[0] == extent[2]) ? vertex[0] : null;
-      var y = (vertex[1] == extent[1] || vertex[1] == extent[3]) ? vertex[1] : null;
-
-      //snap to point
-      if (x !== null && y !== null) {
-        this.pointerHandler_ = getPointHandler(getOpposingPoint(vertex));
-      //snap to edge
-      } else if (x !== null) {
-        this.pointerHandler_ = getEdgeHandler(
-          getOpposingPoint([x, extent[1]]),
-          getOpposingPoint([x, extent[3]])
-        );
-      } else if (y !== null) {
-        this.pointerHandler_ = getEdgeHandler(
-          getOpposingPoint([extent[0], y]),
-          getOpposingPoint([extent[2], y])
-        );
-      }
-    //no snap - new bbox
-    } else {
-      vertex = map.getCoordinateFromPixel(pixel);
-      this.setExtent([vertex[0], vertex[1], vertex[0], vertex[1]]);
-      this.pointerHandler_ = getPointHandler(vertex);
-    }
-    return true; //event handled; start downup sequence
-  }
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Event handled?
-   * @this {ExtentInteraction}
-   */
-  function handleDragEvent$7(mapBrowserEvent) {
-    if (this.pointerHandler_) {
-      var pixelCoordinate = mapBrowserEvent.coordinate;
-      this.setExtent(this.pointerHandler_(pixelCoordinate));
-      this.createOrUpdatePointerFeature_(pixelCoordinate);
-    }
-    return true;
-  }
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {ExtentInteraction}
-   */
-  function handleUpEvent$8(mapBrowserEvent) {
-    this.pointerHandler_ = null;
-    //If bbox is zero area, set to null;
-    var extent = this.getExtent();
-    if (!extent || getArea(extent) === 0) {
-      this.setExtent(null);
-    }
-    return false; //Stop handling downup sequence
-  }
 
   /**
    * Returns the default style for the drawn bbox
@@ -29329,7 +29357,7 @@
    * @property {Array<number>} [depth]
    * @property {Feature} feature
    * @property {import("../geom/SimpleGeometry.js").default} geometry
-   * @property {number} index
+   * @property {number} [index]
    * @property {Array<import("../extent.js").Extent>} segment
    * @property {Array<SegmentData>} [featureSegments]
    */
@@ -29353,7 +29381,7 @@
    * features. Default is {@link module:ol/events/condition~always}.
    * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
    * pointer close enough to a segment or vertex for editing.
-   * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style]
+   * @property {import("../style/Style.js").StyleLike} [style]
    * Style used for the features being modified. By default the default edit
    * style is used (see {@link module:ol/style}).
    * @property {VectorSource} [source] The vector source with
@@ -29418,19 +29446,13 @@
   var Modify = /*@__PURE__*/(function (PointerInteraction$$1) {
     function Modify(options) {
 
-      PointerInteraction$$1.call(this, {
-        handleDownEvent: handleDownEvent$9,
-        handleDragEvent: handleDragEvent$8,
-        handleEvent: handleEvent$7,
-        handleUpEvent: handleUpEvent$9
-      });
+      PointerInteraction$$1.call(/** @type {import("./Pointer.js").Options} */ this, (options));
 
       /**
        * @private
        * @type {import("../events/condition.js").Condition}
        */
       this.condition_ = options.condition ? options.condition : primaryAction;
-
 
       /**
        * @private
@@ -29591,7 +29613,7 @@
         this.handleFeatureRemove_, this);
 
       /**
-       * @type {MapBrowserPointerEvent}
+       * @type {import("../MapBrowserPointerEvent.js").default}
        * @private
        */
       this.lastPointerEvent_ = null;
@@ -29620,7 +29642,7 @@
     };
 
     /**
-     * @param {MapBrowserPointerEvent} evt Map browser event
+     * @param {import("../MapBrowserPointerEvent.js").default} evt Map browser event
      * @private
      */
     Modify.prototype.willModifyFeatures_ = function willModifyFeatures_ (evt) {
@@ -29640,7 +29662,7 @@
       // Remove the vertex feature if the collection of canditate features
       // is empty.
       if (this.vertexFeature_ && this.features_.getLength() === 0) {
-        this.overlay_.getSource().removeFeature(this.vertexFeature_);
+        /** @type {VectorSource} */ (this.overlay_.getSource()).removeFeature(this.vertexFeature_);
         this.vertexFeature_ = null;
       }
       unlisten(feature, EventType.CHANGE,
@@ -29673,7 +29695,7 @@
      */
     Modify.prototype.setActive = function setActive (active) {
       if (this.vertexFeature_ && !active) {
-        this.overlay_.getSource().removeFeature(this.vertexFeature_);
+        /** @type {VectorSource} */ (this.overlay_.getSource()).removeFeature(this.vertexFeature_);
         this.vertexFeature_ = null;
       }
       PointerInteraction$$1.prototype.setActive.call(this, active);
@@ -29924,12 +29946,217 @@
       if (!vertexFeature) {
         vertexFeature = new Feature(new Point(coordinates));
         this.vertexFeature_ = vertexFeature;
-        this.overlay_.getSource().addFeature(vertexFeature);
+        /** @type {VectorSource} */ (this.overlay_.getSource()).addFeature(vertexFeature);
       } else {
         var geometry = /** @type {Point} */ (vertexFeature.getGeometry());
         geometry.setCoordinates(coordinates);
       }
       return vertexFeature;
+    };
+
+    /**
+     * Handles the {@link module:ol/MapBrowserEvent map browser event} and may modify the geometry.
+     * @override
+     */
+    Modify.prototype.handleEvent = function handleEvent (mapBrowserEvent) {
+      if (!(/** @type {import("../MapBrowserPointerEvent.js").default} */ (mapBrowserEvent).pointerEvent)) {
+        return true;
+      }
+      this.lastPointerEvent_ = mapBrowserEvent;
+
+      var handled;
+      if (!mapBrowserEvent.map.getView().getInteracting() &&
+          mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE &&
+          !this.handlingDownUpSequence) {
+        this.handlePointerMove_(mapBrowserEvent);
+      }
+      if (this.vertexFeature_ && this.deleteCondition_(mapBrowserEvent)) {
+        if (mapBrowserEvent.type != MapBrowserEventType.SINGLECLICK || !this.ignoreNextSingleClick_) {
+          handled = this.removePoint();
+        } else {
+          handled = true;
+        }
+      }
+
+      if (mapBrowserEvent.type == MapBrowserEventType.SINGLECLICK) {
+        this.ignoreNextSingleClick_ = false;
+      }
+
+      return PointerInteraction$$1.prototype.handleEvent.call(this, mapBrowserEvent) && !handled;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    Modify.prototype.handleDragEvent = function handleDragEvent (evt) {
+      this.ignoreNextSingleClick_ = false;
+      this.willModifyFeatures_(evt);
+
+      var vertex = evt.coordinate;
+      for (var i = 0, ii = this.dragSegments_.length; i < ii; ++i) {
+        var dragSegment = this.dragSegments_[i];
+        var segmentData = dragSegment[0];
+        var depth = segmentData.depth;
+        var geometry = segmentData.geometry;
+        var coordinates = (void 0);
+        var segment = segmentData.segment;
+        var index = dragSegment[1];
+
+        while (vertex.length < geometry.getStride()) {
+          vertex.push(segment[index][vertex.length]);
+        }
+
+        switch (geometry.getType()) {
+          case GeometryType.POINT:
+            coordinates = vertex;
+            segment[0] = segment[1] = vertex;
+            break;
+          case GeometryType.MULTI_POINT:
+            coordinates = geometry.getCoordinates();
+            coordinates[segmentData.index] = vertex;
+            segment[0] = segment[1] = vertex;
+            break;
+          case GeometryType.LINE_STRING:
+            coordinates = geometry.getCoordinates();
+            coordinates[segmentData.index + index] = vertex;
+            segment[index] = vertex;
+            break;
+          case GeometryType.MULTI_LINE_STRING:
+            coordinates = geometry.getCoordinates();
+            coordinates[depth[0]][segmentData.index + index] = vertex;
+            segment[index] = vertex;
+            break;
+          case GeometryType.POLYGON:
+            coordinates = geometry.getCoordinates();
+            coordinates[depth[0]][segmentData.index + index] = vertex;
+            segment[index] = vertex;
+            break;
+          case GeometryType.MULTI_POLYGON:
+            coordinates = geometry.getCoordinates();
+            coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
+            segment[index] = vertex;
+            break;
+          case GeometryType.CIRCLE:
+            segment[0] = segment[1] = vertex;
+            if (segmentData.index === CIRCLE_CENTER_INDEX) {
+              this.changingFeature_ = true;
+              geometry.setCenter(vertex);
+              this.changingFeature_ = false;
+            } else { // We're dragging the circle's circumference:
+              this.changingFeature_ = true;
+              geometry.setRadius(distance(geometry.getCenter(), vertex));
+              this.changingFeature_ = false;
+            }
+            break;
+          default:
+            // pass
+        }
+
+        if (coordinates) {
+          this.setGeometryCoordinates_(geometry, coordinates);
+        }
+      }
+      this.createOrUpdateVertexFeature_(vertex);
+    };
+
+    /**
+     * @inheritDoc
+     */
+    Modify.prototype.handleDownEvent = function handleDownEvent (evt) {
+      if (!this.condition_(evt)) {
+        return false;
+      }
+      this.handlePointerAtPixel_(evt.pixel, evt.map);
+      var pixelCoordinate = evt.map.getCoordinateFromPixel(evt.pixel);
+      this.dragSegments_.length = 0;
+      this.modified_ = false;
+      var vertexFeature = this.vertexFeature_;
+      if (vertexFeature) {
+        var insertVertices = [];
+        var geometry = /** @type {Point} */ (vertexFeature.getGeometry());
+        var vertex = geometry.getCoordinates();
+        var vertexExtent = boundingExtent([vertex]);
+        var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
+        var componentSegments = {};
+        segmentDataMatches.sort(compareIndexes);
+        for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
+          var segmentDataMatch = segmentDataMatches[i];
+          var segment = segmentDataMatch.segment;
+          var uid = getUid(segmentDataMatch.feature);
+          var depth = segmentDataMatch.depth;
+          if (depth) {
+            uid += '-' + depth.join('-'); // separate feature components
+          }
+          if (!componentSegments[uid]) {
+            componentSegments[uid] = new Array(2);
+          }
+          if (segmentDataMatch.geometry.getType() === GeometryType.CIRCLE &&
+          segmentDataMatch.index === CIRCLE_CIRCUMFERENCE_INDEX) {
+
+            var closestVertex = closestOnSegmentData(pixelCoordinate, segmentDataMatch);
+            if (equals$2(closestVertex, vertex) && !componentSegments[uid][0]) {
+              this.dragSegments_.push([segmentDataMatch, 0]);
+              componentSegments[uid][0] = segmentDataMatch;
+            }
+          } else if (equals$2(segment[0], vertex) &&
+              !componentSegments[uid][0]) {
+            this.dragSegments_.push([segmentDataMatch, 0]);
+            componentSegments[uid][0] = segmentDataMatch;
+          } else if (equals$2(segment[1], vertex) &&
+              !componentSegments[uid][1]) {
+
+            // prevent dragging closed linestrings by the connecting node
+            if ((segmentDataMatch.geometry.getType() ===
+                GeometryType.LINE_STRING ||
+                segmentDataMatch.geometry.getType() ===
+                GeometryType.MULTI_LINE_STRING) &&
+                componentSegments[uid][0] &&
+                componentSegments[uid][0].index === 0) {
+              continue;
+            }
+
+            this.dragSegments_.push([segmentDataMatch, 1]);
+            componentSegments[uid][1] = segmentDataMatch;
+          } else if (this.insertVertexCondition_(evt) && getUid(segment) in this.vertexSegments_ &&
+              (!componentSegments[uid][0] && !componentSegments[uid][1])) {
+            insertVertices.push([segmentDataMatch, vertex]);
+          }
+        }
+        if (insertVertices.length) {
+          this.willModifyFeatures_(evt);
+        }
+        for (var j = insertVertices.length - 1; j >= 0; --j) {
+          this.insertVertex_.apply(this, insertVertices[j]);
+        }
+      }
+      return !!this.vertexFeature_;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    Modify.prototype.handleUpEvent = function handleUpEvent (evt) {
+      for (var i = this.dragSegments_.length - 1; i >= 0; --i) {
+        var segmentData = this.dragSegments_[i][0];
+        var geometry = segmentData.geometry;
+        if (geometry.getType() === GeometryType.CIRCLE) {
+          // Update a circle object in the R* bush:
+          var coordinates = geometry.getCenter();
+          var centerSegmentData = segmentData.featureSegments[0];
+          var circumferenceSegmentData = segmentData.featureSegments[1];
+          centerSegmentData.segment[0] = centerSegmentData.segment[1] = coordinates;
+          circumferenceSegmentData.segment[0] = circumferenceSegmentData.segment[1] = coordinates;
+          this.rBush_.update(createOrUpdateFromCoordinate(coordinates), centerSegmentData);
+          this.rBush_.update(geometry.getExtent(), circumferenceSegmentData);
+        } else {
+          this.rBush_.update(boundingExtent(segmentData.segment), segmentData);
+        }
+      }
+      if (this.modified_) {
+        this.dispatchEvent(new ModifyEvent(ModifyEventType.MODIFYEND, this.features_, evt));
+        this.modified_ = false;
+      }
+      return false;
     };
 
     /**
@@ -29966,6 +30193,7 @@
         var vertexPixel = map.getPixelFromCoordinate(vertex);
         var dist = distance(pixel, vertexPixel);
         if (dist <= this.pixelTolerance_) {
+          /** @type {Object<string, boolean>} */
           var vertexSegments = {};
 
           if (node.geometry.getType() === GeometryType.CIRCLE &&
@@ -30003,7 +30231,7 @@
         }
       }
       if (this.vertexFeature_) {
-        this.overlay_.getSource().removeFeature(this.vertexFeature_);
+        /** @type {VectorSource} */ (this.overlay_.getSource()).removeFeature(this.vertexFeature_);
         this.vertexFeature_ = null;
       }
     };
@@ -30198,7 +30426,7 @@
           }
           this.updateSegmentIndices_(geometry, index, segmentData.depth, -1);
           if (this.vertexFeature_) {
-            this.overlay_.getSource().removeFeature(this.vertexFeature_);
+            /** @type {VectorSource} */ (this.overlay_.getSource()).removeFeature(this.vertexFeature_);
             this.vertexFeature_ = null;
           }
           dragSegments.length = 0;
@@ -30230,7 +30458,7 @@
       this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
         if (segmentDataMatch.geometry === geometry &&
             (depth === undefined || segmentDataMatch.depth === undefined ||
-            equals$1(segmentDataMatch.depth, depth)) &&
+            equals(segmentDataMatch.depth, depth)) &&
             segmentDataMatch.index > index) {
           segmentDataMatch.index += delta;
         }
@@ -30248,223 +30476,6 @@
    */
   function compareIndexes(a, b) {
     return a.index - b.index;
-  }
-
-
-  /**
-   * @param {MapBrowserPointerEvent} evt Event.
-   * @return {boolean} Start drag sequence?
-   * @this {Modify}
-   */
-  function handleDownEvent$9(evt) {
-    if (!this.condition_(evt)) {
-      return false;
-    }
-    this.handlePointerAtPixel_(evt.pixel, evt.map);
-    var pixelCoordinate = evt.map.getCoordinateFromPixel(evt.pixel);
-    this.dragSegments_.length = 0;
-    this.modified_ = false;
-    var vertexFeature = this.vertexFeature_;
-    if (vertexFeature) {
-      var insertVertices = [];
-      var geometry = /** @type {Point} */ (vertexFeature.getGeometry());
-      var vertex = geometry.getCoordinates();
-      var vertexExtent = boundingExtent([vertex]);
-      var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
-      var componentSegments = {};
-      segmentDataMatches.sort(compareIndexes);
-      for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
-        var segmentDataMatch = segmentDataMatches[i];
-        var segment = segmentDataMatch.segment;
-        var uid = getUid(segmentDataMatch.feature);
-        var depth = segmentDataMatch.depth;
-        if (depth) {
-          uid += '-' + depth.join('-'); // separate feature components
-        }
-        if (!componentSegments[uid]) {
-          componentSegments[uid] = new Array(2);
-        }
-        if (segmentDataMatch.geometry.getType() === GeometryType.CIRCLE &&
-        segmentDataMatch.index === CIRCLE_CIRCUMFERENCE_INDEX) {
-
-          var closestVertex = closestOnSegmentData(pixelCoordinate, segmentDataMatch);
-          if (equals$2(closestVertex, vertex) && !componentSegments[uid][0]) {
-            this.dragSegments_.push([segmentDataMatch, 0]);
-            componentSegments[uid][0] = segmentDataMatch;
-          }
-        } else if (equals$2(segment[0], vertex) &&
-            !componentSegments[uid][0]) {
-          this.dragSegments_.push([segmentDataMatch, 0]);
-          componentSegments[uid][0] = segmentDataMatch;
-        } else if (equals$2(segment[1], vertex) &&
-            !componentSegments[uid][1]) {
-
-          // prevent dragging closed linestrings by the connecting node
-          if ((segmentDataMatch.geometry.getType() ===
-              GeometryType.LINE_STRING ||
-              segmentDataMatch.geometry.getType() ===
-              GeometryType.MULTI_LINE_STRING) &&
-              componentSegments[uid][0] &&
-              componentSegments[uid][0].index === 0) {
-            continue;
-          }
-
-          this.dragSegments_.push([segmentDataMatch, 1]);
-          componentSegments[uid][1] = segmentDataMatch;
-        } else if (this.insertVertexCondition_(evt) && getUid(segment) in this.vertexSegments_ &&
-            (!componentSegments[uid][0] && !componentSegments[uid][1])) {
-          insertVertices.push([segmentDataMatch, vertex]);
-        }
-      }
-      if (insertVertices.length) {
-        this.willModifyFeatures_(evt);
-      }
-      for (var j = insertVertices.length - 1; j >= 0; --j) {
-        this.insertVertex_.apply(this, insertVertices[j]);
-      }
-    }
-    return !!this.vertexFeature_;
-  }
-
-
-  /**
-   * @param {MapBrowserPointerEvent} evt Event.
-   * @this {Modify}
-   */
-  function handleDragEvent$8(evt) {
-    this.ignoreNextSingleClick_ = false;
-    this.willModifyFeatures_(evt);
-
-    var vertex = evt.coordinate;
-    for (var i = 0, ii = this.dragSegments_.length; i < ii; ++i) {
-      var dragSegment = this.dragSegments_[i];
-      var segmentData = dragSegment[0];
-      var depth = segmentData.depth;
-      var geometry = segmentData.geometry;
-      var coordinates = (void 0);
-      var segment = segmentData.segment;
-      var index = dragSegment[1];
-
-      while (vertex.length < geometry.getStride()) {
-        vertex.push(segment[index][vertex.length]);
-      }
-
-      switch (geometry.getType()) {
-        case GeometryType.POINT:
-          coordinates = vertex;
-          segment[0] = segment[1] = vertex;
-          break;
-        case GeometryType.MULTI_POINT:
-          coordinates = geometry.getCoordinates();
-          coordinates[segmentData.index] = vertex;
-          segment[0] = segment[1] = vertex;
-          break;
-        case GeometryType.LINE_STRING:
-          coordinates = geometry.getCoordinates();
-          coordinates[segmentData.index + index] = vertex;
-          segment[index] = vertex;
-          break;
-        case GeometryType.MULTI_LINE_STRING:
-          coordinates = geometry.getCoordinates();
-          coordinates[depth[0]][segmentData.index + index] = vertex;
-          segment[index] = vertex;
-          break;
-        case GeometryType.POLYGON:
-          coordinates = geometry.getCoordinates();
-          coordinates[depth[0]][segmentData.index + index] = vertex;
-          segment[index] = vertex;
-          break;
-        case GeometryType.MULTI_POLYGON:
-          coordinates = geometry.getCoordinates();
-          coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
-          segment[index] = vertex;
-          break;
-        case GeometryType.CIRCLE:
-          segment[0] = segment[1] = vertex;
-          if (segmentData.index === CIRCLE_CENTER_INDEX) {
-            this.changingFeature_ = true;
-            geometry.setCenter(vertex);
-            this.changingFeature_ = false;
-          } else { // We're dragging the circle's circumference:
-            this.changingFeature_ = true;
-            geometry.setRadius(distance(geometry.getCenter(), vertex));
-            this.changingFeature_ = false;
-          }
-          break;
-        default:
-          // pass
-      }
-
-      if (coordinates) {
-        this.setGeometryCoordinates_(geometry, coordinates);
-      }
-    }
-    this.createOrUpdateVertexFeature_(vertex);
-  }
-
-
-  /**
-   * @param {MapBrowserPointerEvent} evt Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {Modify}
-   */
-  function handleUpEvent$9(evt) {
-    for (var i = this.dragSegments_.length - 1; i >= 0; --i) {
-      var segmentData = this.dragSegments_[i][0];
-      var geometry = segmentData.geometry;
-      if (geometry.getType() === GeometryType.CIRCLE) {
-        // Update a circle object in the R* bush:
-        var coordinates = geometry.getCenter();
-        var centerSegmentData = segmentData.featureSegments[0];
-        var circumferenceSegmentData = segmentData.featureSegments[1];
-        centerSegmentData.segment[0] = centerSegmentData.segment[1] = coordinates;
-        circumferenceSegmentData.segment[0] = circumferenceSegmentData.segment[1] = coordinates;
-        this.rBush_.update(createOrUpdateFromCoordinate(coordinates), centerSegmentData);
-        this.rBush_.update(geometry.getExtent(), circumferenceSegmentData);
-      } else {
-        this.rBush_.update(boundingExtent(segmentData.segment), segmentData);
-      }
-    }
-    if (this.modified_) {
-      this.dispatchEvent(new ModifyEvent(ModifyEventType.MODIFYEND, this.features_, evt));
-      this.modified_ = false;
-    }
-    return false;
-  }
-
-
-  /**
-   * Handles the {@link module:ol/MapBrowserEvent map browser event} and may modify the
-   * geometry.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
-   * @return {boolean} `false` to stop event propagation.
-   * @this {Modify}
-   */
-  function handleEvent$7(mapBrowserEvent) {
-    if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
-      return true;
-    }
-    this.lastPointerEvent_ = mapBrowserEvent;
-
-    var handled;
-    if (!mapBrowserEvent.map.getView().getInteracting() &&
-        mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE &&
-        !this.handlingDownUpSequence) {
-      this.handlePointerMove_(mapBrowserEvent);
-    }
-    if (this.vertexFeature_ && this.deleteCondition_(mapBrowserEvent)) {
-      if (mapBrowserEvent.type != MapBrowserEventType.SINGLECLICK || !this.ignoreNextSingleClick_) {
-        handled = this.removePoint();
-      } else {
-        handled = true;
-      }
-    }
-
-    if (mapBrowserEvent.type == MapBrowserEventType.SINGLECLICK) {
-      this.ignoreNextSingleClick_ = false;
-    }
-
-    return handleEvent$1.call(this, mapBrowserEvent) && !handled;
   }
 
 
@@ -30547,8 +30558,7 @@
    * {@link module:ol/render/Feature} and an
    * {@link module:ol/layer/Layer} and returns `true` if the feature may be
    * selected or `false` otherwise.
-   * @typedef {function((import("../Feature.js").default|import("../render/Feature.js").default), import("../layer/Layer.js").default):
-   *     boolean} FilterFunction
+   * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default):boolean} FilterFunction
    */
 
 
@@ -30574,7 +30584,7 @@
    * in the map and should return `true` for layers that you want to be
    * selectable. If the option is absent, all visible layers will be considered
    * selectable.
-   * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style]
+   * @property {import("../style/Style.js").StyleLike} [style]
    * Style for the selected features. By default the default edit style is used
    * (see {@link module:ol/style}).
    * @property {import("../events/condition.js").Condition} [removeCondition] A function
@@ -30669,7 +30679,7 @@
     function Select(opt_options) {
 
       Interaction$$1.call(this, {
-        handleEvent: handleEvent$8
+        handleEvent: handleEvent$3
       });
 
       var options = opt_options ? opt_options : {};
@@ -30759,11 +30769,11 @@
        * An association between selected feature (key)
        * and layer (value)
        * @private
-       * @type {Object<number, import("../layer/Layer.js").default>}
+       * @type {Object<string, import("../layer/Layer.js").default>}
        */
       this.featureLayerAssociation_ = {};
 
-      var features = this.featureOverlay_.getSource().getFeaturesCollection();
+      var features = this.getFeatures();
       listen(features, CollectionEventType.ADD,
         this.addFeature_, this);
       listen(features, CollectionEventType.REMOVE,
@@ -30775,13 +30785,12 @@
     Select.prototype.constructor = Select;
 
     /**
-     * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+     * @param {import("../Feature.js").FeatureLike} feature Feature.
      * @param {import("../layer/Layer.js").default} layer Layer.
      * @private
      */
     Select.prototype.addFeatureLayerAssociation_ = function addFeatureLayerAssociation_ (feature, layer) {
-      var key = getUid(feature);
-      this.featureLayerAssociation_[key] = layer;
+      this.featureLayerAssociation_[getUid(feature)] = layer;
     };
 
     /**
@@ -30790,7 +30799,7 @@
      * @api
      */
     Select.prototype.getFeatures = function getFeatures () {
-      return this.featureOverlay_.getSource().getFeaturesCollection();
+      return /** @type {VectorSource} */ (this.featureOverlay_.getSource()).getFeaturesCollection();
     };
 
     /**
@@ -30807,14 +30816,13 @@
      * the (last) selected feature. Note that this will not work with any
      * programmatic method like pushing features to
      * {@link module:ol/interaction/Select~Select#getFeatures collection}.
-     * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature
+     * @param {import("../Feature.js").FeatureLike} feature Feature
      * @return {VectorLayer} Layer.
      * @api
      */
     Select.prototype.getLayer = function getLayer (feature) {
-      var key = getUid(feature);
       return (
-        /** @type {VectorLayer} */ (this.featureLayerAssociation_[key])
+        /** @type {VectorLayer} */ (this.featureLayerAssociation_[getUid(feature)])
       );
     };
 
@@ -30847,8 +30855,7 @@
      */
     Select.prototype.setMap = function setMap (map) {
       var currentMap = this.getMap();
-      var selectedFeatures =
-          this.featureOverlay_.getSource().getFeaturesCollection();
+      var selectedFeatures = this.getFeatures();
       if (currentMap) {
         selectedFeatures.forEach(currentMap.unskipFeature.bind(currentMap));
       }
@@ -30882,12 +30889,11 @@
     };
 
     /**
-     * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+     * @param {import("../Feature.js").FeatureLike} feature Feature.
      * @private
      */
     Select.prototype.removeFeatureLayerAssociation_ = function removeFeatureLayerAssociation_ (feature) {
-      var key = getUid(feature);
-      delete this.featureLayerAssociation_[key];
+      delete this.featureLayerAssociation_[getUid(feature)];
     };
 
     return Select;
@@ -30901,16 +30907,16 @@
    * @return {boolean} `false` to stop event propagation.
    * @this {Select}
    */
-  function handleEvent$8(mapBrowserEvent) {
+  function handleEvent$3(mapBrowserEvent) {
     if (!this.condition_(mapBrowserEvent)) {
       return true;
     }
     var add = this.addCondition_(mapBrowserEvent);
-    var remove = this.removeCondition_(mapBrowserEvent);
+    var remove$$1 = this.removeCondition_(mapBrowserEvent);
     var toggle = this.toggleCondition_(mapBrowserEvent);
-    var set = !add && !remove && !toggle;
+    var set = !add && !remove$$1 && !toggle;
     var map = mapBrowserEvent.map;
-    var features = this.featureOverlay_.getSource().getFeaturesCollection();
+    var features = this.getFeatures();
     var deselected = [];
     var selected = [];
     if (set) {
@@ -30921,7 +30927,7 @@
       map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
         (
           /**
-           * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+           * @param {import("../Feature.js").FeatureLike} feature Feature.
            * @param {import("../layer/Layer.js").default} layer Layer.
            * @return {boolean|undefined} Continue to iterate over the features.
            */
@@ -30954,7 +30960,7 @@
       map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
         (
           /**
-           * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+           * @param {import("../Feature.js").FeatureLike} feature Feature.
            * @param {import("../layer/Layer.js").default} layer Layer.
            * @return {boolean|undefined} Continue to iterate over the features.
            */
@@ -30963,7 +30969,7 @@
               if ((add || toggle) && !includes(features.getArray(), feature)) {
                 selected.push(feature);
                 this.addFeatureLayerAssociation_(feature, layer);
-              } else if ((remove || toggle) && includes(features.getArray(), feature)) {
+              } else if ((remove$$1 || toggle) && includes(features.getArray(), feature)) {
                 deselected.push(feature);
                 this.removeFeatureLayerAssociation_(feature);
               }
@@ -30992,8 +30998,8 @@
    */
   function getDefaultStyleFunction$2() {
     var styles = createEditingStyle();
-    extend$1(styles[GeometryType.POLYGON], styles[GeometryType.LINE_STRING]);
-    extend$1(styles[GeometryType.GEOMETRY_COLLECTION], styles[GeometryType.LINE_STRING]);
+    extend(styles[GeometryType.POLYGON], styles[GeometryType.LINE_STRING]);
+    extend(styles[GeometryType.GEOMETRY_COLLECTION], styles[GeometryType.LINE_STRING]);
 
     return function(feature, resolution) {
       if (!feature.getGeometry()) {
@@ -31035,6 +31041,19 @@
 
 
   /**
+   * @param  {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent} evt Event.
+   * @return {import("../Feature.js").default} Feature.
+   */
+  function getFeatureFromEvent(evt) {
+    if (/** @type {import("../source/Vector.js").VectorSourceEvent} */ (evt).feature) {
+      return /** @type {import("../source/Vector.js").VectorSourceEvent} */ (evt).feature;
+    } else if (/** @type {import("../Collection.js").CollectionEvent} */ (evt).element) {
+      return /** @type {import("../Feature.js").default} */ (/** @type {import("../Collection.js").CollectionEvent} */ (evt).element);
+    }
+
+  }
+
+  /**
    * @classdesc
    * Handles snapping of vector features while modifying or drawing them.  The
    * features can come from a {@link module:ol/source/Vector} or {@link module:ol/Collection~Collection}
@@ -31058,14 +31077,19 @@
   var Snap = /*@__PURE__*/(function (PointerInteraction$$1) {
     function Snap(opt_options) {
 
-      PointerInteraction$$1.call(this, {
-        handleEvent: handleEvent$9,
-        handleDownEvent: TRUE,
-        handleUpEvent: handleUpEvent$a,
-        stopDown: FALSE
-      });
-
       var options = opt_options ? opt_options : {};
+
+      var pointerOptions = /** @type {import("./Pointer.js").Options} */ (options);
+
+      if (!pointerOptions.handleDownEvent) {
+        pointerOptions.handleDownEvent = TRUE;
+      }
+
+      if (!pointerOptions.stopDown) {
+        pointerOptions.stopDown = FALSE;
+      }
+
+      PointerInteraction$$1.call(this, pointerOptions);
 
       /**
        * @type {import("../source/Vector.js").default}
@@ -31098,7 +31122,7 @@
       this.featuresListenerKeys_ = [];
 
       /**
-       * @type {Object<number, import("../events.js").EventsKey>}
+       * @type {Object<string, import("../events.js").EventsKey>}
        * @private
        */
       this.featureChangeListenerKeys_ = {};
@@ -31106,7 +31130,7 @@
       /**
        * Extents are preserved so indexed segment can be quickly removed
        * when its feature geometry changes
-       * @type {Object<number, import("../extent.js").Extent>}
+       * @type {Object<string, import("../extent.js").Extent>}
        * @private
        */
       this.indexedFeaturesExtents_ = {};
@@ -31115,7 +31139,7 @@
        * If a feature geometry changes while a pointer drag|move event occurs, the
        * feature doesn't get updated right away.  It will be at the next 'pointerup'
        * event fired.
-       * @type {!Object<number, import("../Feature.js").default>}
+       * @type {!Object<string, import("../Feature.js").default>}
        * @private
        */
       this.pendingFeatures_ = {};
@@ -31225,37 +31249,37 @@
       } else if (this.source_) {
         features = this.source_.getFeatures();
       }
-      return (
-        /** @type {!Array<import("../Feature.js").default>|!import("../Collection.js").default<import("../Feature.js").default>} */ (features)
-      );
+      return features;
     };
 
     /**
-     * @param {import("../source/Vector.js").default|import("../Collection.js").CollectionEvent} evt Event.
+     * @inheritDoc
+     */
+    Snap.prototype.handleEvent = function handleEvent (evt) {
+      var result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
+      if (result.snapped) {
+        evt.coordinate = result.vertex.slice(0, 2);
+        evt.pixel = result.vertexPixel;
+      }
+      return PointerInteraction$$1.prototype.handleEvent.call(this, evt);
+    };
+
+    /**
+     * @param {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent} evt Event.
      * @private
      */
     Snap.prototype.handleFeatureAdd_ = function handleFeatureAdd_ (evt) {
-      var feature;
-      if (evt instanceof VectorSourceEvent) {
-        feature = evt.feature;
-      } else if (evt instanceof CollectionEvent) {
-        feature = evt.element;
-      }
-      this.addFeature(/** @type {import("../Feature.js").default} */ (feature));
+      var feature = getFeatureFromEvent(evt);
+      this.addFeature(feature);
     };
 
     /**
-     * @param {import("../source/Vector.js").default|import("../Collection.js").CollectionEvent} evt Event.
+     * @param {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent} evt Event.
      * @private
      */
     Snap.prototype.handleFeatureRemove_ = function handleFeatureRemove_ (evt) {
-      var feature;
-      if (evt instanceof VectorSourceEvent) {
-        feature = evt.feature;
-      } else if (evt instanceof CollectionEvent) {
-        feature = evt.element;
-      }
-      this.removeFeature(/** @type {import("../Feature.js").default} */ (feature));
+      var feature = getFeatureFromEvent(evt);
+      this.removeFeature(feature);
     };
 
     /**
@@ -31272,6 +31296,18 @@
       } else {
         this.updateFeature_(feature);
       }
+    };
+
+    /**
+     * @inheritDoc
+     */
+    Snap.prototype.handleUpEvent = function handleUpEvent (evt) {
+      var featuresToUpdate = getValues(this.pendingFeatures_);
+      if (featuresToUpdate.length) {
+        featuresToUpdate.forEach(this.updateFeature_.bind(this));
+        this.pendingFeatures_ = {};
+      }
+      return false;
     };
 
     /**
@@ -31310,7 +31346,7 @@
     Snap.prototype.setMap = function setMap (map) {
       var currentMap = this.getMap();
       var keys = this.featuresListenerKeys_;
-      var features = this.getFeatures_();
+      var features = /** @type {Array<import("../Feature.js").default>} */ (this.getFeatures_());
 
       if (currentMap) {
         keys.forEach(unlistenByKey);
@@ -31581,37 +31617,6 @@
 
 
   /**
-   * Handle all pointer events events.
-   * @param {import("../MapBrowserEvent.js").default} evt A move event.
-   * @return {boolean} Pass the event to other interactions.
-   * @this {Snap}
-   */
-  function handleEvent$9(evt) {
-    var result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
-    if (result.snapped) {
-      evt.coordinate = result.vertex.slice(0, 2);
-      evt.pixel = result.vertexPixel;
-    }
-    return handleEvent$1.call(this, evt);
-  }
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {Snap}
-   */
-  function handleUpEvent$a(evt) {
-    var featuresToUpdate = getValues(this.pendingFeatures_);
-    if (featuresToUpdate.length) {
-      featuresToUpdate.forEach(this.updateFeature_.bind(this));
-      this.pendingFeatures_ = {};
-    }
-    return false;
-  }
-
-
-  /**
    * Sort segments by distance, helper function
    * @param {SegmentData} a The first segment data.
    * @param {SegmentData} b The second segment data.
@@ -31713,14 +31718,9 @@
    */
   var Translate = /*@__PURE__*/(function (PointerInteraction$$1) {
     function Translate(opt_options) {
-      PointerInteraction$$1.call(this, {
-        handleDownEvent: handleDownEvent$a,
-        handleDragEvent: handleDragEvent$9,
-        handleMoveEvent: handleMoveEvent$1,
-        handleUpEvent: handleUpEvent$b
-      });
-
       var options = opt_options ? opt_options : {};
+
+      PointerInteraction$$1.call(/** @type {import("./Pointer.js").Options} */ this, (options));
 
       /**
        * The last position we translated to.
@@ -31778,6 +31778,86 @@
     if ( PointerInteraction$$1 ) Translate.__proto__ = PointerInteraction$$1;
     Translate.prototype = Object.create( PointerInteraction$$1 && PointerInteraction$$1.prototype );
     Translate.prototype.constructor = Translate;
+
+    /**
+     * @inheritDoc
+     */
+    Translate.prototype.handleDownEvent = function handleDownEvent (event) {
+      this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
+      if (!this.lastCoordinate_ && this.lastFeature_) {
+        this.lastCoordinate_ = event.coordinate;
+        this.handleMoveEvent(event);
+
+        var features = this.features_ || new Collection([this.lastFeature_]);
+
+        this.dispatchEvent(
+          new TranslateEvent(
+            TranslateEventType.TRANSLATESTART, features,
+            event.coordinate));
+        return true;
+      }
+      return false;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    Translate.prototype.handleUpEvent = function handleUpEvent (event) {
+      if (this.lastCoordinate_) {
+        this.lastCoordinate_ = null;
+        this.handleMoveEvent(event);
+
+        var features = this.features_ || new Collection([this.lastFeature_]);
+
+        this.dispatchEvent(
+          new TranslateEvent(
+            TranslateEventType.TRANSLATEEND, features,
+            event.coordinate));
+        return true;
+      }
+      return false;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    Translate.prototype.handleDragEvent = function handleDragEvent (event) {
+      if (this.lastCoordinate_) {
+        var newCoordinate = event.coordinate;
+        var deltaX = newCoordinate[0] - this.lastCoordinate_[0];
+        var deltaY = newCoordinate[1] - this.lastCoordinate_[1];
+
+        var features = this.features_ || new Collection([this.lastFeature_]);
+
+        features.forEach(function(feature) {
+          var geom = feature.getGeometry();
+          geom.translate(deltaX, deltaY);
+          feature.setGeometry(geom);
+        });
+
+        this.lastCoordinate_ = newCoordinate;
+        this.dispatchEvent(
+          new TranslateEvent(
+            TranslateEventType.TRANSLATING, features,
+            newCoordinate));
+      }
+    };
+
+    /**
+     * @inheritDoc
+     */
+    Translate.prototype.handleMoveEvent = function handleMoveEvent (event) {
+      var elem = event.map.getViewport();
+
+      // Change the cursor to grab/grabbing if hovering any of the features managed
+      // by the interaction
+      if (this.featuresAtPixel_(event.pixel, event.map)) {
+        elem.classList.remove(this.lastCoordinate_ ? 'ol-grab' : 'ol-grabbing');
+        elem.classList.add(this.lastCoordinate_ ? 'ol-grabbing' : 'ol-grab');
+      } else {
+        elem.classList.remove('ol-grab', 'ol-grabbing');
+      }
+    };
 
     /**
      * Tests to see if the given coordinates intersects any of our selected
@@ -31854,96 +31934,6 @@
 
     return Translate;
   }(PointerInteraction));
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} event Event.
-   * @return {boolean} Start drag sequence?
-   * @this {Translate}
-   */
-  function handleDownEvent$a(event) {
-    this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
-    if (!this.lastCoordinate_ && this.lastFeature_) {
-      this.lastCoordinate_ = event.coordinate;
-      handleMoveEvent$1.call(this, event);
-
-      var features = this.features_ || new Collection([this.lastFeature_]);
-
-      this.dispatchEvent(
-        new TranslateEvent(
-          TranslateEventType.TRANSLATESTART, features,
-          event.coordinate));
-      return true;
-    }
-    return false;
-  }
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} event Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {Translate}
-   */
-  function handleUpEvent$b(event) {
-    if (this.lastCoordinate_) {
-      this.lastCoordinate_ = null;
-      handleMoveEvent$1.call(this, event);
-
-      var features = this.features_ || new Collection([this.lastFeature_]);
-
-      this.dispatchEvent(
-        new TranslateEvent(
-          TranslateEventType.TRANSLATEEND, features,
-          event.coordinate));
-      return true;
-    }
-    return false;
-  }
-
-
-  /**
-   * @param {import("../MapBrowserPointerEvent.js").default} event Event.
-   * @this {Translate}
-   */
-  function handleDragEvent$9(event) {
-    if (this.lastCoordinate_) {
-      var newCoordinate = event.coordinate;
-      var deltaX = newCoordinate[0] - this.lastCoordinate_[0];
-      var deltaY = newCoordinate[1] - this.lastCoordinate_[1];
-
-      var features = this.features_ || new Collection([this.lastFeature_]);
-
-      features.forEach(function(feature) {
-        var geom = feature.getGeometry();
-        geom.translate(deltaX, deltaY);
-        feature.setGeometry(geom);
-      });
-
-      this.lastCoordinate_ = newCoordinate;
-      this.dispatchEvent(
-        new TranslateEvent(
-          TranslateEventType.TRANSLATING, features,
-          newCoordinate));
-    }
-  }
-
-
-  /**
-   * @param {import("../MapBrowserEvent.js").default} event Event.
-   * @this {Translate}
-   */
-  function handleMoveEvent$1(event) {
-    var elem = event.map.getViewport();
-
-    // Change the cursor to grab/grabbing if hovering any of the features managed
-    // by the interaction
-    if (this.featuresAtPixel_(event.pixel, event.map)) {
-      elem.classList.remove(this.lastCoordinate_ ? 'ol-grab' : 'ol-grabbing');
-      elem.classList.add(this.lastCoordinate_ ? 'ol-grabbing' : 'ol-grab');
-    } else {
-      elem.classList.remove('ol-grab', 'ol-grabbing');
-    }
-  }
 
   /**
    * @module ol/interaction
@@ -32810,7 +32800,7 @@
         var context = this.context_;
         var flatCoordinates = geometry.getFlatCoordinates();
         var offset = 0;
-        var ends = geometry.getEnds();
+        var ends = /** @type {Array<number>} */ (geometry.getEnds());
         var stride = geometry.getStride();
         context.beginPath();
         for (var i = 0, ii = ends.length; i < ii; ++i) {
@@ -32845,7 +32835,7 @@
         var context = this.context_;
         context.beginPath();
         this.drawRings_(geometry.getOrientedFlatCoordinates(),
-          0, geometry.getEnds(), geometry.getStride());
+          0, /** @type {Array<number>} */ (geometry.getEnds()), geometry.getStride());
         if (this.fillState_) {
           context.fill();
         }
@@ -32926,12 +32916,12 @@
       var context = this.context_;
       var contextStrokeState = this.contextStrokeState_;
       if (!contextStrokeState) {
-        context.lineCap = strokeState.lineCap;
+        context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
         if (CANVAS_LINE_DASH) {
           context.setLineDash(strokeState.lineDash);
           context.lineDashOffset = strokeState.lineDashOffset;
         }
-        context.lineJoin = strokeState.lineJoin;
+        context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
         context.lineWidth = strokeState.lineWidth;
         context.miterLimit = strokeState.miterLimit;
         context.strokeStyle = strokeState.strokeStyle;
@@ -32946,10 +32936,10 @@
         };
       } else {
         if (contextStrokeState.lineCap != strokeState.lineCap) {
-          contextStrokeState.lineCap = context.lineCap = strokeState.lineCap;
+          contextStrokeState.lineCap = context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
         }
         if (CANVAS_LINE_DASH) {
-          if (!equals$1(contextStrokeState.lineDash, strokeState.lineDash)) {
+          if (!equals(contextStrokeState.lineDash, strokeState.lineDash)) {
             context.setLineDash(contextStrokeState.lineDash = strokeState.lineDash);
           }
           if (contextStrokeState.lineDashOffset != strokeState.lineDashOffset) {
@@ -32958,7 +32948,7 @@
           }
         }
         if (contextStrokeState.lineJoin != strokeState.lineJoin) {
-          contextStrokeState.lineJoin = context.lineJoin = strokeState.lineJoin;
+          contextStrokeState.lineJoin = context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
         }
         if (contextStrokeState.lineWidth != strokeState.lineWidth) {
           contextStrokeState.lineWidth = context.lineWidth = strokeState.lineWidth;
@@ -32985,8 +32975,8 @@
         textState.textAlign : defaultTextAlign;
       if (!contextTextState) {
         context.font = textState.font;
-        context.textAlign = textAlign;
-        context.textBaseline = textState.textBaseline;
+        context.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
+        context.textBaseline = /** @type {CanvasTextBaseline} */ (textState.textBaseline);
         this.contextTextState_ = {
           font: textState.font,
           textAlign: textAlign,
@@ -32997,11 +32987,11 @@
           contextTextState.font = context.font = textState.font;
         }
         if (contextTextState.textAlign != textAlign) {
-          contextTextState.textAlign = context.textAlign = textAlign;
+          contextTextState.textAlign = context.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
         }
         if (contextTextState.textBaseline != textState.textBaseline) {
           contextTextState.textBaseline = context.textBaseline =
-              textState.textBaseline;
+            /** @type {CanvasTextBaseline} */ (textState.textBaseline);
         }
       }
     };
@@ -33276,7 +33266,9 @@
    * @module ol/renderer/Map
    */
 
-
+  /**
+   * @abstract
+   */
   var MapRenderer = /*@__PURE__*/(function (Disposable$$1) {
     function MapRenderer(map) {
       Disposable$$1.call(this);
@@ -33301,7 +33293,7 @@
 
       /**
        * @private
-       * @type {Array<import("./Layer.js").default>}
+       * @type {Array<typeof import("./Layer.js").default>}
        */
       this.layerRendererConstructors_ = [];
 
@@ -33316,11 +33308,13 @@
      * @param {import("../render/EventType.js").default} type Event type.
      * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
      */
-    MapRenderer.prototype.dispatchRenderEvent = function dispatchRenderEvent (type, frameState) {};
+    MapRenderer.prototype.dispatchRenderEvent = function dispatchRenderEvent (type, frameState) {
+      abstract();
+    };
 
     /**
      * Register layer renderer constructors.
-     * @param {Array<import("./Layer.js").default>} constructors Layer renderers.
+     * @param {Array<typeof import("./Layer.js").default>} constructors Layer renderers.
      */
     MapRenderer.prototype.registerLayerRenderers = function registerLayerRenderers (constructors) {
       this.layerRendererConstructors_.push.apply(this.layerRendererConstructors_, constructors);
@@ -33358,7 +33352,7 @@
      * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
      * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
      * @param {number} hitTolerance Hit tolerance in pixels.
-     * @param {function(this: S, (import("../Feature.js").default|import("../render/Feature.js").default),
+     * @param {function(this: S, import("../Feature.js").FeatureLike,
      *     import("../layer/Layer.js").default): T} callback Feature callback.
      * @param {S} thisArg Value to use as `this` when executing `callback`.
      * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
@@ -33383,14 +33377,13 @@
       var viewResolution = viewState.resolution;
 
       /**
-       * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+       * @param {import("../Feature.js").FeatureLike} feature Feature.
        * @param {import("../layer/Layer.js").default} layer Layer.
        * @return {?} Callback result.
        */
       function forEachFeatureAtCoordinate(feature, layer) {
-        var key = getUid(feature).toString();
         var managed = frameState.layerStates[getUid(layer)].managed;
-        if (!(key in frameState.skippedFeatureUids && !managed)) {
+        if (!(getUid(feature) in frameState.skippedFeatureUids && !managed)) {
           return callback.call(thisArg, feature, managed ? layer : null);
         }
       }
@@ -33416,10 +33409,11 @@
         var layer = layerState.layer;
         if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
           var layerRenderer = this.getLayerRenderer(layer);
-          if (layer.getSource()) {
+          var source = /** @type {import("../layer/Layer.js").default} */ (layer).getSource();
+          if (source) {
             result = layerRenderer.forEachFeatureAtCoordinate(
-              layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-              frameState, hitTolerance, forEachFeatureAtCoordinate, thisArg);
+              source.getWrapX() ? translatedCoordinate : coordinate,
+              frameState, hitTolerance, forEachFeatureAtCoordinate);
           }
           if (result) {
             return result;
@@ -33445,7 +33439,9 @@
      * @return {T|undefined} Callback result.
      * @template S,T,U
      */
-    MapRenderer.prototype.forEachLayerAtPixel = function forEachLayerAtPixel (pixel, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {};
+    MapRenderer.prototype.forEachLayerAtPixel = function forEachLayerAtPixel (pixel, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {
+      return abstract();
+    };
 
     /**
      * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
@@ -33467,12 +33463,12 @@
     };
 
     /**
-     * @param {import("../layer/Layer.js").default} layer Layer.
+     * @param {import("../layer/Base.js").default} layer Layer.
      * @protected
      * @return {import("./Layer.js").default} Layer renderer.
      */
     MapRenderer.prototype.getLayerRenderer = function getLayerRenderer (layer) {
-      var layerKey = getUid(layer).toString();
+      var layerKey = getUid(layer);
       if (layerKey in this.layerRenderers_) {
         return this.layerRenderers_[layerKey];
       } else {
@@ -33556,11 +33552,13 @@
     };
 
     /**
-     * @abstract
      * Render.
+     * @abstract
      * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
      */
-    MapRenderer.prototype.renderFrame = function renderFrame (frameState) {};
+    MapRenderer.prototype.renderFrame = function renderFrame (frameState) {
+      abstract();
+    };
 
     /**
      * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
@@ -33613,7 +33611,7 @@
 
 
   /**
-   * @type {Array<import("../Layer.js").default>}
+   * @type {Array<typeof import("../Layer.js").default>}
    */
   var layerRendererConstructors = [];
 
@@ -33743,11 +33741,11 @@
       }
 
       var viewResolution = frameState.viewState.resolution;
-      var i, ii, layer, layerRenderer, layerState;
+      var i, ii;
       for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-        layerState = layerStatesArray[i];
-        layer = layerState.layer;
-        layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layer));
+        var layerState = layerStatesArray[i];
+        var layer = layerState.layer;
+        var layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layer));
         if (!visibleAtResolution(layerState, viewResolution) ||
             layerState.sourceState != SourceState.READY) {
           continue;
@@ -33856,6 +33854,9 @@
          * @return {boolean} The tile range is fully loaded.
          */
         function(zoom, tileRange) {
+          /**
+           * @param {import("../Tile.js").default} tile Tile.
+           */
           function callback(tile) {
             if (!tiles[zoom]) {
               tiles[zoom] = {};
@@ -33872,10 +33873,9 @@
      * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
      * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
      * @param {number} hitTolerance Hit tolerance in pixels.
-     * @param {function(this: S, (import("../Feature.js").default|import("../render/Feature.js").default), import("../layer/Layer.js").default): T} callback Feature callback.
-     * @param {S} thisArg Value to use as `this` when executing `callback`.
+     * @param {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default): T} callback Feature callback.
      * @return {T|void} Callback result.
-     * @template S,T
+     * @template T
      */
     LayerRenderer.prototype.forEachFeatureAtCoordinate = function forEachFeatureAtCoordinate (coordinate, frameState, hitTolerance, callback) {};
 
@@ -33949,7 +33949,7 @@
          * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
          */
         var postRenderFunction = function(tileSource, map, frameState) {
-          var tileSourceKey = getUid(tileSource).toString();
+          var tileSourceKey = getUid(tileSource);
           if (tileSourceKey in frameState.usedTiles) {
             tileSource.expireCache(frameState.viewState.projection,
               frameState.usedTiles[tileSourceKey]);
@@ -33971,7 +33971,7 @@
      */
     LayerRenderer.prototype.updateUsedTiles = function updateUsedTiles (usedTiles, tileSource, z, tileRange) {
       // FIXME should we use tilesToDrawByZ instead?
-      var tileSourceKey = getUid(tileSource).toString();
+      var tileSourceKey = getUid(tileSource);
       var zKey = z.toString();
       if (tileSourceKey in usedTiles) {
         if (zKey in usedTiles[tileSourceKey]) {
@@ -34017,7 +34017,7 @@
       opt_tileCallback,
       opt_this
     ) {
-      var tileSourceKey = getUid(tileSource).toString();
+      var tileSourceKey = getUid(tileSource);
       if (!(tileSourceKey in frameState.wantedTiles)) {
         frameState.wantedTiles[tileSourceKey] = {};
       }
@@ -34057,6 +34057,9 @@
    * @module ol/renderer/canvas/Layer
    */
 
+  /**
+   * @abstract
+   */
   var CanvasLayerRenderer = /*@__PURE__*/(function (LayerRenderer$$1) {
     function CanvasLayerRenderer(layer) {
 
@@ -34091,10 +34094,10 @@
       var width = frameState.size[0] * pixelRatio;
       var height = frameState.size[1] * pixelRatio;
       var rotation = frameState.viewState.rotation;
-      var topLeft = getTopLeft(/** @type {import("../../extent.js").Extent} */ (extent));
-      var topRight = getTopRight(/** @type {import("../../extent.js").Extent} */ (extent));
-      var bottomRight = getBottomRight(/** @type {import("../../extent.js").Extent} */ (extent));
-      var bottomLeft = getBottomLeft(/** @type {import("../../extent.js").Extent} */ (extent));
+      var topLeft = getTopLeft(extent);
+      var topRight = getTopRight(extent);
+      var bottomRight = getBottomRight(extent);
+      var bottomLeft = getBottomLeft(extent);
 
       apply(frameState.coordinateToPixelTransform, topLeft);
       apply(frameState.coordinateToPixelTransform, topRight);
@@ -34149,7 +34152,7 @@
      * @template S,T,U
      */
     CanvasLayerRenderer.prototype.forEachLayerAtCoordinate = function forEachLayerAtCoordinate (coordinate, frameState, hitTolerance, callback, thisArg) {
-      var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, TRUE, this);
+      var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, TRUE);
 
       if (hasFeature) {
         return callback.call(thisArg, this.getLayer(), null);
@@ -34214,7 +34217,9 @@
      * @param {import("../../layer/Layer.js").State} layerState Layer state.
      * @param {CanvasRenderingContext2D} context Context.
      */
-    CanvasLayerRenderer.prototype.composeFrame = function composeFrame (frameState, layerState, context) {};
+    CanvasLayerRenderer.prototype.composeFrame = function composeFrame (frameState, layerState, context) {
+      abstract();
+    };
 
     /**
      * @abstract
@@ -34222,7 +34227,9 @@
      * @param {import("../../layer/Layer.js").State} layerState Layer state.
      * @return {boolean} whether composeFrame should be called.
      */
-    CanvasLayerRenderer.prototype.prepareFrame = function prepareFrame (frameState, layerState) {};
+    CanvasLayerRenderer.prototype.prepareFrame = function prepareFrame (frameState, layerState) {
+      return abstract();
+    };
 
     return CanvasLayerRenderer;
   }(LayerRenderer));
@@ -34231,6 +34238,9 @@
    * @module ol/renderer/canvas/IntermediateCanvas
    */
 
+  /**
+   * @abstract
+   */
   var IntermediateCanvasRenderer = /*@__PURE__*/(function (CanvasLayerRenderer$$1) {
     function IntermediateCanvasRenderer(layer) {
 
@@ -34286,8 +34296,10 @@
         var dy = imageTransform[5];
         var dw = image.width * imageTransform[0];
         var dh = image.height * imageTransform[3];
-        context.drawImage(image, 0, 0, +image.width, +image.height,
-          Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
+        if (dw >= 0.5 && dh >= 0.5) {
+          context.drawImage(image, 0, 0, +image.width, +image.height,
+            Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
+        }
         context.globalAlpha = alpha;
 
         if (clipped) {
@@ -34302,32 +34314,16 @@
      * @abstract
      * @return {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} Canvas.
      */
-    IntermediateCanvasRenderer.prototype.getImage = function getImage () {};
+    IntermediateCanvasRenderer.prototype.getImage = function getImage () {
+      return abstract();
+    };
 
     /**
      * @abstract
      * @return {!import("../../transform.js").Transform} Image transform.
      */
-    IntermediateCanvasRenderer.prototype.getImageTransform = function getImageTransform () {};
-
-    /**
-     * @inheritDoc
-     */
-    IntermediateCanvasRenderer.prototype.forEachFeatureAtCoordinate = function forEachFeatureAtCoordinate (coordinate, frameState, hitTolerance, callback, thisArg) {
-      var layer = this.getLayer();
-      var source = layer.getSource();
-      var resolution = frameState.viewState.resolution;
-      var rotation = frameState.viewState.rotation;
-      var skippedFeatureUids = frameState.skippedFeatureUids;
-      return source.forEachFeatureAtCoordinate(
-        coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
-        /**
-         * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
-         * @return {?} Callback result.
-         */
-        function(feature) {
-          return callback.call(thisArg, feature, layer);
-        });
+    IntermediateCanvasRenderer.prototype.getImageTransform = function getImageTransform () {
+      return abstract();
     };
 
     /**
@@ -34338,27 +34334,21 @@
         return undefined;
       }
 
-      if (this.getLayer().getSource().forEachFeatureAtCoordinate !== VOID) {
-        // for ImageCanvas sources use the original hit-detection logic,
-        // so that for example also transparent polygons are detected
-        return CanvasLayerRenderer$$1.prototype.forEachLayerAtCoordinate.call(this, arguments);
+      var pixel = apply(this.coordinateToCanvasPixelTransform, coordinate.slice());
+      scale$2(pixel, frameState.viewState.resolution / this.renderedResolution);
+
+      if (!this.hitCanvasContext_) {
+        this.hitCanvasContext_ = createCanvasContext2D(1, 1);
+      }
+
+      this.hitCanvasContext_.clearRect(0, 0, 1, 1);
+      this.hitCanvasContext_.drawImage(this.getImage(), pixel[0], pixel[1], 1, 1, 0, 0, 1, 1);
+
+      var imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
+      if (imageData[3] > 0) {
+        return callback.call(thisArg, this.getLayer(), imageData);
       } else {
-        var pixel = apply(this.coordinateToCanvasPixelTransform, coordinate.slice());
-        scale$2(pixel, frameState.viewState.resolution / this.renderedResolution);
-
-        if (!this.hitCanvasContext_) {
-          this.hitCanvasContext_ = createCanvasContext2D(1, 1);
-        }
-
-        this.hitCanvasContext_.clearRect(0, 0, 1, 1);
-        this.hitCanvasContext_.drawImage(this.getImage(), pixel[0], pixel[1], 1, 1, 0, 0, 1, 1);
-
-        var imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
-        if (imageData[3] > 0) {
-          return callback.call(thisArg, this.getLayer(), imageData);
-        } else {
-          return undefined;
-        }
+        return undefined;
       }
     };
 
@@ -34406,7 +34396,7 @@
         for (var i = 0, ii = layerRendererConstructors.length; i < ii; ++i) {
           var ctor = layerRendererConstructors[i];
           if (ctor !== CanvasImageLayerRenderer && ctor['handles'](imageLayer)) {
-            this.vectorRenderer_ = new ctor(imageLayer);
+            this.vectorRenderer_ = /** @type {import("./VectorLayer.js").default} */ (new ctor(imageLayer));
             break;
           }
         }
@@ -34455,7 +34445,7 @@
 
       var image;
       var imageLayer = /** @type {import("../../layer/Image.js").default} */ (this.getLayer());
-      var imageSource = imageLayer.getSource();
+      var imageSource = /** @type {import("../../source/Image.js").default} */ (imageLayer.getSource());
 
       var hints = frameState.viewHints;
 
@@ -34484,7 +34474,7 @@
           image = new ImageCanvas(renderedExtent, viewResolution, pixelRatio, context.canvas, function(callback) {
             if (vectorRenderer.prepareFrame(imageFrameState, layerState) &&
                 (vectorRenderer.replayGroupChanged ||
-                !equals$1(skippedFeatures, newSkippedFeatures))) {
+                !equals(skippedFeatures, newSkippedFeatures))) {
               context.canvas.width = imageFrameState.size[0] * pixelRatio;
               context.canvas.height = imageFrameState.size[1] * pixelRatio;
               vectorRenderer.compose(context, imageFrameState, layerState);
@@ -34530,11 +34520,11 @@
     /**
      * @inheritDoc
      */
-    CanvasImageLayerRenderer.prototype.forEachFeatureAtCoordinate = function forEachFeatureAtCoordinate (coordinate, frameState, hitTolerance, callback, thisArg) {
+    CanvasImageLayerRenderer.prototype.forEachFeatureAtCoordinate = function forEachFeatureAtCoordinate (coordinate, frameState, hitTolerance, callback) {
       if (this.vectorRenderer_) {
-        return this.vectorRenderer_.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
+        return this.vectorRenderer_.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback);
       } else {
-        return IntermediateCanvasRenderer$$1.prototype.forEachFeatureAtCoordinate.call(this, coordinate, frameState, hitTolerance, callback, thisArg);
+        return IntermediateCanvasRenderer$$1.prototype.forEachFeatureAtCoordinate.call(this, coordinate, frameState, hitTolerance, callback);
       }
     };
 
@@ -34650,30 +34640,30 @@
   };
 
   /**
-  * @return {number} Height.
-  */
+   * @return {number} Height.
+   */
   TileRange.prototype.getHeight = function getHeight () {
     return this.maxY - this.minY + 1;
   };
 
   /**
-  * @return {import("./size.js").Size} Size.
-  */
+   * @return {import("./size.js").Size} Size.
+   */
   TileRange.prototype.getSize = function getSize () {
     return [this.getWidth(), this.getHeight()];
   };
 
   /**
-  * @return {number} Width.
-  */
+   * @return {number} Width.
+   */
   TileRange.prototype.getWidth = function getWidth () {
     return this.maxX - this.minX + 1;
   };
 
   /**
-  * @param {TileRange} tileRange Tile range.
-  * @return {boolean} Intersects.
-  */
+   * @param {TileRange} tileRange Tile range.
+   * @return {boolean} Intersects.
+   */
   TileRange.prototype.intersects = function intersects (tileRange) {
     return this.minX <= tileRange.maxX &&
        this.maxX >= tileRange.minX &&
@@ -34788,8 +34778,9 @@
      * @return {boolean} Tile is drawable.
      */
     CanvasTileLayerRenderer.prototype.isDrawableTile_ = function isDrawableTile_ (tile) {
+      var tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
       var tileState = tile.getState();
-      var useInterimTilesOnError = this.getLayer().getUseInterimTilesOnError();
+      var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
       return tileState == TileState.LOADED ||
           tileState == TileState.EMPTY ||
           tileState == TileState.ERROR && !useInterimTilesOnError;
@@ -34804,14 +34795,14 @@
      * @return {!import("../../Tile.js").default} Tile.
      */
     CanvasTileLayerRenderer.prototype.getTile = function getTile (z, x, y, pixelRatio, projection) {
-      var layer = this.getLayer();
-      var source = /** @type {import("../../source/Tile.js").default} */ (layer.getSource());
-      var tile = source.getTile(z, x, y, pixelRatio, projection);
+      var tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
+      var tileSource = /** @type {import("../../source/Tile.js").default} */ (tileLayer.getSource());
+      var tile = tileSource.getTile(z, x, y, pixelRatio, projection);
       if (tile.getState() == TileState.ERROR) {
-        if (!layer.getUseInterimTilesOnError()) {
+        if (!tileLayer.getUseInterimTilesOnError()) {
           // When useInterimTilesOnError is false, we consider the error tile as loaded.
           tile.setState(TileState.LOADED);
-        } else if (layer.getPreload() > 0) {
+        } else if (tileLayer.getPreload() > 0) {
           // Preloaded tiles for lower resolutions might have finished loading.
           this.newTiles_ = true;
         }
@@ -34834,7 +34825,7 @@
       var viewResolution = viewState.resolution;
       var viewCenter = viewState.center;
 
-      var tileLayer = this.getLayer();
+      var tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
       var tileSource = /** @type {import("../../source/Tile.js").default} */ (tileLayer.getSource());
       var sourceRevision = tileSource.getRevision();
       var tileGrid = tileSource.getTileGridForProjection(projection);
@@ -34927,7 +34918,7 @@
             canvas.width = width;
             canvas.height = height;
           } else {
-            if (this.renderedExtent_ && !equals(imageExtent, this.renderedExtent_)) {
+            if (this.renderedExtent_ && !equals$1(imageExtent, this.renderedExtent_)) {
               context.clearRect(0, 0, width, height);
             }
             oversampling = this.oversampling_;
@@ -35006,13 +34997,15 @@
      * @param {boolean} transition Apply an alpha transition.
      */
     CanvasTileLayerRenderer.prototype.drawTileImage = function drawTileImage (tile, frameState, layerState, x, y, w, h, gutter, transition) {
-      var image = tile.getImage(this.getLayer());
+      var image = this.getTileImage(tile);
       if (!image) {
         return;
       }
       var uid = getUid(this);
       var alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
-      if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
+      var tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
+      var tileSource = /** @type {import("../../source/Tile.js").default} */ (tileLayer.getSource());
+      if (alpha === 1 && !tileSource.getOpaque(frameState.viewState.projection)) {
         this.context.clearRect(x, y, w, h);
       }
       var alphaChanged = alpha !== this.context.globalAlpha;
@@ -35046,6 +35039,16 @@
      */
     CanvasTileLayerRenderer.prototype.getImageTransform = function getImageTransform () {
       return this.imageTransform_;
+    };
+
+    /**
+     * Get the image from a tile.
+     * @param {import("../../Tile.js").default} tile Tile.
+     * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
+     * @protected
+     */
+    CanvasTileLayerRenderer.prototype.getTileImage = function getTileImage (tile) {
+      return /** @type {import("../../ImageTile.js").default} */ (tile).getImage();
     };
 
     return CanvasTileLayerRenderer;
@@ -35082,18 +35085,32 @@
   /**
    * @module ol/render/ReplayGroup
    */
+
   /**
    * Base class for replay groups.
    */
   var ReplayGroup = function ReplayGroup () {};
 
-  ReplayGroup.prototype.getReplay = function getReplay (zIndex, replayType) {};
+  ReplayGroup.prototype.getReplay = function getReplay (zIndex, replayType) {
+    return abstract();
+  };
 
   /**
    * @abstract
    * @return {boolean} Is empty.
    */
-  ReplayGroup.prototype.isEmpty = function isEmpty () {};
+  ReplayGroup.prototype.isEmpty = function isEmpty () {
+    return abstract();
+  };
+
+  /**
+   * @abstract
+   * @param {boolean} group Group with previous replay
+   * @return {Array<*>} The resulting instruction group
+   */
+  ReplayGroup.prototype.addDeclutter = function addDeclutter (group) {
+    return abstract();
+  };
 
   /**
    * @module ol/render/ReplayType
@@ -35257,7 +35274,7 @@
 
   /**
    * @const
-   * @type {Array<import("./ReplayType.js").default>}
+   * @type {Array<ReplayType>}
    */
   var ORDER = [
     ReplayType.POLYGON,
@@ -35550,7 +35567,7 @@
         if (!intersects$$1 && declutterGroup[4] == 1) {
           return;
         }
-        extend(declutterGroup, tmpExtent);
+        extend$1(declutterGroup, tmpExtent);
         var declutterArgs = intersects$$1 ?
           [context, transform ? transform.slice(0) : null, opacity, image, originX, originY, w, h, x, y, scale$$1] :
           null;
@@ -35743,8 +35760,8 @@
     CanvasReplay.prototype.setStrokeStyle_ = function setStrokeStyle_ (context, instruction) {
       context.strokeStyle = /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
       context.lineWidth = /** @type {number} */ (instruction[2]);
-      context.lineCap = /** @type {string} */ (instruction[3]);
-      context.lineJoin = /** @type {string} */ (instruction[4]);
+      context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
+      context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
       context.miterLimit = /** @type {number} */ (instruction[5]);
       if (CANVAS_LINE_DASH) {
         context.lineDashOffset = /** @type {number} */ (instruction[7]);
@@ -35813,7 +35830,7 @@
     ) {
       /** @type {Array<number>} */
       var pixelCoordinates;
-      if (this.pixelCoordinates_ && equals$1(transform, this.renderedTransform_)) {
+      if (this.pixelCoordinates_ && equals(transform, this.renderedTransform_)) {
         pixelCoordinates = this.pixelCoordinates_;
       } else {
         if (!this.pixelCoordinates_) {
@@ -35855,9 +35872,7 @@
         switch (type) {
           case Instruction.BEGIN_GEOMETRY:
             feature = /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ (instruction[1]);
-            if ((skipFeatures &&
-                skippedFeaturesHash[getUid(feature).toString()]) ||
-                !feature.getGeometry()) {
+            if ((skipFeatures && skippedFeaturesHash[getUid(feature)]) || !feature.getGeometry()) {
               i = /** @type {number} */ (instruction[2]);
             } else if (opt_hitExtent !== undefined && !intersects(
               opt_hitExtent, feature.getGeometry().getExtent())) {
@@ -35981,7 +35996,9 @@
             var pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
             var textLength = measure(text);
             if (overflow || textLength <= pathLength) {
-              var textAlign = /** @type {module:ol~render} */ (this).textStates[textKey].textAlign;
+              /** @type {import("./TextReplay.js").default} */
+              var textReplay = /** @type {?} */ (this);
+              var textAlign = textReplay.textStates[textKey].textAlign;
               var startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
               var parts = drawTextOnPath(
                 pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
@@ -35991,7 +36008,7 @@
                   for (c = 0, cc = parts.length; c < cc; ++c) {
                     part = parts[c]; // x, y, anchorX, rotation, chunk
                     chars = /** @type {string} */ (part[4]);
-                    label = /** @type {module:ol~render} */ (this).getImage(chars, textKey, '', strokeKey);
+                    label = textReplay.getImage(chars, textKey, '', strokeKey);
                     anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                     anchorY = baseline * label.height + (0.5 - baseline) * 2 * strokeWidth - offsetY;
                     this.replayImage_(context,
@@ -36005,7 +36022,7 @@
                   for (c = 0, cc = parts.length; c < cc; ++c) {
                     part = parts[c]; // x, y, anchorX, rotation, chunk
                     chars = /** @type {string} */ (part[4]);
-                    label = /** @type {module:ol~render} */ (this).getImage(chars, textKey, fillKey, '');
+                    label = textReplay.getImage(chars, textKey, fillKey, '');
                     anchorX = /** @type {number} */ (part[2]);
                     anchorY = baseline * label.height - offsetY;
                     this.replayImage_(context,
@@ -36234,6 +36251,7 @@
      */
     CanvasReplay.prototype.createFill = function createFill (state, geometry) {
       var fillStyle = state.fillStyle;
+      /** @type {Array<*>} */
       var fillInstruction$$1 = [Instruction.SET_FILL_STYLE, fillStyle];
       if (typeof fillStyle !== 'string') {
         // Fill is a pattern or gradient - align it!
@@ -36291,7 +36309,7 @@
       var miterLimit = state.miterLimit;
       if (state.currentStrokeStyle != strokeStyle ||
           state.currentLineCap != lineCap ||
-          (lineDash != state.currentLineDash && !equals$1(state.currentLineDash, lineDash)) ||
+          (lineDash != state.currentLineDash && !equals(state.currentLineDash, lineDash)) ||
           state.currentLineDashOffset != lineDashOffset ||
           state.currentLineJoin != lineJoin ||
           state.currentLineWidth != lineWidth ||
@@ -37194,8 +37212,8 @@
         if (strokeKey) {
           context.strokeStyle = strokeState.strokeStyle;
           context.lineWidth = strokeWidth;
-          context.lineCap = strokeState.lineCap;
-          context.lineJoin = strokeState.lineJoin;
+          context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
+          context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
           context.miterLimit = strokeState.miterLimit;
           if (CANVAS_LINE_DASH && strokeState.lineDash.length) {
             context.setLineDash(strokeState.lineDash);
@@ -37450,9 +37468,7 @@
 
 
   /**
-   * @type {Object<ReplayType,
-   *                function(new: CanvasReplay, number, import("../../extent.js").Extent,
-   *                number, number, boolean, Array<import("../canvas.js").DeclutterGroup>)>}
+   * @type {Object<ReplayType, typeof CanvasReplay>}
    */
   var BATCH_CONSTRUCTORS = {
     'Circle': CanvasPolygonReplay,
@@ -37548,8 +37564,7 @@
     CanvasReplayGroup.prototype.constructor = CanvasReplayGroup;
 
     /**
-     * @param {boolean} group Group with previous replay.
-     * @return {import("../canvas.js").DeclutterGroup} Declutter instruction group.
+     * @inheritDoc
      */
     CanvasReplayGroup.prototype.addDeclutter = function addDeclutter (group) {
       var declutter = null;
@@ -37962,12 +37977,12 @@
 
 
   /**
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature1 Feature 1.
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature2 Feature 2.
+   * @param {import("../Feature.js").FeatureLike} feature1 Feature 1.
+   * @param {import("../Feature.js").FeatureLike} feature2 Feature 2.
    * @return {number} Order.
    */
   function defaultOrder(feature1, feature2) {
-    return getUid(feature1) - getUid(feature2);
+    return parseInt(getUid(feature1), 10) - parseInt(getUid(feature2), 10);
   }
 
 
@@ -38017,7 +38032,7 @@
 
   /**
    * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    * @param {import("../style/Style.js").default} style Style.
    * @param {number} squaredTolerance Squared tolerance.
    * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
@@ -38049,7 +38064,7 @@
 
   /**
    * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    * @param {import("../style/Style.js").default} style Style.
    * @param {number} squaredTolerance Squared tolerance.
    */
@@ -38071,9 +38086,9 @@
 
   /**
    * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
-   * @param {import("../geom/Geometry.js").default} geometry Geometry.
+   * @param {import("../geom/Geometry.js").default|import("../render/Feature.js").default} geometry Geometry.
    * @param {import("../style/Style.js").default} style Style.
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   function renderGeometry(replayGroup, geometry, style, feature) {
     if (geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
@@ -38109,7 +38124,7 @@
    * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
    * @param {import("../geom/LineString.js").default|import("../render/Feature.js").default} geometry Geometry.
    * @param {import("../style/Style.js").default} style Style.
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   function renderLineStringGeometry(replayGroup, geometry, style, feature) {
     var strokeStyle = style.getStroke();
@@ -38131,7 +38146,7 @@
    * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
    * @param {import("../geom/MultiLineString.js").default|import("../render/Feature.js").default} geometry Geometry.
    * @param {import("../style/Style.js").default} style Style.
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   function renderMultiLineStringGeometry(replayGroup, geometry, style, feature) {
     var strokeStyle = style.getStroke();
@@ -38176,7 +38191,7 @@
    * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
    * @param {import("../geom/Point.js").default|import("../render/Feature.js").default} geometry Geometry.
    * @param {import("../style/Style.js").default} style Style.
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   function renderPointGeometry(replayGroup, geometry, style, feature) {
     var imageStyle = style.getImage();
@@ -38201,7 +38216,7 @@
    * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
    * @param {import("../geom/MultiPoint.js").default|import("../render/Feature.js").default} geometry Geometry.
    * @param {import("../style/Style.js").default} style Style.
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   function renderMultiPointGeometry(replayGroup, geometry, style, feature) {
     var imageStyle = style.getImage();
@@ -38226,7 +38241,7 @@
    * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
    * @param {import("../geom/Polygon.js").default|import("../render/Feature.js").default} geometry Geometry.
    * @param {import("../style/Style.js").default} style Style.
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   function renderPolygonGeometry(replayGroup, geometry, style, feature) {
     var fillStyle = style.getFill();
@@ -38473,11 +38488,11 @@
         var features = {};
         var result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
           /**
-           * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
+           * @param {import("../../Feature.js").FeatureLike} feature Feature.
            * @return {?} Callback result.
            */
           function(feature) {
-            var key = getUid(feature).toString();
+            var key = getUid(feature);
             if (!(key in features)) {
               features[key] = true;
               return callback.call(thisArg, feature, layer);
@@ -38511,7 +38526,7 @@
      */
     CanvasVectorLayerRenderer.prototype.prepareFrame = function prepareFrame (frameState, layerState) {
       var vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
-      var vectorSource = vectorLayer.getSource();
+      var vectorSource = /** @type {import("../../source/Vector.js").default} */ (vectorLayer.getSource());
 
       var animating = frameState.viewHints[ViewHint.ANIMATING];
       var interacting = frameState.viewHints[ViewHint.INTERACTING];
@@ -38595,13 +38610,13 @@
            */
           function(feature) {
             features.push(feature);
-          }, this);
+          });
         features.sort(vectorLayerRenderOrder);
         for (var i = 0, ii = features.length; i < ii; ++i) {
           render(features[i]);
         }
       } else {
-        vectorSource.forEachFeatureInExtent(extent, render, this);
+        vectorSource.forEachFeatureInExtent(extent, render);
       }
       replayGroup.finish();
 
@@ -38750,8 +38765,15 @@
        */
       this.tmpTransform_ = create();
 
+      var renderMode = layer.getRenderMode();
+
       // Use lower resolution for pure vector rendering. Closest resolution otherwise.
-      this.zDirection = layer.getRenderMode() == VectorTileRenderType.VECTOR ? 1 : 0;
+      this.zDirection = renderMode === VectorTileRenderType.VECTOR ? 1 : 0;
+
+      if (renderMode !== VectorTileRenderType.VECTOR) {
+        this.context = createCanvasContext2D();
+      }
+
 
       listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
 
@@ -38775,9 +38797,9 @@
     CanvasVectorTileLayerRenderer.prototype.getTile = function getTile (z, x, y, pixelRatio, projection) {
       var tile = CanvasTileLayerRenderer$$1.prototype.getTile.call(this, z, x, y, pixelRatio, projection);
       if (tile.getState() === TileState.LOADED) {
-        this.createReplayGroup_(tile, pixelRatio, projection);
+        this.createReplayGroup_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
         if (this.context) {
-          this.renderTileImage_(tile, pixelRatio, projection);
+          this.renderTileImage_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
         }
       }
       return tile;
@@ -38786,18 +38808,19 @@
     /**
      * @inheritDoc
      */
+    CanvasVectorTileLayerRenderer.prototype.getTileImage = function getTileImage (tile) {
+      var tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
+      return /** @type {import("../../VectorImageTile.js").default} */ (tile).getImage(tileLayer);
+    };
+
+    /**
+     * @inheritDoc
+     */
     CanvasVectorTileLayerRenderer.prototype.prepareFrame = function prepareFrame (frameState, layerState) {
-      var layer = this.getLayer();
+      var layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
       var layerRevision = layer.getRevision();
       if (this.renderedLayerRevision_ != layerRevision) {
         this.renderedTiles.length = 0;
-        var renderMode = layer.getRenderMode();
-        if (!this.context && renderMode != VectorTileRenderType.VECTOR) {
-          this.context = createCanvasContext2D();
-        }
-        if (this.context && renderMode == VectorTileRenderType.VECTOR) {
-          this.context = null;
-        }
       }
       this.renderedLayerRevision_ = layerRevision;
       return CanvasTileLayerRenderer$$1.prototype.prepareFrame.call(this, frameState, layerState);
@@ -38812,7 +38835,7 @@
     CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function createReplayGroup_ (tile, pixelRatio, projection) {
       var this$1 = this;
 
-      var layer = this.getLayer();
+      var layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
       var revision = layer.getRevision();
       var renderOrder = /** @type {import("../../render.js").OrderFunction} */ (layer.getRenderOrder()) || null;
 
@@ -38827,6 +38850,7 @@
       var tileGrid = source.getTileGridForProjection(projection);
       var resolution = tileGrid.getResolution(tile.tileCoord[0]);
       var tileExtent = tile.extent;
+
       var loop = function ( t, tt ) {
         var sourceTile = tile.getTile(tile.tileKeys[t]);
         if (sourceTile.getState() != TileState.LOADED) {
@@ -38836,7 +38860,7 @@
         var sourceTileCoord = sourceTile.tileCoord;
         var sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
         var sharedExtent = getIntersection(tileExtent, sourceTileExtent);
-        var bufferedExtent = equals(sourceTileExtent, sharedExtent) ? null :
+        var bufferedExtent = equals$1(sourceTileExtent, sharedExtent) ? null :
           buffer(sharedExtent, layer.getRenderBuffer() * resolution, this$1.tmpExtent);
         var tileProjection = sourceTile.getProjection();
         var reproject = false;
@@ -38850,7 +38874,7 @@
         var squaredTolerance = getSquaredTolerance(resolution, pixelRatio);
 
         /**
-         * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
+         * @param {import("../../Feature.js").FeatureLike} feature Feature.
          * @this {CanvasVectorTileLayerRenderer}
          */
         var render = function(feature) {
@@ -38886,8 +38910,6 @@
           }
         }
         replayGroup.finish();
-        for (var r in replayGroup.getReplays()) {
-        }
         sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
       };
 
@@ -38907,11 +38929,10 @@
       /** @type {!Object<string, boolean>} */
       var features = {};
 
-      /** @type {Array<import("../../VectorImageTile.js").default>} */
-      var renderedTiles = this.renderedTiles;
+      var renderedTiles = /** @type {Array<import("../../VectorImageTile.js").default>} */ (this.renderedTiles);
 
       var bufferedExtent, found;
-      var i, ii, replayGroup;
+      var i, ii;
       for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
         var tile = renderedTiles[i];
         bufferedExtent = buffer(tile.extent, hitTolerance * resolution, bufferedExtent);
@@ -38923,14 +38944,15 @@
           if (sourceTile.getState() != TileState.LOADED) {
             continue;
           }
-          replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
+          var replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer,
+            tile.tileCoord.toString()));
           found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
             /**
-             * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
+             * @param {import("../../Feature.js").FeatureLike} feature Feature.
              * @return {?} Callback result.
              */
             function(feature) {
-              var key = getUid(feature).toString();
+              var key = getUid(feature);
               if (!(key in features)) {
                 features[key] = true;
                 return callback.call(thisArg, feature, layer);
@@ -38993,7 +39015,7 @@
      * @inheritDoc
      */
     CanvasVectorTileLayerRenderer.prototype.postCompose = function postCompose (context, frameState, layerState) {
-      var layer = this.getLayer();
+      var layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
       var renderMode = layer.getRenderMode();
       if (renderMode != VectorTileRenderType.IMAGE) {
         var declutterReplays = layer.getDeclutter() ? {} : null;
@@ -39030,7 +39052,7 @@
             if (sourceTile.getState() != TileState.LOADED) {
               continue;
             }
-            var replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
+            var replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer, tileCoord.toString()));
             if (!replayGroup || !replayGroup.hasReplays(replayTypes)) {
               // sourceTile was not yet loaded when this.createReplayGroup_() was
               // called, or it has no replays of the types we want to render
@@ -39080,7 +39102,7 @@
     };
 
     /**
-     * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
+     * @param {import("../../Feature.js").FeatureLike} feature Feature.
      * @param {number} squaredTolerance Squared tolerance.
      * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
      * @param {import("../../render/canvas/ReplayGroup.js").default} replayGroup Replay group.
@@ -39112,7 +39134,7 @@
      * @private
      */
     CanvasVectorTileLayerRenderer.prototype.renderTileImage_ = function renderTileImage_ (tile, pixelRatio, projection) {
-      var layer = this.getLayer();
+      var layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
       var replayState = tile.getReplayState(layer);
       var revision = layer.getRevision();
       var replays = IMAGE_REPLAYS[layer.getRenderMode()];
@@ -39137,7 +39159,8 @@
           var transform$$1 = reset(this.tmpTransform_);
           scale$1(transform$$1, pixelScale, -pixelScale);
           translate$1(transform$$1, -tileExtent[0], -tileExtent[3]);
-          var replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
+          var replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer,
+            tile.tileCoord.toString()));
           replayGroup.replay(context, transform$$1, 0, {}, true, replays);
         }
       }
@@ -39335,7 +39358,7 @@
    * @enum {string}
    * @protected
    */
-  var Property$3 = {
+  var Property$4 = {
     ELEMENT: 'element',
     MAP: 'map',
     OFFSET: 'offset',
@@ -39445,23 +39468,23 @@
       this.mapPostrenderListenerKey = null;
 
       listen(
-        this, getChangeEventType(Property$3.ELEMENT),
+        this, getChangeEventType(Property$4.ELEMENT),
         this.handleElementChanged, this);
 
       listen(
-        this, getChangeEventType(Property$3.MAP),
+        this, getChangeEventType(Property$4.MAP),
         this.handleMapChanged, this);
 
       listen(
-        this, getChangeEventType(Property$3.OFFSET),
+        this, getChangeEventType(Property$4.OFFSET),
         this.handleOffsetChanged, this);
 
       listen(
-        this, getChangeEventType(Property$3.POSITION),
+        this, getChangeEventType(Property$4.POSITION),
         this.handlePositionChanged, this);
 
       listen(
-        this, getChangeEventType(Property$3.POSITIONING),
+        this, getChangeEventType(Property$4.POSITIONING),
         this.handlePositioningChanged, this);
 
       if (options.element !== undefined) {
@@ -39491,7 +39514,7 @@
      * @api
      */
     Overlay.prototype.getElement = function getElement () {
-      return /** @type {HTMLElement|undefined} */ (this.get(Property$3.ELEMENT));
+      return /** @type {HTMLElement|undefined} */ (this.get(Property$4.ELEMENT));
     };
 
     /**
@@ -39512,7 +39535,7 @@
      */
     Overlay.prototype.getMap = function getMap () {
       return (
-        /** @type {import("./PluggableMap.js").default|undefined} */ (this.get(Property$3.MAP))
+        /** @type {import("./PluggableMap.js").default|undefined} */ (this.get(Property$4.MAP))
       );
     };
 
@@ -39523,7 +39546,7 @@
      * @api
      */
     Overlay.prototype.getOffset = function getOffset () {
-      return /** @type {Array<number>} */ (this.get(Property$3.OFFSET));
+      return /** @type {Array<number>} */ (this.get(Property$4.OFFSET));
     };
 
     /**
@@ -39535,7 +39558,7 @@
      */
     Overlay.prototype.getPosition = function getPosition () {
       return (
-        /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(Property$3.POSITION))
+        /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(Property$4.POSITION))
       );
     };
 
@@ -39548,7 +39571,7 @@
      */
     Overlay.prototype.getPositioning = function getPositioning () {
       return (
-        /** @type {OverlayPositioning} */ (this.get(Property$3.POSITIONING))
+        /** @type {OverlayPositioning} */ (this.get(Property$4.POSITIONING))
       );
     };
 
@@ -39606,7 +39629,7 @@
      */
     Overlay.prototype.handlePositionChanged = function handlePositionChanged () {
       this.updatePixelPosition();
-      if (this.get(Property$3.POSITION) && this.autoPan) {
+      if (this.get(Property$4.POSITION) && this.autoPan) {
         this.panIntoView();
       }
     };
@@ -39625,7 +39648,7 @@
      * @api
      */
     Overlay.prototype.setElement = function setElement (element) {
-      this.set(Property$3.ELEMENT, element);
+      this.set(Property$4.ELEMENT, element);
     };
 
     /**
@@ -39636,7 +39659,7 @@
      * @api
      */
     Overlay.prototype.setMap = function setMap (map) {
-      this.set(Property$3.MAP, map);
+      this.set(Property$4.MAP, map);
     };
 
     /**
@@ -39646,7 +39669,7 @@
      * @api
      */
     Overlay.prototype.setOffset = function setOffset (offset) {
-      this.set(Property$3.OFFSET, offset);
+      this.set(Property$4.OFFSET, offset);
     };
 
     /**
@@ -39658,7 +39681,7 @@
      * @api
      */
     Overlay.prototype.setPosition = function setPosition (position) {
-      this.set(Property$3.POSITION, position);
+      this.set(Property$4.POSITION, position);
     };
 
     /**
@@ -39745,7 +39768,7 @@
      * @api
      */
     Overlay.prototype.setPositioning = function setPositioning (positioning) {
-      this.set(Property$3.POSITIONING, positioning);
+      this.set(Property$4.POSITIONING, positioning);
     };
 
     /**
@@ -40196,7 +40219,7 @@
      * @return {CanvasRenderingContext2D} The rendering context.
      */
     VectorImageTile.prototype.getContext = function getContext (layer) {
-      var key = getUid(layer).toString();
+      var key = getUid(layer);
       if (!(key in this.context_)) {
         this.context_[key] = createCanvasContext2D();
       }
@@ -40218,7 +40241,7 @@
      * @return {ReplayState} The replay state.
      */
     VectorImageTile.prototype.getReplayState = function getReplayState (layer) {
-      var key = getUid(layer).toString();
+      var key = getUid(layer);
       if (!(key in this.replayState_)) {
         this.replayState_[key] = {
           dirty: false,
@@ -40341,12 +40364,6 @@
   var DEFAULT_EXTENT = [0, 0, 4096, 4096];
 
 
-  /**
-   * @typedef {function(new: VectorTile, import("./tilecoord.js").TileCoord,
-   * TileState, string, ?string, import("./Tile.js").LoadFunction)} TileClass
-   * @api
-   */
-
   var VectorTile = /*@__PURE__*/(function (Tile$$1) {
     function VectorTile(tileCoord, state, src, format, tileLoadFunction, opt_options) {
 
@@ -40444,7 +40461,7 @@
     /**
      * Get the features for this tile. Geometries will be in the projection returned
      * by {@link module:ol/VectorTile~VectorTile#getProjection}.
-     * @return {Array<import("./Feature.js").default|import("./render/Feature.js").default>} Features.
+     * @return {Array<import("./Feature.js").FeatureLike>} Features.
      * @api
      */
     VectorTile.prototype.getFeatures = function getFeatures () {
@@ -40660,14 +40677,19 @@
       this.labelActiveNode_ = typeof labelActive === 'string' ?
         document.createTextNode(labelActive) : labelActive;
 
-      var tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
-      var button = document.createElement('button');
-      button.className = this.cssClassName_ + '-' + isFullScreen();
-      button.setAttribute('type', 'button');
-      button.title = tipLabel;
-      button.appendChild(this.labelNode_);
+      /**
+       * @private
+       * @type {HTMLElement}
+       */
+      this.button_ = document.createElement('button');
 
-      listen(button, EventType.CLICK,
+      var tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
+      this.setClassName_(this.button_, isFullScreen());
+      this.button_.setAttribute('type', 'button');
+      this.button_.title = tipLabel;
+      this.button_.appendChild(this.labelNode_);
+
+      listen(this.button_, EventType.CLICK,
         this.handleClick_, this);
 
       var cssClasses = this.cssClassName_ + ' ' + CLASS_UNSELECTABLE +
@@ -40675,7 +40697,7 @@
           (!isFullScreenSupported() ? CLASS_UNSUPPORTED : '');
       var element = this.element;
       element.className = cssClasses;
-      element.appendChild(button);
+      element.appendChild(this.button_);
 
       /**
        * @private
@@ -40739,18 +40761,31 @@
      * @private
      */
     FullScreen.prototype.handleFullScreenChange_ = function handleFullScreenChange_ () {
-      var button = this.element.firstElementChild;
       var map = this.getMap();
       if (isFullScreen()) {
-        button.className = this.cssClassName_ + '-true';
+        this.setClassName_(this.button_, true);
         replaceNode(this.labelActiveNode_, this.labelNode_);
       } else {
-        button.className = this.cssClassName_ + '-false';
+        this.setClassName_(this.button_, false);
         replaceNode(this.labelNode_, this.labelActiveNode_);
       }
       if (map) {
         map.updateSize();
       }
+    };
+
+    /**
+     * @param {HTMLElement} element Target element
+     * @param {boolean} fullscreen True if fullscreen class name should be active
+     * @private
+     */
+    FullScreen.prototype.setClassName_ = function setClassName_ (element, fullscreen) {
+      var activeClassName = this.cssClassName_ + '-true';
+      var inactiveClassName = this.cssClassName_ + '-false';
+      var nextClassName = fullscreen ? activeClassName : inactiveClassName;
+      element.classList.remove(activeClassName);
+      element.classList.remove(inactiveClassName);
+      element.classList.add(nextClassName);
     };
 
     /**
@@ -40840,6 +40875,272 @@
   }
 
   /**
+   * @module ol/control/MousePosition
+   */
+
+
+  /**
+   * @type {string}
+   */
+  var PROJECTION = 'projection';
+
+  /**
+   * @type {string}
+   */
+  var COORDINATE_FORMAT = 'coordinateFormat';
+
+
+  /**
+   * @typedef {Object} Options
+   * @property {string} [className='ol-mouse-position'] CSS class name.
+   * @property {import("../coordinate.js").CoordinateFormat} [coordinateFormat] Coordinate format.
+   * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
+   * @property {function(import("../MapEvent.js").default)} [render] Function called when the
+   * control should be re-rendered. This is called in a `requestAnimationFrame`
+   * callback.
+   * @property {HTMLElement|string} [target] Specify a target if you want the
+   * control to be rendered outside of the map's viewport.
+   * @property {string} [undefinedHTML='&#160;'] Markup to show when coordinates are not
+   * available (e.g. when the pointer leaves the map viewport).  By default, the last position
+   * will be replaced with `'&#160;'` (`&nbsp;`) when the pointer leaves the viewport.  To
+   * retain the last rendered position, set this option to something falsey (like an empty
+   * string `''`).
+   */
+
+
+  /**
+   * @classdesc
+   * A control to show the 2D coordinates of the mouse cursor. By default, these
+   * are in the view projection, but can be in any supported projection.
+   * By default the control is shown in the top right corner of the map, but this
+   * can be changed by using the css selector `.ol-mouse-position`.
+   *
+   * On touch devices, which usually do not have a mouse cursor, the coordinates
+   * of the currently touched position are shown.
+   *
+   * @api
+   */
+  var MousePosition = /*@__PURE__*/(function (Control$$1) {
+    function MousePosition(opt_options) {
+
+      var options = opt_options ? opt_options : {};
+
+      var element = document.createElement('div');
+      element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
+
+      Control$$1.call(this, {
+        element: element,
+        render: options.render || render$2,
+        target: options.target
+      });
+
+      listen(this,
+        getChangeEventType(PROJECTION),
+        this.handleProjectionChanged_, this);
+
+      if (options.coordinateFormat) {
+        this.setCoordinateFormat(options.coordinateFormat);
+      }
+      if (options.projection) {
+        this.setProjection(options.projection);
+      }
+
+      /**
+       * @private
+       * @type {string}
+       */
+      this.undefinedHTML_ = options.undefinedHTML !== undefined ? options.undefinedHTML : '&#160;';
+
+      /**
+       * @private
+       * @type {boolean}
+       */
+      this.renderOnMouseOut_ = !!this.undefinedHTML_;
+
+      /**
+       * @private
+       * @type {string}
+       */
+      this.renderedHTML_ = element.innerHTML;
+
+      /**
+       * @private
+       * @type {import("../proj/Projection.js").default}
+       */
+      this.mapProjection_ = null;
+
+      /**
+       * @private
+       * @type {?import("../proj.js").TransformFunction}
+       */
+      this.transform_ = null;
+
+      /**
+       * @private
+       * @type {import("../pixel.js").Pixel}
+       */
+      this.lastMouseMovePixel_ = null;
+
+    }
+
+    if ( Control$$1 ) MousePosition.__proto__ = Control$$1;
+    MousePosition.prototype = Object.create( Control$$1 && Control$$1.prototype );
+    MousePosition.prototype.constructor = MousePosition;
+
+    /**
+     * @private
+     */
+    MousePosition.prototype.handleProjectionChanged_ = function handleProjectionChanged_ () {
+      this.transform_ = null;
+    };
+
+    /**
+     * Return the coordinate format type used to render the current position or
+     * undefined.
+     * @return {import("../coordinate.js").CoordinateFormat|undefined} The format to render the current
+     *     position in.
+     * @observable
+     * @api
+     */
+    MousePosition.prototype.getCoordinateFormat = function getCoordinateFormat () {
+      return (
+        /** @type {import("../coordinate.js").CoordinateFormat|undefined} */ (this.get(COORDINATE_FORMAT))
+      );
+    };
+
+    /**
+     * Return the projection that is used to report the mouse position.
+     * @return {import("../proj/Projection.js").default|undefined} The projection to report mouse
+     *     position in.
+     * @observable
+     * @api
+     */
+    MousePosition.prototype.getProjection = function getProjection () {
+      return (
+        /** @type {import("../proj/Projection.js").default|undefined} */ (this.get(PROJECTION))
+      );
+    };
+
+    /**
+     * @param {Event} event Browser event.
+     * @protected
+     */
+    MousePosition.prototype.handleMouseMove = function handleMouseMove (event) {
+      var map = this.getMap();
+      this.lastMouseMovePixel_ = map.getEventPixel(event);
+      this.updateHTML_(this.lastMouseMovePixel_);
+    };
+
+    /**
+     * @param {Event} event Browser event.
+     * @protected
+     */
+    MousePosition.prototype.handleMouseOut = function handleMouseOut (event) {
+      this.updateHTML_(null);
+      this.lastMouseMovePixel_ = null;
+    };
+
+    /**
+     * @inheritDoc
+     * @api
+     */
+    MousePosition.prototype.setMap = function setMap (map) {
+      Control$$1.prototype.setMap.call(this, map);
+      if (map) {
+        var viewport = map.getViewport();
+        this.listenerKeys.push(
+          listen(viewport, EventType.MOUSEMOVE, this.handleMouseMove, this),
+          listen(viewport, EventType.TOUCHSTART, this.handleMouseMove, this)
+        );
+        if (this.renderOnMouseOut_) {
+          this.listenerKeys.push(
+            listen(viewport, EventType.MOUSEOUT, this.handleMouseOut, this),
+            listen(viewport, EventType.TOUCHEND, this.handleMouseOut, this)
+          );
+        }
+      }
+    };
+
+    /**
+     * Set the coordinate format type used to render the current position.
+     * @param {import("../coordinate.js").CoordinateFormat} format The format to render the current
+     *     position in.
+     * @observable
+     * @api
+     */
+    MousePosition.prototype.setCoordinateFormat = function setCoordinateFormat (format) {
+      this.set(COORDINATE_FORMAT, format);
+    };
+
+    /**
+     * Set the projection that is used to report the mouse position.
+     * @param {import("../proj.js").ProjectionLike} projection The projection to report mouse
+     *     position in.
+     * @observable
+     * @api
+     */
+    MousePosition.prototype.setProjection = function setProjection (projection) {
+      this.set(PROJECTION, get$2(projection));
+    };
+
+    /**
+     * @param {?import("../pixel.js").Pixel} pixel Pixel.
+     * @private
+     */
+    MousePosition.prototype.updateHTML_ = function updateHTML_ (pixel) {
+      var html = this.undefinedHTML_;
+      if (pixel && this.mapProjection_) {
+        if (!this.transform_) {
+          var projection = this.getProjection();
+          if (projection) {
+            this.transform_ = getTransformFromProjections(
+              this.mapProjection_, projection);
+          } else {
+            this.transform_ = identityTransform;
+          }
+        }
+        var map = this.getMap();
+        var coordinate = map.getCoordinateFromPixel(pixel);
+        if (coordinate) {
+          this.transform_(coordinate, coordinate);
+          var coordinateFormat = this.getCoordinateFormat();
+          if (coordinateFormat) {
+            html = coordinateFormat(coordinate);
+          } else {
+            html = coordinate.toString();
+          }
+        }
+      }
+      if (!this.renderedHTML_ || html !== this.renderedHTML_) {
+        this.element.innerHTML = html;
+        this.renderedHTML_ = html;
+      }
+    };
+
+    return MousePosition;
+  }(Control));
+
+
+  /**
+   * Update the projection. Rendering of the coordinates is done in
+   * `handleMouseMove` and `handleMouseUp`.
+   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @this {MousePosition}
+   * @api
+   */
+  function render$2(mapEvent) {
+    var frameState = mapEvent.frameState;
+    if (!frameState) {
+      this.mapProjection_ = null;
+    } else {
+      if (this.mapProjection_ != frameState.viewState.projection) {
+        this.mapProjection_ = frameState.viewState.projection;
+        this.transform_ = null;
+      }
+    }
+  }
+
+  /**
    * @module ol/control/OverviewMap
    */
 
@@ -40895,7 +41196,7 @@
 
       Control$$1.call(this, {
         element: document.createElement('div'),
-        render: options.render || render$2,
+        render: options.render || render$3,
         target: options.target
       });
 
@@ -40976,7 +41277,7 @@
       var ovmap = this.ovmap_;
 
       if (options.layers) {
-        options.layers.forEach(
+        /** @type {Array<import("../layer/Layer.js").default>} */ (options.layers).forEach(
           /**
            * @param {import("../layer/Layer.js").default} layer Layer.
            */
@@ -41025,7 +41326,8 @@
       };
 
       var move = function(event) {
-        var coordinates = ovmap.getEventCoordinate(computeDesiredMousePosition(event));
+        var position = /** @type {?} */ (computeDesiredMousePosition(event));
+        var coordinates = ovmap.getEventCoordinate(/** @type {Event} */ (position));
 
         overlay.setPosition(coordinates);
       };
@@ -41397,7 +41699,7 @@
    * @this {OverviewMap}
    * @api
    */
-  function render$2(mapEvent) {
+  function render$3(mapEvent) {
     this.validateExtent_();
     this.updateBox_();
   }
@@ -41466,7 +41768,7 @@
 
       Control$$1.call(this, {
         element: document.createElement('div'),
-        render: options.render || render$3,
+        render: options.render || render$4,
         target: options.target
       });
 
@@ -41514,8 +41816,7 @@
         this, getChangeEventType(UNITS_PROP),
         this.handleUnitsChanged_, this);
 
-      this.setUnits(/** @type {Units} */ (options.units) ||
-          Units$1.METRIC);
+      this.setUnits(/** @type {Units} */ (options.units) || Units$1.METRIC);
 
     }
 
@@ -41525,15 +41826,13 @@
 
     /**
      * Return the units to use in the scale line.
-     * @return {Units|undefined} The units
+     * @return {Units} The units
      * to use in the scale line.
      * @observable
      * @api
      */
     ScaleLine.prototype.getUnits = function getUnits () {
-      return (
-        /** @type {Units|undefined} */ (this.get(UNITS_PROP))
-      );
+      return this.get(UNITS_PROP);
     };
 
     /**
@@ -41685,7 +41984,7 @@
    * @this {ScaleLine}
    * @api
    */
-  function render$3(mapEvent) {
+  function render$4(mapEvent) {
     var frameState = mapEvent.frameState;
     if (!frameState) {
       this.viewState_ = null;
@@ -41737,11 +42036,11 @@
 
       Control$$1.call(this, {
         element: document.createElement('div'),
-        render: options.render || render$4
+        render: options.render || render$5
       });
 
       /**
-        * @type {!Array.<ol.EventsKey>}
+        * @type {!Array.<import("../events.js").EventsKey>}
         * @private
         */
       this.dragListenerKeys_ = [];
@@ -41947,8 +42246,8 @@
     ZoomSlider.prototype.handleDraggerDrag_ = function handleDraggerDrag_ (event) {
       if (this.dragging_) {
         var element = /** @type {HTMLElement} */ (this.element.firstElementChild);
-        var deltaX = event.clientX - this.previousX_ + parseInt(element.style.left, 10);
-        var deltaY = event.clientY - this.previousY_ + parseInt(element.style.top, 10);
+        var deltaX = event.clientX - this.previousX_ + parseFloat(element.style.left);
+        var deltaY = event.clientY - this.previousY_ + parseFloat(element.style.top);
         var relativePosition = this.getRelativePosition_(deltaX, deltaY);
         this.currentResolution_ = this.getResolutionForPosition_(relativePosition);
         this.getMap().getView().setResolution(this.currentResolution_);
@@ -42056,7 +42355,7 @@
    * @this {ZoomSlider}
    * @api
    */
-  function render$4(mapEvent) {
+  function render$5(mapEvent) {
     if (!mapEvent.frameState) {
       return;
     }
@@ -42187,7 +42486,9 @@
    * @abstract
    * @return {number} Type.
    */
-  WebGLShader.prototype.getType = function getType () {};
+  WebGLShader.prototype.getType = function getType () {
+    return abstract();
+  };
 
   /**
    * @return {string} Source.
@@ -42469,13 +42770,17 @@
      * @param {import("../../webgl/Context.js").default} context WebGL context.
      * @return {function()} Delete resources function.
      */
-    WebGLReplay.prototype.getDeleteResourcesFunction = function getDeleteResourcesFunction (context) {};
+    WebGLReplay.prototype.getDeleteResourcesFunction = function getDeleteResourcesFunction (context) {
+      return abstract();
+    };
 
     /**
      * @abstract
      * @param {import("../../webgl/Context.js").default} context Context.
      */
-    WebGLReplay.prototype.finish = function finish (context) {};
+    WebGLReplay.prototype.finish = function finish (context) {
+      abstract();
+    };
 
     /**
      * @abstract
@@ -42489,7 +42794,9 @@
        import("./polygonreplay/defaultshader/Locations.js").default|
        import("./texturereplay/defaultshader/Locations.js").default} Locations.
      */
-    WebGLReplay.prototype.setUpProgram = function setUpProgram (gl, context, size, pixelRatio) {};
+    WebGLReplay.prototype.setUpProgram = function setUpProgram (gl, context, size, pixelRatio) {
+      return abstract();
+    };
 
     /**
      * @abstract
@@ -42500,7 +42807,9 @@
        import("./polygonreplay/defaultshader/Locations.js").default|
        import("./texturereplay/defaultshader/Locations.js").default} locations Locations.
      */
-    WebGLReplay.prototype.shutDownProgram = function shutDownProgram (gl, locations) {};
+    WebGLReplay.prototype.shutDownProgram = function shutDownProgram (gl, locations) {
+      abstract();
+    };
 
     /**
      * @abstract
@@ -42510,7 +42819,9 @@
      * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
      * @param {boolean} hitDetection Hit detection mode.
      */
-    WebGLReplay.prototype.drawReplay = function drawReplay (gl, context, skippedFeaturesHash, hitDetection) {};
+    WebGLReplay.prototype.drawReplay = function drawReplay (gl, context, skippedFeaturesHash, hitDetection) {
+      abstract();
+    };
 
     /**
      * @abstract
@@ -42523,7 +42834,9 @@
      * @return {T|undefined} Callback result.
      * @template T
      */
-    WebGLReplay.prototype.drawHitDetectionReplayOneByOne = function drawHitDetectionReplayOneByOne (gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {};
+    WebGLReplay.prototype.drawHitDetectionReplayOneByOne = function drawHitDetectionReplayOneByOne (gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
+      return abstract();
+    };
 
     /**
      * @protected
@@ -43092,7 +43405,7 @@
      * @inheritDoc
      */
     WebGLCircleReplay.prototype.drawHitDetectionReplayOneByOne = function drawHitDetectionReplayOneByOne (gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-      var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
+      var i, start, end, nextStyle, groupStart, feature, featureIndex;
       featureIndex = this.startIndices.length - 2;
       end = this.startIndices[featureIndex + 1];
       for (i = this.styleIndices_.length - 1; i >= 0; --i) {
@@ -43106,9 +43419,8 @@
             this.startIndices[featureIndex] >= groupStart) {
           start = this.startIndices[featureIndex];
           feature = this.startIndicesFeature[featureIndex];
-          featureUid = getUid(feature).toString();
 
-          if (skippedFeaturesHash[featureUid] === undefined &&
+          if (skippedFeaturesHash[getUid(feature)] === undefined &&
               feature.getGeometry() &&
               (opt_hitExtent === undefined || intersects(
                 /** @type {Array<number>} */ (opt_hitExtent),
@@ -43137,7 +43449,7 @@
      * @param {Object} skippedFeaturesHash Ids of features to skip.
      */
     WebGLCircleReplay.prototype.drawReplaySkipping_ = function drawReplaySkipping_ (gl, context, skippedFeaturesHash) {
-      var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
+      var i, start, end, nextStyle, groupStart, feature, featureIndex, featureStart;
       featureIndex = this.startIndices.length - 2;
       end = start = this.startIndices[featureIndex + 1];
       for (i = this.styleIndices_.length - 1; i >= 0; --i) {
@@ -43151,9 +43463,8 @@
             this.startIndices[featureIndex] >= groupStart) {
           featureStart = this.startIndices[featureIndex];
           feature = this.startIndicesFeature[featureIndex];
-          featureUid = getUid(feature).toString();
 
-          if (skippedFeaturesHash[featureUid]) {
+          if (skippedFeaturesHash[getUid(feature)]) {
             if (start !== end) {
               this.drawElements(gl, context, start, end);
             }
@@ -43226,8 +43537,8 @@
       } else {
         fillStyleColor = DEFAULT_FILLSTYLE;
       }
-      if (!this.state_.strokeColor || !equals$1(this.state_.strokeColor, strokeStyleColor) ||
-          !this.state_.fillColor || !equals$1(this.state_.fillColor, fillStyleColor) ||
+      if (!this.state_.strokeColor || !equals(this.state_.strokeColor, strokeStyleColor) ||
+          !this.state_.fillColor || !equals(this.state_.fillColor, fillStyleColor) ||
           this.state_.lineWidth !== strokeStyleWidth) {
         this.state_.changed = true;
         this.state_.fillColor = fillStyleColor;
@@ -43433,7 +43744,7 @@
     WebGLContext.prototype.bindBuffer = function bindBuffer (target, buf) {
       var gl = this.getGL();
       var arr = buf.getArray();
-      var bufferKey = String(getUid(buf));
+      var bufferKey = getUid(buf);
       if (bufferKey in this.bufferCache_) {
         var bufferCacheEntry = this.bufferCache_[bufferKey];
         gl.bindBuffer(target, bufferCacheEntry.buffer);
@@ -43460,7 +43771,7 @@
      */
     WebGLContext.prototype.deleteBuffer = function deleteBuffer (buf) {
       var gl = this.getGL();
-      var bufferKey = String(getUid(buf));
+      var bufferKey = getUid(buf);
       var bufferCacheEntry = this.bufferCache_[bufferKey];
       if (!gl.isContextLost()) {
         gl.deleteBuffer(bufferCacheEntry.buffer);
@@ -43525,7 +43836,7 @@
      * @return {WebGLShader} Shader.
      */
     WebGLContext.prototype.getShader = function getShader (shaderObject) {
-      var shaderKey = String(getUid(shaderObject));
+      var shaderKey = getUid(shaderObject);
       if (shaderKey in this.shaderCache_) {
         return this.shaderCache_[shaderKey];
       } else {
@@ -43919,7 +44230,7 @@
       for (i = 0; i < ii; ++i) {
         image = images[i];
 
-        uid = getUid(image).toString();
+        uid = getUid(image);
         if (uid in texturePerImage) {
           texture = texturePerImage[uid];
         } else {
@@ -44046,8 +44357,7 @@
             this.startIndices[featureIndex] <= groupEnd) {
           var feature = this.startIndicesFeature[featureIndex];
 
-          var featureUid = getUid(feature).toString();
-          if (skippedFeaturesHash[featureUid] !== undefined) {
+          if (skippedFeaturesHash[getUid(feature)] !== undefined) {
             // feature should be skipped
             if (start !== end) {
               // draw the features so far
@@ -44077,7 +44387,7 @@
      * @inheritDoc
      */
     WebGLTextureReplay.prototype.drawHitDetectionReplayOneByOne = function drawHitDetectionReplayOneByOne (gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-      var i, groupStart, start, end, feature, featureUid;
+      var i, groupStart, start, end, feature;
       var featureIndex = this.startIndices.length - 1;
       var hitDetectionTextures = this.getHitDetectionTextures();
       for (i = hitDetectionTextures.length - 1; i >= 0; --i) {
@@ -44090,9 +44400,8 @@
             this.startIndices[featureIndex] >= groupStart) {
           start = this.startIndices[featureIndex];
           feature = this.startIndicesFeature[featureIndex];
-          featureUid = getUid(feature).toString();
 
-          if (skippedFeaturesHash[featureUid] === undefined &&
+          if (skippedFeaturesHash[getUid(feature)] === undefined &&
               feature.getGeometry() &&
               (opt_hitExtent === undefined || intersects(
                 /** @type {Array<number>} */ (opt_hitExtent),
@@ -44137,16 +44446,20 @@
      * @abstract
      * @protected
      * @param {boolean=} opt_all Return hit detection textures with regular ones.
-     * @returns {Array<WebGLTexture>} Textures.
+     * @return {Array<WebGLTexture>} Textures.
      */
-    WebGLTextureReplay.prototype.getTextures = function getTextures (opt_all) {};
+    WebGLTextureReplay.prototype.getTextures = function getTextures (opt_all) {
+      return abstract();
+    };
 
     /**
      * @abstract
      * @protected
-     * @returns {Array<WebGLTexture>} Textures.
+     * @return {Array<WebGLTexture>} Textures.
      */
-    WebGLTextureReplay.prototype.getHitDetectionTextures = function getHitDetectionTextures () {};
+    WebGLTextureReplay.prototype.getHitDetectionTextures = function getHitDetectionTextures () {
+      return abstract();
+    };
 
     return WebGLTextureReplay;
   }(WebGLReplay));
@@ -44534,7 +44847,7 @@
         //First vertex.
         if (i === offset) {
           p2 = [flatCoordinates[i + stride], flatCoordinates[i + stride + 1]];
-          if (end - offset === stride * 2 && equals$1(p1, p2)) {
+          if (end - offset === stride * 2 && equals(p1, p2)) {
             break;
           }
           if (closed) {
@@ -44718,7 +45031,7 @@
       } else if (range === stride * 2) {
         var firstP = [flatCoordinates[offset], flatCoordinates[offset + 1]];
         var lastP = [flatCoordinates[offset + stride], flatCoordinates[offset + stride + 1]];
-        return !equals$1(firstP, lastP);
+        return !equals(firstP, lastP);
       }
 
       return true;
@@ -44949,7 +45262,7 @@
      * @param {Object} skippedFeaturesHash Ids of features to skip.
      */
     WebGLLineStringReplay.prototype.drawReplaySkipping_ = function drawReplaySkipping_ (gl, context, skippedFeaturesHash) {
-      var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
+      var i, start, end, nextStyle, groupStart, feature, featureIndex, featureStart;
       featureIndex = this.startIndices.length - 2;
       end = start = this.startIndices[featureIndex + 1];
       for (i = this.styleIndices_.length - 1; i >= 0; --i) {
@@ -44961,9 +45274,8 @@
             this.startIndices[featureIndex] >= groupStart) {
           featureStart = this.startIndices[featureIndex];
           feature = this.startIndicesFeature[featureIndex];
-          featureUid = getUid(feature).toString();
 
-          if (skippedFeaturesHash[featureUid]) {
+          if (skippedFeaturesHash[getUid(feature)]) {
             if (start !== end) {
               this.drawElements(gl, context, start, end);
               gl.clear(gl.DEPTH_BUFFER_BIT);
@@ -44985,7 +45297,7 @@
      * @inheritDoc
      */
     WebGLLineStringReplay.prototype.drawHitDetectionReplayOneByOne = function drawHitDetectionReplayOneByOne (gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-      var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
+      var i, start, end, nextStyle, groupStart, feature, featureIndex;
       featureIndex = this.startIndices.length - 2;
       end = this.startIndices[featureIndex + 1];
       for (i = this.styleIndices_.length - 1; i >= 0; --i) {
@@ -44997,9 +45309,8 @@
             this.startIndices[featureIndex] >= groupStart) {
           start = this.startIndices[featureIndex];
           feature = this.startIndicesFeature[featureIndex];
-          featureUid = getUid(feature).toString();
 
-          if (skippedFeaturesHash[featureUid] === undefined &&
+          if (skippedFeaturesHash[getUid(feature)] === undefined &&
               feature.getGeometry() &&
               (opt_hitExtent === undefined || intersects(
                 /** @type {Array<number>} */ (opt_hitExtent),
@@ -45065,7 +45376,7 @@
       var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
       strokeStyleMiterLimit = strokeStyleMiterLimit !== undefined ?
         strokeStyleMiterLimit : DEFAULT_MITERLIMIT;
-      if (!this.state_.strokeColor || !equals$1(this.state_.strokeColor, strokeStyleColor) ||
+      if (!this.state_.strokeColor || !equals(this.state_.strokeColor, strokeStyleColor) ||
           this.state_.lineWidth !== strokeStyleWidth || this.state_.miterLimit !== strokeStyleMiterLimit) {
         this.state_.changed = true;
         this.state_.strokeColor = strokeStyleColor;
@@ -46297,7 +46608,7 @@
      * @inheritDoc
      */
     WebGLPolygonReplay.prototype.drawHitDetectionReplayOneByOne = function drawHitDetectionReplayOneByOne (gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-      var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
+      var i, start, end, nextStyle, groupStart, feature, featureIndex;
       featureIndex = this.startIndices.length - 2;
       end = this.startIndices[featureIndex + 1];
       for (i = this.styleIndices_.length - 1; i >= 0; --i) {
@@ -46309,9 +46620,8 @@
             this.startIndices[featureIndex] >= groupStart) {
           start = this.startIndices[featureIndex];
           feature = this.startIndicesFeature[featureIndex];
-          featureUid = getUid(feature).toString();
 
-          if (skippedFeaturesHash[featureUid] === undefined &&
+          if (skippedFeaturesHash[getUid(feature)] === undefined &&
               feature.getGeometry() &&
               (opt_hitExtent === undefined || intersects(
                 /** @type {Array<number>} */ (opt_hitExtent),
@@ -46340,7 +46650,7 @@
      * @param {Object} skippedFeaturesHash Ids of features to skip.
      */
     WebGLPolygonReplay.prototype.drawReplaySkipping_ = function drawReplaySkipping_ (gl, context, skippedFeaturesHash) {
-      var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
+      var i, start, end, nextStyle, groupStart, feature, featureIndex, featureStart;
       featureIndex = this.startIndices.length - 2;
       end = start = this.startIndices[featureIndex + 1];
       for (i = this.styleIndices_.length - 1; i >= 0; --i) {
@@ -46352,9 +46662,8 @@
             this.startIndices[featureIndex] >= groupStart) {
           featureStart = this.startIndices[featureIndex];
           feature = this.startIndicesFeature[featureIndex];
-          featureUid = getUid(feature).toString();
 
-          if (skippedFeaturesHash[featureUid]) {
+          if (skippedFeaturesHash[getUid(feature)]) {
             if (start !== end) {
               this.drawElements(gl, context, start, end);
               gl.clear(gl.DEPTH_BUFFER_BIT);
@@ -46394,7 +46703,7 @@
       } else {
         fillStyleColor = DEFAULT_FILLSTYLE;
       }
-      if (!this.state_.fillColor || !equals$1(fillStyleColor, this.state_.fillColor)) {
+      if (!this.state_.fillColor || !equals(fillStyleColor, this.state_.fillColor)) {
         this.state_.fillColor = fillStyleColor;
         this.state_.changed = true;
         this.styles_.push(fillStyleColor);
@@ -46405,7 +46714,7 @@
       } else {
         var nullStrokeStyle = new Stroke({
           color: [0, 0, 0, 0],
-          lineWidth: 0
+          width: 0
         });
         this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
       }
@@ -47099,8 +47408,8 @@
             ctx.fillStyle = state.fillColor;
             ctx.strokeStyle = state.strokeColor;
             ctx.lineWidth = state.lineWidth;
-            ctx.lineCap = /*** @type {string} */ (state.lineCap);
-            ctx.lineJoin = /** @type {string} */ (state.lineJoin);
+            ctx.lineCap = /** @type {CanvasLineCap} */ (state.lineCap);
+            ctx.lineJoin = /** @type {CanvasLineJoin} */ (state.lineJoin);
             ctx.miterLimit = /** @type {number} */ (state.miterLimit);
             ctx.textAlign = 'left';
             ctx.textBaseline = 'top';
@@ -47299,9 +47608,7 @@
   var HIT_DETECTION_SIZE = [1, 1];
 
   /**
-   * @type {Object<import("../ReplayType.js").default,
-   *                function(new: import("./Replay.js").default, number,
-   *                import("../../extent.js").Extent)>}
+   * @type {Object<import("../ReplayType.js").default, typeof import("./Replay.js").default>}
    */
   var BATCH_CONSTRUCTORS$1 = {
     'Circle': WebGLCircleReplay,
@@ -47348,10 +47655,11 @@
     WebGLReplayGroup.prototype.constructor = WebGLReplayGroup;
 
     /**
-     * @param {import("../../style/Style.js").default} style Style.
-     * @param {boolean} group Group with previous replay.
+     * @inheritDoc
      */
-    WebGLReplayGroup.prototype.addDeclutter = function addDeclutter (style, group) {};
+    WebGLReplayGroup.prototype.addDeclutter = function addDeclutter (group) {
+      return [];
+    };
 
     /**
      * @param {import("../../webgl/Context.js").default} context WebGL context.
@@ -47404,9 +47712,6 @@
       }
       var replay = replays[replayType];
       if (replay === undefined) {
-        /**
-         * @type {Function}
-         */
         var Constructor = BATCH_CONSTRUCTORS$1[replayType];
         replay = new Constructor(this.tolerance_, this.maxExtent_);
         replays[replayType] = replay;
@@ -47708,6 +48013,7 @@
       replay.finish(context);
       // default colors
       var opacity = 1;
+      /** @type {Object<string, boolean>} */
       var skippedFeatures = {};
       var featureCallback;
       var oneByOne = false;
@@ -47808,6 +48114,7 @@
       replay.finish(context);
       // default colors
       var opacity = 1;
+      /** @type {Object<string, boolean>} */
       var skippedFeatures = {};
       var featureCallback;
       var oneByOne = false;
@@ -47833,6 +48140,7 @@
       replay.drawMultiPoint(geometry, data);
       replay.finish(context);
       var opacity = 1;
+      /** @type {Object<string, boolean>} */
       var skippedFeatures = {};
       var featureCallback;
       var oneByOne = false;
@@ -47858,6 +48166,7 @@
       replay.drawLineString(geometry, data);
       replay.finish(context);
       var opacity = 1;
+      /** @type {Object<string, boolean>} */
       var skippedFeatures = {};
       var featureCallback;
       var oneByOne = false;
@@ -47883,6 +48192,7 @@
       replay.drawMultiLineString(geometry, data);
       replay.finish(context);
       var opacity = 1;
+      /** @type {Object<string, boolean>} */
       var skippedFeatures = {};
       var featureCallback;
       var oneByOne = false;
@@ -47908,6 +48218,7 @@
       replay.drawPolygon(geometry, data);
       replay.finish(context);
       var opacity = 1;
+      /** @type {Object<string, boolean>} */
       var skippedFeatures = {};
       var featureCallback;
       var oneByOne = false;
@@ -47933,6 +48244,7 @@
       replay.drawMultiPolygon(geometry, data);
       replay.finish(context);
       var opacity = 1;
+      /** @type {Object<string, boolean>} */
       var skippedFeatures = {};
       var featureCallback;
       var oneByOne = false;
@@ -47958,6 +48270,7 @@
       replay.drawCircle(geometry, data);
       replay.finish(context);
       var opacity = 1;
+      /** @type {Object<string, boolean>} */
       var skippedFeatures = {};
       var featureCallback;
       var oneByOne = false;
@@ -48052,6 +48365,9 @@
    * @module ol/renderer/webgl/Layer
    */
 
+  /**
+   * @abstract
+   */
   var WebGLLayerRenderer = /*@__PURE__*/(function (LayerRenderer$$1) {
     function WebGLLayerRenderer(mapRenderer, layer) {
 
@@ -48273,7 +48589,9 @@
      * @param {import("../../webgl/Context.js").default} context Context.
      * @return {boolean} whether composeFrame should be called.
      */
-    WebGLLayerRenderer.prototype.prepareFrame = function prepareFrame (frameState, layerState, context) {};
+    WebGLLayerRenderer.prototype.prepareFrame = function prepareFrame (frameState, layerState, context) {
+      return abstract();
+    };
 
     /**
      * @abstract
@@ -48285,7 +48603,9 @@
      * @return {T|undefined} Callback result.
      * @template S,T,U
      */
-    WebGLLayerRenderer.prototype.forEachLayerAtPixel = function forEachLayerAtPixel (pixel, frameState, callback, thisArg) {};
+    WebGLLayerRenderer.prototype.forEachLayerAtPixel = function forEachLayerAtPixel (pixel, frameState, callback, thisArg) {
+      return abstract();
+    };
 
     return WebGLLayerRenderer;
   }(LayerRenderer));
@@ -48350,27 +48670,6 @@
     /**
      * @inheritDoc
      */
-    WebGLImageLayerRenderer.prototype.forEachFeatureAtCoordinate = function forEachFeatureAtCoordinate (coordinate, frameState, hitTolerance, callback, thisArg) {
-      var layer = this.getLayer();
-      var source = layer.getSource();
-      var resolution = frameState.viewState.resolution;
-      var rotation = frameState.viewState.rotation;
-      var skippedFeatureUids = frameState.skippedFeatureUids;
-      return source.forEachFeatureAtCoordinate(
-        coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
-
-        /**
-         * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
-         * @return {?} Callback result.
-         */
-        function(feature) {
-          return callback.call(thisArg, feature, layer);
-        });
-    };
-
-    /**
-     * @inheritDoc
-     */
     WebGLImageLayerRenderer.prototype.prepareFrame = function prepareFrame (frameState, layerState, context) {
 
       var gl = this.mapRenderer.getGL();
@@ -48384,7 +48683,7 @@
       var image = this.image_;
       var texture = this.texture;
       var imageLayer = /** @type {import("../../layer/Image.js").default} */ (this.getLayer());
-      var imageSource = imageLayer.getSource();
+      var imageSource = /** @type {import("../../source/Image.js").default} */ (imageLayer.getSource());
 
       var hints = frameState.viewHints;
 
@@ -48483,63 +48782,41 @@
     /**
      * @inheritDoc
      */
-    WebGLImageLayerRenderer.prototype.hasFeatureAtCoordinate = function hasFeatureAtCoordinate (coordinate, frameState) {
-      var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
-      return hasFeature !== undefined;
-    };
-
-    /**
-     * @inheritDoc
-     */
     WebGLImageLayerRenderer.prototype.forEachLayerAtPixel = function forEachLayerAtPixel (pixel, frameState, callback, thisArg) {
       if (!this.image_ || !this.image_.getImage()) {
         return undefined;
       }
 
-      if (this.getLayer().getSource().forEachFeatureAtCoordinate !== VOID) {
-        // for ImageCanvas sources use the original hit-detection logic,
-        // so that for example also transparent polygons are detected
-        var coordinate = apply(
-          frameState.pixelToCoordinateTransform, pixel.slice());
-        var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
+      var imageSize =
+          [this.image_.getImage().width, this.image_.getImage().height];
 
-        if (hasFeature) {
-          return callback.call(thisArg, this.getLayer(), null);
-        } else {
-          return undefined;
-        }
+      if (!this.hitTransformationMatrix_) {
+        this.hitTransformationMatrix_ = this.getHitTransformationMatrix_(
+          frameState.size, imageSize);
+      }
+
+      var pixelOnFrameBuffer = apply(
+        this.hitTransformationMatrix_, pixel.slice());
+
+      if (pixelOnFrameBuffer[0] < 0 || pixelOnFrameBuffer[0] > imageSize[0] ||
+          pixelOnFrameBuffer[1] < 0 || pixelOnFrameBuffer[1] > imageSize[1]) {
+        // outside the image, no need to check
+        return undefined;
+      }
+
+      if (!this.hitCanvasContext_) {
+        this.hitCanvasContext_ = createCanvasContext2D(1, 1);
+      }
+
+      this.hitCanvasContext_.clearRect(0, 0, 1, 1);
+      this.hitCanvasContext_.drawImage(this.image_.getImage(),
+        pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1, 0, 0, 1, 1);
+
+      var imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
+      if (imageData[3] > 0) {
+        return callback.call(thisArg, this.getLayer(), imageData);
       } else {
-        var imageSize =
-            [this.image_.getImage().width, this.image_.getImage().height];
-
-        if (!this.hitTransformationMatrix_) {
-          this.hitTransformationMatrix_ = this.getHitTransformationMatrix_(
-            frameState.size, imageSize);
-        }
-
-        var pixelOnFrameBuffer = apply(
-          this.hitTransformationMatrix_, pixel.slice());
-
-        if (pixelOnFrameBuffer[0] < 0 || pixelOnFrameBuffer[0] > imageSize[0] ||
-            pixelOnFrameBuffer[1] < 0 || pixelOnFrameBuffer[1] > imageSize[1]) {
-          // outside the image, no need to check
-          return undefined;
-        }
-
-        if (!this.hitCanvasContext_) {
-          this.hitCanvasContext_ = createCanvasContext2D(1, 1);
-        }
-
-        this.hitCanvasContext_.clearRect(0, 0, 1, 1);
-        this.hitCanvasContext_.drawImage(this.image_.getImage(),
-          pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1, 0, 0, 1, 1);
-
-        var imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
-        if (imageData[3] > 0) {
-          return callback.call(thisArg, this.getLayer(), imageData);
-        } else {
-          return undefined;
-        }
+        return undefined;
       }
     };
 
@@ -48794,6 +49071,7 @@
         }
       } else {
         var texture = gl.createTexture();
+        var imageTile = /** @type {import("../../ImageTile.js").default} */ (tile);
         gl.bindTexture(TEXTURE_2D, texture);
         if (tileGutter > 0) {
           var clipTileCanvas = this.clipTileContext_.canvas;
@@ -48807,7 +49085,7 @@
           } else {
             clipTileContext.clearRect(0, 0, tileSize[0], tileSize[1]);
           }
-          clipTileContext.drawImage(tile.getImage(), tileGutter, tileGutter,
+          clipTileContext.drawImage(imageTile.getImage(), tileGutter, tileGutter,
             tileSize[0], tileSize[1], 0, 0, tileSize[0], tileSize[1]);
           gl.texImage2D(TEXTURE_2D, 0,
             RGBA, RGBA,
@@ -48815,7 +49093,7 @@
         } else {
           gl.texImage2D(TEXTURE_2D, 0,
             RGBA, RGBA,
-            UNSIGNED_BYTE, tile.getImage());
+            UNSIGNED_BYTE, imageTile.getImage());
         }
         gl.texParameteri(
           TEXTURE_2D, TEXTURE_MAG_FILTER, magFilter);
@@ -49005,12 +49283,12 @@
       stableSort(layerStatesArray, sortByZIndex);
 
       var viewResolution = frameState.viewState.resolution;
-      var i, ii, layerRenderer, layerState;
+      var i, ii;
       for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-        layerState = layerStatesArray[i];
+        var layerState = layerStatesArray[i];
         if (visibleAtResolution(layerState, viewResolution) &&
             layerState.sourceState == SourceState.READY) {
-          layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layerState.layer));
+          var layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layerState.layer));
           if (layerRenderer.prepareFrame(frameState, layerState, context)) {
             layerStatesToDraw.push(layerState);
           }
@@ -49032,9 +49310,9 @@
       gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
       for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
-        layerState = layerStatesToDraw[i];
-        layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layerState.layer));
-        layerRenderer.composeFrame(frameState, layerState, context);
+        var layerState$1 = layerStatesToDraw[i];
+        var layerRenderer$1 = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layerState$1.layer));
+        layerRenderer$1.composeFrame(frameState, layerState$1, context);
       }
 
       if (!this.renderedVisible_) {
@@ -49093,7 +49371,7 @@
             layerFilter.call(thisArg2, layer)) {
           var layerRenderer = this.getLayerRenderer(layer);
           result = layerRenderer.forEachFeatureAtCoordinate(
-            coordinate, frameState, hitTolerance, callback, thisArg);
+            coordinate, frameState, hitTolerance, callback);
           if (result) {
             return result;
           }
@@ -49875,8 +50153,8 @@
   /**
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions]
+   * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
    * @property {number} [cacheSize]
-   * @property {import("../extent.js").Extent} [extent]
    * @property {boolean} [opaque]
    * @property {number} [tilePixelRatio]
    * @property {import("../proj.js").ProjectionLike} [projection]
@@ -49884,6 +50162,7 @@
    * @property {import("../tilegrid/TileGrid.js").default} [tileGrid]
    * @property {boolean} [wrapX=true]
    * @property {number} [transition]
+   * @property {string} [key]
    */
 
 
@@ -49892,6 +50171,7 @@
    * Abstract base class; normally only used for creating subclasses and not
    * instantiated in apps.
    * Base class for sources providing images divided into a tile grid.
+   * @abstract
    * @api
    */
   var TileSource = /*@__PURE__*/(function (Source$$1) {
@@ -49899,7 +50179,7 @@
 
       Source$$1.call(this, {
         attributions: options.attributions,
-        extent: options.extent,
+        attributionsCollapsible: options.attributionsCollapsible,
         projection: options.projection,
         state: options.state,
         wrapX: options.wrapX
@@ -49940,7 +50220,7 @@
        * @private
        * @type {string}
        */
-      this.key_ = '';
+      this.key_ = options.key || '';
 
       /**
        * @protected
@@ -49976,7 +50256,7 @@
      * @param {import("../proj/Projection.js").default} projection Projection.
      * @param {number} z Zoom level.
      * @param {import("../TileRange.js").default} tileRange Tile range.
-     * @param {function(import("../Tile.js").default):(boolean|undefined)} callback Called with each
+     * @param {function(import("../Tile.js").default):(boolean|void)} callback Called with each
      *     loaded tile.  If the callback returns `false`, the tile will not be
      *     considered loaded.
      * @return {boolean} The tile range is fully covered with loaded tiles.
@@ -50061,7 +50341,9 @@
      * @param {import("../proj/Projection.js").default} projection Projection.
      * @return {!import("../Tile.js").default} Tile.
      */
-    TileSource.prototype.getTile = function getTile (z, x, y, pixelRatio, projection) {};
+    TileSource.prototype.getTile = function getTile (z, x, y, pixelRatio, projection) {
+      return abstract();
+    };
 
     /**
      * Return the tile grid of the tile source.
@@ -50154,8 +50436,8 @@
     };
 
     /**
-     * @abstract
      * Marks a tile coord as being used, without triggering a load.
+     * @abstract
      * @param {number} z Tile coordinate z.
      * @param {number} x Tile coordinate x.
      * @param {number} y Tile coordinate y.
@@ -50748,11 +51030,11 @@
           frameState.size, frameState.pixelRatio, layerState.opacity,
           {},
           /**
-           * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
+           * @param {import("../../Feature.js").FeatureLike} feature Feature.
            * @return {?} Callback result.
            */
           function(feature) {
-            var key = getUid(feature).toString();
+            var key = getUid(feature);
             if (!(key in features)) {
               features[key] = true;
               return callback.call(thisArg, feature, layer);
@@ -50807,7 +51089,7 @@
      */
     WebGLVectorLayerRenderer.prototype.prepareFrame = function prepareFrame (frameState, layerState, context) {
       var vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
-      var vectorSource = vectorLayer.getSource();
+      var vectorSource = /** @type {import("../../source/Vector.js").default} */ (vectorLayer.getSource());
 
       var animating = frameState.viewHints[ViewHint.ANIMATING];
       var interacting = frameState.viewHints[ViewHint.INTERACTING];
@@ -50869,7 +51151,7 @@
             feature, resolution, pixelRatio, styles, replayGroup);
           this.dirty_ = this.dirty_ || dirty;
         }
-      };
+      }.bind(this);
       if (vectorLayerRenderOrder) {
         /** @type {Array<import("../../Feature.js").default>} */
         var features = [];
@@ -50879,11 +51161,11 @@
            */
           function(feature) {
             features.push(feature);
-          }, this);
+          });
         features.sort(vectorLayerRenderOrder);
         features.forEach(render.bind(this));
       } else {
-        vectorSource.forEachFeatureInExtent(extent, render, this);
+        vectorSource.forEachFeatureInExtent(extent, render);
       }
       replayGroup.finish(context);
 
@@ -51040,272 +51322,6 @@
   }(PluggableMap));
 
   /**
-   * @module ol/control/MousePosition
-   */
-
-
-  /**
-   * @type {string}
-   */
-  var PROJECTION = 'projection';
-
-  /**
-   * @type {string}
-   */
-  var COORDINATE_FORMAT = 'coordinateFormat';
-
-
-  /**
-   * @typedef {Object} Options
-   * @property {string} [className='ol-mouse-position'] CSS class name.
-   * @property {import("../coordinate.js").CoordinateFormat} [coordinateFormat] Coordinate format.
-   * @property {import("../proj.js").ProjectionLike} projection Projection.
-   * @property {function(import("../MapEvent.js").default)} [render] Function called when the
-   * control should be re-rendered. This is called in a `requestAnimationFrame`
-   * callback.
-   * @property {Element|string} [target] Specify a target if you want the
-   * control to be rendered outside of the map's viewport.
-   * @property {string} [undefinedHTML='&#160;'] Markup to show when coordinates are not
-   * available (e.g. when the pointer leaves the map viewport).  By default, the last position
-   * will be replaced with `'&#160;'` (`&nbsp;`) when the pointer leaves the viewport.  To
-   * retain the last rendered position, set this option to something falsey (like an empty
-   * string `''`).
-   */
-
-
-  /**
-   * @classdesc
-   * A control to show the 2D coordinates of the mouse cursor. By default, these
-   * are in the view projection, but can be in any supported projection.
-   * By default the control is shown in the top right corner of the map, but this
-   * can be changed by using the css selector `.ol-mouse-position`.
-   *
-   * On touch devices, which usually do not have a mouse cursor, the coordinates
-   * of the currently touched position are shown.
-   *
-   * @api
-   */
-  var MousePosition = /*@__PURE__*/(function (Control$$1) {
-    function MousePosition(opt_options) {
-
-      var options = opt_options ? opt_options : {};
-
-      var element = document.createElement('div');
-      element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
-
-      Control$$1.call(this, {
-        element: element,
-        render: options.render || render$5,
-        target: options.target
-      });
-
-      listen(this,
-        getChangeEventType(PROJECTION),
-        this.handleProjectionChanged_, this);
-
-      if (options.coordinateFormat) {
-        this.setCoordinateFormat(options.coordinateFormat);
-      }
-      if (options.projection) {
-        this.setProjection(options.projection);
-      }
-
-      /**
-       * @private
-       * @type {string}
-       */
-      this.undefinedHTML_ = options.undefinedHTML !== undefined ? options.undefinedHTML : '&#160;';
-
-      /**
-       * @private
-       * @type {boolean}
-       */
-      this.renderOnMouseOut_ = !!this.undefinedHTML_;
-
-      /**
-       * @private
-       * @type {string}
-       */
-      this.renderedHTML_ = element.innerHTML;
-
-      /**
-       * @private
-       * @type {import("../proj/Projection.js").default}
-       */
-      this.mapProjection_ = null;
-
-      /**
-       * @private
-       * @type {?import("../proj.js").TransformFunction}
-       */
-      this.transform_ = null;
-
-      /**
-       * @private
-       * @type {import("../pixel.js").Pixel}
-       */
-      this.lastMouseMovePixel_ = null;
-
-    }
-
-    if ( Control$$1 ) MousePosition.__proto__ = Control$$1;
-    MousePosition.prototype = Object.create( Control$$1 && Control$$1.prototype );
-    MousePosition.prototype.constructor = MousePosition;
-
-    /**
-     * @private
-     */
-    MousePosition.prototype.handleProjectionChanged_ = function handleProjectionChanged_ () {
-      this.transform_ = null;
-    };
-
-    /**
-     * Return the coordinate format type used to render the current position or
-     * undefined.
-     * @return {import("../coordinate.js").CoordinateFormat|undefined} The format to render the current
-     *     position in.
-     * @observable
-     * @api
-     */
-    MousePosition.prototype.getCoordinateFormat = function getCoordinateFormat () {
-      return (
-        /** @type {import("../coordinate.js").CoordinateFormat|undefined} */ (this.get(COORDINATE_FORMAT))
-      );
-    };
-
-    /**
-     * Return the projection that is used to report the mouse position.
-     * @return {import("../proj/Projection.js").default|undefined} The projection to report mouse
-     *     position in.
-     * @observable
-     * @api
-     */
-    MousePosition.prototype.getProjection = function getProjection () {
-      return (
-        /** @type {import("../proj/Projection.js").default|undefined} */ (this.get(PROJECTION))
-      );
-    };
-
-    /**
-     * @param {Event} event Browser event.
-     * @protected
-     */
-    MousePosition.prototype.handleMouseMove = function handleMouseMove (event) {
-      var map = this.getMap();
-      this.lastMouseMovePixel_ = map.getEventPixel(event);
-      this.updateHTML_(this.lastMouseMovePixel_);
-    };
-
-    /**
-     * @param {Event} event Browser event.
-     * @protected
-     */
-    MousePosition.prototype.handleMouseOut = function handleMouseOut (event) {
-      this.updateHTML_(null);
-      this.lastMouseMovePixel_ = null;
-    };
-
-    /**
-     * @inheritDoc
-     * @api
-     */
-    MousePosition.prototype.setMap = function setMap (map) {
-      Control$$1.prototype.setMap.call(this, map);
-      if (map) {
-        var viewport = map.getViewport();
-        this.listenerKeys.push(
-          listen(viewport, EventType.MOUSEMOVE, this.handleMouseMove, this),
-          listen(viewport, EventType.TOUCHSTART, this.handleMouseMove, this)
-        );
-        if (this.renderOnMouseOut_) {
-          this.listenerKeys.push(
-            listen(viewport, EventType.MOUSEOUT, this.handleMouseOut, this),
-            listen(viewport, EventType.TOUCHEND, this.handleMouseOut, this)
-          );
-        }
-      }
-    };
-
-    /**
-     * Set the coordinate format type used to render the current position.
-     * @param {import("../coordinate.js").CoordinateFormat} format The format to render the current
-     *     position in.
-     * @observable
-     * @api
-     */
-    MousePosition.prototype.setCoordinateFormat = function setCoordinateFormat (format) {
-      this.set(COORDINATE_FORMAT, format);
-    };
-
-    /**
-     * Set the projection that is used to report the mouse position.
-     * @param {import("../proj.js").ProjectionLike} projection The projection to report mouse
-     *     position in.
-     * @observable
-     * @api
-     */
-    MousePosition.prototype.setProjection = function setProjection (projection) {
-      this.set(PROJECTION, get$2(projection));
-    };
-
-    /**
-     * @param {?import("../pixel.js").Pixel} pixel Pixel.
-     * @private
-     */
-    MousePosition.prototype.updateHTML_ = function updateHTML_ (pixel) {
-      var html = this.undefinedHTML_;
-      if (pixel && this.mapProjection_) {
-        if (!this.transform_) {
-          var projection = this.getProjection();
-          if (projection) {
-            this.transform_ = getTransformFromProjections(
-              this.mapProjection_, projection);
-          } else {
-            this.transform_ = identityTransform;
-          }
-        }
-        var map = this.getMap();
-        var coordinate = map.getCoordinateFromPixel(pixel);
-        if (coordinate) {
-          this.transform_(coordinate, coordinate);
-          var coordinateFormat = this.getCoordinateFormat();
-          if (coordinateFormat) {
-            html = coordinateFormat(coordinate);
-          } else {
-            html = coordinate.toString();
-          }
-        }
-      }
-      if (!this.renderedHTML_ || html !== this.renderedHTML_) {
-        this.element.innerHTML = html;
-        this.renderedHTML_ = html;
-      }
-    };
-
-    return MousePosition;
-  }(Control));
-
-
-  /**
-   * Update the projection. Rendering of the coordinates is done in
-   * `handleMouseMove` and `handleMouseUp`.
-   * @param {import("../MapEvent.js").default} mapEvent Map event.
-   * @this {MousePosition}
-   * @api
-   */
-  function render$5(mapEvent) {
-    var frameState = mapEvent.frameState;
-    if (!frameState) {
-      this.mapProjection_ = null;
-    } else {
-      if (this.mapProjection_ != frameState.viewState.projection) {
-        this.mapProjection_ = frameState.viewState.projection;
-        this.transform_ = null;
-      }
-    }
-  }
-
-  /**
    * @module ol/format/Feature
    */
 
@@ -51426,7 +51442,9 @@
    * @abstract
    * @return {import("./FormatType.js").default} Format.
    */
-  FeatureFormat.prototype.getType = function getType () {};
+  FeatureFormat.prototype.getType = function getType () {
+    return abstract();
+  };
 
   /**
    * Read a single feature from a source.
@@ -51434,9 +51452,11 @@
    * @abstract
    * @param {Document|Node|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
-   * @return {import("../Feature.js").default} Feature.
+   * @return {import("../Feature.js").FeatureLike} Feature.
    */
-  FeatureFormat.prototype.readFeature = function readFeature (source, opt_options) {};
+  FeatureFormat.prototype.readFeature = function readFeature (source, opt_options) {
+    return abstract();
+  };
 
   /**
    * Read all features from a source.
@@ -51444,9 +51464,11 @@
    * @abstract
    * @param {Document|Node|ArrayBuffer|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<import("../Feature.js").FeatureLike>} Features.
    */
-  FeatureFormat.prototype.readFeatures = function readFeatures (source, opt_options) {};
+  FeatureFormat.prototype.readFeatures = function readFeatures (source, opt_options) {
+    return abstract();
+  };
 
   /**
    * Read a single geometry from a source.
@@ -51454,9 +51476,11 @@
    * @abstract
    * @param {Document|Node|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
-   * @return {Geometry} Geometry.
+   * @return {import("../geom/Geometry.js").default} Geometry.
    */
-  FeatureFormat.prototype.readGeometry = function readGeometry (source, opt_options) {};
+  FeatureFormat.prototype.readGeometry = function readGeometry (source, opt_options) {
+    return abstract();
+  };
 
   /**
    * Read the projection from a source.
@@ -51465,7 +51489,9 @@
    * @param {Document|Node|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    */
-  FeatureFormat.prototype.readProjection = function readProjection (source) {};
+  FeatureFormat.prototype.readProjection = function readProjection (source) {
+    return abstract();
+  };
 
   /**
    * Encode a feature in this format.
@@ -51475,7 +51501,9 @@
    * @param {WriteOptions=} opt_options Write options.
    * @return {string} Result.
    */
-  FeatureFormat.prototype.writeFeature = function writeFeature (feature, opt_options) {};
+  FeatureFormat.prototype.writeFeature = function writeFeature (feature, opt_options) {
+    return abstract();
+  };
 
   /**
    * Encode an array of features in this format.
@@ -51485,23 +51513,27 @@
    * @param {WriteOptions=} opt_options Write options.
    * @return {string} Result.
    */
-  FeatureFormat.prototype.writeFeatures = function writeFeatures (features, opt_options) {};
+  FeatureFormat.prototype.writeFeatures = function writeFeatures (features, opt_options) {
+    return abstract();
+  };
 
   /**
    * Write a single geometry in this format.
    *
    * @abstract
-   * @param {Geometry} geometry Geometry.
+   * @param {import("../geom/Geometry.js").default} geometry Geometry.
    * @param {WriteOptions=} opt_options Write options.
    * @return {string} Result.
    */
-  FeatureFormat.prototype.writeGeometry = function writeGeometry (geometry, opt_options) {};
+  FeatureFormat.prototype.writeGeometry = function writeGeometry (geometry, opt_options) {
+    return abstract();
+  };
 
   /**
-   * @param {Geometry|import("../extent.js").Extent} geometry Geometry.
+   * @param {import("../geom/Geometry.js").default|import("../extent.js").Extent} geometry Geometry.
    * @param {boolean} write Set to true for writing, false for reading.
    * @param {(WriteOptions|ReadOptions)=} opt_options Options.
-   * @return {Geometry|import("../extent.js").Extent} Transformed geometry.
+   * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent} Transformed geometry.
    */
   function transformWithOptions(geometry, write, opt_options) {
     var featureProjection = opt_options ?
@@ -51509,28 +51541,29 @@
     var dataProjection = opt_options ?
       get$2(opt_options.dataProjection) : null;
     /**
-     * @type {Geometry|import("../extent.js").Extent}
+     * @type {import("../geom/Geometry.js").default|import("../extent.js").Extent}
      */
     var transformed;
     if (featureProjection && dataProjection &&
         !equivalent(featureProjection, dataProjection)) {
-      if (geometry instanceof Geometry) {
-        transformed = (write ? geometry.clone() : geometry).transform(
-          write ? featureProjection : dataProjection,
-          write ? dataProjection : featureProjection);
-      } else {
+      if (Array.isArray(geometry)) {
         // FIXME this is necessary because GML treats extents
         // as geometries
         transformed = transformExtent(
           geometry,
           dataProjection,
           featureProjection);
+      } else {
+        transformed = (write ? /** @type {import("../geom/Geometry").default} */ (geometry).clone() : geometry).transform(
+          write ? featureProjection : dataProjection,
+          write ? dataProjection : featureProjection);
       }
     } else {
       transformed = geometry;
     }
-    if (write && opt_options && opt_options.decimals !== undefined) {
-      var power = Math.pow(10, opt_options.decimals);
+    if (write && opt_options && /** @type {WriteOptions} */ (opt_options).decimals !== undefined &&
+      !Array.isArray(transformed)) {
+      var power = Math.pow(10, /** @type {WriteOptions} */ (opt_options).decimals);
       // if decimals option on write, round each coordinate appropriately
       /**
        * @param {Array<number>} coordinates Coordinates.
@@ -51543,7 +51576,7 @@
         return coordinates;
       };
       if (transformed === geometry) {
-        transformed = transformed.clone();
+        transformed = /** @type {import("../geom/Geometry").default} */ (geometry).clone();
       }
       transformed.applyTransform(transform$$1);
     }
@@ -51613,7 +51646,9 @@
      * @protected
      * @return {import("../Feature.js").default} Feature.
      */
-    JSONFeature.prototype.readFeatureFromObject = function readFeatureFromObject (object, opt_options) {};
+    JSONFeature.prototype.readFeatureFromObject = function readFeatureFromObject (object, opt_options) {
+      return abstract();
+    };
 
     /**
      * @abstract
@@ -51622,7 +51657,9 @@
      * @protected
      * @return {Array<import("../Feature.js").default>} Features.
      */
-    JSONFeature.prototype.readFeaturesFromObject = function readFeaturesFromObject (object, opt_options) {};
+    JSONFeature.prototype.readFeaturesFromObject = function readFeaturesFromObject (object, opt_options) {
+      return abstract();
+    };
 
     /**
      * Read a geometry.
@@ -51644,7 +51681,9 @@
      * @protected
      * @return {import("../geom/Geometry.js").default} Geometry.
      */
-    JSONFeature.prototype.readGeometryFromObject = function readGeometryFromObject (object, opt_options) {};
+    JSONFeature.prototype.readGeometryFromObject = function readGeometryFromObject (object, opt_options) {
+      return abstract();
+    };
 
     /**
      * Read the projection.
@@ -51663,7 +51702,9 @@
      * @protected
      * @return {import("../proj/Projection.js").default} Projection.
      */
-    JSONFeature.prototype.readProjectionFromObject = function readProjectionFromObject (object) {};
+    JSONFeature.prototype.readProjectionFromObject = function readProjectionFromObject (object) {
+      return abstract();
+    };
 
     /**
      * Encode a feature as string.
@@ -51683,7 +51724,9 @@
      * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
      * @return {Object} Object.
      */
-    JSONFeature.prototype.writeFeatureObject = function writeFeatureObject (feature, opt_options) {};
+    JSONFeature.prototype.writeFeatureObject = function writeFeatureObject (feature, opt_options) {
+      return abstract();
+    };
 
     /**
      * Encode an array of features as string.
@@ -51703,7 +51746,9 @@
      * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
      * @return {Object} Object.
      */
-    JSONFeature.prototype.writeFeaturesObject = function writeFeaturesObject (features, opt_options) {};
+    JSONFeature.prototype.writeFeaturesObject = function writeFeaturesObject (features, opt_options) {
+      return abstract();
+    };
 
     /**
      * Encode a geometry as string.
@@ -51723,7 +51768,9 @@
      * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
      * @return {Object} Object.
      */
-    JSONFeature.prototype.writeGeometryObject = function writeGeometryObject (geometry, opt_options) {};
+    JSONFeature.prototype.writeGeometryObject = function writeGeometryObject (geometry, opt_options) {
+      return abstract();
+    };
 
     return JSONFeature;
   }(FeatureFormat));
@@ -51746,6 +51793,28 @@
 
   /**
    * @module ol/format/EsriJSON
+   */
+
+  /**
+   * @typedef {import("arcgis-rest-api").Feature} EsriJSONFeature
+   * @typedef {import("arcgis-rest-api").FeatureSet} EsriJSONFeatureSet
+   * @typedef {import("arcgis-rest-api").Geometry} EsriJSONGeometry
+   * @typedef {import("arcgis-rest-api").Point} EsriJSONPoint
+   * @typedef {import("arcgis-rest-api").Polyline} EsriJSONPolyline
+   * @typedef {import("arcgis-rest-api").Polygon} EsriJSONPolygon
+   * @typedef {import("arcgis-rest-api").Multipoint} EsriJSONMultipoint
+   * @typedef {import("arcgis-rest-api").HasZM} EsriJSONHasZM
+   * @typedef {import("arcgis-rest-api").Position} EsriJSONPosition
+   * @typedef {import("arcgis-rest-api").SpatialReferenceWkid} EsriJSONSpatialReferenceWkid
+   */
+
+
+  /**
+   * @typedef {Object} EsriJSONMultiPolygon
+   * @property {Array<Array<Array<Array<number>>>>} rings Rings for the MultiPolygon.
+   * @property {boolean} [hasM] If the polygon coordinates have an M value.
+   * @property {boolean} [hasZ] If the polygon coordinates have a Z value.
+   * @property {EsriJSONSpatialReferenceWkid} [spatialReference] The coordinate reference system.
    */
 
 
@@ -51832,13 +51901,12 @@
      * @inheritDoc
      */
     EsriJSON.prototype.readFeaturesFromObject = function readFeaturesFromObject (object, opt_options) {
-      var esriJSONObject = /** @type {EsriJSONObject} */ (object);
       var options = opt_options ? opt_options : {};
-      if (esriJSONObject.features) {
-        var esriJSONFeatureCollection = /** @type {EsriJSONFeatureCollection} */ (object);
+      if (object['features']) {
+        var esriJSONFeatureSet = /** @type {EsriJSONFeatureSet} */ (object);
         /** @type {Array<import("../Feature.js").default>} */
         var features = [];
-        var esriJSONFeatures = esriJSONFeatureCollection.features;
+        var esriJSONFeatures = esriJSONFeatureSet.features;
         options.idField = object.objectIdFieldName;
         for (var i = 0, ii = esriJSONFeatures.length; i < ii; ++i) {
           features.push(this.readFeatureFromObject(esriJSONFeatures[i], options));
@@ -51860,9 +51928,9 @@
      * @inheritDoc
      */
     EsriJSON.prototype.readProjectionFromObject = function readProjectionFromObject (object) {
-      var esriJSONObject = /** @type {EsriJSONObject} */ (object);
-      if (esriJSONObject.spatialReference && esriJSONObject.spatialReference.wkid) {
-        var crs = esriJSONObject.spatialReference.wkid;
+      if (object['spatialReference'] && object['spatialReference']['wkid'] !== undefined) {
+        var spatialReference = /** @type {EsriJSONSpatialReferenceWkid} */ (object['spatialReference']);
+        var crs = spatialReference.wkid;
         return get$2('EPSG:' + crs);
       } else {
         return null;
@@ -51898,8 +51966,8 @@
       if (geometry) {
         object['geometry'] = writeGeometry(geometry, opt_options);
         if (opt_options && opt_options.featureProjection) {
-          object['geometry']['spatialReference'] = /** @type {EsriJSONCRS} */({
-            wkid: get$2(opt_options.featureProjection).getCode().split(':').pop()
+          object['geometry']['spatialReference'] = /** @type {EsriJSONSpatialReferenceWkid} */({
+            wkid: Number(get$2(opt_options.featureProjection).getCode().split(':').pop())
           });
         }
       }
@@ -51928,7 +51996,7 @@
       for (var i = 0, ii = features.length; i < ii; ++i) {
         objects.push(this.writeFeatureObject(features[i], opt_options));
       }
-      return /** @type {EsriJSONFeatureCollection} */ ({
+      return /** @type {EsriJSONFeatureSet} */ ({
         'features': objects
       });
     };
@@ -51948,26 +52016,27 @@
     }
     /** @type {import("../geom/GeometryType.js").default} */
     var type;
-    if (typeof object.x === 'number' && typeof object.y === 'number') {
+    if (typeof object['x'] === 'number' && typeof object['y'] === 'number') {
       type = GeometryType.POINT;
-    } else if (object.points) {
+    } else if (object['points']) {
       type = GeometryType.MULTI_POINT;
-    } else if (object.paths) {
-      if (object.paths.length === 1) {
+    } else if (object['paths']) {
+      var esriJSONPolyline = /** @type {EsriJSONPolyline} */ (object);
+      if (esriJSONPolyline.paths.length === 1) {
         type = GeometryType.LINE_STRING;
       } else {
         type = GeometryType.MULTI_LINE_STRING;
       }
-    } else if (object.rings) {
-      var layout = getGeometryLayout(object);
-      var rings = convertRings(object.rings, layout);
-      object = /** @type {EsriJSONGeometry} */(assign({}, object));
+    } else if (object['rings']) {
+      var esriJSONPolygon = /** @type {EsriJSONPolygon} */ (object);
+      var layout = getGeometryLayout(esriJSONPolygon);
+      var rings = convertRings(esriJSONPolygon.rings, layout);
       if (rings.length === 1) {
         type = GeometryType.POLYGON;
-        object.rings = rings[0];
+        object['rings'] = rings[0];
       } else {
         type = GeometryType.MULTI_POLYGON;
-        object.rings = rings;
+        object['rings'] = rings;
       }
     }
     var geometryReader = GEOMETRY_READERS[type];
@@ -51984,7 +52053,7 @@
    * Logic inspired by: https://github.com/Esri/terraformer-arcgis-parser
    * @param {Array<!Array<!Array<number>>>} rings Rings.
    * @param {import("../geom/GeometryLayout.js").default} layout Geometry layout.
-   * @return {Array<!Array<!Array<number>>>} Transformed rings.
+   * @return {Array<!Array<!Array<!Array<number>>>>} Transformed rings.
    */
   function convertRings(rings, layout) {
     var flatRing = [];
@@ -52031,7 +52100,7 @@
 
 
   /**
-   * @param {EsriJSONGeometry} object Object.
+   * @param {EsriJSONPoint} object Object.
    * @return {import("../geom/Geometry.js").default} Point.
    */
   function readPointGeometry(object) {
@@ -52053,7 +52122,7 @@
 
 
   /**
-   * @param {EsriJSONGeometry} object Object.
+   * @param {EsriJSONPolyline} object Object.
    * @return {import("../geom/Geometry.js").default} LineString.
    */
   function readLineStringGeometry(object) {
@@ -52063,7 +52132,7 @@
 
 
   /**
-   * @param {EsriJSONGeometry} object Object.
+   * @param {EsriJSONPolyline} object Object.
    * @return {import("../geom/Geometry.js").default} MultiLineString.
    */
   function readMultiLineStringGeometry(object) {
@@ -52073,7 +52142,7 @@
 
 
   /**
-   * @param {EsriJSONGeometry} object Object.
+   * @param {EsriJSONHasZM} object Object.
    * @return {import("../geom/GeometryLayout.js").default} The geometry layout to use.
    */
   function getGeometryLayout(object) {
@@ -52090,7 +52159,7 @@
 
 
   /**
-   * @param {EsriJSONGeometry} object Object.
+   * @param {EsriJSONMultipoint} object Object.
    * @return {import("../geom/Geometry.js").default} MultiPoint.
    */
   function readMultiPointGeometry(object) {
@@ -52100,19 +52169,17 @@
 
 
   /**
-   * @param {EsriJSONGeometry} object Object.
+   * @param {EsriJSONMultiPolygon} object Object.
    * @return {import("../geom/Geometry.js").default} MultiPolygon.
    */
   function readMultiPolygonGeometry(object) {
     var layout = getGeometryLayout(object);
-    return new MultiPolygon(
-      /** @type {Array<Array<Array<Array<number>>>>} */(object.rings),
-      layout);
+    return new MultiPolygon(object.rings, layout);
   }
 
 
   /**
-   * @param {EsriJSONGeometry} object Object.
+   * @param {EsriJSONPolygon} object Object.
    * @return {import("../geom/Geometry.js").default} Polygon.
    */
   function readPolygonGeometry(object) {
@@ -52182,13 +52249,14 @@
    * @return {EsriJSONPolyline} EsriJSON geometry.
    */
   function writeLineStringGeometry(geometry, opt_options) {
-    var hasZM = getHasZM(/** @type {import("../geom/LineString.js").default} */(geometry));
+    var lineString = /** @type {import("../geom/LineString.js").default} */ (geometry);
+    var hasZM = getHasZM(lineString);
     return (
       /** @type {EsriJSONPolyline} */ {
         hasZ: hasZM.hasZ,
         hasM: hasZM.hasM,
         paths: [
-          /** @type {import("../geom/LineString.js").default} */ (geometry).getCoordinates()
+          /** @type {Array<EsriJSONPosition>} */ (lineString.getCoordinates())
         ]
       }
     );
@@ -52201,13 +52269,14 @@
    * @return {EsriJSONPolygon} EsriJSON geometry.
    */
   function writePolygonGeometry(geometry, opt_options) {
+    var polygon = /** @type {import("../geom/Polygon.js").default} */ (geometry);
     // Esri geometries use the left-hand rule
-    var hasZM = getHasZM(/** @type {import("../geom/Polygon.js").default} */(geometry));
+    var hasZM = getHasZM(polygon);
     return (
       /** @type {EsriJSONPolygon} */ {
         hasZ: hasZM.hasZ,
         hasM: hasZM.hasM,
-        rings: /** @type {import("../geom/Polygon.js").default} */ (geometry).getCoordinates(false)
+        rings: /** @type {Array<Array<EsriJSONPosition>>} */ (polygon.getCoordinates(false))
       }
     );
   }
@@ -52219,12 +52288,13 @@
    * @return {EsriJSONPolyline} EsriJSON geometry.
    */
   function writeMultiLineStringGeometry(geometry, opt_options) {
-    var hasZM = getHasZM(/** @type {import("../geom/MultiLineString.js").default} */(geometry));
+    var multiLineString = /** @type {import("../geom/MultiLineString.js").default} */ (geometry);
+    var hasZM = getHasZM(multiLineString);
     return (
       /** @type {EsriJSONPolyline} */ {
         hasZ: hasZM.hasZ,
         hasM: hasZM.hasM,
-        paths: /** @type {import("../geom/MultiLineString.js").default} */ (geometry).getCoordinates()
+        paths: /** @type {Array<Array<EsriJSONPosition>>} */ (multiLineString.getCoordinates())
       }
     );
   }
@@ -52236,12 +52306,13 @@
    * @return {EsriJSONMultipoint} EsriJSON geometry.
    */
   function writeMultiPointGeometry(geometry, opt_options) {
-    var hasZM = getHasZM(/** @type {import("../geom/MultiPoint.js").default} */(geometry));
+    var multiPoint = /** @type {import("../geom/MultiPoint.js").default} */ (geometry);
+    var hasZM = getHasZM(multiPoint);
     return (
       /** @type {EsriJSONMultipoint} */ {
         hasZ: hasZM.hasZ,
         hasM: hasZM.hasM,
-        points: /** @type {import("../geom/MultiPoint.js").default} */ (geometry).getCoordinates()
+        points: /** @type {Array<EsriJSONPosition>} */ (multiPoint.getCoordinates())
       }
     );
   }
@@ -52370,20 +52441,11 @@
 
 
   /**
-   * @param {?} value Value.
-   * @return {boolean} Is document.
+   * @param {Object} object Object.
+   * @return {boolean} Is a document.
    */
-  function isDocument(value) {
-    return value instanceof Document;
-  }
-
-
-  /**
-   * @param {?} value Value.
-   * @return {boolean} Is node.
-   */
-  function isNode(value) {
-    return value instanceof Node;
+  function isDocument(object) {
+    return 'documentElement' in object;
   }
 
 
@@ -52427,7 +52489,7 @@
         var value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
         if (value !== undefined) {
           var array = /** @type {Array<*>} */ (objectStack[objectStack.length - 1]);
-          extend$1(array, value);
+          extend(array, value);
         }
       }
     );
@@ -52828,15 +52890,15 @@
      * @api
      */
     XMLFeature.prototype.readFeature = function readFeature (source, opt_options) {
-      if (isDocument(source)) {
-        return this.readFeatureFromDocument(/** @type {Document} */ (source), opt_options);
-      } else if (isNode(source)) {
-        return this.readFeatureFromNode(/** @type {Node} */ (source), opt_options);
+      if (!source) {
+        return null;
       } else if (typeof source === 'string') {
         var doc = parse(source);
         return this.readFeatureFromDocument(doc, opt_options);
+      } else if (isDocument(source)) {
+        return this.readFeatureFromDocument(/** @type {Document} */ (source), opt_options);
       } else {
-        return null;
+        return this.readFeatureFromNode(/** @type {Node} */ (source), opt_options);
       }
     };
 
@@ -52872,16 +52934,16 @@
      * @api
      */
     XMLFeature.prototype.readFeatures = function readFeatures (source, opt_options) {
-      if (isDocument(source)) {
-        return this.readFeaturesFromDocument(
-          /** @type {Document} */ (source), opt_options);
-      } else if (isNode(source)) {
-        return this.readFeaturesFromNode(/** @type {Node} */ (source), opt_options);
+      if (!source) {
+        return [];
       } else if (typeof source === 'string') {
         var doc = parse(source);
         return this.readFeaturesFromDocument(doc, opt_options);
+      } else if (isDocument(source)) {
+        return this.readFeaturesFromDocument(
+          /** @type {Document} */ (source), opt_options);
       } else {
-        return [];
+        return this.readFeaturesFromNode(/** @type {Node} */ (source), opt_options);
       }
     };
 
@@ -52894,9 +52956,9 @@
     XMLFeature.prototype.readFeaturesFromDocument = function readFeaturesFromDocument (doc, opt_options) {
       /** @type {Array<import("../Feature.js").default>} */
       var features = [];
-      for (var n = doc.firstChild; n; n = n.nextSibling) {
+      for (var n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
-          extend$1(features, this.readFeaturesFromNode(n, opt_options));
+          extend(features, this.readFeaturesFromNode(n, opt_options));
         }
       }
       return features;
@@ -52909,22 +52971,24 @@
      * @protected
      * @return {Array<import("../Feature.js").default>} Features.
      */
-    XMLFeature.prototype.readFeaturesFromNode = function readFeaturesFromNode (node, opt_options) {};
+    XMLFeature.prototype.readFeaturesFromNode = function readFeaturesFromNode (node, opt_options) {
+      return abstract();
+    };
 
     /**
      * @inheritDoc
      */
     XMLFeature.prototype.readGeometry = function readGeometry (source, opt_options) {
-      if (isDocument(source)) {
-        return this.readGeometryFromDocument(
-          /** @type {Document} */ (source), opt_options);
-      } else if (isNode(source)) {
-        return this.readGeometryFromNode(/** @type {Node} */ (source), opt_options);
+      if (!source) {
+        return null;
       } else if (typeof source === 'string') {
         var doc = parse(source);
         return this.readGeometryFromDocument(doc, opt_options);
+      } else if (isDocument(source)) {
+        return this.readGeometryFromDocument(
+          /** @type {Document} */ (source), opt_options);
       } else {
-        return null;
+        return this.readGeometryFromNode(/** @type {Node} */ (source), opt_options);
       }
     };
 
@@ -52956,15 +53020,15 @@
      * @api
      */
     XMLFeature.prototype.readProjection = function readProjection (source) {
-      if (isDocument(source)) {
-        return this.readProjectionFromDocument(/** @type {Document} */ (source));
-      } else if (isNode(source)) {
-        return this.readProjectionFromNode(/** @type {Node} */ (source));
+      if (!source) {
+        return null;
       } else if (typeof source === 'string') {
         var doc = parse(source);
         return this.readProjectionFromDocument(doc);
+      } else if (isDocument(source)) {
+        return this.readProjectionFromDocument(/** @type {Document} */ (source));
       } else {
-        return null;
+        return this.readProjectionFromNode(/** @type {Node} */ (source));
       }
     };
 
@@ -53101,6 +53165,7 @@
    * gml:MultiPolygon. Since the latter is deprecated in GML 3.
    * @property {string} [schemaLocation] Optional schemaLocation to use when
    * writing out the GML, this will override the default provided.
+   * @property {boolean} [hasZ=false] If coordinates have a Z value.
    */
 
 
@@ -53148,11 +53213,10 @@
        * @type {Object<string, Object<string, Object>>}
        */
       this.FEATURE_COLLECTION_PARSERS = {};
-      this.FEATURE_COLLECTION_PARSERS[GMLNS] = {
-        'featureMember': makeReplacer(this.readFeaturesInternal),
+      this.FEATURE_COLLECTION_PARSERS[this.namespace] = {
+        'featureMember': makeArrayPusher(this.readFeaturesInternal),
         'featureMembers': makeReplacer(this.readFeaturesInternal)
       };
-
     }
 
     if ( XMLFeature$$1 ) GMLBase.__proto__ = XMLFeature$$1;
@@ -53168,15 +53232,9 @@
       var localName = node.localName;
       var features = null;
       if (localName == 'FeatureCollection') {
-        if (node.namespaceURI === 'http://www.opengis.net/wfs') {
-          features = pushParseAndPop([],
-            this.FEATURE_COLLECTION_PARSERS, node,
-            objectStack, this);
-        } else {
-          features = pushParseAndPop(null,
-            this.FEATURE_COLLECTION_PARSERS, node,
-            objectStack, this);
-        }
+        features = pushParseAndPop([],
+          this.FEATURE_COLLECTION_PARSERS, node,
+          objectStack, this);
       } else if (localName == 'featureMembers' || localName == 'featureMember') {
         var context = objectStack[0];
         var featureType = context['featureType'];
@@ -53219,9 +53277,11 @@
           featureNS = {};
           featureNS[defaultPrefix] = ns;
         }
+        /** @type {Object<string, Object<string, import("../xml.js").Parser>>} */
         var parsersNS = {};
         var featureTypes = Array.isArray(featureType) ? featureType : [featureType];
         for (var p in featureNS) {
+          /** @type {Object<string, import("../xml.js").Parser>} */
           var parsers = {};
           for (var i$1 = 0, ii$1 = featureTypes.length; i$1 < ii$1; ++i$1) {
             var featurePrefix = featureTypes[i$1].indexOf(':') === -1 ?
@@ -53257,7 +53317,7 @@
       context['srsName'] = node.firstElementChild.getAttribute('srsName');
       context['srsDimension'] = node.firstElementChild.getAttribute('srsDimension');
       /** @type {import("../geom/Geometry.js").default} */
-      var geometry = pushParseAndPop(null, this.GEOMETRY_PARSERS_, node, objectStack, this);
+      var geometry = pushParseAndPop(null, this.GEOMETRY_PARSERS, node, objectStack, this);
       if (geometry) {
         return (
           /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, false, context))
@@ -53270,42 +53330,77 @@
     /**
      * @param {Element} node Node.
      * @param {Array<*>} objectStack Object stack.
-     * @return {Feature} Feature.
+     * @param {boolean} asFeature whether result should be wrapped as a feature.
+     * @return {Feature|Object} Feature
      */
-    GMLBase.prototype.readFeatureElement = function readFeatureElement (node, objectStack) {
-      var n;
-      var fid = node.getAttribute('fid') || getAttributeNS(node, GMLNS, 'id');
-      var values = {};
+    GMLBase.prototype.readFeatureElementInternal = function readFeatureElementInternal (node, objectStack, asFeature) {
       var geometryName;
-      for (n = node.firstElementChild; n; n = n.nextElementSibling) {
+      var values = {};
+      for (var n = node.firstElementChild; n; n = n.nextElementSibling) {
+        var value = (void 0);
         var localName = n.localName;
-        // Assume attribute elements have one child node and that the child
-        // is a text or CDATA node (to be treated as text).
-        // Otherwise assume it is a geometry node.
-        if (n.childNodes.length === 0 ||
-            (n.childNodes.length === 1 &&
-            (n.firstChild.nodeType === 3 || n.firstChild.nodeType === 4))) {
-          var value = getAllTextContent(n, false);
+        // first, check if it is simple attribute
+        if (n.childNodes.length === 0
+                || (n.childNodes.length === 1 && (n.firstChild.nodeType === 3 || n.firstChild.nodeType === 4))) {
+          value = getAllTextContent(n, false);
           if (ONLY_WHITESPACE_RE.test(value)) {
             value = undefined;
           }
-          values[localName] = value;
         } else {
-          // boundedBy is an extent and must not be considered as a geometry
-          if (localName !== 'boundedBy') {
+          if (asFeature) {
+            //if feature, try it as a geometry
+            value = this.readGeometryElement(n, objectStack);
+          }
+          if (!value) { //if not a geometry or not a feature, treat it as a complex attribute
+            value = this.readFeatureElementInternal(n, objectStack, false);
+          } else if (localName !== 'boundedBy') {
+            // boundedBy is an extent and must not be considered as a geometry
             geometryName = localName;
           }
-          values[localName] = this.readGeometryElement(n, objectStack);
+        }
+
+        if (values[localName]) {
+          if (!(values[localName] instanceof Array)) {
+            values[localName] = [values[localName]];
+          }
+          values[localName].push(value);
+        } else {
+          values[localName] = value;
+        }
+
+        var len = n.attributes.length;
+        if (len > 0) {
+          values[localName] = {_content_: values[localName]};
+          for (var i = 0; i < len; i++) {
+            var attName = n.attributes[i].name;
+            values[localName][attName] = n.attributes[i].value;
+          }
         }
       }
-      var feature = new Feature(values);
-      if (geometryName) {
-        feature.setGeometryName(geometryName);
+      if (!asFeature) {
+        return values;
+      } else {
+        var feature = new Feature(values);
+        if (geometryName) {
+          feature.setGeometryName(geometryName);
+        }
+        var fid = node.getAttribute('fid') ||
+             getAttributeNS(node, this.namespace, 'id');
+        if (fid) {
+          feature.setId(fid);
+        }
+        return feature;
       }
-      if (fid) {
-        feature.setId(fid);
-      }
-      return feature;
+    };
+
+
+    /**
+     * @param {Element} node Node.
+     * @param {Array<*>} objectStack Object stack.
+     * @return {Feature} Feature.
+     */
+    GMLBase.prototype.readFeatureElement = function readFeatureElement (node, objectStack) {
+      return this.readFeatureElementInternal(node, objectStack, true);
     };
 
     /**
@@ -53413,7 +53508,7 @@
      */
     GMLBase.prototype.readFlatLinearRing_ = function readFlatLinearRing_ (node, objectStack) {
       var ring = pushParseAndPop(null,
-        this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,
+        this.GEOMETRY_FLAT_COORDINATES_PARSERS, node,
         objectStack, this);
       if (ring) {
         return ring;
@@ -53442,13 +53537,13 @@
     GMLBase.prototype.readPolygon = function readPolygon (node, objectStack) {
       /** @type {Array<Array<number>>} */
       var flatLinearRings = pushParseAndPop([null],
-        this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
+        this.FLAT_LINEAR_RINGS_PARSERS, node, objectStack, this);
       if (flatLinearRings && flatLinearRings[0]) {
         var flatCoordinates = flatLinearRings[0];
         var ends = [flatCoordinates.length];
         var i, ii;
         for (i = 1, ii = flatLinearRings.length; i < ii; ++i) {
-          extend$1(flatCoordinates, flatLinearRings[i]);
+          extend(flatCoordinates, flatLinearRings[i]);
           ends.push(flatCoordinates.length);
         }
         return new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
@@ -53464,7 +53559,7 @@
      * @return {Array<number>} Flat coordinates.
      */
     GMLBase.prototype.readFlatCoordinatesFromNode_ = function readFlatCoordinatesFromNode_ (node, objectStack) {
-      return pushParseAndPop(null, this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack, this);
+      return pushParseAndPop(null, this.GEOMETRY_FLAT_COORDINATES_PARSERS, node, objectStack, this);
     };
 
     /**
@@ -53500,6 +53595,40 @@
 
     return GMLBase;
   }(XMLFeature));
+
+
+  GMLBase.prototype.namespace = GMLNS;
+
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @protected
+   */
+  GMLBase.prototype.FLAT_LINEAR_RINGS_PARSERS = {
+    'http://www.opengis.net/gml': {}
+  };
+
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @protected
+   */
+  GMLBase.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
+    'http://www.opengis.net/gml': {}
+  };
+
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @protected
+   */
+  GMLBase.prototype.GEOMETRY_PARSERS = {
+    'http://www.opengis.net/gml': {}
+  };
+
 
   /**
    * @const
@@ -53916,7 +54045,7 @@
      */
     GML3.prototype.readPolygonPatch_ = function readPolygonPatch_ (node, objectStack) {
       return pushParseAndPop([null],
-        this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
+        this.FLAT_LINEAR_RINGS_PARSERS, node, objectStack, this);
     };
 
     /**
@@ -53927,7 +54056,7 @@
      */
     GML3.prototype.readLineStringSegment_ = function readLineStringSegment_ (node, objectStack) {
       return pushParseAndPop([null],
-        this.GEOMETRY_FLAT_COORDINATES_PARSERS_,
+        this.GEOMETRY_FLAT_COORDINATES_PARSERS,
         node, objectStack, this);
     };
 
@@ -53978,7 +54107,7 @@
         var ends = [flatCoordinates.length];
         var i, ii;
         for (i = 1, ii = flatLinearRings.length; i < ii; ++i) {
-          extend$1(flatCoordinates, flatLinearRings[i]);
+          extend(flatCoordinates, flatLinearRings[i]);
           ends.push(flatCoordinates.length);
         }
         return new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
@@ -54090,9 +54219,9 @@
       } else if (node.getAttribute('dimension')) {
         dim = readNonNegativeIntegerString(
           node.getAttribute('dimension'));
-      } else if (node.parentNode.getAttribute('srsDimension')) {
+      } else if (/** @type {Element} */ (node.parentNode).getAttribute('srsDimension')) {
         dim = readNonNegativeIntegerString(
-          node.parentNode.getAttribute('srsDimension'));
+          /** @type {Element} */ (node.parentNode).getAttribute('srsDimension'));
       } else if (contextDimension) {
         dim = readNonNegativeIntegerString(contextDimension);
       }
@@ -54120,7 +54249,7 @@
     GML3.prototype.writePos_ = function writePos_ (node, value, objectStack) {
       var context = objectStack[objectStack.length - 1];
       var hasZ = context['hasZ'];
-      var srsDimension = hasZ ? 3 : 2;
+      var srsDimension = hasZ ? '3' : '2';
       node.setAttribute('srsDimension', srsDimension);
       var srsName = context['srsName'];
       var axisOrientation = 'enu';
@@ -54176,7 +54305,7 @@
     GML3.prototype.writePosList_ = function writePosList_ (node, value, objectStack) {
       var context = objectStack[objectStack.length - 1];
       var hasZ = context['hasZ'];
-      var srsDimension = hasZ ? 3 : 2;
+      var srsDimension = hasZ ? '3' : '2';
       node.setAttribute('srsDimension', srsDimension);
       var srsName = context['srsName'];
       // only 2d for simple features profile
@@ -54464,7 +54593,7 @@
     GML3.prototype.writeGeometryElement = function writeGeometryElement (node, geometry, objectStack) {
       var context = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[objectStack.length - 1]);
       var item = assign({}, context);
-      item.node = node;
+      item['node'] = node;
       var value;
       if (Array.isArray(geometry)) {
         if (context.dataProjection) {
@@ -54490,7 +54619,7 @@
     GML3.prototype.writeFeatureElement = function writeFeatureElement (node, feature, objectStack) {
       var fid = feature.getId();
       if (fid) {
-        node.setAttribute('fid', fid);
+        node.setAttribute('fid', /** @type {string} */ (fid));
       }
       var context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
       var featureNS = context['featureNS'];
@@ -54507,7 +54636,7 @@
         if (value !== null) {
           keys.push(key);
           values.push(value);
-          if (key == geometryName || value instanceof Geometry) {
+          if (key == geometryName || typeof /** @type {?} */ (value).getSimplifiedGeometry === 'function') {
             if (!(key in context.serializers[featureNS])) {
               context.serializers[featureNS][key] = makeChildAppender(
                 this.writeGeometryElement, this);
@@ -54538,6 +54667,7 @@
       var context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
       var featureType = context['featureType'];
       var featureNS = context['featureNS'];
+      /** @type {Object<string, Object<string, import("../xml.js").Serializer>>} */
       var serializers = {};
       serializers[featureNS] = {};
       serializers[featureNS][featureType] = makeChildAppender(
@@ -54561,7 +54691,7 @@
      */
     GML3.prototype.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ = function MULTIGEOMETRY_MEMBER_NODE_FACTORY_ (value, objectStack, opt_nodeName) {
       var parentNode = objectStack[objectStack.length - 1].node;
-      return createElementNS('http://www.opengis.net/gml',
+      return createElementNS(this.namespace,
         MULTIGEOMETRY_TO_MEMBER_NODENAME[parentNode.nodeName]);
     };
 
@@ -54594,7 +54724,7 @@
       } else {
         nodeName = 'Envelope';
       }
-      return createElementNS('http://www.opengis.net/gml',
+      return createElementNS(this.namespace,
         nodeName);
     };
 
@@ -54609,7 +54739,7 @@
      */
     GML3.prototype.writeGeometryNode = function writeGeometryNode (geometry, opt_options) {
       opt_options = this.adaptOptions(opt_options);
-      var geom = createElementNS('http://www.opengis.net/gml', 'geom');
+      var geom = createElementNS(this.namespace, 'geom');
       var context = {node: geom, hasZ: this.hasZ, srsName: this.srsName,
         curve: this.curve_, surface: this.surface_,
         multiSurface: this.multiSurface_, multiCurve: this.multiCurve_};
@@ -54631,7 +54761,7 @@
      */
     GML3.prototype.writeFeaturesNode = function writeFeaturesNode (features, opt_options) {
       opt_options = this.adaptOptions(opt_options);
-      var node = createElementNS('http://www.opengis.net/gml', 'featureMembers');
+      var node = createElementNS(this.namespace, 'featureMembers');
       node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', this.schemaLocation);
       var context = {
         srsName: this.srsName,
@@ -54656,9 +54786,9 @@
   /**
    * @const
    * @type {Object<string, Object<string, import("../xml.js").Parser>>}
-   * @private
+   * @protected
    */
-  GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+  GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
     'http://www.opengis.net/gml': {
       'pos': makeReplacer(GML3.prototype.readFlatPos_),
       'posList': makeReplacer(GML3.prototype.readFlatPosList_)
@@ -54669,9 +54799,9 @@
   /**
    * @const
    * @type {Object<string, Object<string, import("../xml.js").Parser>>}
-   * @private
+   * @protected
    */
-  GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
+  GML3.prototype.FLAT_LINEAR_RINGS_PARSERS = {
     'http://www.opengis.net/gml': {
       'interior': GML3.prototype.interiorParser_,
       'exterior': GML3.prototype.exteriorParser_
@@ -54682,9 +54812,9 @@
   /**
    * @const
    * @type {Object<string, Object<string, import("../xml.js").Parser>>}
-   * @private
+   * @protected
    */
-  GML3.prototype.GEOMETRY_PARSERS_ = {
+  GML3.prototype.GEOMETRY_PARSERS = {
     'http://www.opengis.net/gml': {
       'Point': makeReplacer(GMLBase.prototype.readPoint),
       'MultiPoint': makeReplacer(
@@ -55151,7 +55281,7 @@
     GML2.prototype.writeFeatureElement = function writeFeatureElement (node, feature, objectStack) {
       var fid = feature.getId();
       if (fid) {
-        node.setAttribute('fid', fid);
+        node.setAttribute('fid', /** @type {string} */ (fid));
       }
       var context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
       var featureNS = context['featureNS'];
@@ -55168,7 +55298,7 @@
         if (value !== null) {
           keys.push(key);
           values.push(value);
-          if (key == geometryName || value instanceof Geometry) {
+          if (key == geometryName || typeof /** @type {?} */ (value).getSimplifiedGeometry === 'function') {
             if (!(key in context.serializers[featureNS])) {
               context.serializers[featureNS][key] = makeChildAppender(
                 this.writeGeometryElement, this);
@@ -55257,7 +55387,7 @@
     GML2.prototype.writeGeometryElement = function writeGeometryElement (node, geometry, objectStack) {
       var context = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[objectStack.length - 1]);
       var item = assign({}, context);
-      item.node = node;
+      item['node'] = node;
       var value;
       if (Array.isArray(geometry)) {
         if (context.dataProjection) {
@@ -55562,9 +55692,9 @@
   /**
    * @const
    * @type {Object<string, Object<string, import("../xml.js").Parser>>}
-   * @private
+   * @protected
    */
-  GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+  GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
     'http://www.opengis.net/gml': {
       'coordinates': makeReplacer(GML2.prototype.readFlatCoordinates_)
     }
@@ -55573,9 +55703,9 @@
   /**
    * @const
    * @type {Object<string, Object<string, import("../xml.js").Parser>>}
-   * @private
+   * @protected
    */
-  GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
+  GML2.prototype.FLAT_LINEAR_RINGS_PARSERS = {
     'http://www.opengis.net/gml': {
       'innerBoundaryIs': GML2.prototype.innerBoundaryIsParser_,
       'outerBoundaryIs': GML2.prototype.outerBoundaryIsParser_
@@ -55597,9 +55727,9 @@
   /**
    * @const
    * @type {Object<string, Object<string, import("../xml.js").Parser>>}
-   * @private
+   * @protected
    */
-  GML2.prototype.GEOMETRY_PARSERS_ = {
+  GML2.prototype.GEOMETRY_PARSERS = {
     'http://www.opengis.net/gml': {
       'Point': makeReplacer(GMLBase.prototype.readPoint),
       'MultiPoint': makeReplacer(
@@ -55707,6 +55837,389 @@
     'http://www.opengis.net/gml': {
       'lowerCorner': makeChildAppender(writeStringTextNode),
       'upperCorner': makeChildAppender(writeStringTextNode)
+    }
+  };
+
+  /**
+   * @module ol/format/GML32
+   */
+
+  /**
+   * @classdesc Feature format for reading and writing data in the GML format
+   *            version 3.2.1.
+   * @api
+   */
+  var GML32 = /*@__PURE__*/(function (GML3$$1) {
+    function GML32(opt_options) {
+      var options = /** @type {import("./GMLBase.js").Options} */ (opt_options ? opt_options : {});
+
+      GML3$$1.call(this, options);
+
+      /**
+       * @inheritDoc
+       */
+      this.schemaLocation = options.schemaLocation ?
+        options.schemaLocation : this.namespace + ' http://schemas.opengis.net/gml/3.2.1/gml.xsd';
+
+    }
+
+    if ( GML3$$1 ) GML32.__proto__ = GML3$$1;
+    GML32.prototype = Object.create( GML3$$1 && GML3$$1.prototype );
+    GML32.prototype.constructor = GML32;
+
+    return GML32;
+  }(GML3));
+
+  GML32.prototype.namespace = 'http://www.opengis.net/gml/3.2';
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @protected
+   */
+  GML32.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
+    'http://www.opengis.net/gml/3.2': {
+      'pos': makeReplacer(GML3.prototype.readFlatPos_),
+      'posList': makeReplacer(GML3.prototype.readFlatPosList_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @protected
+   */
+  GML32.prototype.FLAT_LINEAR_RINGS_PARSERS = {
+    'http://www.opengis.net/gml/3.2': {
+      'interior': GML3.prototype.interiorParser_,
+      'exterior': GML3.prototype.exteriorParser_
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @protected
+   */
+  GML32.prototype.GEOMETRY_PARSERS = {
+    'http://www.opengis.net/gml/3.2': {
+      'Point': makeReplacer(GMLBase.prototype.readPoint),
+      'MultiPoint': makeReplacer(
+        GMLBase.prototype.readMultiPoint),
+      'LineString': makeReplacer(
+        GMLBase.prototype.readLineString),
+      'MultiLineString': makeReplacer(
+        GMLBase.prototype.readMultiLineString),
+      'LinearRing': makeReplacer(
+        GMLBase.prototype.readLinearRing),
+      'Polygon': makeReplacer(GMLBase.prototype.readPolygon),
+      'MultiPolygon': makeReplacer(
+        GMLBase.prototype.readMultiPolygon),
+      'Surface': makeReplacer(GML32.prototype.readSurface_),
+      'MultiSurface': makeReplacer(
+        GML3.prototype.readMultiSurface_),
+      'Curve': makeReplacer(GML32.prototype.readCurve_),
+      'MultiCurve': makeReplacer(
+        GML3.prototype.readMultiCurve_),
+      'Envelope': makeReplacer(GML32.prototype.readEnvelope_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.MULTICURVE_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'curveMember': makeArrayPusher(
+        GML3.prototype.curveMemberParser_),
+      'curveMembers': makeArrayPusher(
+        GML3.prototype.curveMemberParser_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.MULTISURFACE_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'surfaceMember': makeArrayPusher(
+        GML3.prototype.surfaceMemberParser_),
+      'surfaceMembers': makeArrayPusher(
+        GML3.prototype.surfaceMemberParser_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.CURVEMEMBER_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'LineString': makeArrayPusher(
+        GMLBase.prototype.readLineString),
+      'Curve': makeArrayPusher(GML3.prototype.readCurve_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.SURFACEMEMBER_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'Polygon': makeArrayPusher(GMLBase.prototype.readPolygon),
+      'Surface': makeArrayPusher(GML3.prototype.readSurface_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.SURFACE_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'patches': makeReplacer(GML3.prototype.readPatch_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.CURVE_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'segments': makeReplacer(GML3.prototype.readSegment_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.ENVELOPE_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'lowerCorner': makeArrayPusher(
+        GML3.prototype.readFlatPosList_),
+      'upperCorner': makeArrayPusher(
+        GML3.prototype.readFlatPosList_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.PATCHES_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'PolygonPatch': makeReplacer(
+        GML3.prototype.readPolygonPatch_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.SEGMENTS_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'LineStringSegment': makeReplacer(
+        GML3.prototype.readLineStringSegment_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.MULTIPOINT_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'pointMember': makeArrayPusher(
+        GMLBase.prototype.pointMemberParser_),
+      'pointMembers': makeArrayPusher(
+        GMLBase.prototype.pointMemberParser_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.MULTILINESTRING_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'lineStringMember': makeArrayPusher(
+        GMLBase.prototype.lineStringMemberParser_),
+      'lineStringMembers': makeArrayPusher(
+        GMLBase.prototype.lineStringMemberParser_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.MULTIPOLYGON_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'polygonMember': makeArrayPusher(
+        GMLBase.prototype.polygonMemberParser_),
+      'polygonMembers': makeArrayPusher(
+        GMLBase.prototype.polygonMemberParser_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.POINTMEMBER_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'Point': makeArrayPusher(
+        GMLBase.prototype.readFlatCoordinatesFromNode_)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.LINESTRINGMEMBER_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'LineString': makeArrayPusher(
+        GMLBase.prototype.readLineString)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @private
+   */
+  GML32.prototype.POLYGONMEMBER_PARSERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'Polygon': makeArrayPusher(
+        GMLBase.prototype.readPolygon)
+    }
+  };
+
+  /**
+   * @const
+   * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+   * @protected
+   */
+  GML32.prototype.RING_PARSERS = {
+    'http://www.opengis.net/gml/3.2': {
+      'LinearRing': makeReplacer(
+        GMLBase.prototype.readFlatLinearRing_)
+    }
+  };
+
+  /**
+   * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+   * @private
+   */
+  GML32.prototype.RING_SERIALIZERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'exterior': makeChildAppender(GML3.prototype.writeRing_),
+      'interior': makeChildAppender(GML3.prototype.writeRing_)
+    }
+  };
+
+
+  /**
+   * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+   * @private
+   */
+  GML32.prototype.ENVELOPE_SERIALIZERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'lowerCorner': makeChildAppender(writeStringTextNode),
+      'upperCorner': makeChildAppender(writeStringTextNode)
+    }
+  };
+
+
+  /**
+   * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+   * @private
+   */
+  GML32.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'surfaceMember': makeChildAppender(
+        GML3.prototype.writeSurfaceOrPolygonMember_),
+      'polygonMember': makeChildAppender(
+        GML3.prototype.writeSurfaceOrPolygonMember_)
+    }
+  };
+
+
+  /**
+   * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+   * @private
+   */
+  GML32.prototype.POINTMEMBER_SERIALIZERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'pointMember': makeChildAppender(
+        GML3.prototype.writePointMember_)
+    }
+  };
+
+
+  /**
+   * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+   * @private
+   */
+  GML32.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'lineStringMember': makeChildAppender(
+        GML3.prototype.writeLineStringOrCurveMember_),
+      'curveMember': makeChildAppender(
+        GML3.prototype.writeLineStringOrCurveMember_)
+    }
+  };
+
+  /**
+   * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+   * @private
+   */
+  GML32.prototype.GEOMETRY_SERIALIZERS_ = {
+    'http://www.opengis.net/gml/3.2': {
+      'Curve': makeChildAppender(
+        GML3.prototype.writeCurveOrLineString_),
+      'MultiCurve': makeChildAppender(
+        GML3.prototype.writeMultiCurveOrLineString_),
+      'Point': makeChildAppender(GML32.prototype.writePoint_),
+      'MultiPoint': makeChildAppender(
+        GML3.prototype.writeMultiPoint_),
+      'LineString': makeChildAppender(
+        GML3.prototype.writeCurveOrLineString_),
+      'MultiLineString': makeChildAppender(
+        GML3.prototype.writeMultiCurveOrLineString_),
+      'LinearRing': makeChildAppender(
+        GML3.prototype.writeLinearRing_),
+      'Polygon': makeChildAppender(
+        GML3.prototype.writeSurfaceOrPolygon_),
+      'MultiPolygon': makeChildAppender(
+        GML3.prototype.writeMultiSurfaceOrPolygon_),
+      'Surface': makeChildAppender(
+        GML3.prototype.writeSurfaceOrPolygon_),
+      'MultiSurface': makeChildAppender(
+        GML3.prototype.writeMultiSurfaceOrPolygon_),
+      'Envelope': makeChildAppender(
+        GML3.prototype.writeEnvelope)
     }
   };
 
@@ -56438,8 +56951,8 @@
     var namespaceURI = parentNode.namespaceURI;
     var properties = context['properties'];
     //FIXME Projection handling
-    node.setAttributeNS(null, 'lat', coordinate[1]);
-    node.setAttributeNS(null, 'lon', coordinate[0]);
+    node.setAttributeNS(null, 'lat', String(coordinate[1]));
+    node.setAttributeNS(null, 'lon', String(coordinate[0]));
     var geometryLayout = context['geometryLayout'];
     switch (geometryLayout) {
       case GeometryLayout.XYZM:
@@ -56479,12 +56992,13 @@
   function writeRte(node, feature, objectStack) {
     var options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
     var properties = feature.getProperties();
-    var context = {node: node, 'properties': properties};
+    var context = {node: node};
+    context['properties'] = properties;
     var geometry = feature.getGeometry();
-    if (geometry) {
-      geometry = /** @type {LineString} */ (transformWithOptions(geometry, true, options));
-      context['geometryLayout'] = geometry.getLayout();
-      properties['rtept'] = geometry.getCoordinates();
+    if (geometry.getType() == GeometryType.LINE_STRING) {
+      var lineString = /** @type {LineString} */ (transformWithOptions(geometry, true, options));
+      context['geometryLayout'] = lineString.getLayout();
+      properties['rtept'] = lineString.getCoordinates();
     }
     var parentNode = objectStack[objectStack.length - 1].node;
     var orderedKeys = RTE_SEQUENCE[parentNode.namespaceURI];
@@ -56504,12 +57018,12 @@
     var options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
     var properties = feature.getProperties();
     /** @type {import("../xml.js").NodeStackItem} */
-    var context = {node: node, 'properties': properties};
+    var context = {node: node};
+    context['properties'] = properties;
     var geometry = feature.getGeometry();
-    if (geometry) {
-      geometry = /** @type {MultiLineString} */
-        (transformWithOptions(geometry, true, options));
-      properties['trkseg'] = geometry.getLineStrings();
+    if (geometry.getType() == GeometryType.MULTI_LINE_STRING) {
+      var multiLineString = /** @type {MultiLineString} */ (transformWithOptions(geometry, true, options));
+      properties['trkseg'] = multiLineString.getLineStrings();
     }
     var parentNode = objectStack[objectStack.length - 1].node;
     var orderedKeys = TRK_SEQUENCE[parentNode.namespaceURI];
@@ -56527,8 +57041,9 @@
    */
   function writeTrkSeg(node, lineString, objectStack) {
     /** @type {import("../xml.js").NodeStackItem} */
-    var context = {node: node, 'geometryLayout': lineString.getLayout(),
-      'properties': {}};
+    var context = {node: node};
+    context['geometryLayout'] = lineString.getLayout();
+    context['properties'] = {};
     pushSerializeAndPop(context,
       TRKSEG_SERIALIZERS, TRKSEG_NODE_FACTORY,
       lineString.getCoordinates(), objectStack);
@@ -56545,11 +57060,10 @@
     var context = objectStack[objectStack.length - 1];
     context['properties'] = feature.getProperties();
     var geometry = feature.getGeometry();
-    if (geometry) {
-      geometry = /** @type {Point} */
-        (transformWithOptions(geometry, true, options));
-      context['geometryLayout'] = geometry.getLayout();
-      writeWptType(node, geometry.getCoordinates(), objectStack);
+    if (geometry.getType() == GeometryType.POINT) {
+      var point = /** @type {Point} */ (transformWithOptions(geometry, true, options));
+      context['geometryLayout'] = point.getLayout();
+      writeWptType(node, point.getCoordinates(), objectStack);
     }
   }
 
@@ -56656,7 +57170,7 @@
       createOrUpdateEmpty(extent);
       var geometries = this.geometries_;
       for (var i = 0, ii = geometries.length; i < ii; ++i) {
-        extend(extent, geometries[i].getExtent());
+        extend$1(extent, geometries[i].getExtent());
       }
       return extent;
     };
@@ -57124,14 +57638,14 @@
         throw new Error('Unsupported GeoJSON type: ' + object.type);
       }
     }
-    return transformWithOptions(geometry, false, opt_options);
+    return /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, false, opt_options));
   }
 
 
   /**
    * @param {GeoJSONGeometryCollection} object Object.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
-   * @return {import("../geom/GeometryCollection.js").default} Geometry collection.
+   * @return {GeometryCollection} Geometry collection.
    */
   function readGeometryCollectionGeometry(object, opt_options) {
     var geometries = object['geometries'].map(
@@ -57148,7 +57662,7 @@
 
   /**
    * @param {GeoJSONPoint} object Object.
-   * @return {import("../geom/Point.js").default} Point.
+   * @return {Point} Point.
    */
   function readPointGeometry$1(object) {
     return new Point(object['coordinates']);
@@ -57157,7 +57671,7 @@
 
   /**
    * @param {GeoJSONLineString} object Object.
-   * @return {import("../geom/LineString.js").default} LineString.
+   * @return {LineString} LineString.
    */
   function readLineStringGeometry$1(object) {
     return new LineString(object['coordinates']);
@@ -57166,7 +57680,7 @@
 
   /**
    * @param {GeoJSONMultiLineString} object Object.
-   * @return {import("../geom/MultiLineString.js").default} MultiLineString.
+   * @return {MultiLineString} MultiLineString.
    */
   function readMultiLineStringGeometry$1(object) {
     return new MultiLineString(object['coordinates']);
@@ -57175,7 +57689,7 @@
 
   /**
    * @param {GeoJSONMultiPoint} object Object.
-   * @return {import("../geom/MultiPoint.js").default} MultiPoint.
+   * @return {MultiPoint} MultiPoint.
    */
   function readMultiPointGeometry$1(object) {
     return new MultiPoint(object['coordinates']);
@@ -57184,7 +57698,7 @@
 
   /**
    * @param {GeoJSONMultiPolygon} object Object.
-   * @return {import("../geom/MultiPolygon.js").default} MultiPolygon.
+   * @return {MultiPolygon} MultiPolygon.
    */
   function readMultiPolygonGeometry$1(object) {
     return new MultiPolygon(object['coordinates']);
@@ -57193,7 +57707,7 @@
 
   /**
    * @param {GeoJSONPolygon} object Object.
-   * @return {import("../geom/Polygon.js").default} Polygon.
+   * @return {Polygon} Polygon.
    */
   function readPolygonGeometry$1(object) {
     return new Polygon(object['coordinates']);
@@ -57206,38 +57720,38 @@
    * @return {GeoJSONGeometry} GeoJSON geometry.
    */
   function writeGeometry$1(geometry, opt_options) {
-    geometry = transformWithOptions(geometry, true, opt_options);
+    geometry = /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, true, opt_options));
     var type = geometry.getType();
 
     /** @type {GeoJSONGeometry} */
     var geoJSON;
     switch (type) {
       case GeometryType.POINT: {
-        geoJSON = writePointGeometry$1(/** @type {import("../geom/Point.js").default} */ (geometry), opt_options);
+        geoJSON = writePointGeometry$1(/** @type {Point} */ (geometry), opt_options);
         break;
       }
       case GeometryType.LINE_STRING: {
-        geoJSON = writeLineStringGeometry$1(/** @type {import("../geom/LineString.js").default} */ (geometry), opt_options);
+        geoJSON = writeLineStringGeometry$1(/** @type {LineString} */ (geometry), opt_options);
         break;
       }
       case GeometryType.POLYGON: {
-        geoJSON = writePolygonGeometry$1(/** @type {import("../geom/Polygon.js").default} */ (geometry), opt_options);
+        geoJSON = writePolygonGeometry$1(/** @type {Polygon} */ (geometry), opt_options);
         break;
       }
       case GeometryType.MULTI_POINT: {
-        geoJSON = writeMultiPointGeometry$1(/** @type {import("../geom/MultiPoint.js").default} */ (geometry), opt_options);
+        geoJSON = writeMultiPointGeometry$1(/** @type {MultiPoint} */ (geometry), opt_options);
         break;
       }
       case GeometryType.MULTI_LINE_STRING: {
-        geoJSON = writeMultiLineStringGeometry$1(/** @type {import("../geom/MultiLineString.js").default} */ (geometry), opt_options);
+        geoJSON = writeMultiLineStringGeometry$1(/** @type {MultiLineString} */ (geometry), opt_options);
         break;
       }
       case GeometryType.MULTI_POLYGON: {
-        geoJSON = writeMultiPolygonGeometry$1(/** @type {import("../geom/MultiPolygon.js").default} */ (geometry), opt_options);
+        geoJSON = writeMultiPolygonGeometry$1(/** @type {MultiPolygon} */ (geometry), opt_options);
         break;
       }
       case GeometryType.GEOMETRY_COLLECTION: {
-        geoJSON = writeGeometryCollectionGeometry(/** @type {import("../geom/GeometryCollection.js").default} */ (geometry), opt_options);
+        geoJSON = writeGeometryCollectionGeometry(/** @type {GeometryCollection} */ (geometry), opt_options);
         break;
       }
       case GeometryType.CIRCLE: {
@@ -57256,7 +57770,7 @@
 
 
   /**
-   * @param {import("../geom/GeometryCollection.js").default} geometry Geometry.
+   * @param {GeometryCollection} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {GeoJSONGeometryCollection} GeoJSON geometry collection.
    */
@@ -57274,7 +57788,7 @@
 
 
   /**
-   * @param {import("../geom/LineString.js").default} geometry Geometry.
+   * @param {LineString} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {GeoJSONGeometry} GeoJSON geometry.
    */
@@ -57287,7 +57801,7 @@
 
 
   /**
-   * @param {import("../geom/MultiLineString.js").default} geometry Geometry.
+   * @param {MultiLineString} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {GeoJSONGeometry} GeoJSON geometry.
    */
@@ -57300,7 +57814,7 @@
 
 
   /**
-   * @param {import("../geom/MultiPoint.js").default} geometry Geometry.
+   * @param {MultiPoint} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {GeoJSONGeometry} GeoJSON geometry.
    */
@@ -57313,7 +57827,7 @@
 
 
   /**
-   * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
+   * @param {MultiPolygon} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {GeoJSONGeometry} GeoJSON geometry.
    */
@@ -57330,7 +57844,7 @@
 
 
   /**
-   * @param {import("../geom/Point.js").default} geometry Geometry.
+   * @param {Point} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {GeoJSONGeometry} GeoJSON geometry.
    */
@@ -57343,7 +57857,7 @@
 
 
   /**
-   * @param {import("../geom/Polygon.js").default} geometry Geometry.
+   * @param {Polygon} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {GeoJSONGeometry} GeoJSON geometry.
    */
@@ -57405,7 +57919,9 @@
      * @protected
      * @return {import("../Feature.js").default} Feature.
      */
-    TextFeature.prototype.readFeatureFromText = function readFeatureFromText (text, opt_options) {};
+    TextFeature.prototype.readFeatureFromText = function readFeatureFromText (text, opt_options) {
+      return abstract();
+    };
 
     /**
      * Read the features from the source.
@@ -57426,7 +57942,9 @@
      * @protected
      * @return {Array<import("../Feature.js").default>} Features.
      */
-    TextFeature.prototype.readFeaturesFromText = function readFeaturesFromText (text, opt_options) {};
+    TextFeature.prototype.readFeaturesFromText = function readFeaturesFromText (text, opt_options) {
+      return abstract();
+    };
 
     /**
      * Read the geometry from the source.
@@ -57447,7 +57965,9 @@
      * @protected
      * @return {import("../geom/Geometry.js").default} Geometry.
      */
-    TextFeature.prototype.readGeometryFromText = function readGeometryFromText (text, opt_options) {};
+    TextFeature.prototype.readGeometryFromText = function readGeometryFromText (text, opt_options) {
+      return abstract();
+    };
 
     /**
      * Read the projection from the source.
@@ -57488,7 +58008,9 @@
      * @protected
      * @return {string} Text.
      */
-    TextFeature.prototype.writeFeatureText = function writeFeatureText (feature, opt_options) {};
+    TextFeature.prototype.writeFeatureText = function writeFeatureText (feature, opt_options) {
+      return abstract();
+    };
 
     /**
      * Encode an array of features as string.
@@ -57509,7 +58031,9 @@
      * @protected
      * @return {string} Text.
      */
-    TextFeature.prototype.writeFeaturesText = function writeFeaturesText (features, opt_options) {};
+    TextFeature.prototype.writeFeaturesText = function writeFeaturesText (features, opt_options) {
+      return abstract();
+    };
 
     /**
      * Write a single geometry.
@@ -57530,7 +58054,9 @@
      * @protected
      * @return {string} Text.
      */
-    TextFeature.prototype.writeGeometryText = function writeGeometryText (geometry, opt_options) {};
+    TextFeature.prototype.writeGeometryText = function writeGeometryText (geometry, opt_options) {
+      return abstract();
+    };
 
     return TextFeature;
   }(FeatureFormat));
@@ -57756,8 +58282,8 @@
        */
       this.image_ = !image ? new Image() : image;
 
-      if (crossOrigin !== null && this.image_ instanceof HTMLImageElement) {
-        this.image_.crossOrigin = crossOrigin;
+      if (crossOrigin !== null) {
+        /** @type {HTMLImageElement} */ (this.image_).crossOrigin = crossOrigin;
       }
 
       /**
@@ -58140,7 +58666,7 @@
         5); // `imgSize` must be set when `image` is provided
 
       if ((src === undefined || src.length === 0) && image) {
-        src = image instanceof HTMLImageElement && image.src || getUid(image).toString();
+        src = /** @type {HTMLImageElement} */ (image).src || getUid(image);
       }
       assert(src !== undefined && src.length > 0,
         6); // A defined and non-empty `src` or `image` must be provided
@@ -58995,7 +59521,7 @@
         for (var n = node.firstElementChild; n; n = n.nextElementSibling) {
           var fs = this.readFeaturesFromNode(n, opt_options);
           if (fs) {
-            extend$1(features, fs);
+            extend(features, fs);
           }
         }
         return features;
@@ -59012,15 +59538,15 @@
      * @api
      */
     KML.prototype.readName = function readName (source) {
-      if (isDocument(source)) {
-        return this.readNameFromDocument(/** @type {Document} */ (source));
-      } else if (isNode(source)) {
-        return this.readNameFromNode(/** @type {Element} */ (source));
+      if (!source) {
+        return undefined;
       } else if (typeof source === 'string') {
         var doc = parse(source);
         return this.readNameFromDocument(doc);
+      } else if (isDocument(source)) {
+        return this.readNameFromDocument(/** @type {Document} */ (source));
       } else {
-        return undefined;
+        return this.readNameFromNode(/** @type {Element} */ (source));
       }
     };
 
@@ -59029,7 +59555,7 @@
      * @return {string|undefined} Name.
      */
     KML.prototype.readNameFromDocument = function readNameFromDocument (doc) {
-      for (var n = doc.firstChild; n; n = n.nextSibling) {
+      for (var n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
           var name = this.readNameFromNode(/** @type {Element} */ (n));
           if (name) {
@@ -59076,15 +59602,15 @@
      */
     KML.prototype.readNetworkLinks = function readNetworkLinks (source) {
       var networkLinks = [];
-      if (isDocument(source)) {
-        extend$1(networkLinks, this.readNetworkLinksFromDocument(
-          /** @type {Document} */ (source)));
-      } else if (isNode(source)) {
-        extend$1(networkLinks, this.readNetworkLinksFromNode(
-          /** @type {Element} */ (source)));
-      } else if (typeof source === 'string') {
+      if (typeof source === 'string') {
         var doc = parse(source);
-        extend$1(networkLinks, this.readNetworkLinksFromDocument(doc));
+        extend(networkLinks, this.readNetworkLinksFromDocument(doc));
+      } else if (isDocument(source)) {
+        extend(networkLinks, this.readNetworkLinksFromDocument(
+          /** @type {Document} */ (source)));
+      } else {
+        extend(networkLinks, this.readNetworkLinksFromNode(
+          /** @type {Element} */ (source)));
       }
       return networkLinks;
     };
@@ -59095,9 +59621,9 @@
      */
     KML.prototype.readNetworkLinksFromDocument = function readNetworkLinksFromDocument (doc) {
       var networkLinks = [];
-      for (var n = doc.firstChild; n; n = n.nextSibling) {
+      for (var n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
-          extend$1(networkLinks, this.readNetworkLinksFromNode(/** @type {Element} */ (n)));
+          extend(networkLinks, this.readNetworkLinksFromNode(/** @type {Element} */ (n)));
         }
       }
       return networkLinks;
@@ -59123,7 +59649,7 @@
             (localName == 'Document' ||
              localName == 'Folder' ||
              localName == 'kml')) {
-          extend$1(networkLinks, this.readNetworkLinksFromNode(n$1));
+          extend(networkLinks, this.readNetworkLinksFromNode(n$1));
         }
       }
       return networkLinks;
@@ -59138,15 +59664,15 @@
      */
     KML.prototype.readRegion = function readRegion (source) {
       var regions = [];
-      if (isDocument(source)) {
-        extend$1(regions, this.readRegionFromDocument(
-          /** @type {Document} */ (source)));
-      } else if (isNode(source)) {
-        extend$1(regions, this.readRegionFromNode(
-          /** @type {Element} */ (source)));
-      } else if (typeof source === 'string') {
+      if (typeof source === 'string') {
         var doc = parse(source);
-        extend$1(regions, this.readRegionFromDocument(doc));
+        extend(regions, this.readRegionFromDocument(doc));
+      } else if (isDocument(source)) {
+        extend(regions, this.readRegionFromDocument(
+          /** @type {Document} */ (source)));
+      } else {
+        extend(regions, this.readRegionFromNode(
+          /** @type {Element} */ (source)));
       }
       return regions;
     };
@@ -59157,9 +59683,9 @@
      */
     KML.prototype.readRegionFromDocument = function readRegionFromDocument (doc) {
       var regions = [];
-      for (var n = doc.firstChild; n; n = n.nextSibling) {
+      for (var n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
-          extend$1(regions, this.readRegionFromNode(/** @type {Element} */ (n)));
+          extend(regions, this.readRegionFromNode(/** @type {Element} */ (n)));
         }
       }
       return regions;
@@ -59186,7 +59712,7 @@
             (localName == 'Document' ||
              localName == 'Folder' ||
              localName == 'kml')) {
-          extend$1(regions, this.readRegionFromNode(n$1));
+          extend(regions, this.readRegionFromNode(n$1));
         }
       }
       return regions;
@@ -59211,6 +59737,7 @@
       kml.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', SCHEMA_LOCATION$1);
 
       var /** @type {import("../xml.js").NodeStackItem} */ context = {node: kml};
+      /** @type {!Object<string, (Array<Feature>|Feature|undefined)>} */
       var properties = {};
       if (features.length > 1) {
         properties['Document'] = features;
@@ -59306,7 +59833,7 @@
 
         if (drawName) {
           name = /** @type {string} */ (feature.get('name'));
-          drawName = drawName && name;
+          drawName = drawName && !!name;
         }
 
         if (style) {
@@ -59975,7 +60502,7 @@
         flatCoordinates = point.getFlatCoordinates();
         for (var i$1 = 1, ii$1 = geometries.length; i$1 < ii$1; ++i$1) {
           geometry = geometries[i$1];
-          extend$1(flatCoordinates, geometry.getFlatCoordinates());
+          extend(flatCoordinates, geometry.getFlatCoordinates());
         }
         multiGeometry = new MultiPoint(flatCoordinates, layout);
         setCommonGeometryProperties(multiGeometry, geometries);
@@ -60046,7 +60573,7 @@
       var flatCoordinates = flatLinearRings[0];
       var ends = [flatCoordinates.length];
       for (var i = 1, ii = flatLinearRings.length; i < ii; ++i) {
-        extend$1(flatCoordinates, flatLinearRings[i]);
+        extend(flatCoordinates, flatLinearRings[i]);
         ends.push(flatCoordinates.length);
       }
       var polygon = new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
@@ -60089,11 +60616,13 @@
     if (fill !== undefined && !fill) {
       fillStyle = null;
     }
-    var imageStyle = /** @type {import("../style/Image.js").default} */
-        ('imageStyle' in styleObject ?
-          styleObject['imageStyle'] : DEFAULT_IMAGE_STYLE);
-    if (imageStyle == DEFAULT_NO_IMAGE_STYLE) {
-      imageStyle = undefined;
+    var imageStyle;
+    if ('imageStyle' in styleObject) {
+      if (styleObject['imageStyle'] != DEFAULT_NO_IMAGE_STYLE) {
+        imageStyle = styleObject['imageStyle'];
+      }
+    } else {
+      imageStyle = DEFAULT_IMAGE_STYLE;
     }
     var textStyle = /** @type {Text} */
         ('textStyle' in styleObject ?
@@ -60448,9 +60977,10 @@
   function writeColorTextNode(node, color) {
     var rgba = asArray(color);
     var opacity = (rgba.length == 4) ? rgba[3] : 1;
+    /** @type {Array<string|number>} */
     var abgr = [opacity * 255, rgba[2], rgba[1], rgba[0]];
     for (var i = 0; i < 4; ++i) {
-      var hex = parseInt(abgr[i], 10).toString(16);
+      var hex = Math.floor(/** @type {number} */ (abgr[i])).toString(16);
       abgr[i] = (hex.length == 1) ? '0' + hex : hex;
     }
     writeStringTextNode(node, abgr.join(''));
@@ -61041,7 +61571,7 @@
 
     // set id
     if (feature.getId()) {
-      node.setAttribute('id', feature.getId());
+      node.setAttribute('id', /** @type {string} */ (feature.getId()));
     }
 
     // serialize properties (properties unknown to KML are not serialized)
@@ -61088,7 +61618,7 @@
     var options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
     var geometry = feature.getGeometry();
     if (geometry) {
-      geometry = transformWithOptions(geometry, true, options);
+      geometry = /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, true, options));
     }
     pushSerializeAndPop(context, PLACEMARK_SERIALIZERS,
       GEOMETRY_NODE_FACTORY, [geometry], objectStack);
@@ -61268,7 +61798,7 @@
     var strokeStyle = style.getStroke();
     var imageStyle = style.getImage();
     var textStyle = style.getText();
-    if (imageStyle instanceof Icon) {
+    if (imageStyle && typeof /** @type {?} */ (imageStyle).getSrc === 'function') {
       properties['IconStyle'] = imageStyle;
     }
     if (textStyle) {
@@ -61293,8 +61823,8 @@
    * @param {Vec2} vec2 Vec2.
    */
   function writeVec2(node, vec2) {
-    node.setAttribute('x', vec2.x);
-    node.setAttribute('y', vec2.y);
+    node.setAttribute('x', String(vec2.x));
+    node.setAttribute('y', String(vec2.y));
     node.setAttribute('xunits', vec2.xunits);
     node.setAttribute('yunits', vec2.yunits);
   }
@@ -62022,7 +62552,7 @@
    * structure, optimized for vector tile rendering and styling. Geometry access
    * through the API is limited to getting the type and extent of the geometry.
    *
-   * @param {import("../geom/GeometryType.js").default} type Geometry type.
+   * @param {GeometryType} type Geometry type.
    * @param {Array<number>} flatCoordinates Flat coordinates. These always need
    *     to be right-handed for polygons.
    * @param {Array<number>|Array<Array<number>>} ends Ends or Endss.
@@ -62044,7 +62574,7 @@
 
     /**
     * @private
-    * @type {import("../geom/GeometryType.js").default}
+    * @type {GeometryType}
     */
     this.type_ = type;
 
@@ -62113,7 +62643,7 @@
     if (!this.flatInteriorPoints_) {
       var flatCenter = getCenter(this.getExtent());
       this.flatInteriorPoints_ = getInteriorPointOfArray(
-        this.flatCoordinates_, 0, this.ends_, 2, flatCenter, 0);
+        this.flatCoordinates_, 0, /** @type {Array<number>} */ (this.ends_), 2, flatCenter, 0);
     }
     return this.flatInteriorPoints_;
   };
@@ -62124,9 +62654,9 @@
   RenderFeature.prototype.getFlatInteriorPoints = function getFlatInteriorPoints () {
     if (!this.flatInteriorPoints_) {
       var flatCenters = linearRingss$1(
-        this.flatCoordinates_, 0, this.ends_, 2);
+        this.flatCoordinates_, 0, /** @type {Array<Array<number>>} */ (this.ends_), 2);
       this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
-        this.flatCoordinates_, 0, this.ends_, 2, flatCenters);
+        this.flatCoordinates_, 0, /** @type {Array<Array<number>>} */ (this.ends_), 2, flatCenters);
     }
     return this.flatInteriorPoints_;
   };
@@ -62150,12 +62680,12 @@
       this.flatMidpoints_ = [];
       var flatCoordinates = this.flatCoordinates_;
       var offset = 0;
-      var ends = this.ends_;
+      var ends = /** @type {Array<number>} */ (this.ends_);
       for (var i = 0, ii = ends.length; i < ii; ++i) {
         var end = ends[i];
         var midpoint = interpolatePoint(
           flatCoordinates, offset, end, 2, 0.5);
-        extend$1(this.flatMidpoints_, midpoint);
+        extend(this.flatMidpoints_, midpoint);
         offset = end;
       }
     }
@@ -62190,6 +62720,14 @@
   };
 
   /**
+   * @param {number} squaredTolerance Squared tolerance.
+   * @return {RenderFeature} Simplified geometry.
+   */
+  RenderFeature.prototype.getSimplifiedGeometry = function getSimplifiedGeometry (squaredTolerance) {
+    return this;
+  };
+
+  /**
   * Get the feature properties.
   * @return {Object<string, *>} Feature properties.
   * @api
@@ -62214,7 +62752,7 @@
 
   /**
   * Get the type of this feature's geometry.
-  * @return {import("../geom/GeometryType.js").default} Geometry type.
+  * @return {GeometryType} Geometry type.
   * @api
   */
   RenderFeature.prototype.getType = function getType () {
@@ -62257,14 +62795,6 @@
   RenderFeature.prototype.getFlatCoordinates =
       RenderFeature.prototype.getOrientedFlatCoordinates;
 
-
-  /**
-   * Get the feature for working with its geometry.
-   * @return {RenderFeature} Feature.
-   */
-  RenderFeature.prototype.getSimplifiedGeometry =
-      RenderFeature.prototype.getGeometry;
-
   /**
    * @module ol/format/MVT
    */
@@ -62272,17 +62802,14 @@
 
   /**
    * @typedef {Object} Options
-   * @property {function((import("../geom/Geometry.js").default|Object<string,*>)=)|function(GeometryType,Array<number>,(Array<number>|Array<Array<number>>),Object<string,*>,number)} [featureClass]
-   * Class for features returned by {@link module:ol/format/MVT#readFeatures}. Set to
-   * {@link module:ol/Feature~Feature} to get full editing and geometry support at the cost of
-   * decreased rendering performance. The default is {@link module:ol/render/Feature~RenderFeature},
-   * which is optimized for rendering and hit detection.
-   * @property {string} [geometryName='geometry'] Geometry name to use when creating
-   * features.
-   * @property {string} [layerName='layer'] Name of the feature attribute that
-   * holds the layer name.
-   * @property {Array<string>} [layers] Layers to read features from. If not
-   * provided, features will be read from all layers.
+   * @property {import("../Feature.js").FeatureClass} [featureClass] Class for features returned by
+   * {@link module:ol/format/MVT#readFeatures}. Set to {@link module:ol/Feature~Feature} to get full editing and geometry
+   * support at the cost of decreased rendering performance. The default is
+   * {@link module:ol/render/Feature~RenderFeature}, which is optimized for rendering and hit detection.
+   * @property {string} [geometryName='geometry'] Geometry name to use when creating features.
+   * @property {string} [layerName='layer'] Name of the feature attribute that holds the layer name.
+   * @property {Array<string>} [layers] Layers to read features from. If not provided, features will be read from all
+   * layers.
    */
 
 
@@ -62309,12 +62836,9 @@
 
       /**
        * @private
-       * @type {function((import("../geom/Geometry.js").default|Object<string,*>)=)|
-       *     function(GeometryType,Array<number>,
-       *         (Array<number>|Array<Array<number>>),Object<string,*>,number)}
+       * @type {import("../Feature.js").FeatureClass}
        */
-      this.featureClass_ = options.featureClass ?
-        options.featureClass : RenderFeature;
+      this.featureClass_ = options.featureClass ? options.featureClass : RenderFeature;
 
       /**
        * @private
@@ -62416,7 +62940,7 @@
      * @param {Object} pbf PBF
      * @param {Object} rawFeature Raw Mapbox feature.
      * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
-     * @return {import("../Feature.js").default|RenderFeature} Feature.
+     * @return {import("../Feature.js").FeatureLike} Feature.
      */
     MVT.prototype.createFeature_ = function createFeature_ (pbf$$1, rawFeature, opt_options) {
       var type = rawFeature.type;
@@ -62464,11 +62988,13 @@
                   geometryType === GeometryType.MULTI_LINE_STRING ? new MultiLineString(flatCoordinates, GeometryLayout.XY, ends) :
                     null;
         }
-        feature = new this.featureClass_();
+        var ctor = /** @type {typeof import("../Feature.js").default} */ (this.featureClass_);
+        feature = new ctor();
         if (this.geometryName_) {
           feature.setGeometryName(this.geometryName_);
         }
-        var geometry = transformWithOptions(geom, false, this.adaptOptions(opt_options));
+        var geometry = /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geom, false,
+          this.adaptOptions(opt_options)));
         feature.setGeometry(geometry);
         feature.setId(id);
         feature.setProperties(values);
@@ -62501,7 +63027,7 @@
 
       var pbf$$1 = new pbf(/** @type {ArrayBuffer} */ (source));
       var pbfLayers = pbf$$1.readFields(layersPBFReader, {});
-      /** @type {Array<import("../Feature.js").default|RenderFeature>} */
+      /** @type {Array<import("../Feature.js").FeatureLike>} */
       var features = [];
       for (var name in pbfLayers) {
         if (layers && layers.indexOf(name) == -1) {
@@ -62740,7 +63266,7 @@
           var flatCoordinates = [];
           for (var i = 0, ii = values.ndrefs.length; i < ii; i++) {
             var point = state.nodes[values.ndrefs[i]];
-            extend$1(flatCoordinates, point);
+            extend(flatCoordinates, point);
           }
           var geometry = (void 0);
           if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
@@ -62873,15 +63399,15 @@
   var XML = function XML () {};
 
   XML.prototype.read = function read (source) {
-    if (isDocument(source)) {
-      return this.readFromDocument(/** @type {Document} */ (source));
-    } else if (isNode(source)) {
-      return this.readFromNode(/** @type {Element} */ (source));
+    if (!source) {
+      return null;
     } else if (typeof source === 'string') {
       var doc = parse(source);
       return this.readFromDocument(doc);
+    } else if (isDocument(source)) {
+      return this.readFromDocument(/** @type {Document} */ (source));
     } else {
-      return null;
+      return this.readFromNode(/** @type {Element} */ (source));
     }
   };
 
@@ -63776,7 +64302,7 @@
 
   /**
    * @const
-   * @type {Object<string, function(TopoJSONGeometry, Array, ...Array): import("../geom/Geometry.js").default>}
+   * @type {Object<string, function(TopoJSONGeometry, Array, ...Array=): import("../geom/Geometry.js").default>}
    */
   var GEOMETRY_READERS$1 = {
     'Point': readPointGeometry$2,
@@ -64091,7 +64617,7 @@
       /**
        * @type {Array<import("./Filter.js").default>}
        */
-      this.conditions = Array.prototype.slice.call(arguments, 1);
+      this.conditions = conditions;
       assert(this.conditions.length >= 2, 57); // At least 2 conditions are required.
     }
 
@@ -64114,8 +64640,7 @@
    */
   var And = /*@__PURE__*/(function (LogicalNary$$1) {
     function And(conditions) {
-      var params = ['And'].concat(Array.prototype.slice.call(arguments));
-      LogicalNary$$1.apply(this, params);
+      LogicalNary$$1.call(this, 'And', Array.prototype.slice.call(arguments));
     }
 
     if ( LogicalNary$$1 ) And.__proto__ = LogicalNary$$1;
@@ -64609,8 +65134,7 @@
    */
   var Or = /*@__PURE__*/(function (LogicalNary$$1) {
     function Or(conditions) {
-      var params = ['Or'].concat(Array.prototype.slice.call(arguments));
-      LogicalNary$$1.apply(this, params);
+      LogicalNary$$1.call(this, 'Or', Array.prototype.slice.call(arguments));
     }
 
     if ( LogicalNary$$1 ) Or.__proto__ = LogicalNary$$1;
@@ -64979,6 +65503,7 @@
    * @property {number} [maxFeatures] Maximum number of features to fetch.
    * @property {string} [geometryName] Geometry name to use in a BBOX filter.
    * @property {Array<string>} [propertyNames] Optional list of property names to serialize.
+   * @property {string} [viewParams] viewParams GeoServer vendor parameter.
    * @property {number} [startIndex] Start index to use for WFS paging. This is a
    * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services.
    * @property {number} [count] Number of features to retrieve when paging. This is a
@@ -65136,10 +65661,15 @@
      * @inheritDoc
      */
     WFS.prototype.readFeaturesFromNode = function readFeaturesFromNode (node, opt_options) {
-      var context = /** @type {import("../xml.js").NodeStackItem} */ ({
+      /** @type {import("../xml.js").NodeStackItem} */
+      var context = {
+        node: node
+      };
+      assign(context, {
         'featureType': this.featureType_,
         'featureNS': this.featureNS_
       });
+
       assign(context, this.getReadOptions(node, opt_options ? opt_options : {}));
       var objectStack = [context];
       this.gmlFormat_.FEATURE_COLLECTION_PARSERS[GMLNS][
@@ -65162,16 +65692,16 @@
      * @api
      */
     WFS.prototype.readTransactionResponse = function readTransactionResponse (source) {
-      if (isDocument(source)) {
-        return this.readTransactionResponseFromDocument(
-          /** @type {Document} */ (source));
-      } else if (isNode(source)) {
-        return this.readTransactionResponseFromNode(/** @type {Element} */ (source));
+      if (!source) {
+        return undefined;
       } else if (typeof source === 'string') {
         var doc = parse(source);
         return this.readTransactionResponseFromDocument(doc);
+      } else if (isDocument(source)) {
+        return this.readTransactionResponseFromDocument(
+          /** @type {Document} */ (source));
       } else {
-        return undefined;
+        return this.readTransactionResponseFromNode(/** @type {Element} */ (source));
       }
     };
 
@@ -65184,17 +65714,17 @@
      * @api
      */
     WFS.prototype.readFeatureCollectionMetadata = function readFeatureCollectionMetadata (source) {
-      if (isDocument(source)) {
-        return this.readFeatureCollectionMetadataFromDocument(
-          /** @type {Document} */ (source));
-      } else if (isNode(source)) {
-        return this.readFeatureCollectionMetadataFromNode(
-          /** @type {Element} */ (source));
+      if (!source) {
+        return undefined;
       } else if (typeof source === 'string') {
         var doc = parse(source);
         return this.readFeatureCollectionMetadataFromDocument(doc);
+      } else if (isDocument(source)) {
+        return this.readFeatureCollectionMetadataFromDocument(
+          /** @type {Document} */ (source));
       } else {
-        return undefined;
+        return this.readFeatureCollectionMetadataFromNode(
+          /** @type {Element} */ (source));
       }
     };
 
@@ -65204,7 +65734,7 @@
      *     FeatureCollection metadata.
      */
     WFS.prototype.readFeatureCollectionMetadataFromDocument = function readFeatureCollectionMetadataFromDocument (doc) {
-      for (var n = doc.firstChild; n; n = n.nextSibling) {
+      for (var n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
           return this.readFeatureCollectionMetadataFromNode(/** @type {Element} */ (n));
         }
@@ -65232,7 +65762,7 @@
      * @return {TransactionResponse|undefined} Transaction response.
      */
     WFS.prototype.readTransactionResponseFromDocument = function readTransactionResponseFromDocument (doc) {
-      for (var n = doc.firstChild; n; n = n.nextSibling) {
+      for (var n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
           return this.readTransactionResponseFromNode(/** @type {Element} */ (n));
         }
@@ -65270,16 +65800,19 @@
           node.setAttribute('outputFormat', options.outputFormat);
         }
         if (options.maxFeatures !== undefined) {
-          node.setAttribute('maxFeatures', options.maxFeatures);
+          node.setAttribute('maxFeatures', String(options.maxFeatures));
         }
         if (options.resultType) {
           node.setAttribute('resultType', options.resultType);
         }
         if (options.startIndex !== undefined) {
-          node.setAttribute('startIndex', options.startIndex);
+          node.setAttribute('startIndex', String(options.startIndex));
         }
         if (options.count !== undefined) {
-          node.setAttribute('count', options.count);
+          node.setAttribute('count', String(options.count));
+        }
+        if (options.viewParams !== undefined) {
+          node.setAttribute('viewParams ', options.viewParams);
         }
         filter = options.filter;
         if (options.bbox) {
@@ -65298,14 +65831,17 @@
       node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', this.schemaLocation_);
       /** @type {import("../xml.js").NodeStackItem} */
       var context = {
-        node: node,
+        node: node
+      };
+      assign(context, {
         'srsName': options.srsName,
         'featureNS': options.featureNS ? options.featureNS : this.featureNS_,
         'featurePrefix': options.featurePrefix,
         'geometryName': options.geometryName,
         'filter': filter,
         'propertyNames': options.propertyNames ? options.propertyNames : []
-      };
+      });
+
       assert(Array.isArray(options.featureTypes),
         11); // `options.featureTypes` should be an Array
       writeGetFeature(node, /** @type {!Array<string>} */ (options.featureTypes), [context]);
@@ -65342,9 +65878,9 @@
       node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', schemaLocation);
       var featurePrefix = options.featurePrefix ? options.featurePrefix : FEATURE_PREFIX;
       if (inserts) {
-        obj = {node: node, 'featureNS': options.featureNS,
+        obj = assign({node: node}, {'featureNS': options.featureNS,
           'featureType': options.featureType, 'featurePrefix': featurePrefix,
-          'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName};
+          'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName});
         assign(obj, baseObj);
         pushSerializeAndPop(obj,
           TRANSACTION_SERIALIZERS,
@@ -65352,9 +65888,9 @@
           objectStack);
       }
       if (updates) {
-        obj = {node: node, 'featureNS': options.featureNS,
+        obj = assign({node: node}, {'featureNS': options.featureNS,
           'featureType': options.featureType, 'featurePrefix': featurePrefix,
-          'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName};
+          'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName});
         assign(obj, baseObj);
         pushSerializeAndPop(obj,
           TRANSACTION_SERIALIZERS,
@@ -65384,7 +65920,7 @@
      * @inheritDoc
      */
     WFS.prototype.readProjectionFromDocument = function readProjectionFromDocument (doc) {
-      for (var n = doc.firstChild; n; n = n.nextSibling) {
+      for (var n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
           return this.readProjectionFromNode(n);
         }
@@ -65501,7 +66037,7 @@
     var filter = createElementNS(OGCNS, 'Filter');
     var child = createElementNS(OGCNS, 'FeatureId');
     filter.appendChild(child);
-    child.setAttribute('fid', fid);
+    child.setAttribute('fid', /** @type {string} */ (fid));
     node.appendChild(filter);
   }
 
@@ -65567,7 +66103,7 @@
         var value = feature.get(keys[i]);
         if (value !== undefined) {
           var name = keys[i];
-          if (value instanceof Geometry) {
+          if (value && typeof /** @type {?} */ (value).getSimplifiedGeometry === 'function') {
             name = geometryName;
           }
           values.push({name: name, value: value});
@@ -65598,7 +66134,7 @@
     if (pair.value !== undefined && pair.value !== null) {
       var value = createElementNS(WFSNS, 'Value');
       node.appendChild(value);
-      if (pair.value instanceof Geometry) {
+      if (pair.value && typeof /** @type {?} */ (pair.value).getSimplifiedGeometry === 'function') {
         if (gmlVersion === 2) {
           GML2.prototype.writeGeometryElement(value,
             pair.value, objectStack);
@@ -65623,7 +66159,7 @@
       node.setAttribute('vendorId', nativeElement.vendorId);
     }
     if (nativeElement.safeToIgnore !== undefined) {
-      node.setAttribute('safeToIgnore', nativeElement.safeToIgnore);
+      node.setAttribute('safeToIgnore', String(nativeElement.safeToIgnore));
     }
     if (nativeElement.value !== undefined) {
       writeStringTextNode(node, nativeElement.value);
@@ -65969,6 +66505,7 @@
 
 
   /**
+   * Geometry constructors
    * @enum {function (new:import("../geom/Geometry.js").default, Array, GeometryLayout)}
    */
   var GeometryConstructor = {
@@ -66106,29 +66643,32 @@
    */
   Lexer.prototype.nextToken = function nextToken () {
     var c = this.nextChar_();
-    var token = {position: this.index_, value: c};
+    var position = this.index_;
+    /** @type {number|string} */
+    var value = c;
+    var type;
 
     if (c == '(') {
-      token.type = TokenType.LEFT_PAREN;
+      type = TokenType.LEFT_PAREN;
     } else if (c == ',') {
-      token.type = TokenType.COMMA;
+      type = TokenType.COMMA;
     } else if (c == ')') {
-      token.type = TokenType.RIGHT_PAREN;
+      type = TokenType.RIGHT_PAREN;
     } else if (this.isNumeric_(c) || c == '-') {
-      token.type = TokenType.NUMBER;
-      token.value = this.readNumber_();
+      type = TokenType.NUMBER;
+      value = this.readNumber_();
     } else if (this.isAlpha_(c)) {
-      token.type = TokenType.TEXT;
-      token.value = this.readText_();
+      type = TokenType.TEXT;
+      value = this.readText_();
     } else if (this.isWhiteSpace_(c)) {
       return this.nextToken();
     } else if (c === '') {
-      token.type = TokenType.EOF;
+      type = TokenType.EOF;
     } else {
       throw new Error('Unexpected character: ' + c);
     }
 
-    return token;
+    return {position: position, value: value, type: type};
   };
 
   /**
@@ -66313,7 +66853,7 @@
   };
 
   /**
-   * @return {!Array<!Array<number>>} All points in a polygon.
+   * @return {!Array<!Array<!Array<number>>>} All points in a polygon.
    * @private
    */
   Parser.prototype.parsePolygonText_ = function parsePolygonText_ () {
@@ -66350,8 +66890,8 @@
   };
 
   /**
-   * @return {!Array<!Array<number>>} All linestring points
-   *                                      in a multilinestring.
+   * @return {!Array<!Array<!Array<number>>>} All linestring points
+   *                                        in a multilinestring.
    * @private
    */
   Parser.prototype.parseMultiLineStringText_ = function parseMultiLineStringText_ () {
@@ -66367,7 +66907,7 @@
   };
 
   /**
-   * @return {!Array<!Array<number>>} All polygon points in a multipolygon.
+   * @return {!Array<!Array<!Array<!Array<number>>>>} All polygon points in a multipolygon.
    * @private
    */
   Parser.prototype.parseMultiPolygonText_ = function parseMultiPolygonText_ () {
@@ -66392,7 +66932,7 @@
     for (var i = 0; i < dimensions; ++i) {
       var token = this.token_;
       if (this.match(TokenType.NUMBER)) {
-        coordinates.push(token.value);
+        coordinates.push(/** @type {number} */ (token.value));
       } else {
         break;
       }
@@ -66428,7 +66968,7 @@
   };
 
   /**
-   * @return {!Array<!Array<number>>} An array of points.
+   * @return {!Array<!Array<!Array<number>>>} An array of points.
    * @private
    */
   Parser.prototype.parseLineStringTextList_ = function parseLineStringTextList_ () {
@@ -66440,7 +66980,7 @@
   };
 
   /**
-   * @return {!Array<!Array<number>>} An array of points.
+   * @return {!Array<!Array<!Array<!Array<number>>>>} An array of points.
    * @private
    */
   Parser.prototype.parsePolygonTextList_ = function parsePolygonTextList_ () {
@@ -66762,7 +67302,7 @@
   }
 
   /**
-   * @param {SimpleGeometry} geom SimpleGeometry geometry.
+   * @param {import("../geom/SimpleGeometry.js").default} geom SimpleGeometry geometry.
    * @return {string} Potential dimensional information for WKT type.
    */
   function encodeGeometryLayout(geom) {
@@ -66795,7 +67335,7 @@
 
   /**
    * Encode a geometry as WKT.
-   * @param {import("../geom/Geometry.js").default} geom The geometry to encode.
+   * @param {!import("../geom/Geometry.js").default} geom The geometry to encode.
    * @return {string} WKT string for the geometry.
    */
   function encode(geom) {
@@ -66803,8 +67343,8 @@
     var geometryEncoder = GeometryEncoder[type];
     var enc = geometryEncoder(geom);
     type = type.toUpperCase();
-    if (geom instanceof SimpleGeometry) {
-      var dimInfo = encodeGeometryLayout(geom);
+    if (typeof /** @type {?} */ (geom).getFlatCoordinates === 'function') {
+      var dimInfo = encodeGeometryLayout(/** @type {import("../geom/SimpleGeometry.js").default} */ (geom));
       if (dimInfo.length > 0) {
         type += ' ' + dimInfo;
       }
@@ -67548,10 +68088,12 @@
           if (layer.nodeType !== Node.ELEMENT_NODE) {
             continue;
           }
+
+          var layerElement = /** @type {Element} */ (layer);
           var context = objectStack[0];
 
           var toRemove = layerIdentifier;
-          var layerName = layer.localName.replace(toRemove, '');
+          var layerName = layerElement.localName.replace(toRemove, '');
 
           if (this.layers_ && !includes(this.layers_, layerName)) {
             continue;
@@ -67563,16 +68105,17 @@
           context['featureType'] = featureType;
           context['featureNS'] = this.featureNS_;
 
+          /** @type {Object<string, import("../xml.js").Parser>} */
           var parsers = {};
           parsers[featureType] = makeArrayPusher(
             this.gmlFormat_.readFeatureElement, this.gmlFormat_);
           var parsersNS = makeStructureNS(
             [context['featureNS'], null], parsers);
-          layer.setAttribute('namespaceURI', this.featureNS_);
+          layerElement.setAttribute('namespaceURI', this.featureNS_);
           var layerFeatures = pushParseAndPop(
-            [], parsersNS, layer, objectStack, this.gmlFormat_);
+            [], parsersNS, layerElement, objectStack, this.gmlFormat_);
           if (layerFeatures) {
-            extend$1(features, layerFeatures);
+            extend(features, layerFeatures);
           }
         }
       }
@@ -67640,7 +68183,7 @@
    * @classdesc
    * Format for reading WMTS capabilities data.
    *
-    * @api
+   * @api
    */
   var WMTSCapabilities = /*@__PURE__*/(function (XML$$1) {
     function WMTSCapabilities() {
@@ -68024,7 +68567,7 @@
    * @enum {string}
    * @private
    */
-  var Property$4 = {
+  var Property$5 = {
     BLUR: 'blur',
     GRADIENT: 'gradient',
     RADIUS: 'radius'
@@ -68086,7 +68629,7 @@
       this.styleCache_ = null;
 
       listen(this,
-        getChangeEventType(Property$4.GRADIENT),
+        getChangeEventType(Property$5.GRADIENT),
         this.handleGradientChanged_, this);
 
       this.setGradient(options.gradient ? options.gradient : DEFAULT_GRADIENT);
@@ -68096,10 +68639,10 @@
       this.setRadius(options.radius !== undefined ? options.radius : 8);
 
       listen(this,
-        getChangeEventType(Property$4.BLUR),
+        getChangeEventType(Property$5.BLUR),
         this.handleStyleChanged_, this);
       listen(this,
-        getChangeEventType(Property$4.RADIUS),
+        getChangeEventType(Property$5.RADIUS),
         this.handleStyleChanged_, this);
 
       this.handleStyleChanged_();
@@ -68172,7 +68715,7 @@
      * @observable
      */
     Heatmap.prototype.getBlur = function getBlur () {
-      return /** @type {number} */ (this.get(Property$4.BLUR));
+      return /** @type {number} */ (this.get(Property$5.BLUR));
     };
 
     /**
@@ -68182,7 +68725,7 @@
      * @observable
      */
     Heatmap.prototype.getGradient = function getGradient () {
-      return /** @type {Array<string>} */ (this.get(Property$4.GRADIENT));
+      return /** @type {Array<string>} */ (this.get(Property$5.GRADIENT));
     };
 
     /**
@@ -68192,7 +68735,7 @@
      * @observable
      */
     Heatmap.prototype.getRadius = function getRadius () {
-      return /** @type {number} */ (this.get(Property$4.RADIUS));
+      return /** @type {number} */ (this.get(Property$5.RADIUS));
     };
 
     /**
@@ -68238,7 +68781,7 @@
      * @observable
      */
     Heatmap.prototype.setBlur = function setBlur (blur) {
-      this.set(Property$4.BLUR, blur);
+      this.set(Property$5.BLUR, blur);
     };
 
     /**
@@ -68248,7 +68791,7 @@
      * @observable
      */
     Heatmap.prototype.setGradient = function setGradient (colors) {
-      this.set(Property$4.GRADIENT, colors);
+      this.set(Property$5.GRADIENT, colors);
     };
 
     /**
@@ -68258,7 +68801,7 @@
      * @observable
      */
     Heatmap.prototype.setRadius = function setRadius (radius) {
-      this.set(Property$4.RADIUS, radius);
+      this.set(Property$5.RADIUS, radius);
     };
 
     return Heatmap;
@@ -68490,26 +69033,6 @@
 
 
   /**
-   * @enum {string}
-   * Render mode for vector tiles:
-   *  * `'image'`: Vector tiles are rendered as images. Great performance, but
-   *    point symbols and texts are always rotated with the view and pixels are
-   *    scaled during zoom animations.
-   *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels
-   *    are scaled during zoom animations. Point symbols and texts are accurately
-   *    rendered as vectors and can stay upright on rotated views.
-   *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering
-   *    even during animations, but slower performance than the other options.
-   * @api
-   */
-  var RenderType$1 = {
-    IMAGE: 'image',
-    HYBRID: 'hybrid',
-    VECTOR: 'vector'
-  };
-
-
-  /**
    * @typedef {Object} Options
    * @property {number} [opacity=1] Opacity (0, 1).
    * @property {boolean} [visible=true] Visibility.
@@ -68550,7 +69073,7 @@
    * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
    * means higher priority. When set to `true`, a `renderMode` of `'image'` will be overridden with
    * `'hybrid'`.
-   * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style] Layer style. See
+   * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
    * {@link module:ol/style} for default style which will be used if this is not defined.
    * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
    * recreated during animations. This means that no vectors will be shown clipped, but the setting
@@ -68562,7 +69085,7 @@
    * means no preloading.
    * @property {import("../render.js").OrderFunction} [renderOrder] Render order. Function to be used when sorting
    * features before rendering. By default features are drawn in the order that they are created.
-   * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style] Layer style. See
+   * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
    * {@link module:ol/style} for default style which will be used if this is not defined.
    * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
    */
@@ -68593,11 +69116,11 @@
       }
       options.renderMode = renderMode;
 
-      var baseOptions = assign({}, options);
-
+      var baseOptions = /** @type {Object} */ (assign({}, options));
       delete baseOptions.preload;
       delete baseOptions.useInterimTilesOnError;
-      VectorLayer$$1.call(this, baseOptions);
+
+      VectorLayer$$1.call(/** @type {import("./Vector.js").Options} */ this, (baseOptions));
 
       this.setPreload(options.preload ? options.preload : 0);
       this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
@@ -68771,7 +69294,7 @@
 
     var sourceDataExtent = createEmpty();
     sources.forEach(function(src, i, arr) {
-      extend(sourceDataExtent, src.extent);
+      extend$1(sourceDataExtent, src.extent);
     });
 
     var canvasWidthInUnits = getWidth(sourceDataExtent);
@@ -69906,7 +70429,7 @@
 
     /**
      * Triggered when a tile starts loading.
-     * @event module:ol/source/Tile~TileSourceEvent#tileloadstart
+     * @event module:ol/source/Tile.TileSourceEvent#tileloadstart
      * @api
      */
     TILELOADSTART: 'tileloadstart',
@@ -69914,14 +70437,14 @@
     /**
      * Triggered when a tile finishes loading, either when its data is loaded,
      * or when loading was aborted because the tile is no longer needed.
-     * @event module:ol/source/Tile~TileSourceEvent#tileloadend
+     * @event module:ol/source/Tile.TileSourceEvent#tileloadend
      * @api
      */
     TILELOADEND: 'tileloadend',
 
     /**
      * Triggered if tile loading results in an error.
-     * @event module:ol/source/Tile~TileSourceEvent#tileloaderror
+     * @event module:ol/source/Tile.TileSourceEvent#tileloaderror
      * @api
      */
     TILELOADERROR: 'tileloaderror'
@@ -69935,8 +70458,8 @@
   /**
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions]
+   * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
    * @property {number} [cacheSize]
-   * @property {import("../extent.js").Extent} [extent]
    * @property {boolean} [opaque]
    * @property {import("../proj.js").ProjectionLike} [projection]
    * @property {import("./State.js").default} [state]
@@ -69948,6 +70471,7 @@
    * @property {Array<string>} [urls]
    * @property {boolean} [wrapX=true]
    * @property {number} [transition]
+   * @property {string} [key]
    */
 
 
@@ -69955,7 +70479,7 @@
    * @classdesc
    * Base class for sources providing tiles divided into a tile grid over http.
    *
-   * @fires import("./TileEvent.js").default
+   * @fires import("./Tile.js").TileSourceEvent
    */
   var UrlTile = /*@__PURE__*/(function (TileSource$$1) {
     function UrlTile(options) {
@@ -69963,15 +70487,22 @@
       TileSource$$1.call(this, {
         attributions: options.attributions,
         cacheSize: options.cacheSize,
-        extent: options.extent,
         opaque: options.opaque,
         projection: options.projection,
         state: options.state,
         tileGrid: options.tileGrid,
         tilePixelRatio: options.tilePixelRatio,
         wrapX: options.wrapX,
-        transition: options.transition
+        transition: options.transition,
+        key: options.key,
+        attributionsCollapsible: options.attributionsCollapsible
       });
+
+      /**
+       * @private
+       * @type {boolean}
+       */
+      this.generateTileUrlFunction_ = !options.tileUrlFunction;
 
       /**
        * @protected
@@ -69983,8 +70514,7 @@
        * @protected
        * @type {import("../Tile.js").UrlFunction}
        */
-      this.tileUrlFunction = this.fixedTileUrlFunction ?
-        this.fixedTileUrlFunction.bind(this) : nullTileUrlFunction;
+      this.tileUrlFunction = options.tileUrlFunction ? options.tileUrlFunction.bind(this) : nullTileUrlFunction;
 
       /**
        * @protected
@@ -69997,13 +70527,14 @@
       } else if (options.url) {
         this.setUrl(options.url);
       }
+
       if (options.tileUrlFunction) {
-        this.setTileUrlFunction(options.tileUrlFunction);
+        this.setTileUrlFunction(options.tileUrlFunction, this.key_);
       }
 
       /**
        * @private
-       * @type {!Object<number, boolean>}
+       * @type {!Object<string, boolean>}
        */
       this.tileLoadingKeys_ = {};
 
@@ -70080,14 +70611,14 @@
     /**
      * Set the tile URL function of the source.
      * @param {import("../Tile.js").UrlFunction} tileUrlFunction Tile URL function.
-     * @param {string=} opt_key Optional new tile key for the source.
+     * @param {string=} key Optional new tile key for the source.
      * @api
      */
-    UrlTile.prototype.setTileUrlFunction = function setTileUrlFunction (tileUrlFunction, opt_key) {
+    UrlTile.prototype.setTileUrlFunction = function setTileUrlFunction (tileUrlFunction, key) {
       this.tileUrlFunction = tileUrlFunction;
       this.tileCache.pruneExceptNewestZ();
-      if (typeof opt_key !== 'undefined') {
-        this.setKey(opt_key);
+      if (typeof key !== 'undefined') {
+        this.setKey(key);
       } else {
         this.changed();
       }
@@ -70100,9 +70631,7 @@
      */
     UrlTile.prototype.setUrl = function setUrl (url) {
       var urls = this.urls = expandUrl(url);
-      this.setTileUrlFunction(this.fixedTileUrlFunction ?
-        this.fixedTileUrlFunction.bind(this) :
-        createFromTemplates(urls, this.tileGrid), url);
+      this.setUrls(urls);
     };
 
     /**
@@ -70113,9 +70642,11 @@
     UrlTile.prototype.setUrls = function setUrls (urls) {
       this.urls = urls;
       var key = urls.join('\n');
-      this.setTileUrlFunction(this.fixedTileUrlFunction ?
-        this.fixedTileUrlFunction.bind(this) :
-        createFromTemplates(urls, this.tileGrid), key);
+      if (this.generateTileUrlFunction_) {
+        this.setTileUrlFunction(createFromTemplates(urls, this.tileGrid), key);
+      } else {
+        this.setKey(key);
+      }
     };
 
     /**
@@ -70131,13 +70662,6 @@
     return UrlTile;
   }(TileSource));
 
-
-  /**
-   * @type {import("../Tile.js").UrlFunction|undefined}
-   * @protected
-   */
-  UrlTile.prototype.fixedTileUrlFunction;
-
   /**
    * @module ol/source/TileImage
    */
@@ -70145,8 +70669,8 @@
   /**
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+   * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
    * @property {number} [cacheSize=2048] Cache size.
-   * @property {import("../extent.js").Extent} [extent]
    * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
    * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
    * access pixel data with the Canvas renderer.  See
@@ -70156,7 +70680,7 @@
    * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
    * Higher values can increase reprojection performance, but decrease precision.
    * @property {import("./State.js").default} [state] Source state.
-   * @property {import("../ImageTile.js").TileClass} [tileClass] Class used to instantiate image tiles.
+   * @property {typeof import("../ImageTile.js").default} [tileClass] Class used to instantiate image tiles.
    * Default is {@link module:ol/ImageTile~ImageTile}.
    * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
    * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
@@ -70180,6 +70704,7 @@
    * world only, but they will be wrapped horizontally to render multiple worlds.
    * @property {number} [transition] Duration of the opacity transition for rendering.
    * To disable the opacity transition, pass `transition: 0`.
+   * @property {string} [key] Optional tile key for proper cache fetching
    */
 
 
@@ -70196,7 +70721,6 @@
       UrlTile$$1.call(this, {
         attributions: options.attributions,
         cacheSize: options.cacheSize,
-        extent: options.extent,
         opaque: options.opaque,
         projection: options.projection,
         state: options.state,
@@ -70208,7 +70732,9 @@
         url: options.url,
         urls: options.urls,
         wrapX: options.wrapX,
-        transition: options.transition
+        transition: options.transition,
+        key: options.key,
+        attributionsCollapsible: options.attributionsCollapsible
       });
 
       /**
@@ -70220,15 +70746,14 @@
 
       /**
        * @protected
-       * @type {function(new: import("../ImageTile.js").default, import("../tilecoord.js").TileCoord, import("../TileState.js").default, string,
-       *        ?string, import("../Tile.js").LoadFunction, import("../Tile.js").Options=)}
+       * @type {typeof ImageTile}
        */
       this.tileClass = options.tileClass !== undefined ?
         options.tileClass : ImageTile;
 
       /**
        * @protected
-       * @type {!Object<string, import("../TileCache.js").default>}
+       * @type {!Object<string, TileCache>}
        */
       this.tileCacheForProjection = {};
 
@@ -70321,7 +70846,7 @@
       if (this.tileGrid && (!thisProj || equivalent(thisProj, projection))) {
         return this.tileGrid;
       } else {
-        var projKey = getUid(projection).toString();
+        var projKey = getUid(projection);
         if (!(projKey in this.tileGridForProjection)) {
           this.tileGridForProjection[projKey] = getForProjection(projection);
         }
@@ -70338,7 +70863,7 @@
       var thisProj = this.getProjection(); if (!thisProj || equivalent(thisProj, projection)) {
         return this.tileCache;
       } else {
-        var projKey = getUid(projection).toString();
+        var projKey = getUid(projection);
         if (!(projKey in this.tileCacheForProjection)) {
           this.tileCacheForProjection[projKey] = new TileCache(this.tileCache.highWaterMark);
         }
@@ -70492,7 +71017,7 @@
       {
         var proj = get$2(projection);
         if (proj) {
-          var projKey = getUid(proj).toString();
+          var projKey = getUid(proj);
           if (!(projKey in this.tileGridForProjection)) {
             this.tileGridForProjection[projKey] = tilegrid;
           }
@@ -70505,14 +71030,11 @@
 
 
   /**
-   * @param {import("../ImageTile.js").default} imageTile Image tile.
+   * @param {ImageTile} imageTile Image tile.
    * @param {string} src Source.
    */
   function defaultTileLoadFunction(imageTile, src) {
-    var image = imageTile.getImage();
-    if (image instanceof HTMLImageElement || image instanceof HTMLVideoElement) {
-      image.src = src;
-    }
+    /** @type {HTMLImageElement|HTMLVideoElement} */ (imageTile.getImage()).src = src;
   }
 
   /**
@@ -70750,7 +71272,10 @@
 
         this.setAttributions(function(frameState) {
           var attributions = [];
-          var zoom = frameState.viewState.zoom;
+          var viewState = frameState.viewState;
+          var tileGrid = this.getTileGrid();
+          var tileCoord = tileGrid.getTileCoordForCoordAndResolution(viewState.center, viewState.resolution);
+          var zoom = tileCoord[0];
           resource.imageryProviders.map(function(imageryProvider) {
             var intersecting = false;
             var coverageAreas = imageryProvider.coverageAreas;
@@ -70773,7 +71298,7 @@
 
           attributions.push(TOS_ATTRIBUTION);
           return attributions;
-        });
+        }.bind(this));
       }
 
       this.setState(SourceState.READY);
@@ -70789,6 +71314,7 @@
   /**
    * @typedef {Object} Options
    * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+   * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
    * @property {number} [cacheSize=2048] Cache size.
    * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
    * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
@@ -70871,7 +71397,8 @@
         url: options.url,
         urls: options.urls,
         wrapX: options.wrapX !== undefined ? options.wrapX : true,
-        transition: options.transition
+        transition: options.transition,
+        attributionsCollapsible: options.attributionsCollapsible
       });
 
     }
@@ -71135,7 +71662,7 @@
        */
       this.geometryFunction = options.geometryFunction || function(feature) {
         var geometry = /** @type {Point} */ (feature.getGeometry());
-        assert(geometry instanceof Point,
+        assert(geometry.getType() == GeometryType.POINT,
           10); // The default `geometryFunction` can only handle `Point` geometries
         return geometry;
       };
@@ -71224,7 +71751,7 @@
 
       for (var i = 0, ii = features.length; i < ii; i++) {
         var feature = features[i];
-        if (!(getUid(feature).toString() in clustered)) {
+        if (!(getUid(feature) in clustered)) {
           var geometry = this.geometryFunction(feature);
           if (geometry) {
             var coordinates = geometry.getCoordinates();
@@ -71233,7 +71760,7 @@
 
             var neighbors = this.source.getFeaturesInExtent(extent);
             neighbors = neighbors.filter(function(neighbor) {
-              var uid = getUid(neighbor).toString();
+              var uid = getUid(neighbor);
               if (!(uid in clustered)) {
                 clustered[uid] = true;
                 return true;
@@ -71347,6 +71874,7 @@
    * Abstract base class; normally only used for creating subclasses and not
    * instantiated in apps.
    * Base class for sources providing a single image.
+   * @abstract
    * @api
    */
   var ImageSource = /*@__PURE__*/(function (Source$$1) {
@@ -71426,7 +71954,7 @@
               equivalent(
                 this.reprojectedImage_.getProjection(), projection) &&
               this.reprojectedImage_.getResolution() == resolution &&
-              equals(this.reprojectedImage_.getExtent(), extent)) {
+              equals$1(this.reprojectedImage_.getExtent(), extent)) {
             return this.reprojectedImage_;
           }
           this.reprojectedImage_.dispose();
@@ -71454,7 +71982,9 @@
      * @return {import("../ImageBase.js").default} Single image.
      * @protected
      */
-    ImageSource.prototype.getImageInternal = function getImageInternal (extent, resolution, pixelRatio, projection) {};
+    ImageSource.prototype.getImageInternal = function getImageInternal (extent, resolution, pixelRatio, projection) {
+      return abstract();
+    };
 
     /**
      * Handle image change events.
@@ -71498,10 +72028,7 @@
    * @param {string} src Source.
    */
   function defaultImageLoadFunction(image, src) {
-    var img = image.getImage();
-    if (img instanceof HTMLImageElement || img instanceof HTMLVideoElement) {
-      img.src = src;
-    }
+    /** @type {HTMLImageElement|HTMLVideoElement} */ (image.getImage()).src = src;
   }
 
   /**
@@ -71544,16 +72071,16 @@
    * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
    * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
    * access pixel data with the Canvas renderer.  See
-   * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+   * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
    * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting the image from
    * the remote server.
    * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given
    * a URL.
-   * @property {Object<string,*>} params ArcGIS Rest parameters. This field is optional. Service
+   * @property {Object<string,*>} [params] ArcGIS Rest parameters. This field is optional. Service
    * defaults will be used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is
-   * `IMAGE` by default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`, and `IMAGESR`
+   * `IMAGE` by default. `TRANSPARENT` is `true` by default.  `BBOX`, `SIZE`, `BBOXSR`, and `IMAGESR`
    * will be set dynamically. Set `LAYERS` to override the default service layer visibility. See
-   * http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/
+   * {@link http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/}
    * for further reference.
    * @property {import("../proj.js").ProjectionLike} projection Projection.
    * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,
@@ -71848,7 +72375,7 @@
    * projection. The canvas returned by this function is cached by the source. If
    * the value returned by the function is later changed then
    * `changed` should be called on the source for the source to
-   * invalidate the current cached image. See @link: {@link module:ol/Observable~Observable#changed}
+   * invalidate the current cached image. See: {@link module:ol/Observable~Observable#changed}
    * @property {import("../proj.js").ProjectionLike} projection Projection.
    * @property {number} [ratio=1.5] Ratio. 1 means canvases are the size of the map viewport, 2 means twice the
    * width and height of the map viewport, and so on. Must be `1` or higher.
@@ -71864,7 +72391,9 @@
    * @api
    */
   var ImageCanvasSource = /*@__PURE__*/(function (ImageSource$$1) {
-    function ImageCanvasSource(options) {
+    function ImageCanvasSource(opt_options) {
+
+      var options = opt_options || /** @type {Options} */ ({});
 
       ImageSource$$1.call(this, {
         attributions: options.attributions,
@@ -71925,8 +72454,8 @@
       var height = getHeight(extent) / resolution;
       var size = [width * pixelRatio, height * pixelRatio];
 
-      var canvasElement = this.canvasFunction_(
-        extent, resolution, pixelRatio, size, projection);
+      var canvasElement = this.canvasFunction_.call(
+        this, extent, resolution, pixelRatio, size, projection);
       if (canvasElement) {
         canvas = new ImageCanvas(extent, resolution, pixelRatio, canvasElement);
       }
@@ -72798,7 +73327,8 @@
         reprojectionErrorThreshold: options.reprojectionErrorThreshold,
         tileLoadFunction: options.tileLoadFunction,
         url: url,
-        wrapX: options.wrapX
+        wrapX: options.wrapX,
+        attributionsCollapsible: false
       });
 
     }
@@ -73238,7 +73768,9 @@
    */
   var RasterSource = /*@__PURE__*/(function (ImageSource$$1) {
     function RasterSource(options) {
-      ImageSource$$1.call(this, {});
+      ImageSource$$1.call(this, {
+        projection: null
+      });
 
       /**
        * @private
@@ -73281,6 +73813,10 @@
         this.changed.bind(this));
 
       var layerStatesArray = getLayerStatesArray(this.renderers_);
+
+      /**
+       * @type {Object<string, import("../layer/Layer.js").State>}
+       */
       var layerStates = {};
       for (var i = 0, ii = layerStatesArray.length; i < ii; ++i) {
         layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
@@ -73424,7 +73960,7 @@
       if (this.renderedImageCanvas_) {
         var renderedResolution = this.renderedImageCanvas_.getResolution();
         var renderedExtent = this.renderedImageCanvas_.getExtent();
-        if (resolution !== renderedResolution || !equals(extent, renderedExtent)) {
+        if (resolution !== renderedResolution || !equals$1(extent, renderedExtent)) {
           this.renderedImageCanvas_ = null;
         }
       }
@@ -73482,7 +74018,7 @@
       var extent = frameState.extent;
       var resolution = frameState.viewState.resolution;
       if (resolution !== this.requestedFrameState_.viewState.resolution ||
-          !equals(extent, this.requestedFrameState_.extent)) {
+          !equals$1(extent, this.requestedFrameState_.extent)) {
         return;
       }
 
@@ -73579,20 +74115,22 @@
 
   /**
    * Create a renderer for the provided source.
-   * @param {import("./Source.js").default|import("../layer/Layer.js").default} source The source.
+   * @param {import("./Source.js").default|import("../layer/Layer.js").default} layerOrSource The layer or source.
    * @return {import("../renderer/canvas/Layer.js").default} The renderer.
    */
-  function createRenderer(source) {
+  function createRenderer(layerOrSource) {
+    var tileSource = /** @type {import("./Tile.js").default} */ (layerOrSource);
+    var imageSource = /** @type {import("./Image.js").default} */ (layerOrSource);
+    var layer = /** @type {import("../layer/Layer.js").default} */ (layerOrSource);
     var renderer = null;
-    if (source instanceof TileSource) {
-      renderer = createTileRenderer(source);
-    } else if (source instanceof ImageSource) {
-      renderer = createImageRenderer(source);
-    } else if (source instanceof TileLayer) {
-      renderer = new CanvasTileLayerRenderer(source);
-    } else if (source instanceof Layer &&
-        (source.getType() == LayerType.IMAGE || source.getType() == LayerType.VECTOR)) {
-      renderer = new CanvasImageLayerRenderer(source);
+    if (typeof tileSource.getTile === 'function') {
+      renderer = createTileRenderer(tileSource);
+    } else if (typeof imageSource.getImage === 'function') {
+      renderer = createImageRenderer(imageSource);
+    } else if (layer.getType() === LayerType.TILE) {
+      renderer = new CanvasTileLayerRenderer(/** @type {import("../layer/Tile.js").default} */ (layer));
+    } else if (layer.getType() == LayerType.IMAGE || layer.getType() == LayerType.VECTOR) {
+      renderer = new CanvasImageLayerRenderer(/** @type {import("../layer/Image.js").default} */ (layer));
     }
     return renderer;
   }
@@ -73709,10 +74247,9 @@
   /**
    * @typedef {Object} Options
    * @property {number} [cacheSize=2048] Cache size.
-   * @property {string} [layer] Layer.
+   * @property {string} layer Layer name.
    * @property {number} [minZoom] Minimum zoom.
    * @property {number} [maxZoom] Maximum zoom.
-   * @property {boolean} [opaque] Whether the layer is opaque.
    * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
    * Higher values can increase reprojection performance, but decrease precision.
    * @property {import("../Tile.js").LoadFunction} [tileLoadFunction]
@@ -73781,7 +74318,7 @@
    * for more detail.
    * @property {Object<string,*>} [params] ArcGIS Rest parameters. This field is optional. Service defaults will be
    * used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is `IMAGE` by
-   * default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`,
+   * default. `TRANSPARENT` is `true` by default.  `BBOX`, `SIZE`, `BBOXSR`,
    * and `IMAGESR` will be set dynamically. Set `LAYERS` to
    * override the default service layer visibility. See
    * http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/
@@ -73823,7 +74360,7 @@
   var TileArcGISRest = /*@__PURE__*/(function (TileImage$$1) {
     function TileArcGISRest(opt_options) {
 
-      var options = opt_options || {};
+      var options = opt_options || /** @type {Options} */ ({});
 
       TileImage$$1.call(this, {
         attributions: options.attributions,
@@ -73833,6 +74370,7 @@
         reprojectionErrorThreshold: options.reprojectionErrorThreshold,
         tileGrid: options.tileGrid,
         tileLoadFunction: options.tileLoadFunction,
+        tileUrlFunction: tileUrlFunction,
         url: options.url,
         urls: options.urls,
         wrapX: options.wrapX !== undefined ? options.wrapX : true,
@@ -73931,41 +74469,6 @@
     };
 
     /**
-     * @inheritDoc
-     */
-    TileArcGISRest.prototype.fixedTileUrlFunction = function fixedTileUrlFunction (tileCoord, pixelRatio, projection) {
-
-      var tileGrid = this.getTileGrid();
-      if (!tileGrid) {
-        tileGrid = this.getTileGridForProjection(projection);
-      }
-
-      if (tileGrid.getResolutions().length <= tileCoord[0]) {
-        return undefined;
-      }
-
-      var tileExtent = tileGrid.getTileCoordExtent(
-        tileCoord, this.tmpExtent_);
-      var tileSize = toSize(
-        tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
-
-      if (pixelRatio != 1) {
-        tileSize = scale$3(tileSize, pixelRatio, this.tmpSize);
-      }
-
-      // Apply default params and override with user specified values.
-      var baseParams = {
-        'F': 'image',
-        'FORMAT': 'PNG32',
-        'TRANSPARENT': true
-      };
-      assign(baseParams, this.params_);
-
-      return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-        pixelRatio, projection, baseParams);
-    };
-
-    /**
      * Update the user-provided params.
      * @param {Object} params Params.
      * @api
@@ -73977,6 +74480,45 @@
 
     return TileArcGISRest;
   }(TileImage));
+
+  /**
+   * @param {import("../tilecoord.js").TileCoord} tileCoord The tile coordinate
+   * @param {number} pixelRatio The pixel ratio
+   * @param {import("../proj/Projection.js").default} projection The projection
+   * @return {string|undefined} The tile URL
+   * @this {TileArcGISRest}
+   */
+  function tileUrlFunction(tileCoord, pixelRatio, projection) {
+
+    var tileGrid = this.getTileGrid();
+    if (!tileGrid) {
+      tileGrid = this.getTileGridForProjection(projection);
+    }
+
+    if (tileGrid.getResolutions().length <= tileCoord[0]) {
+      return undefined;
+    }
+
+    var tileExtent = tileGrid.getTileCoordExtent(
+      tileCoord, this.tmpExtent_);
+    var tileSize = toSize(
+      tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+
+    if (pixelRatio != 1) {
+      tileSize = scale$3(tileSize, pixelRatio, this.tmpSize);
+    }
+
+    // Apply default params and override with user specified values.
+    var baseParams = {
+      'F': 'image',
+      'FORMAT': 'PNG32',
+      'TRANSPARENT': true
+    };
+    assign(baseParams, this.params_);
+
+    return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
+      pixelRatio, projection, baseParams);
+  }
 
   /**
    * @module ol/source/TileDebug
@@ -74321,8 +74863,8 @@
    * @property {import("../proj.js").ProjectionLike} projection Projection.
    * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
    * Higher values can increase reprojection performance, but decrease precision.
-   * @property {import("../ImageTile.js").TileClass} [tileClass] Class used to instantiate image tiles.
-   * Default is {@link module:ol/ImageTile~TileClass}.
+   * @property {typeof import("../ImageTile.js").default} [tileClass] Class used to instantiate image tiles.
+   * Default is {@link module:ol/ImageTile~ImageTile}.
    * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid. Base this on the resolutions,
    * tilesize and extent supported by the server.
    * If this is not defined, a default grid will be used: if there is a projection
@@ -74373,6 +74915,7 @@
         tileClass: options.tileClass,
         tileGrid: options.tileGrid,
         tileLoadFunction: options.tileLoadFunction,
+        tileUrlFunction: tileUrlFunction$1,
         url: options.url,
         urls: options.urls,
         wrapX: options.wrapX !== undefined ? options.wrapX : true,
@@ -74601,52 +75144,6 @@
     };
 
     /**
-     * @inheritDoc
-     */
-    TileWMS.prototype.fixedTileUrlFunction = function fixedTileUrlFunction (tileCoord, pixelRatio, projection) {
-
-      var tileGrid = this.getTileGrid();
-      if (!tileGrid) {
-        tileGrid = this.getTileGridForProjection(projection);
-      }
-
-      if (tileGrid.getResolutions().length <= tileCoord[0]) {
-        return undefined;
-      }
-
-      if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
-        pixelRatio = 1;
-      }
-
-      var tileResolution = tileGrid.getResolution(tileCoord[0]);
-      var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-      var tileSize = toSize(
-        tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
-
-      var gutter = this.gutter_;
-      if (gutter !== 0) {
-        tileSize = buffer$1(tileSize, gutter, this.tmpSize);
-        tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
-      }
-
-      if (pixelRatio != 1) {
-        tileSize = scale$3(tileSize, pixelRatio, this.tmpSize);
-      }
-
-      var baseParams = {
-        'SERVICE': 'WMS',
-        'VERSION': DEFAULT_WMS_VERSION,
-        'REQUEST': 'GetMap',
-        'FORMAT': 'image/png',
-        'TRANSPARENT': true
-      };
-      assign(baseParams, this.params_);
-
-      return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-        pixelRatio, projection, baseParams);
-    };
-
-    /**
      * Update the user-provided params.
      * @param {Object} params Params.
      * @api
@@ -74667,6 +75164,56 @@
 
     return TileWMS;
   }(TileImage));
+
+  /**
+   * @param {import("../tilecoord.js").TileCoord} tileCoord The tile coordinate
+   * @param {number} pixelRatio The pixel ratio
+   * @param {import("../proj/Projection.js").default} projection The projection
+   * @return {string|undefined} The tile URL
+   * @this {TileWMS}
+   */
+  function tileUrlFunction$1(tileCoord, pixelRatio, projection) {
+
+    var tileGrid = this.getTileGrid();
+    if (!tileGrid) {
+      tileGrid = this.getTileGridForProjection(projection);
+    }
+
+    if (tileGrid.getResolutions().length <= tileCoord[0]) {
+      return undefined;
+    }
+
+    if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
+      pixelRatio = 1;
+    }
+
+    var tileResolution = tileGrid.getResolution(tileCoord[0]);
+    var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
+    var tileSize = toSize(
+      tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+
+    var gutter = this.gutter_;
+    if (gutter !== 0) {
+      tileSize = buffer$1(tileSize, gutter, this.tmpSize);
+      tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
+    }
+
+    if (pixelRatio != 1) {
+      tileSize = scale$3(tileSize, pixelRatio, this.tmpSize);
+    }
+
+    var baseParams = {
+      'SERVICE': 'WMS',
+      'VERSION': DEFAULT_WMS_VERSION,
+      'REQUEST': 'GetMap',
+      'FORMAT': 'image/png',
+      'TRANSPARENT': true
+    };
+    assign(baseParams, this.params_);
+
+    return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
+      pixelRatio, projection, baseParams);
+  }
 
   /**
    * @module ol/source/UTFGrid
@@ -75175,7 +75722,7 @@
    * stroke operations.
    * @property {import("../proj.js").ProjectionLike} projection Projection.
    * @property {import("./State.js").default} [state] Source state.
-   * @property {import("../VectorTile.js").TileClass} [tileClass] Class used to instantiate image tiles.
+   * @property {typeof import("../VectorTile.js").default} [tileClass] Class used to instantiate image tiles.
    * Default is {@link module:ol/VectorTile}.
    * @property {number} [maxZoom=22] Optional max zoom level.
    * @property {number} [minZoom] Optional min zoom level.
@@ -75241,7 +75788,6 @@
       UrlTile$$1.call(this, {
         attributions: options.attributions,
         cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
-        extent: extent,
         opaque: false,
         projection: projection,
         state: options.state,
@@ -75262,7 +75808,7 @@
 
       /**
          * @private
-         * @type {Object<string, import("../VectorTile.js").default>}
+         * @type {Object<string, Tile>}
          */
       this.sourceTiles_ = {};
 
@@ -75273,10 +75819,9 @@
       this.overlaps_ = options.overlaps == undefined ? true : options.overlaps;
 
       /**
-         * @protected
-         * @type {function(new: import("../VectorTile.js").default, import("../tilecoord.js").TileCoord, import("../TileState.js").default, string,
-         *        import("../format/Feature.js").default, import("../Tile.js").LoadFunction)}
-         */
+       * @protected
+       * @type {typeof import("../VectorTile.js").default}
+       */
       this.tileClass = options.tileClass ? options.tileClass : VectorTile;
 
       /**
@@ -75591,13 +76136,13 @@
    * @property {import("./WMTSRequestEncoding.js").default|string} [requestEncoding='KVP'] Request encoding.
    * @property {string} layer Layer name as advertised in the WMTS capabilities.
    * @property {string} style Style name as advertised in the WMTS capabilities.
-   * @property {import("../ImageTile.js").TileClass} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
+   * @property {typeof import("../ImageTile.js").default} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
    * @property {number} [tilePixelRatio=1] The pixel ratio used by the tile service.
    * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
    * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
    * should be set to `2`.
-   * @property {string} [version='image/jpeg'] Image format.
-   * @property {string} [format='1.0.0'] WMTS version.
+   * @property {string} [format='image/jpeg'] Image format. Only used when `requestEncoding` is `'KVP'`.
+   * @property {string} [version='1.0.0'] WMTS version.
    * @property {string} matrixSet Matrix set.
    * @property {!Object} [dimensions] Additional "dimensions" for tile requests.
    * This is an object with properties named like the advertised WMTS dimensions.
@@ -75724,9 +76269,7 @@
     WMTS.prototype.setUrls = function setUrls (urls) {
       this.urls = urls;
       var key = urls.join('\n');
-      this.setTileUrlFunction(this.fixedTileUrlFunction ?
-        this.fixedTileUrlFunction.bind(this) :
-        createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))), key);
+      this.setTileUrlFunction(createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))), key);
     };
 
     /**
@@ -76391,7 +76934,7 @@
   /**
    * @typedef {Object} State
    * @property {CanvasRenderingContext2D} context Canvas context that the layer is being rendered to.
-   * @property {import("./Feature.js").default|import("./render/Feature.js").default} feature
+   * @property {import("./Feature.js").FeatureLike} feature
    * @property {import("./geom/SimpleGeometry.js").default} geometry
    * @property {number} pixelRatio Pixel ratio used by the layer renderer.
    * @property {number} resolution Resolution that the render batch was created and optimized for.
@@ -76405,8 +76948,7 @@
    * It takes two instances of {@link module:ol/Feature} or
    * {@link module:ol/render/Feature} and returns a `{number}`.
    *
-   * @typedef {function((import("./Feature.js").default|import("./render/Feature.js").default),
-   *           (import("./Feature.js").default|import("./render/Feature.js").default)):number} OrderFunction
+   * @typedef {function(import("./Feature.js").FeatureLike, import("./Feature.js").FeatureLike):number} OrderFunction
    */
 
 
@@ -76471,7 +77013,6 @@
   ol.Feature = Feature;
   ol.Feature.createStyleFunction = createStyleFunction;
   ol.Geolocation = Geolocation;
-  ol.GeolocationProperty = GeolocationProperty;
   ol.Graticule = Graticule;
   ol.Image = ImageWrapper;
   ol.ImageBase = ImageBase;
@@ -76516,15 +77057,15 @@
   ol.WebGLMap = WebGLMap;
   ol.array = {};
   ol.array.binarySearch = binarySearch;
-  ol.array.equals = equals$1;
-  ol.array.extend = extend$1;
+  ol.array.equals = equals;
+  ol.array.extend = extend;
   ol.array.find = find;
   ol.array.findIndex = findIndex;
   ol.array.includes = includes;
   ol.array.isSorted = isSorted;
   ol.array.linearFindNearest = linearFindNearest;
   ol.array.numberSafeCompareFunction = numberSafeCompareFunction;
-  ol.array.remove = remove$1;
+  ol.array.remove = remove;
   ol.array.reverseSubArray = reverseSubArray;
   ol.array.stableSort = stableSort;
   ol.asserts = {};
@@ -76540,24 +77081,23 @@
   ol.color.toString = toString;
   ol.colorlike = {};
   ol.colorlike.asColorLike = asColorLike;
-  ol.colorlike.isColorLike = isColorLike;
   ol.control = {};
   ol.control.Attribution = Attribution;
   ol.control.Attribution.render = render;
   ol.control.Control = Control;
   ol.control.FullScreen = FullScreen;
   ol.control.MousePosition = MousePosition;
-  ol.control.MousePosition.render = render$5;
+  ol.control.MousePosition.render = render$2;
   ol.control.OverviewMap = OverviewMap;
-  ol.control.OverviewMap.render = render$2;
+  ol.control.OverviewMap.render = render$3;
   ol.control.Rotate = Rotate;
   ol.control.Rotate.render = render$1;
   ol.control.ScaleLine = ScaleLine;
   ol.control.ScaleLine.Units = Units$1;
-  ol.control.ScaleLine.render = render$3;
+  ol.control.ScaleLine.render = render$4;
   ol.control.Zoom = Zoom;
   ol.control.ZoomSlider = ZoomSlider;
-  ol.control.ZoomSlider.render = render$4;
+  ol.control.ZoomSlider.render = render$5;
   ol.control.ZoomToExtent = ZoomToExtent;
   ol.control.util = {};
   ol.control.util.defaults = defaults;
@@ -76648,8 +77188,8 @@
   ol.extent.createOrUpdateFromCoordinates = createOrUpdateFromCoordinates;
   ol.extent.createOrUpdateFromFlatCoordinates = createOrUpdateFromFlatCoordinates;
   ol.extent.createOrUpdateFromRings = createOrUpdateFromRings;
-  ol.extent.equals = equals;
-  ol.extent.extend = extend;
+  ol.extent.equals = equals$1;
+  ol.extent.extend = extend$1;
   ol.extent.extendCoordinate = extendCoordinate;
   ol.extent.extendCoordinates = extendCoordinates;
   ol.extent.extendFlatCoordinates = extendFlatCoordinates;
@@ -76687,6 +77227,7 @@
   ol.format.GML = GML;
   ol.format.GML2 = GML2;
   ol.format.GML3 = GML3;
+  ol.format.GML32 = GML32;
   ol.format.GMLBase = GMLBase;
   ol.format.GMLBase.GMLNS = GMLNS;
   ol.format.GPX = GPX;
@@ -76908,7 +77449,6 @@
   ol.interaction.Draw = Draw;
   ol.interaction.Draw.createBox = createBox;
   ol.interaction.Draw.createRegularPolygon = createRegularPolygon;
-  ol.interaction.Draw.handleEvent = handleEvent$5;
   ol.interaction.Extent = ExtentInteraction;
   ol.interaction.Interaction = Interaction;
   ol.interaction.Interaction.pan = pan;
@@ -76927,11 +77467,9 @@
   ol.interaction.PinchZoom = PinchZoom;
   ol.interaction.Pointer = PointerInteraction;
   ol.interaction.Pointer.centroid = centroid;
-  ol.interaction.Pointer.handleEvent = handleEvent$1;
   ol.interaction.Property = InteractionProperty;
   ol.interaction.Select = Select;
   ol.interaction.Snap = Snap;
-  ol.interaction.Snap.handleEvent = handleEvent$9;
   ol.interaction.Translate = Translate;
   ol.interaction.Translate.TranslateEvent = TranslateEvent;
   ol.interaction.defaults = defaults$1;
@@ -76946,10 +77484,8 @@
   ol.layer.Tile = TileLayer;
   ol.layer.TileProperty = TileProperty;
   ol.layer.Vector = VectorLayer;
-  ol.layer.Vector.RenderType = RenderType;
   ol.layer.VectorRenderType = VectorRenderType;
   ol.layer.VectorTile = VectorTileLayer;
-  ol.layer.VectorTile.RenderType = RenderType$1;
   ol.layer.VectorTileRenderType = VectorTileRenderType;
   ol.loadingstrategy = {};
   ol.loadingstrategy.all = all;
@@ -76979,6 +77515,7 @@
   ol.pointer.MouseSource = MouseSource;
   ol.pointer.MouseSource.POINTER_ID = POINTER_ID;
   ol.pointer.MouseSource.POINTER_TYPE = POINTER_TYPE;
+  ol.pointer.MouseSource.prepareEvent = prepareEvent;
   ol.pointer.MsSource = MsSource;
   ol.pointer.NativeSource = NativeSource;
   ol.pointer.PointerEvent = PointerEvent;
@@ -77032,7 +77569,7 @@
   ol.proj.transforms.add = add$1;
   ol.proj.transforms.clear = clear$2;
   ol.proj.transforms.get = get$1;
-  ol.proj.transforms.remove = remove;
+  ol.proj.transforms.remove = remove$1;
   ol.render = {};
   ol.render.Box = RenderBox;
   ol.render.Event = RenderEvent;
@@ -77300,6 +77837,7 @@
   ol.uri.appendParams = appendParams;
   ol.util = {};
   ol.util.VERSION = VERSION;
+  ol.util.abstract = abstract;
   ol.util.getUid = getUid;
   ol.util.inherits = inherits;
   ol.vec = {};
@@ -77361,7 +77899,6 @@
   ol.xml.getAllTextContent_ = getAllTextContent_;
   ol.xml.getAttributeNS = getAttributeNS;
   ol.xml.isDocument = isDocument;
-  ol.xml.isNode = isNode;
   ol.xml.makeArrayExtender = makeArrayExtender;
   ol.xml.makeArrayPusher = makeArrayPusher;
   ol.xml.makeArraySerializer = makeArraySerializer;
@@ -79358,7 +79895,11 @@ function () {
       };
 
       if (imageStyle instanceof ol_style_Icon_js__WEBPACK_IMPORTED_MODULE_1___default.a) {
-        bbOptions.pixelOffset = new Cesium.Cartesian2(image.width / 2 - imageStyle.getAnchor()[0], image.height / 2 - imageStyle.getAnchor()[1]);
+        var anchor = imageStyle.getAnchor();
+
+        if (anchor) {
+          bbOptions.pixelOffset = new Cesium.Cartesian2(image.width / 2 - anchor[0], image.height / 2 - anchor[1]);
+        }
       }
 
       var bb = this.csAddBillboard(billboards, bbOptions, layer, feature, olGeometry, style);
@@ -80945,6 +81486,17 @@ function () {
           _this.pausedInteractions_.push(el);
         });
         interactions.clear();
+
+        this.map_.addInteraction = function (interaction) {
+          return _this.pausedInteractions_.push(interaction);
+        };
+
+        this.map_.removeInteraction = function (interaction) {
+          return _this.pausedInteractions_ = _this.pausedInteractions_.filter(function (i) {
+            return i !== interaction;
+          });
+        };
+
         var rootGroup = this.map_.getLayerGroup();
 
         if (rootGroup.getVisible()) {
@@ -80965,6 +81517,15 @@ function () {
           interactions.push(interaction);
         });
         this.pausedInteractions_.length = 0;
+
+        this.map_.addInteraction = function (interaction) {
+          return _this.map_.getInteractions().push(interaction);
+        };
+
+        this.map_.removeInteraction = function (interaction) {
+          return _this.map_.getInteractions().remove(interaction);
+        };
+
         this.map_.getOverlayContainer().classList.remove('olcs-hideoverlay');
         this.map_.getOverlayContainerStopEvent().classList.remove('olcs-hideoverlay');
 
@@ -81305,7 +81866,7 @@ function () {
     var _this2 = this;
 
     this.overlays_.forEach(function (overlay) {
-      _this2.addOverlay();
+      _this2.addOverlay(overlay);
     });
   };
   /**
@@ -81910,14 +82471,23 @@ function (_olOverlay) {
       return;
     }
 
-    var cartesian;
+    var height = 0;
 
     if (position.length === 2) {
-      cartesian = Cesium.Cartesian3.fromDegreesArray(position)[0];
+      var globeHeight = this.scene_.globe.getHeight(Cesium.Cartographic.fromDegrees(position[0], position[1]));
+
+      if (globeHeight && this.scene_.globe.tilesLoaded) {
+        position[2] = globeHeight;
+      }
+
+      if (globeHeight) {
+        height = globeHeight;
+      }
     } else {
-      cartesian = Cesium.Cartesian3.fromDegreesArrayHeights(position)[0];
+      height = position[2];
     }
 
+    var cartesian = Cesium.Cartesian3.fromDegrees(position[0], position[1], height);
     var camera = this.scene_.camera;
     var ellipsoidBoundingSphere = new Cesium.BoundingSphere(new Cesium.Cartesian3(), 6356752);
     var occluder = new Cesium.Occluder(ellipsoidBoundingSphere, camera.position); // check if overlay position is behind the horizon
@@ -83042,13 +83612,15 @@ function () {
 
 
   _proto.getTileCredits = function getTileCredits(x, y, level) {
-    var olExtent = this.map_.getView().calculateExtent(this.map_.getSize());
+    var extent = this.map_.getView().calculateExtent(this.map_.getSize());
+    var center = this.map_.getView().getCenter();
     var zoom = this.tilingScheme_ instanceof Cesium.GeographicTilingScheme ? level + 1 : level;
     var frameState = {
       viewState: {
-        zoom: zoom
+        zoom: zoom,
+        center: center
       },
-      extent: olExtent
+      extent: extent
     };
     var attributionsFunction = this.source_.getAttributions();
 

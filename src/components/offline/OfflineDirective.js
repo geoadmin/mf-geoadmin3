@@ -150,7 +150,11 @@ goog.require('ga_networkstatus_service');
           scope.percent = 0;
           scope.isStorageFull = false;
           scope.statusMsg = '';
-          scope.map.getView().setZoom(4);
+          var extent = gaOffline.calculateExtentToSave(
+              scope.map.getView().getCenter());
+          var res = scope.map.getView().getResolutionForExtent(extent);
+          var zoom = scope.map.getView().getZoomForResolution(res);
+          scope.map.getView().setZoom(zoom - 1);
         };
 
         var deactivate = function() {

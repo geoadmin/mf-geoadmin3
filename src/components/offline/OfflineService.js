@@ -29,7 +29,6 @@ goog.require('ga_window_service');
     var bgKey = 'ga-offline-layers-bg';
     var promptKey = 'ga-offline-prompt-db';
 
-    var maxZoom = 8; // max zoom level cached
     var minRes; // res for zoom 8
     var extentFeature = new ol.Feature(
         new ol.geom.Polygon([[[0, 0], [0, 0], [0, 0]]]));
@@ -66,6 +65,14 @@ goog.require('ga_window_service');
     this.$get = function($http, $rootScope, $timeout, $translate, $window,
         gaBrowserSniffer, gaGlobalOptions, gaLayers, gaMapUtils,
         gaStorage, gaStyleFactory, gaUrlUtils, gaBackground, gaWindow) {
+
+      // min zoom level cached (0 for swissproj ,8 for mercator proj)
+      var minZoom = gaGlobalOptions.offlineMinZoom;
+      var minZoomNonBgLayer = gaGlobalOptions.offlineMinZoomNonBgLayer;
+
+      // max zoom level cached (8 for swiss proj, 16 for mercator proj)
+      var maxZoom = gaGlobalOptions.offlineMaxZoom;
+      var zOffset = gaGlobalOptions.offlineZOffset;
 
       // Defines if a layer is cacheable at a specific data zoom level.
       var isCacheableLayer = function(layer, z) {
@@ -482,20 +489,25 @@ goog.require('ga_window_service');
             var tileGrid = source.getTileGrid();
             var tileUrlFunction = source.getTileUrlFunction();
 
+            // Mercator:
             // For each zoom level we generate the list of tiles to download:
-            //   - bg layer: zoom 0 to 3 => swiss extent
-            //               zoom 4 to 8 => 15km2 extent
-            //   - other layers: zoom 4,6,8 => 15km2 extent
+            //
+            //   - bg layer:
+            //     zoom 0 to minZoom-1(7) => projection extent
+            //     zoom minZoom(8) to maxZoom(16) => 15km2 extent
+            //
+            //   - other layers:
+            //     zoom minZoomNonBgLayer(12), 14, maxZoom(16) => 15km2 extent
             for (var zoom = 0; zoom <= maxZoom; zoom++) {
-              var z = zoom + 14; // data zoom level
-              if (!isCacheableLayer(layer, z) || (!isBgLayer && (zoom < 4 ||
-                zoom % 2 !== 0))) {
+              var z = zoom + zOffset; // data zoom level
+              if (!isCacheableLayer(layer, z) || (!isBgLayer &&
+                  (zoom < minZoomNonBgLayer || zoom % 2 !== 0))) {
                 continue;
               }
 
               var queueByZ = [];
               var minX, minY, maxX, maxY;
-              var tileExtent = (isBgLayer && zoom >= 0 && zoom <= 2) ?
+              var tileExtent = (isBgLayer && zoom >= 0 && zoom < minZoom) ?
                 gaMapUtils.defaultExtent : extent;
               tileGrid.forEachTileCoord(tileExtent, z, function(tileCoord) {
                 maxX = tileCoord[1];
@@ -515,7 +527,7 @@ goog.require('ga_window_service');
               // We sort tiles by distance from the center
               // The first must be dl in totality so no need to sort tiles,
               // the storage goes full only for the 2nd or 3rd layers.
-              if (i > 0 && zoom > 6) {
+              if (i > 0 && zoom > minZoom) {
                 var centerTileCoord = [
                   z, (minX + maxX) / 2, (minY + maxY) / 2
                 ];

@@ -12,11 +12,13 @@
         <hr>
         <div class="ga-vector-feedback-item">
             <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_choose_style</h4>
-            <div class="ga-vector-feedback-item-select-wrapper">
+            <div class="ga-vector-feedback-item-select-wrapper ga-select-style">
                 <a class="ga-feedback-survey-link btn btn-default form-control"
-                   ng-click="applyNextStyle()"
+                   ng-repeat="style in styles"
+                   ng-click="applyNextStyle(style, $index)"
+                   ng-disabled="($index === 0 && !olLayer.externalStyleUrl) ||  style.url === olLayer.externalStyleUrl"
                    href="" translate>
-                  vector_feedback_select_style
+                  {{ 'vector_feedback_style_' + style.id }}
                 </a>
             </div>
         </div>

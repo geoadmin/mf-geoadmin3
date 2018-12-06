@@ -46,7 +46,7 @@ goog.require('ga_styles_service');
           return;
         }
         if (!isPointData()) {
-          if (zoom > 6) {
+          if (zoom > 14) {
             layer.setVisible(false);
           } else {
             layer.setVisible(true);

@@ -5,7 +5,6 @@ goog.require('ga_permalink');
 goog.require('ga_height_service');
 goog.require('ga_measure_service');
 goog.require('ga_networkstatus_service');
-goog.require('ga_reframe_service');
 goog.require('ga_what3words_service');
 goog.require('ga_window_service');
 
@@ -17,7 +16,6 @@ goog.require('ga_window_service');
     'ga_permalink',
     'ga_height_service',
     'ga_measure_service',
-    'ga_reframe_service',
     'ga_window_service',
     'ga_what3words_service',
     'pascalprecht.translate'
@@ -26,7 +24,7 @@ goog.require('ga_window_service');
   module.directive('gaContextPopup',
       function($http, $q, $timeout, $window, $rootScope, gaBrowserSniffer,
           gaNetworkStatus, gaPermalink, gaGlobalOptions, gaLang, gaWhat3Words,
-          gaReframe, gaEvent, gaWindow, gaHeight, gaMeasure) {
+          gaEvent, gaWindow, gaHeight, gaMeasure) {
         return {
           restrict: 'A',
           replace: true,
@@ -98,12 +96,21 @@ goog.require('ga_window_service');
                 event.coordinate;
               clickCoord[0] = parseFloat(clickCoord[0].toFixed(1));
               clickCoord[1] = parseFloat(clickCoord[1].toFixed(1));
+
+              // World
               coord4326 = ol.proj.transform(clickCoord, proj, 'EPSG:4326');
               scope.coord4326 = ol.coordinate.format(coord4326, '{y}, {x}', 5);
               var coord4326String = ol.coordinate.toStringHDMS(coord4326, 3).
                   replace(/ /g, '');
               scope.coordiso4326 = coord4326String.replace(/N/g, 'N ');
-              scope.coord2056 = gaMeasure.formatCoordinates(clickCoord, 1);
+
+              // Swiss
+              scope.coord2056 = gaMeasure.formatCoordinates(
+                  ol.proj.transform(clickCoord, proj, 'EPSG:2056'), 1);
+              scope.coord21781 = gaMeasure.formatCoordinates(
+                  ol.proj.transform(clickCoord, proj, 'EPSG:21781'), 2);
+
+              // UTM
               if (coord4326[0] < 6 && coord4326[0] >= 0) {
                 var utm31t = ol.proj.transform(coord4326,
                     'EPSG:4326', 'EPSG:32631');
@@ -137,15 +144,6 @@ goog.require('ga_window_service');
                       if (response.status !== -1) { // Error
                         scope.altitude = '-';
                       }
-                    });
-
-                gaReframe.get95To03(clickCoord, reframeCanceler.promise).
-                    then(function(coords) {
-                      scope.coord21781 = gaMeasure.formatCoordinates(coords, 2);
-                    }, function() {
-                      var coords = ol.proj.transform(clickCoord, proj,
-                          'EPSG:21781');
-                      scope.coord21781 = gaMeasure.formatCoordinates(coords, 2);
                     });
 
                 updateW3W();
@@ -240,9 +238,10 @@ goog.require('ga_window_service');
             }
 
             function updatePopupLinks() {
+              var coord = ol.proj.transform(clickCoord, proj, 'EPSG:4326');
               var p = {
-                E: Math.round(clickCoord[0], 1),
-                N: Math.round(clickCoord[1], 1)
+                lon: coord[0],
+                lat: coord[1]
               };
               scope.contextPermalink = gaPermalink.getHref(p);
               scope.crosshairPermalink = gaPermalink.getHref(
