@@ -296,8 +296,7 @@ endif
 .PHONY: .build-artefacts/node-version
 .build-artefacts/node-version: .build-artefacts/last-node-version
 ifneq ($(LAST_NODE_VERSION),$(NODE_VERSION))
-	source $(HOME)/.bashrc ;\
-	nvm install $(NODE_VERSION)
+	source $(HOME)/.bashrc && source $(NVM_DIR)/nvm.sh && nvm install $(NODE_VERSION)
 endif
 
 .PHONY: env
