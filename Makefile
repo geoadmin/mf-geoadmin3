@@ -301,7 +301,7 @@ ifneq ($(LAST_NODE_VERSION),$(NODE_VERSION))
 endif
 
 .PHONY: env
-env: .build-artefacts/nvm-version .build-artefacts/node-version
+env: guard-NVM_DIR .build-artefacts/nvm-version .build-artefacts/node-version
 	source $(HOME)/.bashrc && source $(NVM_DIR)/nvm.sh && nvm use $(NODE_VERSION)
 
 .PHONY: dev
