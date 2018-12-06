@@ -238,9 +238,10 @@ goog.require('ga_window_service');
             }
 
             function updatePopupLinks() {
+              var coord = ol.proj.transform(clickCoord, proj, 'EPSG:4326');
               var p = {
-                E: Math.round(clickCoord[0], 1),
-                N: Math.round(clickCoord[1], 1)
+                lon: coord[0],
+                lat: coord[1]
               };
               scope.contextPermalink = gaPermalink.getHref(p);
               scope.crosshairPermalink = gaPermalink.getHref(

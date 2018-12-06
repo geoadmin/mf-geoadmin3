@@ -316,7 +316,7 @@ endif
 
 .PHONY: env
 env: .build-artefacts/nvm-version .build-artefacts/node-version
-	source $(HOME)/.bashrc && nvm use $(NODE_VERSION)
+	#source $(HOME)/.bashrc && nvm use $(NODE_VERSION)
 
 .PHONY: dev
 dev:
