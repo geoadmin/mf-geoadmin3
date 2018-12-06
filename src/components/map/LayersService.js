@@ -342,7 +342,7 @@ goog.require('ga_urlutils_service');
                 ],
                 styles: [{
                   id: 'default',
-                  url: 'https://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte.vt_v004/style.json'
+                  url: 'https://tileserver.int.bgdi.ch/http://tileserver.int.bgdi.ch/styles/ch.swisstopo.leichte-basiskarte_aggregated_osm.vt_v004/style.json'
                 }, {
                   id: 'artist',
                   url: 'https://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
