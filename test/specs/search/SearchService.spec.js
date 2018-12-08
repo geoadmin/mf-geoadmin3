@@ -3,6 +3,8 @@ describe('ga_search_service', function() {
 
   describe('gaSearchGetcoordinate', function() {
     var extent = [2420000, 1030000, 2900000, 1350000];
+    // Swiss extent in EPSG:3857
+    var extent = [558147.7958306982, 5677741.814085617, 1277662.36597472, 6152731.529704217];
     var $timeout, $rootScope, $httpBackend, $q, getCoordinate, gaReframe;
 
     var almostEqual = function(a, b, margin) {
@@ -15,9 +17,10 @@ describe('ga_search_service', function() {
     
     var reprojectToMercator = function(coords, epsg) { return ol.proj.transform(coords, 'EPSG:' + epsg, 'EPSG:3857'); };
 
+    // Loosely compare point a and b with an "margin error"
     var almostSamePoint = function(a,b, margin) {
       margin = margin || 1.0; // 1 meter
-      var dist = Math.sqrt(Math.pow((a[0] -b[0]),2) + Math.pow((a[1] - b[1]),2));
+      var dist = Math.sqrt(Math.pow((a[0] - b[0]), 2) + Math.pow((a[1] - b[1]), 2));
       return Math.abs(dist) < margin;
     }
 
@@ -60,7 +63,6 @@ describe('ga_search_service', function() {
       it('with space as separator', function(done) {
 
         getCoordinate(extent, '2600123.12 1200345').then(function(position) {
-          //expect(almostSamePoint(reprojectTo(position, epsg), coord2056, 1.0)).to.be(true);
           expect(almostSamePoint(position, coordAsViewEpsg, 1.0)).to.be(true);
           expect(spy.callCount).to.eql(0);
           done();
@@ -200,9 +202,9 @@ describe('ga_search_service', function() {
       });
     });
 
-    describe.only('supports EPSG:4326 coordinate (DD and DM)', function() {
+    describe('supports EPSG:4326 coordinate (DD and DM)', function() {
       var coord2056 = [2564298.937, 1202343.701];
-      var coord3857 = [775838.9655188059, 5937374.447109941];
+      var coord3857 = [775838.9655188059, 5937374.447109941]; 
       var strings = [
         '6.96948 46.9712',
         '46.9712° 6.96948',
@@ -222,11 +224,10 @@ describe('ga_search_service', function() {
         '6.96948\t46.9712',
         '6.96948\r46.9712'
       ]
-
+      
       strings.forEach(function(str) {
         it('trying to parse as DD or DM: ' + str, function(done) {
           getCoordinate(extent, str).then(function(position) {
-            //expect(position).to.eql(coord2056);
             expect(almostSamePoint(position, coord3857, 1.0)).to.be(true);
             done();
           });
@@ -235,9 +236,9 @@ describe('ga_search_service', function() {
       });
     });
 
-    describe.only('supports EPSG:4326 coordinate (DMS)', function() {
+    describe('supports EPSG:4326 coordinate (DMS)', function() {
       var coord2056 = [2564298.938, 1202343.702];
-      var coord3857 = [775838.9655188059, 5937374.447109941];
+      var coord3857 = [775838.9655188059, 5937374.447109941]; 
       var strings = [
         "46°58'16.320030760136433'' N  6°58'10.12802667678261'' E",
         "6°58'10.12802667678261''E 46°58'16.320030760136'' N",
@@ -262,7 +263,7 @@ describe('ga_search_service', function() {
       strings.forEach(function(str) {
         it('trying to parse: ' + str, function(done) {
           getCoordinate(extent, str).then(function(position) {
-            expect(position).to.eql(coord2056);
+            expect(almostSamePoint(position, coord3857, 1.0)).to.be(true);
             done();
           });
           $rootScope.$digest();
@@ -271,124 +272,123 @@ describe('ga_search_service', function() {
 
       it('trying to parse Skyguide format (exact string)', function(done) {
         getCoordinate(extent, '47°27\'29.4944"N 008°32\'52.8164"E').then(function(position) {
-          expect(position).to.eql([2683652.204, 1256969.871]);
+          expect(almostSamePoint(position,  [951559.5144230273, 6017186.148111986], 1.0)).to.be(true);
           done();
         });
         $rootScope.$digest();
       });
 
-    });
-
-    it('supports latitude and longitude as DMS (test D,D)', function(done) {
-      getCoordinate(extent, '7° E 46° N').then(function(position) {
-        expect(position).to.eql([2566016.05, 1094366.859]);
-        done();
+      it('supports latitude and longitude as DMS (test D,D)', function(done) {
+        getCoordinate(extent, '7° E 46° N').then(function(position) {
+          expect(almostSamePoint(position, [779236.4355529151, 5780349.220256355], 1.0)).to.be(true);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('supports latitude and longitude as DMS (test DM,D)', function(done) {
-      getCoordinate(extent, '7° 1\' E 46° N').then(function(position) {
-        expect(position).to.eql([2567307.273, 1094359.756]);
-        done();
+      it('supports latitude and longitude as DMS (test DM,D) #1', function(done) {
+        getCoordinate(extent, '7° 1\' E 46° N').then(function(position) {
+          expect(almostSamePoint(position, [781091.7603994695, 5780349.220256355], 1.0)).to.be(true);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('supports latitude and longitude as DMS (test DMS,D)', function(done) {
-      getCoordinate(extent, '7° 1\' 25.0\'\' E 46° N').then(function(position) {
-        expect(position).to.eql([2567845.283, 1094356.877]);
-        done();
+      it('supports latitude and longitude as DMS (test DMS,D) #2', function(done) {
+        getCoordinate(extent, '7° 1\' 25.0\'\' E 46° N').then(function(position) {
+          expect(almostSamePoint(position, [781864.8124188674, 5780349.220256355], 1.0)).to.be(true);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('supports latitude and longitude as DMS (test DMS,DM)', function(done) {
-      getCoordinate(extent, '7° 1\' 25.0\'\' E 46° 1\' N').then(function(position) {
-        expect(position).to.eql([2567855.114, 1096209.641]);
-        done();
+      it('supports latitude and longitude as DMS (test DMS,DM) #1', function(done) {
+        getCoordinate(extent, '7° 1\' 25.0\'\' E 46° 1\' N').then(function(position) {
+          expect(almostSamePoint(position, [781864.8124188674, 5783020.467651539], 1.0)).to.be(true);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('supports latitude and longitude as DMS (test DMS,DM)', function(done) {
-      getCoordinate(extent, '7° 1\' 25.0\'\' E 46° 1\' 25.0\'\' N').then(function(position) {
-        expect(position).to.eql([2567859.21, 1096981.625]);
-        done();
+      it('supports latitude and longitude as DMS (test DMS,DM) #2', function(done) {
+        getCoordinate(extent, '7° 1\' 25.0\'\' E 46° 1\' 25.0\'\' N').then(function(position) {
+          expect(almostSamePoint(position, [781864.8124188674, 5784133.725014146], 1.0)).to.be(true);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('supports latitude and longitude as DMS (test DMS,DMS)', function(done) {
-      getCoordinate(extent, '46° 1\' 25.0\'\' N 7° 1\' 25.0\'\' E').then(function(position) {
-        expect(position).to.eql([2567859.21, 1096981.625]);
-        done();
+      it('supports latitude and longitude as DMS (test DMS,DMS)', function(done) {
+        getCoordinate(extent, '46° 1\' 25.0\'\' N 7° 1\' 25.0\'\' E').then(function(position) {
+          expect(almostSamePoint(position, [781864.8124188674, 5784133.725014146], 1.0)).to.be(true);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('supports MGRS and USGS grid 32TLT8100', function(done) {
-      getCoordinate(extent, '32TLT8100').then(function(position) {
-        expect(position).to.eql([2600319.427, 1199594.862]);
-        done();
+      it('supports MGRS and USGS grid 32TLT8100', function(done) {
+        getCoordinate(extent, '32TLT8100').then(function(position) {
+          expect(almostSamePoint(position, [828531.8473453958,5933498.902717392], 1.0)).to.be(true);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('supports MGRS and USGS grid 32TLT 8 0', function(done) {
-      getCoordinate(extent, '32TLT 81 00').then(function(position) {
-        expect(position).to.eql([2600319.427, 1199594.862]);
-        done();
+      it('supports MGRS and USGS grid 32TLT 8 0', function(done) {
+        getCoordinate(extent, '32TLT 81 00').then(function(position) {
+          expect(almostSamePoint(position, [828531.8473453958,5933498.902717392], 1.0)).to.be(true);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('supports MGRS and USGS grid 32TLT', function(done) {
-      getCoordinate(extent, '32TLT').then(function(position) {
-        expect(position).to.be(undefined);
-        done();
+      it('supports MGRS and USGS grid 32TLT', function(done) {
+        getCoordinate(extent, '32TLT').then(function(position) {
+          expect(position).to.be(undefined);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('checks the swiss extent WGS84 DMS', function(done) {
-      getCoordinate(extent, '10° E 50° N').then(function(position) {
-        expect(position).to.be(undefined);
-        done();
+      it('checks the swiss extent WGS84 DMS', function(done) {
+        getCoordinate(extent, '10° E 50° N').then(function(position) {
+          expect(position).to.be(undefined);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('checks the swiss extent MGRS', function(done) {
-      getCoordinate(extent, '16SGL01948253 ').then(function(position) {
-        expect(position).to.be(undefined);
-        done();
+      it('checks the swiss extent MGRS', function(done) {
+        getCoordinate(extent, '16SGL01948253 ').then(function(position) {
+          expect(position).to.be(undefined);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('works only in north east (test north west)', function(done) {
-      getCoordinate(extent, '10° W 50° N').then(function(position) {
-        expect(position).to.be(undefined);
-        done();
+      it('works only in north east (test north west)', function(done) {
+        getCoordinate(extent, '10° W 50° N').then(function(position) {
+          expect(position).to.be(undefined);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('works only in north east (test south west)', function(done) {
-      getCoordinate(extent, '10° W 50° S').then(function(position) {
-        expect(position).to.be(undefined);
-        done();
+      it('works only in north east (test south west)', function(done) {
+        getCoordinate(extent, '10° W 50° S').then(function(position) {
+          expect(position).to.be(undefined);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('works only in north east (test south east)', function(done) {
-      getCoordinate(extent, '10° E 50° S').then(function(position) {
-        expect(position).to.be(undefined);
-        done();
+      it('works only in north east (test south east)', function(done) {
+        getCoordinate(extent, '10° E 50° S').then(function(position) {
+          expect(position).to.be(undefined);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
     });
   });
 
