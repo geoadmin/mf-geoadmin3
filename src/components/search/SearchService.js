@@ -74,6 +74,17 @@ goog.require('ga_reframe_service');
     return [easting, northing];
   }
 
+  var isGeographic = function(coord) {
+    var lng = coord[0];
+    var lat = coord[1];
+    if ((lat >= -90) && (lat <= 90) &&
+        (lng >= -180) && (lng <= 180)) {
+      return true;
+    } else {
+      return false;
+    }                                                                                                                                                                                         
+  }
+
   // Parse Degrees Minutes Seconds coordinates.
   var parseDMS = function(stringDMS) {
     var coord;
@@ -176,7 +187,11 @@ goog.require('ga_reframe_service');
           var pos95 = ol.proj.transform(position, 'EPSG:2056',
               gaGlobalOptions.defaultEpsg);
           // Match LV95
-          if (ol.extent.containsCoordinate(extent, pos95)) {
+          // console.log(gaGlobalOptions.swissExtent);
+          // console.log(gaGlobalOptions.defaultEpsg);
+          // console.log(pos95, position);
+          // console.log(ol.extent.containsCoordinate(gaGlobalOptions.swissExtent, pos95));
+          if (ol.extent.containsCoordinate(gaGlobalOptions.swissExtent, pos95)) {
             return $q.when(roundCoordinates(pos95));
           }
 

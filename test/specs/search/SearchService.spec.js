@@ -5,8 +5,28 @@ describe('ga_search_service', function() {
     var extent = [2420000, 1030000, 2900000, 1350000];
     var $timeout, $rootScope, $httpBackend, $q, getCoordinate, gaReframe;
 
+    var almostEqual = function(a, b, margin) {
+          return (a > (b - margin)) && (a < (b + margin))
+    };
+
+    var roundTo = function(number, place) { return Math.round(number * (Math.pow(10,place))) /(Math.pow(10, place)); };
+
+    var reprojectTo = function(coords, epsg) { return ol.proj.transform(coords, 'EPSG:3857', 'EPSG:' + epsg); };
+    
+    var reprojectToMercator = function(coords, epsg) { return ol.proj.transform(coords, 'EPSG:' + epsg, 'EPSG:3857'); };
+
+    var almostSamePoint = function(a,b, margin) {
+      margin = margin || 1.0; // 1 meter
+      var dist = Math.sqrt(Math.pow((a[0] -b[0]),2) + Math.pow((a[1] - b[1]),2));
+      return Math.abs(dist) < margin;
+    }
+
+
     beforeEach(function() {
       inject(function($injector, gaGlobalOptions) {
+        gaGlobalOptions.defautEpsgExtent = [-20037508.3428, -20037508.3428, 20037508.3428, 20037508.3428];
+        gaGlobalOptions.defaultEpsg = "EPSG:3857";
+        gaGlobalOptions.swissExtent = [558147.7958306982, 5677741.814085617, 1277662.36597472, 6152731.529704217];
         $rootScope = $injector.get('$rootScope');
         $timeout = $injector.get('$timeout');
         $httpBackend = $injector.get('$httpBackend');
@@ -27,24 +47,31 @@ describe('ga_search_service', function() {
     });
 
     describe('supports EPSG:2056 coordinate', function() {
+      var epsg = 2056;      
       var coord2056 = [2600123.12, 1200345];
+      var coordAsViewEpsg;
       var spy;
 
       beforeEach(function() {
         spy = sinon.stub(gaReframe, 'get03To95');
+        coordAsViewEpsg = reprojectToMercator(coord2056, epsg);
+       
       });
       it('with space as separator', function(done) {
+
         getCoordinate(extent, '2600123.12 1200345').then(function(position) {
-          expect(position).to.eql(coord2056);
+          //expect(almostSamePoint(reprojectTo(position, epsg), coord2056, 1.0)).to.be(true);
+          expect(almostSamePoint(position, coordAsViewEpsg, 1.0)).to.be(true);
           expect(spy.callCount).to.eql(0);
           done();
+          
         });
         $rootScope.$digest();
       });
 
       it('with tab as separator', function(done) {
         getCoordinate(extent, '2600123.12\t1200345').then(function(position) {
-          expect(position).to.eql(coord2056);
+          expect(almostSamePoint(position, coordAsViewEpsg, 1.0)).to.be(true);
           expect(spy.callCount).to.eql(0);
           done();
         });
@@ -53,7 +80,7 @@ describe('ga_search_service', function() {
 
       it('separated by comma', function(done) {
         getCoordinate(extent, '2600123.12,1200345').then(function(position) {
-          expect(position).to.eql(coord2056);
+          expect(almostSamePoint(position, coordAsViewEpsg, 1.0)).to.be(true);;
           expect(spy.callCount).to.eql(0);
           done();
         });
@@ -62,7 +89,7 @@ describe('ga_search_service', function() {
 
       it('separated by slash', function(done) {
         getCoordinate(extent, '2600123.12/1200345').then(function(position) {
-          expect(position).to.eql(coord2056);
+          expect(almostSamePoint(position, coordAsViewEpsg, 1.0)).to.be(true);
           expect(spy.callCount).to.eql(0);
           done();
         });
@@ -71,7 +98,7 @@ describe('ga_search_service', function() {
 
       it('thousands separated by apostrophe', function(done) {
         getCoordinate(extent, '2\'600\'123.12 1\'200\'345').then(function(position) {
-          expect(position).to.eql(coord2056);
+          expect(almostSamePoint(position, coordAsViewEpsg, 1.0)).to.be(true);
           expect(spy.callCount).to.eql(0);
           done();
         });
@@ -80,7 +107,7 @@ describe('ga_search_service', function() {
 
       it('separated by spaces', function(done) {
         getCoordinate(extent, '2600 123.12 1200 345').then(function(position) {
-          expect(position).to.eql(coord2056);
+          expect(almostSamePoint(position, coordAsViewEpsg, 1.0)).to.be(true);
           expect(spy.callCount).to.eql(0);
           done();
         });
@@ -100,10 +127,18 @@ describe('ga_search_service', function() {
     describe('supports EPSG:21781 coordinate', function() {
       var coord1 = [2600123.12, 1200345];
       var coord2 = [2722204.89, 1076225.24];
+      var epsg = 21781;
+      var coord1AsViewEpsg, coord2AsViewEpsg; 
+      
+      beforeEach(function() {
+        coord1AsViewEpsg = reprojectToMercator(coord1, epsg);
+        coord2AsViewEpsg = reprojectToMercator(coord2, epsg);
+       
+      });
 
       it('separated by space', function(done) {
         getCoordinate(extent, '600123.12 200345').then(function(position) {
-          expect(position).to.eql(coord1);
+          expect(almostSamePoint(position, coord1AsViewEpsg, 1.0)).to.be(true);
           done();
         });
         $rootScope.$digest();
@@ -111,8 +146,7 @@ describe('ga_search_service', function() {
 
       it('separated by space (northing < 100 000)', function(done) {
         getCoordinate(extent, '722204.89 76225.24').then(function(position) {
-
-          expect(position).to.eql(coord2);
+          expect(almostSamePoint(position, coord2AsViewEpsg, 1.0)).to.be(true);
           done();
         });
         $rootScope.$digest();
@@ -120,7 +154,7 @@ describe('ga_search_service', function() {
 
       it('separated by space (northing < 100 000, northing before easting)', function(done) {
         getCoordinate(extent, '76225.24 722204.89').then(function(position) {
-          expect(position).to.eql(coord2);
+          expect(almostSamePoint(position, coord2AsViewEpsg, 1.0)).to.be(true);
           done();
         });
         $rootScope.$digest();
@@ -128,7 +162,7 @@ describe('ga_search_service', function() {
 
       it('separated by comma', function(done) {
         getCoordinate(extent, '600123.12,200345').then(function(position) {
-          expect(position).to.eql(coord1);
+          eexpect(almostSamePoint(position, coord1AsViewEpsg, 1.0)).to.be(true);
           done();
         });
         $rootScope.$digest();
@@ -136,14 +170,14 @@ describe('ga_search_service', function() {
 
       it('separated by slash [n]', function(done) {
         getCoordinate(extent, '600123.12/200345').then(function(position) {
-          expect(position).to.eql(coord1);
+          expect(almostSamePoint(position, coord1AsViewEpsg, 1.0)).to.be(true);
           done();
         });
         $rootScope.$digest();
       });
       it('separated by slash and spaces [n]', function(done) {
         getCoordinate(extent, '600123.12 / 200345').then(function(position) {
-          expect(position).to.eql(coord1);
+          expect(almostSamePoint(position, coord1AsViewEpsg, 1.0)).to.be(true);
           done();
         });
         $rootScope.$digest();
@@ -151,7 +185,7 @@ describe('ga_search_service', function() {
 
       it('thousands separated by apostrophe', function(done) {
         getCoordinate(extent, '600\'123.12 200\'345').then(function(position) {
-          expect(position).to.eql(coord1);
+          expect(almostSamePoint(position, coord1AsViewEpsg, 1.0)).to.be(true);
           done();
         });
         $rootScope.$digest();
@@ -159,15 +193,16 @@ describe('ga_search_service', function() {
 
       it('separated by spaces', function(done) {
         getCoordinate(extent, '600 123.12 200 345').then(function(position) {
-          expect(position).to.eql(coord1);
+          expect(almostSamePoint(position, coord1AsViewEpsg, 1.0)).to.be(true);
           done();
         });
         $rootScope.$digest();
       });
     });
 
-    describe('supports EPSG:4326 coordinate (DD and DM)', function() {
+    describe.only('supports EPSG:4326 coordinate (DD and DM)', function() {
       var coord2056 = [2564298.937, 1202343.701];
+      var coord3857 = [775838.9655188059, 5937374.447109941];
       var strings = [
         '6.96948 46.9712',
         '46.9712° 6.96948',
@@ -191,7 +226,8 @@ describe('ga_search_service', function() {
       strings.forEach(function(str) {
         it('trying to parse as DD or DM: ' + str, function(done) {
           getCoordinate(extent, str).then(function(position) {
-            expect(position).to.eql(coord2056);
+            //expect(position).to.eql(coord2056);
+            expect(almostSamePoint(position, coord3857, 1.0)).to.be(true);
             done();
           });
           $rootScope.$digest();
@@ -199,8 +235,9 @@ describe('ga_search_service', function() {
       });
     });
 
-    describe('supports EPSG:4326 coordinate (DMS)', function() {
+    describe.only('supports EPSG:4326 coordinate (DMS)', function() {
       var coord2056 = [2564298.938, 1202343.702];
+      var coord3857 = [775838.9655188059, 5937374.447109941];
       var strings = [
         "46°58'16.320030760136433'' N  6°58'10.12802667678261'' E",
         "6°58'10.12802667678261''E 46°58'16.320030760136'' N",

@@ -62,6 +62,7 @@ beforeEach(function() {
 
       // Map state values
       defaultExtent: [420000, 30000, 900000, 350000],
+      swissExtent: [558147.7958306982, 5677741.814085617, 1277662.36597472, 6152731.529704217],
       defaultResolution: 500.0,
       defaultEpsg: 'EPSG:2056',
       defaultEpsgExtent: [2420000, 1030000, 2900000, 1350000],
