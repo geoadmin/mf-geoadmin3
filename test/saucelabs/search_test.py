@@ -154,27 +154,27 @@ searchLocationTests = [
     {
         'searchText': u'bruckenmoostrasse 11 raron',
         'resultTitle': u'Brückenmoosstrasse 11 3942 Raron',
-        'resultLocation': u'lon=7.[0-9]{5}&lat=46.[0-9]{5}&zoom=16.7'
+        'resultLocation': u'lon=7.[0-9]{5}&lat=46.[0-9]{5}&zoom=12.7'
     },
     {
         'searchText': u'rte berne 91 1010',
         'resultTitle': u'Route de Berne 91 1010 Lausanne',
-        'resultLocation': u'lon=6.[0-9]{5}&lat=46.[0-9]{5}&zoom=16.7'
+        'resultLocation': u'lon=6.[0-9]{5}&lat=46.[0-9]{5}&zoom=12.7'
     },
     {
         'searchText': u'pl chateau 3 laus',
         'resultTitle': u'Place du Château 3 1005 Lausanne',
-        'resultLocation': u'lon=6.[0-9]{5}&lat=46.[0-9]{5}&zoom=16.7'
+        'resultLocation': u'lon=6.[0-9]{5}&lat=46.[0-9]{5}&zoom=12.7'
     },
     {
         'searchText': u'basel',
         'resultTitle': u'Basel (BS)',
-        'resultLocation': 'lon=7.[0-9]{5}&lat=47.[0-9]{5}&zoom=13'
+        'resultLocation': 'lon=7.[0-9]{5}&lat=47.[0-9]{5}&zoom=9'
     },
     {
         'searchText': u'bern',
         'resultTitle': u'Bern (BE)',
-        'resultLocation': u'lon=7.[0-9]{5}&lat=46.[0-9]{5}&zoom=13'
+        'resultLocation': u'lon=7.[0-9]{5}&lat=46.[0-9]{5}&zoom=9'
     }
 ]
 
@@ -198,13 +198,13 @@ swissSearchParamTests = [
         'searchText': u'chemin des caves 11',
         'oneResOnly': True,
         'resultTitle': u'Chemin des Caves 11 1040 Echallens',
-        'resultLocation': u'lon=6.[0-9]{5}&lat=46.[0-9]{5}&zoom=16.7'
+        'resultLocation': u'lon=6.[0-9]{5}&lat=46.[0-9]{5}&zoom=12.7'
     },
     {
         'searchText': u'oliviers vinzel 1',
         'oneResOnly': False,
         'resultTitle': u'Chemin des Oliviers 8 1184 Vinzel',
-        'resultLocation': u'lon=6.[0-9]{5}&lat=46.[0-9]{5}&zoom=16.7'
+        'resultLocation': u'lon=6.[0-9]{5}&lat=46.[0-9]{5}&zoom=12.7'
     }
 ]
 
