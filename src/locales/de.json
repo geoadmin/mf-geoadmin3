@@ -501,7 +501,7 @@
 "vector_feedback_choose_layer": "Ebene auswählen",
 "vector_feedback_choose_style": "Darstellung ändern",
 "vector_feedback_create_your_own": "Eigene Hintergrundkarte erstellen",
-"vector_feedback_description_text": "Die Karte besteht aus <b>Vektorkacheln</b> anstelle von Rasterkacheln. Sie wird direkt von nur einmal bezogenen Daten in Ihrem Browser gezeichnet. Die Karte erscheint schneller auf dem Bildschirm und Sie können das Erscheinungsbild leicht anpassen. Um das Design und Laden der Karte noch einfacher zu gestalten, sind die Datenebenen übersichtlicher organisiert. Mit einigen wenigen Ebenen können Sie jetzt schnell und einfach Ihre eigene Karte erstellen! <b>Probieren Sie es aus: TEST Viewer optimiert für leistungsfähigen Desktop PC mit aktuellem Browser </b>:",
+"vector_feedback_description_text": "Die Karte besteht aus <b>Vektorkacheln</b> anstelle von Rasterkacheln. Sie wird direkt von nur einmal bezogenen Daten in Ihrem Browser gezeichnet. Die Karte erscheint schneller auf dem Bildschirm und Sie können das Erscheinungsbild leicht anpassen. Um das Design und Laden der Karte noch einfacher zu gestalten, sind die Datenebenen übersichtlicher organisiert. Mit einigen wenigen Ebenen können Sie jetzt schnell und einfach Ihre eigene Karte erstellen! <b>Probieren Sie es aus! </b><b style=\"color: #ff6961;\">TEST Viewer optimiert für leistungsfähigen Desktop PC mit aktuellem Browser </b>:",
 "vector_feedback_description_title": "Vektor Kacheln BASISKARTE ",
 "vector_feedback_edit_map": "Karte bearbeiten",
 "vector_feedback_getting_started_1": "In unserer ",

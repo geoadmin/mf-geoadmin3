@@ -501,7 +501,7 @@
 "vector_feedback_choose_layer": "Choose a layer",
 "vector_feedback_choose_style": "Change display",
 "vector_feedback_create_your_own": "Create your own Basemap",
-"vector_feedback_description_text": "The map is composed of <b>vector tiles</b> instead of raster tiles. It is created directly in your browser based on data which is retrieved once. The map appears faster on the screen and you can easily adjust the style. To make the styling and loading of the map even easier and faster, the data is organized in a simpler way. With just a few layers you can now quickly and easily create your own map! <b>Just try it TEST Viewer optimized for powerful desktop PC with latest browser version</b>:",
+"vector_feedback_description_text": "The map is composed of <b>vector tiles</b> instead of raster tiles. It is created directly in your browser based on data which is retrieved once. The map appears faster on the screen and you can easily adjust the style. To make the styling and loading of the map even easier and faster, the data is organized in a simpler way. With just a few layers you can now quickly and easily create your own map! <b>Just try it! </b><b style=\"color: #ff6961;\">TEST Viewer optimized for powerful desktop PC with latest browser version</b>:",
 "vector_feedback_description_title": "Vector Tiles BASEMAP ",
 "vector_feedback_edit_map": "Edit map",
 "vector_feedback_getting_started_1": "In our ",
