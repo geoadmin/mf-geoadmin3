@@ -100,13 +100,13 @@
   padding: 2px 0;
   .ga-vector-feeback-service-link {
     width: 40%;
-    cursor: pointer;
     @media (max-width: @screen-sm), (max-width: @screen-xs) {
       width: 100%;
     }
   }
 
   > button {
+    cursor: pointer;
     width: 100%;
   }
 }
@@ -146,8 +146,11 @@
     text-overflow: ellipsis;
 
     a {
-      width: 40%;
+      width: 20%;
       margin: 5px;
+      @media (max-width: @screen-sm), (max-width: @screen-xs) {
+        width: 45%;
+      }
     }
   }
 }

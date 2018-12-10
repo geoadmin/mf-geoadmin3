@@ -591,6 +591,9 @@ goog.require('ga_urlutils_service');
         */
         swissZoomToMercator: function(zoom) {
           var gridZoom = zoom + 14;
+          var wmtsMaxZoom =  gaGlobalOptions.tileGridResolutions.length;
+          var mapMaxZoom = gaGlobalOptions.resolutions.length;
+          var zoomOffset = wmtsMaxZoom - mapMaxZoom;
           var mapping = {
             14: 7.35,
             15: 7.75,
@@ -608,7 +611,7 @@ goog.require('ga_urlutils_service');
             27: 20,
             28: 21 // not defined at the moment
           };
-          return mapping[gridZoom];
+          return mapping[gridZoom] - zoomOffset;
         }
       };
     };
