@@ -28,9 +28,9 @@ goog.require('ga_glstylestorage_service');
 
       // Bgs with vector tiles tileset.
       var vtBgs = {
-        'ch.swisstopo.leichte-basiskarte.vt': {
-          id: 'ch.swisstopo.leichte-basiskarte.vt',
-          label: 'basis',
+        'omt.vt': {
+          id: 'omt.vt',
+          label: 'OpenMapTiles',
           disable3d: true,
           labels: false
         }

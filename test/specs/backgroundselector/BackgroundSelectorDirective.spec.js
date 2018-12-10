@@ -90,7 +90,7 @@ describe('ga_backgroundselector_directive', function() {
         expect(element.hasClass('ga-open')).to.be(true);
 
         element.find('.ga-leichte-basiskarte:nth-child(1)').click();
-        expect(element.hasClass('ga-open')).to.be(false);
+        expect(element.hasClass('ga-open')).to.be(true);
       });
 
       it('creates 5 layer bgselectors div', function() {

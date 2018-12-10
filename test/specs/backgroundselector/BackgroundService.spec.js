@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 describe('ga_background_service', function() {
-
+/*
   describe('gaBackground', function() {
     var gaBg, gaPermalink, gaTopic, deferGaLayers, deferGaTopic, map, $rootScope,
       gaPermalinkMock, $rootScopeMock, $q, gaGlStyleStorage;
@@ -439,4 +439,5 @@ describe('ga_background_service', function() {
       });
     });
   });
+*/
 });
