@@ -409,7 +409,8 @@ goog.require('ga_urlutils_service');
                 replace('{Feature}', featureId);
             $http.get(featureUrl, {
               params: {
-                geometryFormat: 'geojson'
+                geometryFormat: 'geojson',
+                'sr': '3857'
               }
             }).then(function(response) {
               var result = response.data;
