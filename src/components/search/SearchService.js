@@ -116,10 +116,18 @@ goog.require('ga_reframe_service');
   module.provider('gaSearchGetCoordinate', function() {
     this.$get = function($window, $q, gaReframe, gaGlobalOptions) {
 
-      // extent is the ol.View extent, where lat/long coordinates
-      // are valid. swissExtent is the area where LV03/LV95 are also
-      // valid.
-      // With Web Mercator these both extent may be quite different
+      /* extent is the ol.View extent, where lat/long coordinates
+       * are valid. swissExtent is the area where LV03/LV95 are also
+       * valid. With MVT these both extent may be quite different.
+       *
+       * Both metric LV95 and LV03 are recognized
+       * Geographic coordinates are supposed to be lat/lon. Quadrants
+       * are specified with NSWE or +/-
+       * Within the area of Switzerland, you may use 7.5° 47.6°
+       * MGRS is supported, though not thoroughfully tested in the weird
+       * areas of cost Norway and Svalbard
+       */
+
       return function(extent, query) {
         var position, coord;
         var left, right;
