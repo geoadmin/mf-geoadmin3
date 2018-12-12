@@ -9,14 +9,15 @@ goog.require('ga_urlutils_service');
   var module = angular.module('ga_maputils_service', [
     'ga_definepropertiesforlayer_service',
     'ga_urlutils_service',
-    'ga_height_service'
+    'ga_height_service',
+    'ga_storage_service'
   ]);
 
   /**
    * Service provides map util functions.
    */
   module.provider('gaMapUtils', function() {
-    this.$get = function($window, gaGlobalOptions, gaUrlUtils, $q,
+    this.$get = function($window, gaGlobalOptions, gaUrlUtils, $q, gaStorage,
         gaDefinePropertiesForLayer, $http, $rootScope, gaHeight, gaGlStyle) {
       var resolutions = gaGlobalOptions.resolutions;
       var lodsForRes = gaGlobalOptions.lods;
@@ -31,6 +32,8 @@ goog.require('ga_urlutils_service');
       // Level of detail for the default resolution
       var proj = ol.proj.get(gaGlobalOptions.defaultEpsg);
       var extent = gaGlobalOptions.defaultExtent || proj.getExtent();
+      var BASE64_MARKER = ';base64,';
+
       return {
         Z_PREVIEW_LAYER: 1000,
         Z_PREVIEW_FEATURE: 1100,
@@ -42,19 +45,25 @@ goog.require('ga_urlutils_service');
         getViewResolutionForZoom: function(zoom) {
           return resolutions[zoom];
         },
+
         // Example of a dataURI: 'data:image/png;base64,sdsdfdfsdfdf...'
         dataURIToBlob: function(dataURI) {
-          var BASE64_MARKER = ';base64,';
+          var base64Index = dataURI.indexOf(BASE64_MARKER);
+          var contentType = dataURI.substring(5, base64Index);
+          var arrayBuffer = this.dataURIToArrayBuffer(dataURI);
+          return this.arrayBufferToBlob(arrayBuffer, contentType);
+        },
+
+        dataURIToArrayBuffer: function(dataURI) {
           var base64Index = dataURI.indexOf(BASE64_MARKER);
           var base64 = dataURI.substring(base64Index + BASE64_MARKER.length);
-          var contentType = dataURI.substring(5, base64Index);
           var raw = $window.atob(base64);
           var rawLength = raw.length;
           var uInt8Array = new Uint8Array(rawLength);
           for (var i = 0; i < rawLength; ++i) {
             uInt8Array[i] = raw.charCodeAt(i);
           }
-          return this.arrayBufferToBlob(uInt8Array.buffer, contentType);
+          return uInt8Array.buffer;
         },
 
         // Advantage of the blob is we have easy access to the size and the
@@ -85,7 +94,7 @@ goog.require('ga_urlutils_service');
          * Use by offline to store in local storage.
          */
         getTileKey: function(tileUrl) {
-          return tileUrl.replace(/^\/\/(wmts|tod)[0-9]{0,3}/, '').
+          return tileUrl.replace(/^\/\/(vectortiles|wmts|tod)[0-9]{0,3}/, '').
               replace('prod.bgdi', 'geo.admin');
         },
 
@@ -532,6 +541,7 @@ goog.require('ga_urlutils_service');
         // This function set also the extent and minZoom, maxZoom infos.
         // ex: https://vectortiles.geo.admin.ch/mbtiles/ch.astra.wanderland_1539077150.json
         applyGlSourceToOlLayer: function(olLayer, sourceConfig) {
+          var that = this;
           return $http.get(sourceConfig.url, {
             cache: true
           }).then(function(response) {
@@ -540,7 +550,32 @@ goog.require('ga_urlutils_service');
             var sourceOpts = {
               minZoom: sourceConfig.minZoom || data.minzoom,
               maxZoom: sourceConfig.maxZoom || data.maxzoom,
-              urls: data.tiles
+              urls: data.tiles,
+              tileLoadFunction: function(tile, url) {
+                tile.setLoader(function() {
+                  gaStorage.getTile(that.getTileKey(url)
+                  ).then(function(base64) {
+                    if (!base64) {
+                      return $http.get(url, {
+                        responseType: 'arraybuffer'
+                      }).then(function(resp) {
+                        return resp.data;
+                      });
+                    }
+                    // Content from cache is a base64 string
+                    return $q.when(that.dataURIToArrayBuffer(base64));
+                  }).then(function(arrayBuffer) {
+                    if (!arrayBuffer) {
+                      return;
+                    }
+                    var format = tile.getFormat();
+                    tile.setProjection(format.readProjection(arrayBuffer));
+                    tile.setFeatures(format.readFeatures(arrayBuffer));
+                    // the line below is only required for ol/format/MVT
+                    tile.setExtent(format.getLastExtent());
+                  });
+                });
+              }
             };
 
             if (sourceConfig.type === 'raster') {
@@ -548,6 +583,7 @@ goog.require('ga_urlutils_service');
 
             } else { // vector
               sourceOpts.format = new ol.format.MVT();
+              sourceOpts.cacheSize = 0;
               olSource = new ol.source.VectorTile(sourceOpts);
             }
             olLayer.setSource(olSource);
