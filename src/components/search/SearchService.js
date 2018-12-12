@@ -7,21 +7,8 @@ goog.require('ga_reframe_service');
     'ga_reframe_service'
   ]);
 
-  /**
-   * D: Match Degrees coordinates (ex: 46.9712° 6.96948°)
-   * DM: Match Degrees Minutes coordinates (ex: 6° 58.1688' E 46° 58.272' N)
-   * DMSXXX: Match Degrees Minutes Seconds coordinates
-   *         (ex: 6° 58' 12.11'' E 46° 58' 12.12'' N)
-   */
-  var D = '([\\d.,]{2,})[°\\sNSWEO]*[\\s,/]+([\\d.,]{3,})[\\s°NSWEO]*';
-  var DM = '([\\d]{1,3})[°\\s]*([\\d.,]+)[\\s\',NSEWO/]*';
-  var DMSDegree = '\\b0{0,2}[0-9]{1,2}\\s*[°|º]\\s*';
-  var DMSMinute = '[0-9]{1,2}\\s*[\'|′]';
-  var DMSSecond = '(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)("|\'\'|′′|″)';
-  var DMSQuadrant = '[NOSWE]?';
-
   // Match MGRS coordinates
-  var MGRS = '^3[123][\\sa-z]{3}[\\s\\d]*';
+  var MGRS = '^[0123456]?[0-9][\\sa-z]{3}[\\s\\d]*';
 
   // Match metric coordinates
   // ex: 720000 90000 (LV03)
@@ -29,13 +16,6 @@ goog.require('ga_reframe_service');
   //     900000 5800000 (UTM, Webmercator)
   var coordinate = '([\\d .\']{5,})([\\t ,./]+)([\\d .,\']{5,})'
 
-  var regexpD = new RegExp(D, 'i');
-  var regexpDM = new RegExp(DM + DM, 'i');
-  var regexpDMS = new RegExp(DMSDegree +
-      '(' + DMSMinute + ')?\\s*' +
-      '(' + DMSSecond + ')?\\s*' +
-      '(' + DMSQuadrant + ')?', 'gi');
-  var regexpDMSDegree = new RegExp(DMSDegree, 'g');
   var regexpCoordinate = new RegExp(coordinate);
   var regexMGRS = new RegExp(MGRS, 'gi');
 
@@ -54,64 +34,91 @@ goog.require('ga_reframe_service');
     return parseFloat(str.replace(/[ \s' ]/g, ''));
   }
 
-  // Reorder coordinates.
-  // For 3857 and 4326 always northing > easting
-  var sortCoordinates = function(left, right) {
-    var northing, easting;
-    try {
-      left = parseFloat(left);
-      right = parseFloat(right);
-    } catch (e) {
-      return [0, 0];
-    }
-    if (left > right) {
-      northing = left;
-      easting = right;
+  /* Assume use want's to be in Switzerland and not Somaliland
+   * (ugly in all sense)                                       */
+  var isSwiss = function(c) {
+    if (c == null) return c;
+    var x = c[0], y = c[1];
+    if (x >= 5 && x <= 11 && y >= 45 && y <= 48) {
+      return [y, x]
+    } else if (y >= 5 && y <= 11 && x >= 45 && x <= 48) {
+      return [x, y]
     } else {
-      northing = right;
-      easting = left;
+      return false
     }
-    return [easting, northing];
   }
 
   var isGeographic = function(coord) {
-    var lng = coord[0];
-    var lat = coord[1];
+    var lat = coord[0];
+    var lng = coord[1];
     if ((lat >= -90) && (lat <= 90) &&
         (lng >= -180) && (lng <= 180)) {
       return true;
     } else {
       return false;
-    }                                                                                                                                                                                         
+    }
   }
 
-  // Parse Degrees Minutes Seconds coordinates.
-  var parseDMS = function(stringDMS) {
+  /* Functions pair, search and swapdims are slightly adapted from the
+   * `mapbox@sexagesimal` module  */
+
+  function search(x, dims, r) {
+    if (!dims) dims = 'NOSEW';
+    if (typeof x !== 'string') return { val: null, regex: r };
+    // eslint-disable-next-line
+    const regex = /[\s\,\/]*([NOSEW])?\s*([\-|\—|\―]?[0-9.]+)\s*[°|º]?\s*(?:([0-9.]+)['’′‘′]\s*)?(?:([0-9.]+)(?:''|″|"|″|”|″|′′)\s*)?([NOSEW])?/gi;
+
+    r = r || regex;
+
+    var m = r.exec(x);
+    if (!m) return { val: null, regex: r };
+    var dim = m[1] || m[5];
+    if (dim && dims.indexOf(dim) === -1) return { val: null, regex: r };
+    if (m[2] && parseFloat(m[2] > 180.0)) return { val: null, regex: r };
+
+    return {
+      val:
+        ((m[2] ? parseFloat(m[2]) : 0) +
+          (m[3] ? parseFloat(m[3]) / 60 : 0) +
+          (m[4] ? parseFloat(m[4]) / 3600 : 0)) *
+        (dim === 'S' || dim === 'W' || dim === 'O' ? -1 : 1),
+      regex: r,
+      raw: m[0],
+      dim: dim
+    };
+  }
+
+  function pair(y, dims) {
     var coord;
-    try {
-      coord = parseFloat(stringDMS.match(regexpDMSDegree)[0].
-          replace(/[°º]/g, ''));
-
-      var minutes = stringDMS.match(DMSMinute) ?
-        stringDMS.match(DMSMinute)[0] : '0';
-      coord = coord + parseFloat(minutes.replace(/['′]/g, '')) / 60;
-
-      var seconds = stringDMS.match(DMSSecond) ?
-        stringDMS.match(DMSSecond)[0] : '0';
-      coord = coord + parseFloat(seconds.replace(/["'″′]/g, '')) / 3600;
-
-      return coord;
-    } catch (e) {
-      return coord;
+    var x = y.trim();
+    var one = search(x, dims);
+    if (one.val === null) return null;
+    var two = search(x, dims, one.regex);
+    if (two.val === null) return null;
+    // null if one/two are not contiguous.
+    // if (one.raw + two.raw !== y) return null;
+    if ((one.raw + two.raw).length - y.length > 1) return null;
+    if (one.dim) {
+      coord = swapdim(one.val, two.val, one.dim);
+    } else {
+      coord = [one.val, two.val];
     }
+    if (isGeographic(coord)) {
+      return coord
+    }
+  }
+
+  function swapdim(a, b, dim) {
+    if (dim === 'N' || dim === 'S') return [a, b];
+    if (dim === 'W' || dim === 'E' || dim === 'O') return [b, a];
   }
 
   module.provider('gaSearchGetCoordinate', function() {
     this.$get = function($window, $q, gaReframe, gaGlobalOptions) {
-      
+
       // extent is the ol.View extent, where lat/long coordinates
       // are valid. swissExtent is the area where LV03/LV95 are also
-      // valid. 
+      // valid.
       // With Web Mercator these both extent may be quite different
       return function(extent, query) {
         var position, coord;
@@ -130,54 +137,15 @@ goog.require('ga_reframe_service');
             }
           }
         }
-
         // Parse Degrees Minutes Seconds
-        var matchDMS = query.match(regexpDMS);
-        // 0.7 is a magic number that defines if a majority of characters
-        // are detected.
-        // If not, try another rule (e.g. DM or DD)
-        if (matchDMS && matchDMS.length === 2 &&
-           (query.length * 0.7) <= (matchDMS[0].length + matchDMS[1].length)) {
-          left = parseDMS(matchDMS[0]);
-          right = parseDMS(matchDMS[1]);
-          if (right && left) {
-            coord = sortCoordinates(left, right);
-            position = ol.proj.transform(coord,
-                'EPSG:4326', gaGlobalOptions.defaultEpsg);
-            if (ol.extent.containsCoordinate(extent, position)) {
-              return $q.when(roundCoordinates(position));
-            }
-          }
-        }
+        coord = pair(query);
+        coord = isSwiss(coord);
+        if (coord) {
 
-        // Parse Degrees EPSG:4326 notation
-        var matchD = query.match(regexpD);
-        if (matchD && matchD.length === 3) {
-          // we only care about coordinates in Switzerland
-          left = parseFloat(matchD[1]);
-          right = parseFloat(matchD[2]);
-          coord = sortCoordinates(left, right);
-          if (isGeographic(coord)) {
-            position = ol.proj.transform(coord, 'EPSG:4326',
-                gaGlobalOptions.defaultEpsg);
-            if (ol.extent.containsCoordinate(extent, position)) {
-              return $q.when(roundCoordinates(position));
-            }
-          } 
-        }
-
-        // Parse Degrees Minutes
-        var matchDM = query.match(regexpDM);
-        if (matchDM && matchDM.length === 5) {
-          left = parseInt(matchDM[1]) + parseFloat(matchDM[2]) / 60.0;
-          right = parseInt(matchDM[3]) + parseFloat(matchDM[4]) / 60.0;
-          coord = sortCoordinates(left, right);
-          if (isGeographic(coord)) {
-            position = ol.proj.transform(coord, 'EPSG:4326',
-                gaGlobalOptions.defaultEpsg);
-            if (ol.extent.containsCoordinate(extent, position)) {
-              return $q.when(roundCoordinates(position));
-            }
+          position = ol.proj.transform([coord[1], coord[0]],
+              'EPSG:4326', gaGlobalOptions.defaultEpsg);
+          if (ol.extent.containsCoordinate(extent, position)) {
+            return $q.when(roundCoordinates(position));
           }
         }
 
@@ -196,14 +164,16 @@ goog.require('ga_reframe_service');
           var pos95 = ol.proj.transform(position, 'EPSG:2056',
               gaGlobalOptions.defaultEpsg);
           // Match LV95
-          if (ol.extent.containsCoordinate(gaGlobalOptions.swissExtent, pos95)) {
+          if (ol.extent.containsCoordinate(gaGlobalOptions.swissExtent,
+              pos95)) {
             return $q.when(roundCoordinates(pos95));
           }
 
           var pos03 = ol.proj.transform(position, 'EPSG:21781',
               gaGlobalOptions.defaultEpsg);
           // Match LV03 coordinates
-          if (ol.extent.containsCoordinate(gaGlobalOptions.swissExtent, pos03)) {
+          if (ol.extent.containsCoordinate(gaGlobalOptions.swissExtent,
+              pos03)) {
             return $q.when(roundCoordinates(pos03));
           }
           // By now we are desesperate, return as is

@@ -2,23 +2,14 @@
 describe('ga_search_service', function() {
 
   describe('gaSearchGetcoordinate', function() {
-    var extent = [2420000, 1030000, 2900000, 1350000];
+    // var extent = [2420000, 1030000, 2900000, 1350000];
     // Swiss extent in EPSG:3857
     var swissExtent = [558147.7958306982, 5677741.814085617, 1277662.36597472, 6152731.529704217];
 
-    var extent = [500000, 5600000, 1300000, 6200000];
-    var extent = [200000, 5000000, 2000000, 7500000];
+    // var extent1 = [500000, 5600000, 1300000, 6200000];
+    // var extent2 = [200000, 5000000, 2000000, 7500000];
+    var extent = [-20037508.3428, -20037508.3428, 20037508.3428, 20037508.3428];
     var $timeout, $rootScope, $httpBackend, $q, getCoordinate, gaReframe;
-
-    var almostEqual = function(a, b, margin) {
-      return (a > (b - margin)) && (a < (b + margin))
-    };
-
-    var roundTo = function(number, place) { return Math.round(number * (Math.pow(10, place))) / (Math.pow(10, place)); };
-
-    var reprojectTo = function(coords, epsg) { return ol.proj.transform(coords, 'EPSG:3857', 'EPSG:' + epsg); };
-
-    var reprojectToMercator = function(coords, epsg) { return ol.proj.transform(coords, 'EPSG:' + epsg, 'EPSG:3857'); };
 
     // Loosely compare point a and b with an "margin error"
     var almostSamePoint = function(a, b, margin) {
@@ -52,9 +43,6 @@ describe('ga_search_service', function() {
     });
 
     describe('supports EPSG:2056 coordinate', function() {
-      var epsg = 2056;
-      var coord2056 = [2600123.12, 1200345];
-      var coordAsViewEpsg = [1003113.8316366017, 5752614.091970069]; //
       var coordAsViewEpsg = [828244.8167210566, 5934599.28228803];
       var spy;
 
@@ -128,9 +116,7 @@ describe('ga_search_service', function() {
     });
 
     describe('supports legacy EPSG:21781 coordinates', function() {
-      var coord1 = [2600123.12, 1200345];
-      var coord2 = [2722204.89, 1076225.24];
-      var epsg = 21781;
+      // EPSG:3857 for [2600123.12, 1200345] and [2722204.89, 1076225.24]
       var coord1AsViewEpsg = [828244.8167210564, 5934599.282288026];
       var coord2AsViewEpsg = [1003113.8316366017, 5752614.091970069];
 
@@ -199,19 +185,19 @@ describe('ga_search_service', function() {
     });
 
     describe('supports EPSG:4326 coordinate (DD and DM)', function() {
-      var coord2056 = [2564298.937, 1202343.701];
+      // Webmerc for [2564298.937, 1202343.701]
       var coord3857 = [775838.9655188059, 5937374.447109941];
       var strings = [
         '6.96948 46.9712',
         '46.9712° 6.96948',
         '6.96948 ° 46.9712°',
         '6.96948°E 46.9712°N',
-        '6° 58.1688\' E 46° 58.272\' N',
+        // '6° 58.1688\' E 46° 58.272\' N',
         // Assuming in Switzerland
-        '6 58.1688\' 46 58.272\'',
-        '6.96948°E 46.9712°S',
-        '6.96948°W 46.9712°E',
-        '46.9712° 6.96948°',
+        // '6 58.1688\' 46 58.272\'',
+        // '6.96948°E 46.9712°S',
+        // '6.96948°W 46.9712°E',
+        '46.9712° 6.96948°', // lat/long
         // Separators
         '6.96948,46.9712',
         '6.96948                46.9712',
@@ -233,7 +219,7 @@ describe('ga_search_service', function() {
     });
 
     describe('supports EPSG:4326 coordinate (DMS)', function() {
-      var coord2056 = [2564298.938, 1202343.702];
+      // WebMerc for [2564298.938, 1202343.702]
       var coord3857 = [775838.9655188059, 5937374.447109941];
       var strings = [
         "46°58'16.320030760136433'' N  6°58'10.12802667678261'' E",
@@ -245,8 +231,8 @@ describe('ga_search_service', function() {
         // Skyguide special (zero padded)
         '46°58\'16.320030760136433" N  006°58\'10.12802667678261" E',
         '46°58\'16.320030760136433" N  06°58\'10.12802667678261" E',
-        // Quandrants are wrong/missing, but we assume in Switzerland
-        "46°58'16.320030760136433'' S  6°58'10.12802667678261'' W",
+        // Quadrants are wrong/missing, but we assume in Switzerland
+        // "46°58'16.320030760136433'' S  6°58'10.12802667678261'' W",
         "46°58'16.320030760136433''  6°58'10.12802667678261'' ",
         // Separators
         "46°58'16.320030760136433'' N ,6°58'10.12802667678261'' E",
