@@ -14,7 +14,7 @@ goog.require('ga_reframe_service');
    *         (ex: 6° 58' 12.11'' E 46° 58' 12.12'' N)
    */
   var D = '([\\d.,]{2,})[°\\sNSWEO]*[\\s,/]+([\\d.,]{3,})[\\s°NSWEO]*';
-  var DM = '([\\d]{1,2})[°\\s]*([\\d.,]+)[\\s\',NSEWO/]*';
+  var DM = '([\\d]{1,3})[°\\s]*([\\d.,]+)[\\s\',NSEWO/]*';
   var DMSDegree = '\\b0{0,2}[0-9]{1,2}\\s*[°|º]\\s*';
   var DMSMinute = '[0-9]{1,2}\\s*[\'|′]';
   var DMSSecond = '(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)("|\'\'|′′|″)';
@@ -34,7 +34,7 @@ goog.require('ga_reframe_service');
   var regexpDMS = new RegExp(DMSDegree +
       '(' + DMSMinute + ')?\\s*' +
       '(' + DMSSecond + ')?\\s*' +
-      DMSQuadrant, 'gi');
+      '(' + DMSQuadrant + ')?', 'gi');
   var regexpDMSDegree = new RegExp(DMSDegree, 'g');
   var regexpCoordinate = new RegExp(coordinate);
   var regexMGRS = new RegExp(MGRS, 'gi');
@@ -108,7 +108,11 @@ goog.require('ga_reframe_service');
 
   module.provider('gaSearchGetCoordinate', function() {
     this.$get = function($window, $q, gaReframe, gaGlobalOptions) {
-
+      
+      // extent is the ol.View extent, where lat/long coordinates
+      // are valid. swissExtent is the area where LV03/LV95 are also
+      // valid. 
+      // With Web Mercator these both extent may be quite different
       return function(extent, query) {
         var position, coord;
         var left, right;
@@ -153,11 +157,13 @@ goog.require('ga_reframe_service');
           left = parseFloat(matchD[1]);
           right = parseFloat(matchD[2]);
           coord = sortCoordinates(left, right);
-          position = ol.proj.transform(coord, 'EPSG:4326',
-              gaGlobalOptions.defaultEpsg);
-          if (ol.extent.containsCoordinate(extent, position)) {
-            return $q.when(roundCoordinates(position));
-          }
+          if (isGeographic(coord)) {
+            position = ol.proj.transform(coord, 'EPSG:4326',
+                gaGlobalOptions.defaultEpsg);
+            if (ol.extent.containsCoordinate(extent, position)) {
+              return $q.when(roundCoordinates(position));
+            }
+          } 
         }
 
         // Parse Degrees Minutes
@@ -166,10 +172,12 @@ goog.require('ga_reframe_service');
           left = parseInt(matchDM[1]) + parseFloat(matchDM[2]) / 60.0;
           right = parseInt(matchDM[3]) + parseFloat(matchDM[4]) / 60.0;
           coord = sortCoordinates(left, right);
-          position = ol.proj.transform(coord, 'EPSG:4326',
-              gaGlobalOptions.defaultEpsg);
-          if (ol.extent.containsCoordinate(extent, position)) {
-            return $q.when(roundCoordinates(position));
+          if (isGeographic(coord)) {
+            position = ol.proj.transform(coord, 'EPSG:4326',
+                gaGlobalOptions.defaultEpsg);
+            if (ol.extent.containsCoordinate(extent, position)) {
+              return $q.when(roundCoordinates(position));
+            }
           }
         }
 
@@ -184,13 +192,10 @@ goog.require('ga_reframe_service');
             left > right ? left : right,
             right < left ? right : left
           ];
+
           var pos95 = ol.proj.transform(position, 'EPSG:2056',
               gaGlobalOptions.defaultEpsg);
           // Match LV95
-          // console.log(gaGlobalOptions.swissExtent);
-          // console.log(gaGlobalOptions.defaultEpsg);
-          // console.log(pos95, position);
-          // console.log(ol.extent.containsCoordinate(gaGlobalOptions.swissExtent, pos95));
           if (ol.extent.containsCoordinate(gaGlobalOptions.swissExtent, pos95)) {
             return $q.when(roundCoordinates(pos95));
           }
@@ -198,8 +203,14 @@ goog.require('ga_reframe_service');
           var pos03 = ol.proj.transform(position, 'EPSG:21781',
               gaGlobalOptions.defaultEpsg);
           // Match LV03 coordinates
-          if (ol.extent.containsCoordinate(extent, pos03)) {
+          if (ol.extent.containsCoordinate(gaGlobalOptions.swissExtent, pos03)) {
             return $q.when(roundCoordinates(pos03));
+          }
+          // By now we are desesperate, return as is
+          // assuming it match the ol.View coordinates
+          var unknownCoord = [left, right];
+          if (ol.extent.containsCoordinate(extent, unknownCoord)) {
+            return $q.when(roundCoordinates(unknownCoord));
           }
         }
         return $q.when();
