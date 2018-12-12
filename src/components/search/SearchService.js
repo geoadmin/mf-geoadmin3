@@ -34,14 +34,14 @@ goog.require('ga_reframe_service');
     return parseFloat(str.replace(/[ \s' ]/g, ''));
   }
 
-  /* Assume use want's to be in Switzerland and not Somaliland
-   * (ugly in all sense)                                       */
-  var isSwiss = function(c) {
+  /* Assume use want's to be in Switzerland */
+  var isSwiss = function(c, b) {
     if (c == null) return c;
+    var minx = b[0], miny = b[1], maxx = b[2], maxy = b[3];
     var x = c[0], y = c[1];
-    if (x >= 5 && x <= 11 && y >= 45 && y <= 48) {
+    if (x >= minx && x <= maxx && y >= miny && y <= maxy) {
       return [y, x]
-    } else if (y >= 5 && y <= 11 && x >= 45 && x <= 48) {
+    } else if (y >= minx && y <= maxx && x >= miny && x <= maxy) {
       return [x, y]
     } else {
       return c
@@ -139,7 +139,10 @@ goog.require('ga_reframe_service');
         }
         // Parse Degrees Minutes Seconds
         coord = pair(query);
-        coord = isSwiss(coord);
+        var swissExtentWgs84 = ol.proj.transformExtent(
+            gaGlobalOptions.swissExtent,
+            gaGlobalOptions.defaultEpsg, 'EPSG:4326');
+        coord = isSwiss(coord, swissExtentWgs84);
         if (coord) {
 
           position = ol.proj.transform([coord[1], coord[0]],
