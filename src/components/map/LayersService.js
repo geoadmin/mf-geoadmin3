@@ -294,10 +294,6 @@ goog.require('ga_urlutils_service');
               //                      It will apply styles associated to the sourceId value.
               //                      Used only if the parent has no styleUrl defined (see background layers).
               var vts = [{
-                serverLayerName: 'openmaptiles',
-                url: 'https://free.tilehosting.com/data/v3/{z}/{x}/{y}.pbf.pict?key=Og58UhhtiiTaLVlPtPgs',
-                maxZoom: 14
-              }, {
                 serverLayerName: 'ch.swisstopo.swissnames3d.vt',
                 sourceId: 'ch.swisstopo.swissnames3d'
               }, {
@@ -335,12 +331,13 @@ goog.require('ga_urlutils_service');
                   '<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, ' +
                   '<a target="_blank" href="https://www.swisstopo.admin.ch/' + lang + '/home.html">swisstopo</a>',
                 subLayersIds: [
-                  'OpenMapTiles',
                   'ch.swisstopo.swissalti3d-reliefschattierung',
                   'ch.swisstopo.vektorkarte.vt',
                   'ch.bav.haltestellen-oev.vt',
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
                   'ch.swisstopo.swissnames3d.vt'
+                  // Once cut dataset is ok add it back
+                  // 'OpenMapTiles'
                 ],
                 styles: [{
                   id: 'default',
