@@ -143,20 +143,20 @@ goog.require('ga_urlutils_service');
         // The tile load function which loads tiles from local
         // storage if they exist otherwise try to load the tiles normally.
         var tileLoadFunction = function(imageTile, src) {
-          var onSuccess = function(content) {
-            if (content && $window.URL && $window.atob) {
+          var onSuccess = function(base64) {
+            if (base64 && $window.URL && $window.atob) {
               try {
-                var blob = gaMapUtils.dataURIToBlob(content);
+                var blob = gaMapUtils.dataURIToBlob(base64);
                 imageTile.getImage().addEventListener('load', revokeBlob);
                 imageTile.getImage().src = $window.URL.createObjectURL(blob);
               } catch (e) {
                 // INVALID_CHAR_ERROR on ie and ios(only jpeg), it's an
                 // encoding problem.
                 // TODO: fix it
-                imageTile.getImage().src = content;
+                imageTile.getImage().src = base64;
               }
             } else {
-              imageTile.getImage().src = (content) || src;
+              imageTile.getImage().src = base64 || src;
             }
           };
           gaStorage.getTile(gaMapUtils.getTileKey(src)).then(onSuccess);
@@ -303,6 +303,7 @@ goog.require('ga_urlutils_service');
                 sourceId: 'ch.bav.haltestellen-oev'
               }, {
                 serverLayerName: 'ch.swisstopo.vektorkarte.vt',
+                background: true, // Allow save offline from 0 to 16
                 opacity: 0.75 // Show swissalti
               }, {
                 serverLayerName: 'OpenMapTiles'
@@ -331,13 +332,13 @@ goog.require('ga_urlutils_service');
                   '<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, ' +
                   '<a target="_blank" href="https://www.swisstopo.admin.ch/' + lang + '/home.html">swisstopo</a>',
                 subLayersIds: [
+                  // Once cut dataset is ok add it back
+                  // 'OpenMapTiles'
                   'ch.swisstopo.swissalti3d-reliefschattierung',
                   'ch.swisstopo.vektorkarte.vt',
                   'ch.bav.haltestellen-oev.vt',
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
                   'ch.swisstopo.swissnames3d.vt'
-                  // Once cut dataset is ok add it back
-                  // 'OpenMapTiles'
                 ],
                 styles: [{
                   id: 'default',
@@ -790,13 +791,7 @@ goog.require('ga_urlutils_service');
                 });
           } else if (config.type === 'vectortile') {
             olLayer = new ol.layer.VectorTile({
-              declutter: true,
-              style: new ol.style.Style(),
-              source: new ol.source.VectorTile({
-                format: new ol.format.MVT(),
-                maxZoom: config.maxZoom,
-                url: config.url
-              })
+              declutter: true
             });
             gaDefinePropertiesForLayer(olLayer);
             olLayer.setOpacity(config.opacity || 1);

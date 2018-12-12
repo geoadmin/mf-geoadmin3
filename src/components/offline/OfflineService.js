@@ -223,7 +223,8 @@ goog.require('ga_window_service');
             return false;
           }
           var timestamp = gaStorage.getItem(timestampKey);
-          var isObsolete = !timestamp;// old version hasn't timestamps stored
+          // old version hasn't timestamps stored
+          var isObsolete = (timestamp === undefined || timestamp === null);
           if (!isObsolete) {
             var ts = timestamp.split(',');
             // We go through all saved bod layers and test if the timestamp has
@@ -231,7 +232,7 @@ goog.require('ga_window_service');
             gaStorage.getItem(layersKey).split(',').forEach(function(id, idx) {
               var layer = gaLayers.getLayer(id);
               if (layer && !layer.timeEnabled &&
-                  layer.timestamps[0] !== ts[idx]) {
+                  layer.timestamps && layer.timestamps[0] !== ts[idx]) {
                 isObsolete = true;
               }
             });
@@ -259,13 +260,19 @@ goog.require('ga_window_service');
               });
               this.refreshLayers(layer.getLayers().getArray(), useClientZoom,
                   force || hasCachedLayer);
+
             } else if (force || (layersIds &&
                 layersIds.indexOf(layer.id) !== -1)) {
               var source = layer.getSource();
+
+              // WARN: from offline to online only!!! otherwise requests to pbf
+              // tiles are made until it gets something.
+              if (!useClientZoom && source instanceof ol.source.VectorTile) {
+                source.clear();
+              }
+              // source.clear();
               // Clear the internal tile cache of ol
-              // TODO: Ideally we should flush the cache for the tile range
-              // cached
-              source.setTileLoadFunction(source.getTileLoadFunction());
+              source.refresh();
 
               // Defined a new min resolution to allow client zoom on layer with
               // a min resolution between the max zoom level and the max client
@@ -474,8 +481,8 @@ goog.require('ga_window_service');
               continue;
             }
 
-            // if it's a tiled layer (WMTS or WMS) prepare the list of tiles to
-            // download
+            // if it's a tiled layer (WMTS or WMS or MVT) prepare the list of
+            // tiles to download
             var isBgLayer = false;
             if (layer.bodId) {
               var parentLayerId = gaLayers.getLayerProperty(layer.bodId,
