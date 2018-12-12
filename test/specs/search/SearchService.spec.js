@@ -350,7 +350,7 @@ describe('ga_search_service', function() {
 
       it('works only in north east (test north west)', function(done) {
         getCoordinate(extent, '10° W 50° N').then(function(position) {
-          expect(position).to.be(undefined);
+          expect(almostSamePoint(position, [-1113195, 6446275], 1000.0)).to.be(true);
           done();
         });
         $rootScope.$digest();
@@ -358,7 +358,7 @@ describe('ga_search_service', function() {
 
       it('works only in north east (test south west)', function(done) {
         getCoordinate(extent, '10° W 50° S').then(function(position) {
-          expect(position).to.be(undefined);
+          expect(almostSamePoint(position, [-1113195, -6446275], 1000.0)).to.be(true);
           done();
         });
         $rootScope.$digest();
@@ -366,7 +366,7 @@ describe('ga_search_service', function() {
 
       it('works only in north east (test south east)', function(done) {
         getCoordinate(extent, '10° E 50° S').then(function(position) {
-          expect(position).to.be(undefined);
+          expect(almostSamePoint(position, [1113195, -6446275], 1000.0)).to.be(true);
           done();
         });
         $rootScope.$digest();

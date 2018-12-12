@@ -149,7 +149,8 @@ goog.require('ga_reframe_service');
           }
         }
 
-        // Parse swiss coordinates
+        // Coordinates in meters are assumed to be swiss coordinates
+        // We won't use coordinates in EPSG:3857
         var match = query.match(regexpCoordinate);
         // Matches new school entries like '2 600 000 1 200 000'
         // and old school entries like '600 000 200 000'
@@ -175,12 +176,6 @@ goog.require('ga_reframe_service');
           if (ol.extent.containsCoordinate(gaGlobalOptions.swissExtent,
               pos03)) {
             return $q.when(roundCoordinates(pos03));
-          }
-          // By now we are desesperate, return as is
-          // assuming it match the ol.View coordinates
-          var unknownCoord = [left, right];
-          if (ol.extent.containsCoordinate(extent, unknownCoord)) {
-            return $q.when(roundCoordinates(unknownCoord));
           }
         }
         return $q.when();
