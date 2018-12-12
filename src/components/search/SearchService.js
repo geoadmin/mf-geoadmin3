@@ -44,7 +44,7 @@ goog.require('ga_reframe_service');
     } else if (y >= 5 && y <= 11 && x >= 45 && x <= 48) {
       return [x, y]
     } else {
-      return false
+      return c
     }
   }
 
