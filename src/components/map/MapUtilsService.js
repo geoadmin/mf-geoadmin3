@@ -627,7 +627,7 @@ goog.require('ga_urlutils_service');
         */
         swissZoomToMercator: function(zoom) {
           var gridZoom = zoom + 14;
-          var wmtsMaxZoom =  gaGlobalOptions.tileGridResolutions.length;
+          var wmtsMaxZoom = gaGlobalOptions.tileGridResolutions.length;
           var mapMaxZoom = gaGlobalOptions.resolutions.length;
           var zoomOffset = wmtsMaxZoom - mapMaxZoom;
           var mapping = {
