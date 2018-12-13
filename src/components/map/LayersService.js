@@ -332,13 +332,13 @@ goog.require('ga_urlutils_service');
                   '<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, ' +
                   '<a target="_blank" href="https://www.swisstopo.admin.ch/' + lang + '/home.html">swisstopo</a>',
                 subLayersIds: [
-                  // Once cut dataset is ok add it back
-                  // 'OpenMapTiles'
                   'ch.swisstopo.swissalti3d-reliefschattierung',
                   'ch.swisstopo.vektorkarte.vt',
                   'ch.bav.haltestellen-oev.vt',
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
                   'ch.swisstopo.swissnames3d.vt'
+                  // Once cut dataset is ok add it back
+                  // 'OpenMapTiles'
                 ],
                 styles: [{
                   id: 'default',
