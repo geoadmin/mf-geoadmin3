@@ -37,7 +37,7 @@
     "slipjs": "2.1.1"
   },
   "devDependencies": {
-    "caniuse-db": "1.0.30000913",
+    "caniuse-db": "1.0.30000921",
     "angular-mocks": "1.7.5",
     "autoprefixer": "8.6.5",
     "babel-cli": "^6.24.1",
