@@ -55,11 +55,10 @@ goog.require('ga_urlutils_service');
     };
 
     var activate = function() {
-      var length = $scope.map.getLayers().getLength();
-      var lastLayer = $scope.map.getLayers().get(length - 1);
+      // TOFIX: map has no access to vector context anymore. since > 5.3.0
       deregister = [
-        lastLayer.on('prerender', handlePreCompose),
-        lastLayer.on('postrender', handlePostCompose),
+        $scope.map.on('precompose', handlePreCompose),
+        $scope.map.on('postcompose', handlePostCompose),
         $scope.map.on('change:size', function(event) {
           updatePrintRectanglePixels($scope.scale);
         }),
@@ -93,11 +92,19 @@ goog.require('ga_urlutils_service');
 
     // Compose events
     var handlePreCompose = function(evt) {
+      // TOFIX: evt has no access to context anymore. since > 5.3.0
+      if (!evt.context) {
+        return;
+      }
       var ctx = evt.context;
       ctx.save();
     };
 
     var handlePostCompose = function(evt) {
+      // TOFIX: evt has no access to context anymore. since > 5.3.0
+      if (!evt.context) {
+        return;
+      }
       var ctx = evt.context,
         size = $scope.map.getSize(),
         minx = printRectangle[0],
