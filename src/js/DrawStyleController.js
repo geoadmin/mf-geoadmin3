@@ -214,7 +214,7 @@ goog.require('ga_styles_service');
           icons: iconsCategory0
         }, {
           id: 'babs',
-          label: 'babs',
+          label: 'modify_icon_category_babs_label',
           useColorOption: false,
           nbIcons: 160,
           type: 'img'
