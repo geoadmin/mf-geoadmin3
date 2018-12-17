@@ -9,7 +9,6 @@ describe('ga_wmts_service', function() {
       expect(layer).to.be.an(ol.layer.Tile);
       expect(layer.id).to.be(options.id || 'WMTS||' + options.layer + '||' + options.capabilitiesUrl);
       expect(layer.url).to.be(options.capabilitiesUrl);
-      expect(layer.type).to.be('TILE');
       expect(layer.invertedOpacity).to.be(options.invertedOpacity || 0);
       expect(layer.visible).to.be(angular.isDefined(options.visible) ? options.visible : true);
       // set after creation
