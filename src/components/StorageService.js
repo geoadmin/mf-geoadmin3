@@ -58,7 +58,8 @@ goog.require('ga_browsersniffer_service');
     };
     var isInitialized = false;
 
-    this.$get = function($window, gaBrowserSniffer, $q) {
+    this.$get = function($window, gaBrowserSniffer, $q, gaNetworkStatus,
+        $http) {
       var Storage = function() {
 
         // Initialize the database config, needed when using webSQL to avoid ios
@@ -135,6 +136,27 @@ goog.require('ga_browsersniffer_service');
         this.clearTiles = function() {
           this.init();
           return $window.localforage.clear();
+        };
+
+        /**
+         * Load an url and store it in localstorage. Get content from
+         * localStorage if offline.
+         * Only json.
+         */
+        this.load = function(url) {
+          var that = this;
+          if (gaNetworkStatus.offline) {
+            return $q.when(that.getItem(url));
+          }
+          return $http.get(url, {
+            cache: true
+          }).then(function(response) {
+            that.setItem(url, JSON.stringify(response.data));
+            return response.data;
+          }, function(res) {
+            $window.console.error('Unable to load data from ' + url +
+                ' response status is ' + res.status);
+          });
         };
       };
       return new Storage();

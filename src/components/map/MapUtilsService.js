@@ -18,7 +18,7 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaMapUtils', function() {
     this.$get = function($window, gaGlobalOptions, gaUrlUtils, $q, gaStorage,
-        gaDefinePropertiesForLayer, $http, $rootScope, gaHeight, gaGlStyle) {
+        gaDefinePropertiesForLayer, $http, $rootScope, gaHeight) {
       var resolutions = gaGlobalOptions.resolutions;
       var lodsForRes = gaGlobalOptions.lods;
       var isExtentEmpty = function(extent) {
@@ -521,19 +521,17 @@ goog.require('ga_urlutils_service');
             return;
           }
 
-          gaGlStyle.getSpriteDataFromGlStyle(glStyle).then(
-              function(spriteData) {
-                $window.olms.stylefunction(
-                    olLayer,
-                    glStyle,
-                    olLayer.sourceId,
-                    undefined,
-                    spriteData,
-                    glStyle.sprite + '.png',
-                    ['Helvetica']);
-                olLayer.glStyle = glStyle;
-              }
-          );
+          gaStorage.load(glStyle.sprite + '.json').then(function(spriteData) {
+            $window.olms.stylefunction(
+                olLayer,
+                glStyle,
+                olLayer.sourceId,
+                undefined,
+                spriteData,
+                glStyle.sprite + '.png',
+                ['Helvetica']);
+            olLayer.glStyle = glStyle;
+          });
         },
 
         // This function creates  an ol source and set it to the layer from the
@@ -542,10 +540,7 @@ goog.require('ga_urlutils_service');
         // ex: https://vectortiles.geo.admin.ch/mbtiles/ch.astra.wanderland_1539077150.json
         applyGlSourceToOlLayer: function(olLayer, sourceConfig) {
           var that = this;
-          return $http.get(sourceConfig.url, {
-            cache: true
-          }).then(function(response) {
-            var data = response.data;
+          return gaStorage.load(sourceConfig.url).then(function(data) {
             var olSource;
             var sourceOpts = {
               minZoom: sourceConfig.minZoom || data.minzoom,
@@ -583,7 +578,6 @@ goog.require('ga_urlutils_service');
 
             } else { // vector
               sourceOpts.format = new ol.format.MVT();
-              sourceOpts.cacheSize = 0;
               olSource = new ol.source.VectorTile(sourceOpts);
             }
             olLayer.setSource(olSource);
