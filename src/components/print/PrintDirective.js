@@ -55,9 +55,11 @@ goog.require('ga_urlutils_service');
     };
 
     var activate = function() {
+      var length = $scope.map.getLayers().getLength();
+      var lastLayer = $scope.map.getLayers().get(length - 1);
       deregister = [
-        $scope.map.on('precompose', handlePreCompose),
-        $scope.map.on('postcompose', handlePostCompose),
+        lastLayer.on('prerender', handlePreCompose),
+        lastLayer.on('postrender', handlePostCompose),
         $scope.map.on('change:size', function(event) {
           updatePrintRectanglePixels($scope.scale);
         }),
@@ -91,19 +93,11 @@ goog.require('ga_urlutils_service');
 
     // Compose events
     var handlePreCompose = function(evt) {
-      // TODO: context is always null since ol > 5.3.0
-      if (!evt.context) {
-        return;
-      }
       var ctx = evt.context;
       ctx.save();
     };
 
     var handlePostCompose = function(evt) {
-      // TODO: context is always null since ol > 5.3.0
-      if (!evt.context) {
-        return;
-      }
       var ctx = evt.context,
         size = $scope.map.getSize(),
         minx = printRectangle[0],
