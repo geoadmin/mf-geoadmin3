@@ -10,7 +10,6 @@ define moveto
 	done;
 endef
 
-
 # rc file used
 USER_SOURCE ?= rc_user
 
@@ -174,13 +173,16 @@ CLOSURE_COMPILER=node_modules/google-closure-compiler/compiler.jar
 
 # Node executables
 NODE_BIN=node_modules/.bin
-LESSC=${NODE_BIN}/lessc
-KARMA=${NODE_BIN}/karma
-PHANTOMJS=${NODE_BIN}/phantomjs
-NG_ANNOTATE=${NODE_BIN}/ng-annotate
-BABEL=${NODE_BIN}/babel
-POSTCSS=${NODE_BIN}/postcss
-HTMLMIN_CMD=${NODE_BIN}/html-minifier --minify-css --minify-js --collapse-whitespace --process-conditional-comments --remove-comments --custom-attr-collapse /ng-class/ -o
+NVM_DIR ?= $(HOME)/.nvm
+# Node version must be forced at every step to ensure that the default OS version is not used
+# as it was causing many syntax errors in node modules (default debian jessie version is 5.9.x, most modules need > 6.x.x)
+LESSC=source ${NVM_DIR}/nvm.sh && nvm use ${NODE_VERSION} && ${NODE_BIN}/lessc
+KARMA=source ${NVM_DIR}/nvm.sh && nvm use ${NODE_VERSION} && ${NODE_BIN}/karma
+PHANTOMJS=source ${NVM_DIR}/nvm.sh && nvm use ${NODE_VERSION} && ${NODE_BIN}/phantomjs
+NG_ANNOTATE=source ${NVM_DIR}/nvm.sh && nvm use ${NODE_VERSION} && ${NODE_BIN}/ng-annotate
+POSTCSS=source ${NVM_DIR}/nvm.sh && nvm use ${NODE_VERSION} && ${NODE_BIN}/postcss
+HTMLMIN_CMD=source ${NVM_DIR}/nvm.sh && nvm use ${NODE_VERSION} && ${NODE_BIN}/html-minifier --minify-css --minify-js --collapse-whitespace --process-conditional-comments --remove-comments --custom-attr-collapse /ng-class/ -o
+ES_LINT=source ${NVM_DIR}/nvm.sh && nvm use ${NODE_VERSION} && ${NODE_BIN}/eslint
 
 MAKO_LAST_VARIABLES = .build-artefacts/last-api-url \
 	    .build-artefacts/last-alti-url \
@@ -296,13 +298,12 @@ endif
 .PHONY: .build-artefacts/node-version
 .build-artefacts/node-version: .build-artefacts/last-node-version
 ifneq ($(LAST_NODE_VERSION),$(NODE_VERSION))
-	source $(HOME)/.bashrc ;\
-	nvm install $(NODE_VERSION)
+	source $(HOME)/.bashrc && source $(NVM_DIR)/nvm.sh && nvm install $(NODE_VERSION)
 endif
 
 .PHONY: env
 env: .build-artefacts/nvm-version .build-artefacts/node-version
-	source $(HOME)/.bashrc && nvm use $(NODE_VERSION)
+	source $(HOME)/.bashrc && source ${NVM_DIR}/nvm.sh && nvm use $(NODE_VERSION)
 
 .PHONY: dev
 dev:
@@ -351,10 +352,10 @@ debug: showVariables \
 
 .PHONY: lint
 lint: .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) linttest lintpy
-	${NODE_BIN}/eslint $(SRC_JS_FILES) --fix
+	${ES_LINT} $(SRC_JS_FILES) --fix
 
 linttest: .build-artefacts/devlibs .build-artefacts/requirements.timestamp
-	${NODE_BIN}/eslint test/specs/ --fix
+	${ES_LINT} test/specs/ --fix
 
 lintpy: .build-artefacts/requirements.timestamp ${FLAKE8_CMD} ${PYTHON_FILES}
 	${AUTOPEP8_CMD} --in-place --aggressive --aggressive --verbose --max-line-lengt=110 $(PYTHON_FILES)
