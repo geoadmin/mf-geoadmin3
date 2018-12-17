@@ -264,10 +264,12 @@ goog.require('ga_window_service');
             } else if (force || (layersIds &&
                 layersIds.indexOf(layer.id) !== -1)) {
               var source = layer.getSource();
+              source.setTileLoadFunction(source.getTileLoadFunction());
 
               // WARN: from offline to online only!!! otherwise requests to pbf
               // tiles are made until it gets something.
               if (!useClientZoom && source instanceof ol.source.VectorTile) {
+                console.log('CLEAAAAAAAAAAAAAAAAAAAAAAR');
                 source.clear();
               }
               // source.clear();

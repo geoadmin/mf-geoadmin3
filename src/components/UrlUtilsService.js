@@ -257,13 +257,13 @@ goog.provide('ga_urlutils_service');
             }
           }
           return sd
-        }
+        };
 
         // Returns true if the url has a subdomains template in it
         // like: wms{s:,0,1,2}.geo.admin.ch
         this.hasSubdomainsTpl = function(tpl) {
           return SUBDOMAINS_REGEXP.test(tpl || '');
-        }
+        };
 
         // Replace subdomains regexp
         this.getMultidomainsUrls = function(tpl, dfltSubdomains) {
@@ -277,7 +277,7 @@ goog.provide('ga_urlutils_service');
             urls.push(tpl.replace(SUBDOMAINS_REGEXP, subdomain));
           });
           return urls;
-        }
+        };
       };
 
       return new UrlUtils(this.shortenUrl);

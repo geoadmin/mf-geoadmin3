@@ -1,12 +1,10 @@
 goog.provide('ga_exportglstyle_service');
 
 goog.require('ga_browsersniffer_service');
-goog.require('ga_glstyle_service');
 
 (function() {
 
   var module = angular.module('ga_exportglstyle_service', [
-    'ga_glstyle_service',
     'ga_browsersniffer_service',
     'pascalprecht.translate'
   ]);
@@ -16,7 +14,7 @@ goog.require('ga_glstyle_service');
    */
   module.provider('gaExportGlStyle', function() {
     this.$get = function($translate, $window, $document, $http, $q,
-        gaBrowserSniffer, gaGlStyle) {
+        gaBrowserSniffer) {
 
       var downloadUrl = this.downloadUrl;
 

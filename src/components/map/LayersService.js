@@ -1,7 +1,6 @@
 goog.provide('ga_layers_service');
 
 goog.require('ga_definepropertiesforlayer_service');
-goog.require('ga_glstyle_service');
 goog.require('ga_maputils_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_permalink_service');
@@ -23,7 +22,6 @@ goog.require('ga_urlutils_service');
     'ga_time_service',
     'ga_urlutils_service',
     'ga_permalink_service',
-    'ga_glstyle_service',
     'ga_translation_service',
     'pascalprecht.translate'
   ]);
@@ -37,7 +35,7 @@ goog.require('ga_urlutils_service');
         gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapUtils,
         gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils,
         gaStylesFromLiterals, gaGlobalOptions, gaPermalink,
-        gaLang, gaTime, gaStyleFactory, gaGlStyle) {
+        gaLang, gaTime, gaStyleFactory) {
 
       var h2 = function(domainsArray) {
         if (gaBrowserSniffer.h2) {
@@ -609,6 +607,11 @@ goog.require('ga_urlutils_service');
               (config.styles && config.styles[0].url), opts.externalStyleUrl);
           var glStyle = opts.glStyle;
 
+          // Set dynamically the parentLayerId for aggregate layer
+          if (opts.parentLayerId) {
+            config.parentLayerId = opts.parentLayerId;
+          }
+
           // The tileGridMinRes is the resolution at which the client
           // zoom is activated. It's different from the config.minResolution
           // value at which the layer stop being displayed.
@@ -727,7 +730,8 @@ goog.require('ga_urlutils_service');
               olLayer.glStyle = glStyle;
               for (i = 0; i < len; i++) {
                 subLayers[i] = that.getOlLayerById(subLayersIds[i], {
-                  glStyle: glStyle
+                  glStyle: glStyle,
+                  parentLayerId: bodId
                 });
               }
               olLayer.setLayers(new ol.Collection(subLayers));
@@ -739,7 +743,7 @@ goog.require('ga_urlutils_service');
             });
             gaDefinePropertiesForLayer(olLayer);
             if (glStyle || styleUrl) {
-              var p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
+              var p = (glStyle) ? $q.when(glStyle) : gaStorage.load(styleUrl);
               p.then(function(glStyle) {
                 createSubLayers(olLayer, glStyle);
               });
@@ -796,7 +800,7 @@ goog.require('ga_urlutils_service');
             gaDefinePropertiesForLayer(olLayer);
             olLayer.setOpacity(config.opacity || 1);
             olLayer.sourceId = config.sourceId;
-            p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
+            p = (glStyle) ? $q.when(glStyle) : gaStorage.load(styleUrl);
             p.then(function(glStyle) {
               if (!glStyle) {
                 return;
@@ -828,8 +832,6 @@ goog.require('ga_urlutils_service');
                   gaUrlUtils.isThirdPartyValid(styleUrl);
             }
             olLayer.background = config.background || false;
-            // For MVT only
-            olLayer.sourceId = config.sourceId || null;
             olLayer.getCesiumImageryProvider = function() {
               return that.getCesiumImageryProviderById(bodId, olLayer);
             };
