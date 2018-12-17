@@ -26,6 +26,10 @@ node(label: 'jenkins-slave') {
       checkout scm
     }
     
+    stage('env') {
+      sh 'make env'
+    }
+
     stage('Lint') {
       sh 'make lint'
     }
