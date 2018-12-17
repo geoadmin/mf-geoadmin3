@@ -146,7 +146,11 @@ goog.require('ga_browsersniffer_service');
         this.load = function(url) {
           var that = this;
           if (gaNetworkStatus.offline) {
-            return $q.when(that.getItem(url));
+            var item = this.getItem(url);
+            if (angular.isString(item)) {
+              item = JSON.parse(item);
+            }
+            return $q.when(item);
           }
           return $http.get(url, {
             cache: true
