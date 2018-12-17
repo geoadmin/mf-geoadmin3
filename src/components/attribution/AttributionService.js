@@ -57,10 +57,19 @@ goog.require('ga_urlutils_service');
 
         // Get the HTML attribution of a layer.
         this.getHtmlFromLayer = function(layer, useConfig3d) {
-          if (gaUrlUtils.isValid(layer.url)) {
+
+          if (gaUrlUtils.isValid(layer.url || layer.externalStyleUrl)) {
             var attribution = this.getTextFromLayer(layer);
-            if (gaUrlUtils.isThirdPartyValid(layer.url)) {
+
+            if (layer.url && gaUrlUtils.isThirdPartyValid(layer.url)) {
               return '<span class="ga-warning-tooltip">' + attribution +
+                  '</span>';
+            // We add the public link after the data attributons
+            } else if (layer.externalStyleUrl &&
+                gaUrlUtils.isThirdPartyValid(layer.externalStyleUrl)) {
+              return (attribution ? attribution + ', ' : '') +
+                  '<span class="ga-warning-tooltip">' +
+                    gaUrlUtils.getHostname(layer.externalStyleUrl) +
                   '</span>';
             }
             return attribution;
