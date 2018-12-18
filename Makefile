@@ -15,7 +15,7 @@ USER_SOURCE ?= rc_user
 
 
 # Map libs variables
-OL_VERSION ?= e426af29c20c7b08ee323b2ee0f78d34b61c4c34# master December 14 2018 (mind the absence of a space character after the version)
+OL_VERSION ?= 348186e2f847eab31158bbbe7c9bebadb527832a# master December 17 2018 (mind the absence of a space character after the version)
 OL_CESIUM_VERSION ?= 167663bb7230cc30e86e63d207807df8df4579c0 # v2.6.0 November 9 2018
 CESIUM_VERSION ?= 54d850855346610fde9b7aa8262a03d27e71c663 # c2c/c2c_patches (Cesium 1.44), April 23 2018
 GEOBLOCKS_LEGACYLIB_VERSION ?= 0101a217be1b7525be8d590910fb8f70295194be # September 24 2018
