@@ -560,9 +560,12 @@ goog.require('ga_urlutils_service');
                     // Content from cache is a base64 string
                     return $q.when(that.dataURIToArrayBuffer(base64));
                   }).then(function(arrayBuffer) {
-                    if (!arrayBuffer) {
-                      return;
-                    }
+                    return $q.when(arrayBuffer || new ArrayBuffer(0));
+                  }, function() {
+                    // Very important otherwise failed requests breaks rendering
+                    // of all tiles.
+                    return $q.when(new ArrayBuffer(0));
+                  }).then(function(arrayBuffer) {
                     var format = tile.getFormat();
                     tile.setProjection(format.readProjection(arrayBuffer));
                     tile.setFeatures(format.readFeatures(arrayBuffer));
