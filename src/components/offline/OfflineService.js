@@ -278,9 +278,9 @@ goog.require('ga_window_service');
 
               } else {
 
-                // Defined a new min resolution to allow client zoom on layer with
-                // a min resolution between the max zoom level and the max client
-                // zoom level
+                // Defined a new min resolution to allow client zoom on layer
+                // with a min resolution between the max zoom level and the
+                // max client zoom level
                 var origMinRes = gaLayers.getLayer(layer.id).minResolution;
                 if (!useClientZoom && origMinRes) {
                   layer.setMinResolution(origMinRes);
