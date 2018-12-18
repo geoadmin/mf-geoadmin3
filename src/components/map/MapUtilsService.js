@@ -560,7 +560,8 @@ goog.require('ga_urlutils_service');
 
             } else { // vector
               sourceOpts.format = new ol.format.MVT();
-              sourceOpts.cacheSize = 0;
+              // Setting it to 0 makes tiles disappear on each zoom.
+              sourceOpts.cacheSize = 15;
               olSource = new ol.source.VectorTile(sourceOpts);
             }
             olLayer.setSource(olSource);
