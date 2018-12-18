@@ -159,6 +159,10 @@ goog.require('ga_browsersniffer_service');
             if (angular.isString(item)) {
               item = JSON.parse(item);
             }
+            if (item) {
+              $window.console.error('Loading of ' + url +
+              ' from localstorage succeed');
+            }
             return $q.when(item);
           });
         };
