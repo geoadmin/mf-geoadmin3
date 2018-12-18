@@ -297,7 +297,7 @@ goog.require('ga_urlutils_service');
               }, {
                 serverLayerName: 'ch.swisstopo.amtliches-strassenverzeichnis_validiert'
               }, {
-                serverLayerName: 'ch.bav.haltestellen-oev.vt',
+                serverLayerName: 'ch.bav.haltestellen.vt',
                 sourceId: 'ch.bav.haltestellen-oev'
               }, {
                 serverLayerName: 'ch.swisstopo.vektorkarte.vt',
@@ -332,11 +332,10 @@ goog.require('ga_urlutils_service');
                 subLayersIds: [
                   'ch.swisstopo.swissalti3d-reliefschattierung',
                   'ch.swisstopo.vektorkarte.vt',
-                  'ch.bav.haltestellen-oev.vt',
+                  'ch.bav.haltestellen.vt',
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
-                  'ch.swisstopo.swissnames3d.vt'
-                  // Once cut dataset is ok add it back
-                  // 'OpenMapTiles'
+                  'ch.swisstopo.swissnames3d.vt',
+                  'OpenMapTiles'
                 ],
                 styles: [{
                   id: 'default',
