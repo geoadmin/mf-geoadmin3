@@ -268,26 +268,34 @@ goog.require('ga_window_service');
 
               // WARN: from offline to online only!!! otherwise requests to pbf
               // tiles are made until it gets something.
-              if (!useClientZoom && source instanceof ol.source.VectorTile) {
-                console.log('CLEAAAAAAAAAAAAAAAAAAAAAAR');
-                source.clear();
-              }
-              // source.clear();
-              // Clear the internal tile cache of ol
-              source.refresh();
+              if (source instanceof ol.source.VectorTile) {
+                layer.setUseInterimTilesOnError(false);
 
-              // Defined a new min resolution to allow client zoom on layer with
-              // a min resolution between the max zoom level and the max client
-              // zoom level
-              var origMinRes = gaLayers.getLayer(layer.id).minResolution;
-              if (!useClientZoom && origMinRes) {
-                layer.setMinResolution(origMinRes);
-              } else if (useClientZoom && minRes >= origMinRes) {
-                layer.setMinResolution(0);
+                // Clear the internal tile cache of ol and the source tiles.
+                if (!useClientZoom) {
+                  source.clear();
+                }
+
+              } else {
+
+                // Defined a new min resolution to allow client zoom on layer with
+                // a min resolution between the max zoom level and the max client
+                // zoom level
+                var origMinRes = gaLayers.getLayer(layer.id).minResolution;
+                if (!useClientZoom && origMinRes) {
+                  layer.setMinResolution(origMinRes);
+                } else if (useClientZoom && minRes >= origMinRes) {
+                  layer.setMinResolution(0);
+                }
+
+                // Allow client zoom on all layer when offline
+                layer.setUseInterimTilesOnError(useClientZoom);
+                layer.setPreload(useClientZoom ? gaMapUtils.preload : 0);
               }
-              // Allow client zoom on all layer when offline
-              layer.setUseInterimTilesOnError(useClientZoom);
-              layer.setPreload(useClientZoom ? gaMapUtils.preload : 0);
+
+              // Clear the internal tile cache of ol
+              source.setTileLoadFunction(source.getTileLoadFunction());
+              source.refresh();
             }
           }
         };
