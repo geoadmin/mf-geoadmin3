@@ -31,6 +31,18 @@ goog.require('ga_urlutils_service');
       // Level of detail for the default resolution
       var proj = ol.proj.get(gaGlobalOptions.defaultEpsg);
       var extent = gaGlobalOptions.defaultExtent || proj.getExtent();
+
+      // For mobile, redefine disposeInternal function for mvt.
+      // TODO: verify if it's useful
+      var disposeInternal = ol.VectorImageTile.prototype.disposeInternal;
+      ol.VectorImageTile.prototype.disposeInternal = function() {
+        for (var key in this.context_) {
+          var context = this.context_[key];
+          context.canvas.width = context.canvas.height = 0;
+        }
+        disposeInternal.call(this);
+      };
+
       return {
         Z_PREVIEW_LAYER: 1000,
         Z_PREVIEW_FEATURE: 1100,
@@ -548,6 +560,7 @@ goog.require('ga_urlutils_service');
 
             } else { // vector
               sourceOpts.format = new ol.format.MVT();
+              sourceOpts.cacheSize = 0;
               olSource = new ol.source.VectorTile(sourceOpts);
             }
             olLayer.setSource(olSource);
