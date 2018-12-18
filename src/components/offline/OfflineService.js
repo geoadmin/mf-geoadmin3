@@ -509,16 +509,25 @@ goog.require('ga_window_service');
             // Mercator:
             // For each zoom level we generate the list of tiles to download:
             //
-            //   - bg layer:
+            //   - bg layer and vector tiles:
             //     zoom 0 to minZoom-1(7) => projection extent
             //     zoom minZoom(8) to maxZoom(16) => 15km2 extent
             //
             //   - other layers:
             //     zoom minZoomNonBgLayer(12), 14, maxZoom(16) => 15km2 extent
+
+            // We load all the zoom for vector tiles from minZoomNonBgLayer to
+            // maxZoom.
+            var modulo2 = function(source, z) {
+              if (source instanceof ol.source.VectorTile) {
+                return true;
+              }
+              return (z % 2 !== 0)
+            };
             for (var zoom = 0; zoom <= maxZoom; zoom++) {
               var z = zoom + zOffset; // data zoom level
               if (!isCacheableLayer(layer, z) || (!isBgLayer &&
-                  (zoom < minZoomNonBgLayer || zoom % 2 !== 0))) {
+                  (zoom < minZoomNonBgLayer || modulo2(source, z)))) {
                 continue;
               }
 
