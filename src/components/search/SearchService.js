@@ -34,7 +34,7 @@ goog.require('ga_reframe_service');
     return parseFloat(str.replace(/[ \s' ]/g, ''));
   }
 
-  /* Assume use want's to be in Switzerland */
+  /* Assume user want's to be in Switzerland */
   var isSwiss = function(c, b) {
     if (c == null) return c;
     var minx = b[0], miny = b[1], maxx = b[2], maxy = b[3];
@@ -51,12 +51,8 @@ goog.require('ga_reframe_service');
   var isGeographic = function(coord) {
     var lat = coord[0];
     var lng = coord[1];
-    if ((lat >= -90) && (lat <= 90) &&
-        (lng >= -180) && (lng <= 180)) {
-      return true;
-    } else {
-      return false;
-    }
+    return ((lat >= -90) && (lat <= 90) &&
+        (lng >= -180) && (lng <= 180))
   }
 
   /* Functions pair, search and swapdims are slightly adapted from the
