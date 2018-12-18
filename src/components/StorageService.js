@@ -145,21 +145,21 @@ goog.require('ga_browsersniffer_service');
          */
         this.load = function(url) {
           var that = this;
-          if (gaNetworkStatus.offline) {
-            var item = this.getItem(url);
-            if (angular.isString(item)) {
-              item = JSON.parse(item);
-            }
-            return $q.when(item);
-          }
           return $http.get(url, {
             cache: true
           }).then(function(response) {
             that.setItem(url, JSON.stringify(response.data));
             return response.data;
           }, function(res) {
+            // if it can t be loaded try in the storage
             $window.console.error('Unable to load data from ' + url +
-                ' response status is ' + res.status);
+            ' response status is ' + res.status +
+            '. We try to load from localstorage.');
+            var item = that.getItem(url);
+            if (angular.isString(item)) {
+              item = JSON.parse(item);
+            }
+            return $q.when(item);
           });
         };
       };
