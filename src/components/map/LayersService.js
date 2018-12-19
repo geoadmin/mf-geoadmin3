@@ -341,7 +341,7 @@ goog.require('ga_urlutils_service');
                 ],
                 styles: [{
                   id: 'default',
-                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v004/style.json'
+                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v005/style.json'
                 }, {
                   id: 'color',
                   url: 'https://gist.githubusercontent.com/davidoesch/6223bb04dee87172e93e98d1e7c0bbc3/raw/e75972dfc0edcb572b7efe0525b4de49957f634b/styles-ch.swisstopo.basiskarte.vt_v004.json'
