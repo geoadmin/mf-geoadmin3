@@ -309,7 +309,7 @@ goog.require('ga_urlutils_service');
   );
 
   module.directive('gaSearchLocations',
-      function($http, $q, $sce, $translate, gaUrlUtils, gaMarkerOverlay,
+      function($sce, $translate, gaMarkerOverlay,
           gaSearchLabels, gaMapUtils, gaDebounce) {
         return {
           restrict: 'A',

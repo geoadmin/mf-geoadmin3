@@ -12,8 +12,7 @@ goog.require('ga_permalink_service');
    * Lang manager
    */
   module.provider('gaLang', function() {
-    this.$get = function($window, $rootScope, $translate, gaPermalink,
-        gaGlobalOptions) {
+    this.$get = function($window, $translate, gaPermalink, gaGlobalOptions) {
       var lang = gaPermalink.getParams().lang ||
           ($window.navigator.userLanguage ||
           $window.navigator.language).split('-')[0];

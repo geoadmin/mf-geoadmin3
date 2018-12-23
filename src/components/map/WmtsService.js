@@ -18,7 +18,7 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaWmts', function() {
     this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils,
-        gaGlobalOptions, $window, $translate, $http, gaTime) {
+        gaGlobalOptions, $window, $http) {
 
       // Store getCapabilitites
       var store = {};

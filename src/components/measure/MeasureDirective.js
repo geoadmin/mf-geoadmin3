@@ -8,7 +8,7 @@ goog.require('ga_measure_service');
     'ga_measure_service'
   ]);
 
-  module.directive('gaMeasure', function(gaMeasure, gaGlobalOptions) {
+  module.directive('gaMeasure', function(gaMeasure) {
     return {
       restrict: 'A',
       templateUrl: 'components/measure/partials/measure.html',

@@ -13,7 +13,7 @@ goog.require('ga_browsersniffer_service');
    * This directive adds an help tooltip to copy the input content with the
    * keyboard.
    */
-  module.directive('gaShareCopyInput', function(gaBrowserSniffer, $translate) {
+  module.directive('gaShareCopyInput', function($translate) {
     return {
       require: '^^gaShareCopyInputGroup',
       restrict: 'A',

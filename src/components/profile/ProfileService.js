@@ -76,9 +76,8 @@ goog.require('ga_urlutils_service');
       };
     };
 
-    this.$get = function($q, $http, $timeout, $translate, measureFilter,
-        gaTimeFormatFilter, $window, gaUrlUtils, gaGlobalOptions,
-        gaGeomUtils) {
+    this.$get = function($q, $http, $translate, $window,
+        gaGlobalOptions, gaGeomUtils) {
 
       var d3LibUrl = this.d3libUrl;
       var profileUrl = this.profileUrl;

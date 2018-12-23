@@ -31,7 +31,7 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaLayers', function() {
 
-    this.$get = function($http, $q, $rootScope, $translate, $window,
+    this.$get = function($http, $q, $rootScope, $window,
         gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapUtils,
         gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils,
         gaStylesFromLiterals, gaGlobalOptions, gaPermalink,

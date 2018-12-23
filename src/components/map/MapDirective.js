@@ -65,7 +65,7 @@ goog.require('ga_styles_service');
     };
   });
 
-  module.directive('gaMap', function($window, $timeout, gaPermalink,
+  module.directive('gaMap', function($window, gaPermalink,
       gaStyleFactory, gaBrowserSniffer, gaLayers, gaDebounce, gaOffline,
       gaMapUtils, $translate) {
     return {
