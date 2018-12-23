@@ -156,14 +156,14 @@ goog.require('ga_layerfilters_service');
               if (scope.layer instanceof ol.layer.Group) {
                 scope.layer.getLayers().forEach(function(olLayer, idx, arr) {
                   layerListenerKeys = layerListenerKeys.concat([
-                    olLayer.on('precompose', handlePreCompose),
-                    olLayer.on('postcompose', handlePostCompose)
+                    olLayer.on('prerender', handlePreCompose),
+                    olLayer.on('postrender', handlePostCompose)
                   ]);
                 });
               } else {
                 layerListenerKeys = [
-                  scope.layer.on('precompose', handlePreCompose),
-                  scope.layer.on('postcompose', handlePostCompose)
+                  scope.layer.on('prerender', handlePreCompose),
+                  scope.layer.on('postrender', handlePostCompose)
                 ];
               }
               elt.show();
