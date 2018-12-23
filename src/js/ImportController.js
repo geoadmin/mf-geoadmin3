@@ -21,8 +21,8 @@ goog.require('ga_wmts_service');
     'ga_vector_service'
   ]);
 
-  module.controller('GaImportController', function($scope, $q, $document,
-      $window, $timeout, gaFile, gaBrowserSniffer, gaWms, gaUrlUtils,
+  module.controller('GaImportController', function($scope, $q,
+      $window, gaFile, gaBrowserSniffer, gaWms, gaUrlUtils,
       gaLang, gaPreviewLayers, gaMapUtils, gaWmts, gaVector) {
 
     var servers = [

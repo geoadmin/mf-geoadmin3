@@ -13,7 +13,7 @@ goog.provide('ga_placeholder_directive');
    *  otherwise the poly-fill is used
    */
   module.directive('placeholder',
-      function($timeout) {
+      function() {
 
         if ('placeholder' in document.createElement('input') &&
         'placeholder' in document.createElement('textarea')) {

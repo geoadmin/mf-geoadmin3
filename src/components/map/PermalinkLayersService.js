@@ -43,9 +43,9 @@ goog.require('ga_wmts_service');
    */
   module.provider('gaPermalinkLayersManager', function() {
 
-    this.$get = function($rootScope, gaLayers, gaPermalink, $translate,
+    this.$get = function($rootScope, gaLayers, gaPermalink,
         gaVector, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage,
-        gaTopic, gaGlobalOptions, $q, gaTime, $log, $http, gaWmts) {
+        gaTopic, gaGlobalOptions, $q, gaTime, $log, gaWmts) {
 
       // split by commas only not between || (WMS layers) (see #4592)
       const splitLayerPattern = /,(?![^|]* )/g;

@@ -54,8 +54,8 @@ goog.require('ga_window_service');
   });
 
   module.directive('gaLayermanager', function($compile, $timeout,
-      $rootScope, $translate, $window, gaBrowserSniffer, gaLayerFilters,
-      gaLayerMetadataPopup, gaLayers, gaAttribution, gaUrlUtils,
+      $translate, $window, gaBrowserSniffer, gaLayerFilters,
+      gaLayerMetadataPopup, gaLayers, gaUrlUtils,
       gaMapUtils, gaEvent, gaWindow) {
 
     // Timestamps list template

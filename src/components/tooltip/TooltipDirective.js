@@ -38,9 +38,8 @@ goog.require('ga_window_service');
   module.directive('gaTooltip',
       function($timeout, $http, $q, $translate, $sce, $rootScope, gaPopup,
           gaLayers, gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
-          gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions,
-          gaPermalink, gaIFrameCom, gaUrlUtils, gaLang, gaSanitize, gaEvent,
-          gaWindow) {
+          gaMapUtils, gaTopic, gaIdentify, gaPermalink, gaIFrameCom, gaUrlUtils,
+          gaLang, gaSanitize, gaEvent, gaWindow) {
         var popupContent =
           '<div ng-repeat="html in options.htmls track by $index" ' +
                'ng-mouseenter="options.onMouseEnter($event,' +

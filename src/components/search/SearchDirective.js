@@ -74,7 +74,7 @@ goog.require('ga_what3words_service');
   var keepSearchParam = false;
 
   module.controller('GaSearchDirectiveController',
-      function($scope, $rootScope, $sce, $timeout, gaPermalink,
+      function($scope, $rootScope, $timeout, gaPermalink,
           gaUrlUtils, gaSearchGetCoordinate, gaMapUtils, gaMarkerOverlay,
           gaVector, gaPreviewLayers, gaLang, gaTopic, gaLayers,
           gaSearchTokenAnalyser, gaWhat3Words) {

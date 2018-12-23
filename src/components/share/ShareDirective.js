@@ -15,7 +15,7 @@ goog.require('ga_window_service');
     'pascalprecht.translate'
   ]);
 
-  module.directive('gaShare', function($http, $rootScope, $timeout, $translate,
+  module.directive('gaShare', function($rootScope, $timeout, $translate,
       $window, gaPermalink, gaUrlUtils, gaWindow, gaBrowserSniffer) {
     return {
       restrict: 'A',

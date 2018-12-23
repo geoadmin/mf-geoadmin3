@@ -14,7 +14,7 @@ goog.require('ga_throttle_service');
   ]);
 
   module.directive('gaGeolocation', function($window, $translate,
-      gaBrowserSniffer, gaPermalink, gaStyleFactory, gaThrottle, gaMapUtils) {
+      gaPermalink, gaStyleFactory, gaThrottle, gaMapUtils) {
     return {
       restrict: 'A',
       scope: {

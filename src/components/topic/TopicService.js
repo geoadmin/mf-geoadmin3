@@ -11,7 +11,7 @@ goog.require('ga_permalink');
    * Topics manager
    */
   module.provider('gaTopic', function() {
-    this.$get = function($rootScope, $http, $translate, gaPermalink,
+    this.$get = function($rootScope, $http, gaPermalink,
         gaGlobalOptions, gaUrlUtils) {
       var topic; // The current topic
       var topics = []; // The list of topics available

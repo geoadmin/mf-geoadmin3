@@ -24,9 +24,9 @@ goog.require('ga_window_service');
   ]);
 
   module.directive('gaContextPopup',
-      function($http, $q, $timeout, $window, $rootScope, gaBrowserSniffer,
-          gaNetworkStatus, gaPermalink, gaGlobalOptions, gaLang, gaWhat3Words,
-          gaReframe, gaEvent, gaWindow, gaHeight, gaMeasure) {
+      function($q, $timeout, $window, $rootScope, gaBrowserSniffer,
+          gaNetworkStatus, gaPermalink, gaWhat3Words, gaReframe,
+          gaEvent, gaWindow, gaHeight, gaMeasure) {
         return {
           restrict: 'A',
           replace: true,

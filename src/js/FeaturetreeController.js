@@ -11,7 +11,7 @@ goog.require('ga_translation_service');
   ]);
 
   module.controller('GaFeaturetreeController', function($http, $scope,
-      $timeout, gaLang, $window, gaGlobalOptions, gaPrint) {
+      gaLang, gaGlobalOptions, gaPrint) {
 
     var featureTreeId = '#featuretree-popup';
     // List of layers using an extendHtmlPoup for the print instead of htmlPopup

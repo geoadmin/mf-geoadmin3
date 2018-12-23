@@ -36,9 +36,9 @@ goog.require('ga_styles_service');
    *
    */
   module.directive('gaDraw', function($translate, $rootScope, $timeout,
-      gaBrowserSniffer, gaDefinePropertiesForLayer, gaDebounce, gaFileStorage,
-      gaLayerFilters, gaExportKml, gaMapUtils, $document, gaMeasure,
-      gaStyleFactory, gaGeomUtils, gaEvent, $window) {
+      gaDefinePropertiesForLayer, gaDebounce, gaFileStorage,
+      gaExportKml, gaMapUtils, $document, gaMeasure,
+      gaGeomUtils, gaEvent, $window) {
 
     var createDefaultLayer = function(map, useTemporaryLayer) {
       // #2820: we set useSpatialIndex to false to allow display of azimuth
