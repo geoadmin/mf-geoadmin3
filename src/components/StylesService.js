@@ -143,6 +143,13 @@ goog.require('ga_measure_service');
       zIndex: 10000
     });
 
+    // Transparent style
+    var transparentFill = new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: '#ffffff00'
+      })
+    })
+
     var labelStyle = {
       show: true,
       color: 'rgb(255, 255, 255)',
@@ -241,6 +248,7 @@ goog.require('ga_measure_service');
       'kml': kmlStyle,
       'gpx': gpxStyle,
       'transparentCircle': transparentCircle,
+      'transparent': transparentFill,
       'redCircle': redCircle,
       'label': labelStyle,
       'labelEnhanced': labelStyleEnhanced
