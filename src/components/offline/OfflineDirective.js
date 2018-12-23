@@ -117,7 +117,7 @@ goog.require('ga_vector_service');
   });
 
   module.directive('gaOfflineSelector', function($timeout, $window, gaOffline,
-      gaStorage, gaGlobalOptions, gaVector) {
+      gaVector) {
     return {
       restrict: 'A',
       templateUrl: 'components/offline/partials/offline-selector.html',
