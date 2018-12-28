@@ -55,6 +55,36 @@ goog.require('ga_window_service');
         '<i class="fa fa-ga-zoom-minus"></i>' +
       '</span>';
 
+      var interactionsForEmbed;
+      if (gaBrowserSniffer.embed) {
+        interactionsForEmbed = new ol.Collection();
+        // see
+        // https://openlayers.org/en/latest/apidoc/module-ol_interaction.html
+        // for interactions order
+
+        // no need for a drag rotate interaction (as listed in the link above)
+        interactionsForEmbed.push(new ol.interaction.DoubleClickZoom());
+        interactionsForEmbed.push(new ol.interaction.DragPan({
+          condition: function(dragPanEvent) {
+            // allow drag/pan with two fingers on mobile devices (touch)
+            return dragPanEvent.originalEvent.pointerType !== 'touch' ||
+              (this.targetPointers && this.targetPointers.length >= 2);
+          }
+        }));
+        // no pinch rotate interaction (pinch will be used to pan and it might
+        // be confusing having rotate with pan on the same gesture)
+        interactionsForEmbed.push(new ol.interaction.PinchZoom());
+        interactionsForEmbed.push(new ol.interaction.MouseWheelZoom({
+          condition: function(mouseWheelZoomEvent) {
+            // allow mouse wheel zooming only if CTRL key is pressed
+            return mouseWheelZoomEvent.type === 'wheel' &&
+                mouseWheelZoomEvent.originalEvent &&
+                mouseWheelZoomEvent.originalEvent.ctrlKey;
+          }
+        }));
+        interactionsForEmbed.push(new ol.interaction.DragZoom());
+      }
+
       var map = new ol.Map({
         moveTolerance: 5,
         controls: ol.control.util.defaults({
@@ -66,11 +96,13 @@ goog.require('ga_window_service');
             zoomOutLabel: $compile(zoomOut)($scope)[0]
           }
         }),
-        interactions: ol.interaction.defaults({
-          altShiftDragRotate: true,
-          touchRotate: false,
-          keyboard: false
-        }),
+        // if embedded, use custom interaction, otherwise extends default
+        interactions: gaBrowserSniffer.embed ?
+          interactionsForEmbed : ol.interaction.defaults({
+            altShiftDragRotate: true,
+            touchRotate: false,
+            keyboard: false
+          }),
         renderer: 'canvas',
         view: new ol.View({
           projection: defaultProjection,
