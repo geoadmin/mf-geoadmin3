@@ -297,15 +297,11 @@ goog.require('ga_urlutils_service');
                 serverLayerName: 'ch.swisstopo.swissnames3d.vt',
                 sourceId: 'ch.swisstopo.swissnames3d'
               }, {
-                serverLayerName: 'ch.swisstopo.amtliches-strassenverzeichnis_validiert'
-              }, {
                 serverLayerName: 'ch.bav.haltestellen-oev.vt',
                 sourceId: 'ch.bav.haltestellen-oev'
               }, {
                 serverLayerName: 'ch.swisstopo.vektorkarte.vt',
                 opacity: 0.75 // Show swissalti
-              }, {
-                serverLayerName: 'OpenMapTiles'
               }];
               /* eslint-enable max-len */
 
@@ -333,11 +329,9 @@ goog.require('ga_urlutils_service');
                 subLayersIds: [
                   'ch.swisstopo.swissalti3d-reliefschattierung',
                   'ch.swisstopo.vektorkarte.vt',
-                  'ch.bav.haltestellen-oev.vt',
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
-                  'ch.swisstopo.swissnames3d.vt'
-                  // Once cut dataset is ok add it back
-                  // 'OpenMapTiles'
+                  'ch.swisstopo.swissnames3d.vt',
+                  'OpenMapTiles'
                 ],
                 styles: [{
                   id: 'default',
@@ -719,15 +713,62 @@ goog.require('ga_urlutils_service');
               gaDefinePropertiesForLayer(olLayer);
             }
           } else if (config.type === 'aggregate') {
-            var subLayersIds = config.subLayersIds;
-            var i, len = subLayersIds.length;
+            var subLayersIds = config.subLayersIds || [];
+
             var createSubLayers = function(olLayer, glStyle) {
-              var subLayers = new Array(len);
+              if (!subLayersIds.length) {
+                // No sublayerIds provided so we use directly what is available
+                // in sources list of the glStyle.
+                for (var s in glStyle.sources) {
+                  subLayersIds.push(s);
+                }
+              }
+
+              // Create sublayers.
+              var subLayers = [];
               olLayer.glStyle = glStyle;
-              for (i = 0; i < len; i++) {
-                subLayers[i] = that.getOlLayerById(subLayersIds[i], {
+              for (var i = 0; i < subLayersIds.length; i++) {
+                var id = subLayersIds[i];
+
+                // If a raster config already exists,
+                // we inform the developer.
+                if (layers[id] &&
+                    layers[id].type !== 'vectortile' &&
+                    glStyle && glStyle.sources &&
+                    glStyle.sources[id] &&
+                    glStyle.sources[id].type === 'vector') {
+                  $window.console.log('A raster config already exists ' +
+                    'for the glStyle source ' + id + '. ' +
+                    'Please change the source\'s ' +
+                    'name in the glStyle to avoid conflicts.');
+                  continue;
+                }
+
+                // If there is no config for this id, we assume it's
+                // a vectortile so we create a default config.
+                if (!layers[id]) {
+                  layers[id] = {
+                    serverLayerName: id,
+                    type: 'vectortile',
+                    sourceId: id
+                  }
+                }
+
+                // If the sourceId doesn't correspond to a source in glStyle
+                // object, we inform the developer.
+                var sourceId = layers[id].sourceId;
+                if (sourceId && glStyle && glStyle.sources &&
+                    !glStyle.sources[sourceId]) {
+                  $window.console.log('The glStyle has no source with ' +
+                    'the name ' +
+                    layers[id].sourceId + '. Please change the source\'s ' +
+                    'name in the glStyle to avoid conflicts.');
+                  continue;
+                }
+
+                subLayers.push(that.getOlLayerById(id, {
                   glStyle: glStyle
-                });
+                }));
               }
               olLayer.setLayers(new ol.Collection(subLayers));
             };
