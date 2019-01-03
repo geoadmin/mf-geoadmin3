@@ -32,7 +32,21 @@ goog.require('ga_urlutils_service');
       // Level of detail for the default resolution
       var proj = ol.proj.get(gaGlobalOptions.defaultEpsg);
       var extent = gaGlobalOptions.defaultExtent || proj.getExtent();
+<<<<<<< HEAD
       var BASE64_MARKER = ';base64,';
+=======
+
+      // For mobile, redefine disposeInternal function for mvt.
+      // TODO: verify if it's useful
+      var disposeInternal = ol.VectorImageTile.prototype.disposeInternal;
+      ol.VectorImageTile.prototype.disposeInternal = function() {
+        for (var key in this.context_) {
+          var context = this.context_[key];
+          context.canvas.width = context.canvas.height = 0;
+        }
+        disposeInternal.call(this);
+      };
+>>>>>>> origin/mvt
 
       return {
         Z_PREVIEW_LAYER: 1000,
@@ -581,6 +595,8 @@ goog.require('ga_urlutils_service');
 
             } else { // vector
               sourceOpts.format = new ol.format.MVT();
+              // Setting it to 0 makes tiles disappear on each zoom.
+              sourceOpts.cacheSize = 20;
               olSource = new ol.source.VectorTile(sourceOpts);
             }
             olLayer.setSource(olSource);

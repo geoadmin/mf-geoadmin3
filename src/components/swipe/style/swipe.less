@@ -1,5 +1,4 @@
 [ga-swipe] {
-
   .ga-swipe-arrows i:first-child {
     .rotate(180deg);
   }
@@ -10,8 +9,8 @@
     height: 100%;
     top: 0px;
     left: 50%;
-    z-index: 990; 
-    cursor: w-resize; 
+    z-index: 990;
+    cursor: w-resize;
   }
 
   .ga-swipe-line {
@@ -35,19 +34,23 @@
 
     div {
       display: inline-block;
-      width: 0; 
-      height: 0; 
+      width: 0;
+      height: 0;
       border-top: 10px solid transparent;
       border-bottom: 10px solid transparent;
     }
 
-    .ga-arrow-right{
+    .ga-arrow-right {
       margin-left: 4px;
       border-left: 10px solid white;
     }
 
     .ga-arrow-left {
       border-right: 10px solid white;
+    }
+
+    .ga-arrow-right, .ga-arrow-right {
+      position: absolute;
     }
   }
 
@@ -57,17 +60,17 @@
     width: 120px;
     bottom: 55px;
     right: 30px;
-    padding: 5px 3px; 
+    padding: 5px 3px;
     font-size: 11px;
     font-weight: bold;
     background-color: white;
-    
+
     &:before {
       padding-right: 3px;
     }
-    
+
     @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
       bottom: 20px;
-    } 
+    }
   }
 }

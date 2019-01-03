@@ -1,12 +1,14 @@
 goog.provide('ga_offline_directive');
 
 goog.require('ga_networkstatus_service');
+goog.require('ga_vector_service');
 
 (function() {
 
   var module = angular.module('ga_offline_directive', [
     'ga_networkstatus_service',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'ga_vector_service'
   ]);
 
   module.controller('GaOfflineDirectiveController',
@@ -115,7 +117,7 @@ goog.require('ga_networkstatus_service');
   });
 
   module.directive('gaOfflineSelector', function($timeout, $window, gaOffline,
-      gaStorage) {
+      gaVector) {
     return {
       restrict: 'A',
       templateUrl: 'components/offline/partials/offline-selector.html',
@@ -124,10 +126,15 @@ goog.require('ga_networkstatus_service');
       },
       controller: 'GaOfflineDirectiveController',
       link: function(scope, elt, attrs) {
+
+        // Layer used for clipping
+        var layer = gaVector.getTransparentLayer();
+
         var deregister, rectangle, moving, height, width;
         var activate = function() {
+          layer.setMap(scope.map);
           deregister = [
-            scope.map.on('postcompose', handlePostCompose),
+            layer.on('postrender', handlePostCompose),
             scope.map.getView().on('change:rotation', function(evt) {
               moving = true;
             }),
@@ -158,6 +165,7 @@ goog.require('ga_networkstatus_service');
         };
 
         var deactivate = function() {
+          layer.setMap();
           if (deregister) {
             for (var i = 0; i < deregister.length; i++) {
               ol.Observable.unByKey(deregister[i]);
@@ -186,11 +194,11 @@ goog.require('ga_networkstatus_service');
         };
 
         var handlePostCompose = function(evt) {
-          evt.context.save();
-          if (moving) { // Redraw rectangle only when roatting and zooming
+          var ctx = evt.context;
+          ctx.save();
+          if (moving) { // Redraw rectangle only when rotating and zooming
             updateRectangle();
           }
-          var ctx = evt.context;
           var topLeft = rectangle[0];
           var topRight = rectangle[1];
           var bottomRight = rectangle[2];
@@ -212,7 +220,7 @@ goog.require('ga_networkstatus_service');
           ctx.closePath();
           ctx.fillStyle = 'rgba(0, 5, 25, 0.75)';
           ctx.fill();
-          evt.context.restore();
+          ctx.restore();
         };
 
         var updateSize = function() {

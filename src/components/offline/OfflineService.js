@@ -231,8 +231,8 @@ goog.require('ga_window_service');
             // changed.
             gaStorage.getItem(layersKey).split(',').forEach(function(id, idx) {
               var layer = gaLayers.getLayer(id);
-              if (layer && !layer.timeEnabled &&
-                  layer.timestamps && layer.timestamps[0] !== ts[idx]) {
+              if (layer && !layer.timeEnabled && layer.timestamps &&
+                  layer.timestamps[0] !== ts[idx]) {
                 isObsolete = true;
               }
             });
