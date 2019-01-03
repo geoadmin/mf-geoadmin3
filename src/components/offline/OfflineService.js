@@ -269,7 +269,7 @@ goog.require('ga_window_service');
               // WARN: from offline to online only!!! otherwise requests to pbf
               // tiles are made until it gets something.
               if (source instanceof ol.source.VectorTile) {
-                layer.setUseInterimTilesOnError(false);
+                layer.setUseInterimTilesOnError(useClientZoom);
 
                 // Clear the internal tile cache of ol and the source tiles.
                 if (!useClientZoom) {
@@ -534,7 +534,7 @@ goog.require('ga_window_service');
               var queueByZ = [];
               var minX, minY, maxX, maxY;
               var tileExtent = (isBgLayer && zoom >= 0 && zoom < minZoom) ?
-                gaMapUtils.defaultExtent : extent;
+                gaGlobalOptions.swissExtent : extent;
               tileGrid.forEachTileCoord(tileExtent, z, function(tileCoord) {
                 maxX = tileCoord[1];
                 maxY = tileCoord[2];
