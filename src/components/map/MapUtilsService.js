@@ -32,9 +32,7 @@ goog.require('ga_urlutils_service');
       // Level of detail for the default resolution
       var proj = ol.proj.get(gaGlobalOptions.defaultEpsg);
       var extent = gaGlobalOptions.defaultExtent || proj.getExtent();
-<<<<<<< HEAD
       var BASE64_MARKER = ';base64,';
-=======
 
       // For mobile, redefine disposeInternal function for mvt.
       // TODO: verify if it's useful
@@ -46,7 +44,6 @@ goog.require('ga_urlutils_service');
         }
         disposeInternal.call(this);
       };
->>>>>>> origin/mvt
 
       return {
         Z_PREVIEW_LAYER: 1000,
