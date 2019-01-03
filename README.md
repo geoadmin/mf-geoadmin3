@@ -286,6 +286,7 @@ Regional :
 Like others layer, a vector tile layer can be defined in the layersConfig as
 
 a `vectortile` layer:
+
 ```
 'ch.swisstopo.vektorkarte.vt':{
   type: 'vectortile',
@@ -324,6 +325,48 @@ a `vectortile` layer:
 ```
 
 or an `aggregate` layer:
+In that case all the sources available in the glStyle will be displayed.
+
+```
+'ch.swisstopo.leichte-basiskarte.vt': {
+  type: 'aggregate',
+  background: true,
+  serverLayerName: 'ch.swisstopo.leichte-basiskarte.vt',
+  attribution: 'OpenMapTiles, OpenStreetMap contributors, swisstopo',
+  styles: [{
+    id: 'default',
+    url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v003/style.json'
+  }, {
+    id: 'artist',
+    url: 'https://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
+  }],
+  edits: [{
+    id: 'settlement',
+    regex: /^settlement/,
+    props: [
+      ['paint', 'fill-color', '{color}']
+    ]
+  }, {
+    id: 'roadtraffic',
+    regex: /^roadtraffic/,
+    props: [
+      ['paint', 'line-color', '{color}'],
+      ['paint', 'line-width', '{size}']
+    ]
+  }, {
+    id: 'labels',
+    regex: /^labels/,
+    props: [
+      ['layout', 'visibility', '{toggle}', 'visible', 'none'],
+      ['paint', 'text-color', '{color}'],
+      ['layout', 'text-size', '{size}']
+    ]
+  }]
+},
+```
+
+or an `aggregate` layer using subLayersIds:
+In that case only the glStyle sources defined using the subLayersIds property will be displayed.
 
 ```
 'ch.swisstopo.leichte-basiskarte.vt': {
@@ -373,7 +416,7 @@ or an `aggregate` layer:
 'ch.swissnames3d.vt': {
   type: 'vectortile',
   sourceId: 'ch.swissnames3d',
-  serverLayerName: 'ch.swisstopo.vektorkarte.vt'
+  serverLayerName: 'ch.swissnmaes3d.vt'
 },
 ```
 
