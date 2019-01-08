@@ -46,5 +46,11 @@
   &.ga-map-grab {
     cursor: grabpointer;  
   }
-}
 
+  // hide Cesium credits (otherwise visible in flight mode)
+  .cesium-credit-logoContainer,
+  .cesium-credit-expand-link,
+  .cesium-credit-textContainer {
+    display: none !important;
+  }
+}
