@@ -246,6 +246,8 @@ Add `env=(dev|int|prod)`
 
 Add `api_url=//theNameOfAnAPIServer`
 
+Add `config_url=//theNameOfAnConfigServerOrUrl`
+
 Add `alti_url=//theNameOfAnAltiServer`
 
 Add `wms_url=//theNameOfAWMSServer`

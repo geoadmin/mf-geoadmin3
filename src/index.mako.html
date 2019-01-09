@@ -737,13 +737,16 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         // Api services urls
         var defaultApiUrl = prtl + '${api_url}';
+        var defaultConfigUrl = prtl + '${config_url}';
         var apiUrl = setBackend(defaultApiUrl, prtl + '${api_tech_url}', 'api_url');
+        var configUrl = setBackend(defaultConfigUrl, prtl + '${config_tech_url}', 'config_url');
         var altiUrl = setBackend(prtl + '${alti_url}', prtl + '${alti_tech_url}', 'alti_url');
         var shopUrl = setBackend(prtl + '${shop_url}', prtl + '${shop_tech_url}', 'shop_url');
         var publicUrl = setBackend(prtl + '${public_url}', prtl + '${public_tech_url}', 'public_url');
         var printUrl = setBackend(prtl + '${print_url}', prtl + '${print_tech_url}', 'print_url');
         var proxyUrl = prtl + '${proxy_url}' + '/';
         var apiOverwrite = !!(getParam('api_url') || env);
+        var configOverwrite = !!(getParam('config_url') || env);
         var localhostRegexp = new RegExp('https?:\/\/localhost:[0-9]{1,5}');
         if (localhostRegexp.test(wmtsUrl)){
            wmtsUrl = wmtsUrl.replace('https:', 'http:');
@@ -763,6 +766,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
           // Api services urls
           apiUrl: apiUrl,
+          configUrl: configUrl,
           altiUrl: altiUrl,
           printUrl: printUrl,
           proxyUrl: proxyUrl,
@@ -792,6 +796,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           hostIsProd: hostIsProd,
           staging: staging,
           apiOverwrite: apiOverwrite,
+          configOverwrite: configOverwrite,
 
           // Map state values
           defaultExtent: JSON.parse(${default_extent}),

@@ -9,3 +9,4 @@ export WMS_URL=//wms-bgdi.int.bgdi.ch
 export SHOP_URL=//shop-bgdi.int.bgdi.ch
 export PUBLIC_URL=//public.int.bgdi.ch
 export PRINT_URL=//service-print.int.ch
+export CONFIG_URL=//mf-geoadmin3.infra.bgdi.ch

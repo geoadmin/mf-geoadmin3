@@ -48,6 +48,9 @@ TECH_SUFFIX = .bgdi.ch
 API_URL ?= //api3.geo.admin.ch
 API_TECH_URL ?= //mf-chsdi3.
 LAST_API_URL := $(call lastvalue,api-url)
+CONFIG_URL ?= //map.geo.admin.ch
+CONFIG_TECH_URL ?= //mf-geoadmin3.
+LAST_CONFIG_URL := $(call lastvalue,config-url)
 ALTI_URL ?= //api3.geo.admin.ch
 LAST_ALTI_URL := $(call lastvalue,alti-url)
 ALTI_TECH_URL ?= //mf-chsdi3.
@@ -100,6 +103,7 @@ LESS_PARAMETERS ?= -ru
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"fr\", \"it\", \"en\", \"rm\"]'
 DEFAULT_TOPIC_ID ?= ech
+TOPICS =$(shell curl -s https://api3.geo.admin.ch/rest/services | jq -r '.topics[].id')
 
 
 # Translations variables
@@ -151,13 +155,17 @@ ifeq ($(NAMED_BRANCH), false)
   S3_SRC_BASE_PATH = $(S3_BASE)/src/
 endif
 
-
 # S3 activation variables
 S3_VERSION_PATH ?=
 
 
 # S3 delete variables
 BRANCH_TO_DELETE ?=
+
+# Configs
+CONFIG_FILES := $(wildcard configs/**/*.json)
+S3_UPLOAD_HEADERS = --content-encoding gzip --acl public-read --cache-control 'max-age=60' --content-type 'application/json'
+
 
 
 ## Python interpreter can't have space in path name
@@ -185,6 +193,7 @@ HTMLMIN_CMD=source ${NVM_DIR}/nvm.sh && nvm use ${NODE_VERSION} && ${NODE_BIN}/h
 ES_LINT=source ${NVM_DIR}/nvm.sh && nvm use ${NODE_VERSION} && ${NODE_BIN}/eslint
 
 MAKO_LAST_VARIABLES = .build-artefacts/last-api-url \
+	    .build-artefacts/last-config-url \
 	    .build-artefacts/last-alti-url \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-public-url \
@@ -243,6 +252,8 @@ help:
 	@echo "- s3infoprod          Get version info on remote prod bucket. (usage only: make s3infoprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
 	@echo "- s3deleteint         Delete a project version in a remote int bucket. (usage: make s3deleteint S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
 	@echo "- s3deleteprod        Delete a project version in a remote prod bucket. (usage: make s3deleteprod S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
+	@echo "- s3uploadconfigint   Upload config to int bucket (as defined by S3_MF_GEOADMIN3_INT=$(S3_MF_GEOADMIN3_INT))"
+	@echo "- s3uploadconfigprod  Upload config to prod bucket (as defined by S3_MF_GEOADMIN3_PROD=$(S3_MF_GEOADMIN3_PROD))"
 	@echo "- flushvarnish        Flush varnish instances. (usage: make flushvarnish DEPLOY_TARGET=<int|prod|infra>)"
 	@echo "- cesium              Update Cesium.min.js and Cesium folder. Needs Node js version >= 6."
 	@echo "- olcesium            Update olcesium.js, olcesium-debug.js. Needs Node js version >= 6 and java >=8."
@@ -253,6 +264,7 @@ help:
 	@echo "Variables:"
 	@echo
 	@echo "- API_URL Service URL         (build with: $(LAST_API_URL), current value: $(API_URL))"
+	@echo "- CONFIG_URL Service URL      (build with: $(LAST_CONFIG_URL), current value: $(CONFIG_URL))"
 	@echo "- ALTI_URL Alti service URL   (build with: $(LAST_ALTI_URL), current value: $(ALTI_URL))"
 	@echo "- PRINT_URL Print service URL (build with: $(LAST_PRINT_URL), current value: $(PRINT_URL))"
 	@echo "- SHOP_URL Service URL        (build with: $(LAST_SHOP_URL), current value: $(SHOP_URL))"
@@ -335,7 +347,7 @@ release: showVariables \
 	prd/style/font-awesome-4.5.0/font/ \
 	prd/locales/ \
 	prd/checker \
-	prd/cache/ \
+	configs/ \
 	prd/info.json \
 	prd/robots.txt \
 	prd/robots_prod.txt
@@ -418,6 +430,10 @@ s3deploybranch: guard-CLONEDIR \
 	make s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
                     DEPLOY_TARGET=${DEPLOY_TARGET} \
                     NAMED_BRANCH=${NAMED_BRANCH}
+
+# Upload the configs
+s3uploadconfig%: $(CONFIG_FILES)
+		$(foreach json,$^, gzip -c $(json) | aws s3 cp  $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_$(shell echo $(*)| tr a-z A-Z))/$(json);)
 
 .PHONY: s3deploybranchint
 s3deploybranchint:
@@ -649,11 +665,14 @@ prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 	    --var "s3basepath=$(S3_BASE_PATH)" $< > $@
 	mv $@ prd/geoadmin.$(VERSION).appcache
 
-prd/cache/: .build-artefacts/last-version \
-			.build-artefacts/last-api-url
+configs/: .build-artefacts/last-version \
+			.build-artefacts/last-api-url \
+			.build-artefacts/last-config-url
 	mkdir -p $@
-	curl -q -o prd/cache/services http:$(API_URL)/rest/services
-	$(foreach lang, $(LANGS), curl -s --retry 3 -o prd/cache/layersConfig.$(lang).json http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang);)
+	curl -s -q -o configs/services.json http:$(API_URL)/rest/services
+	$(foreach lang, $(LANGS), mkdir -p $@$(lang) && curl -s --retry 3 -o configs/$(lang)/layersConfig.json http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang);)
+	echo $(TOPICS)
+	$(foreach topic, $(TOPICS), $(foreach lang, $(LANGS),curl -s -o configs/${lang}/catalog.${topic}.json http:$(API_URL)/rest/services/$(topic)/CatalogServer?lang=$(lang); ))
 
 prd/info.json: src/info.mako.json
 	${PYTHON_CMD} ${MAKO_CMD} \
@@ -674,6 +693,8 @@ define buildpage
 		--var "apache_base_path=$(APACHE_BASE_PATH)" \
 		--var "tech_suffix=$(TECH_SUFFIX)" \
 		--var "api_url=$(API_URL)" \
+		--var "config_url=$(CONFIG_URL)" \
+		--var "config_tech_url=$(CONFIG_TECH_URL)" \
 		--var "api_tech_url=$(API_TECH_URL)" \
 		--var "alti_url=$(ALTI_URL)" \
 		--var "alti_tech_url=$(ALTI_TECH_URL)" \
@@ -811,6 +832,7 @@ apache/app.conf: apache/app.mako-dot-conf \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-apache-base-directory \
 	    .build-artefacts/last-api-url \
+	    .build-artefacts/last-config-url \
 	    .build-artefacts/last-version
 	${PYTHON_CMD} ${MAKO_CMD} \
 	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
@@ -913,6 +935,9 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 .build-artefacts/last-api-url::
 	$(call cachelastvariable,$@,$(API_URL),$(LAST_API_URL),api-url)
 
+.build-artefacts/last-config-url::
+	$(call cachelastvariable,$@,$(CONFIG_URL),$(LAST_CONFIG_URL),config-url)
+
 .build-artefacts/last-alti-url::
 	$(call cachelastvariable,$@,$(ALTI_URL),$(LAST_ALTI_URL),alti-url)
 .build-artefacts/last-shop-url::
@@ -1008,3 +1033,4 @@ clean:
 	rm -f src/mobile.html
 	rm -f src/embed.html
 	rm -rf prd
+	rm -rf configs

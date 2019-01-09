@@ -3,9 +3,9 @@ describe('ga_catalogtree_directive', function() {
 
   var element, map, $httpBackend, $rootScope;
 
-  var expectedUrl = 'http://catalogservice.com/catalog/sometopic?lang=en';
-  var expectedUrl1 = 'http://catalogservice.com/catalog/sometopic2?lang=en';
-  var expectedUrl2 = 'http://catalogservice.com/catalog/sometopic?lang=somelang2';
+  var expectedUrl = 'http://catalogservice.com/en/catalog.sometopic.json';
+  var expectedUrl1 = 'http://catalogservice.com/en/catalog.sometopic2.json';
+  var expectedUrl2 = 'http://catalogservice.com/somelang2/catalog.sometopic.json';
   var response = {
     results: {
       root: {
@@ -72,7 +72,7 @@ describe('ga_catalogtree_directive', function() {
       $rootScope = _$rootScope_;
       $rootScope.map = map;
       $rootScope.options = {
-        catalogUrlTemplate: 'http://catalogservice.com/catalog/{Topic}'
+        catalogUrlTemplate: 'http://catalogservice.com/{Lang}/catalog.{Topic}.json'
       };
 
       $compile(element)($rootScope);
