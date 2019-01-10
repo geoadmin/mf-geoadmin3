@@ -432,7 +432,7 @@ goog.require('ga_urlutils_service');
             url: getTerrainUrl(requestedLayer, timestamp),
             availableLevels: gaGlobalOptions.terrainAvailableLevels,
             rectangle: gaMapUtils.extentToRectangle(
-                gaGlobalOptions.defaultExtent)
+                gaGlobalOptions.swissExtent)
           });
           provider.bodId = bodId;
           return provider;
@@ -532,7 +532,7 @@ goog.require('ga_urlutils_service');
               subdomains: wmsSubdomains
             };
           }
-          var extent = config3d.extent || gaMapUtils.defaultExtent;
+          var extent = config3d.extent || gaGlobalOptions.swissExtent;
           if (params) {
             var minRetLod = gaMapUtils.getLodFromRes(config3d.maxResolution) ||
                 gaGlobalOptions.minimumRetrievingLevel;
@@ -601,7 +601,7 @@ goog.require('ga_urlutils_service');
           var config = layers[bodId];
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var crossOrigin = 'anonymous';
-          var extent = config.extent || gaMapUtils.defaultExtent;
+          var extent = config.extent || gaGlobalOptions.swissExtent;
           var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl ||
               (config.styles && config.styles[0].url), opts.externalStyleUrl);
           var glStyle = opts.glStyle;

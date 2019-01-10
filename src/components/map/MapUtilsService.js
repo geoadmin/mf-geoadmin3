@@ -598,9 +598,9 @@ goog.require('ga_urlutils_service');
             }
             olLayer.setSource(olSource);
 
-            if (data.extent) {
+            if (data.bounds) {
               // Extent in epsg:4326
-              olLayer.setExtent(ol.proj.transformExtent(data.extent,
+              olLayer.setExtent(ol.proj.transformExtent(data.bounds,
                   ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857')));
             }
 

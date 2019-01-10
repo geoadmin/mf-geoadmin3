@@ -314,7 +314,7 @@ describe('ga_layers_service', function() {
           expect(prov._url).to.be(expectTerrainUrl('terrain', '20160101'));
           var rect = prov._rectangle;
           expect(rect).to.be.a(Cesium.Rectangle);
-          expect([rect.west, rect.south, rect.east, rect.north]).to.eql([-0.2944229317425553, 0.5857374801382434, -0.19026022765439154, 0.6536247392283254]);
+          expect([rect.west, rect.south, rect.east, rect.north]).to.eql([-1.3671959735812993, 1.3071865849496158, -0.9384297014361122, 1.4107187237269347]);
           expect(prov._terrainAvailabLeLevels).to.be(gaGlobalOptions.terrainAvailableLevels);
           expect(prov.bodId).to.be('terrain');
           done();
@@ -716,7 +716,7 @@ describe('ga_layers_service', function() {
           expect(layer.getMinResolution()).to.be(0.5);
           expect(layer.getMaxResolution()).to.be(100);
           expect(layer.getOpacity()).to.be(0.35);
-          expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
+          expect(layer.getExtent()).to.eql(gaGlobalOptions.swissExtent);
           expect(layer.getPreload()).to.be(0);
           expect(layer.getUseInterimTilesOnError()).to.be(false);
           var source = layer.getSource();
@@ -761,7 +761,7 @@ describe('ga_layers_service', function() {
           expect(layer.getMinResolution()).to.be(0.5);
           expect(layer.getMaxResolution()).to.be(100);
           expect(layer.getOpacity()).to.be(0.35);
-          expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
+          expect(layer.getExtent()).to.eql(gaGlobalOptions.swissExtent);
           var source = layer.getSource();
           expect(source instanceof ol.source.ImageWMS).to.be.ok();
           expect(source.getUrl()).to.be('//wms.geo.admin.ch/');
@@ -780,7 +780,7 @@ describe('ga_layers_service', function() {
           expect(layer.getMinResolution()).to.be(0.5);
           expect(layer.getMaxResolution()).to.be(100);
           expect(layer.getOpacity()).to.be(0.35);
-          expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
+          expect(layer.getExtent()).to.eql(gaGlobalOptions.swissExtent);
           expect(layer.getPreload()).to.be(0);
           expect(layer.getUseInterimTilesOnError()).to.be(false);
           var source = layer.getSource();
@@ -842,7 +842,7 @@ describe('ga_layers_service', function() {
           expect(layer.getMaxResolution()).to.be(100);
           // opacity from layersConfig
           expect(layer.getOpacity()).to.be(0.35);
-          expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
+          expect(layer.getExtent()).to.eql(gaGlobalOptions.swissExtent);
           var source = layer.getSource();
           expect(source instanceof ol.source.Vector).to.be.ok();
           expectCommonProperties(layer, 'geojson');
@@ -923,7 +923,7 @@ describe('ga_layers_service', function() {
           expect(layer.getMinResolution()).to.be(0.5);
           expect(layer.getMaxResolution()).to.be(100);
           expect(layer.getOpacity()).to.be(0.35);
-          expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
+          expect(layer.getExtent()).to.eql(gaGlobalOptions.swissExtent);
           var source = layer.getSource();
           expect(source instanceof ol.source.Vector).to.be.ok();
           expectCommonProperties(layer, 'geojson');

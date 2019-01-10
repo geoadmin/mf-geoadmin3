@@ -75,7 +75,7 @@ goog.require('ga_window_service');
         view: new ol.View({
           projection: defaultProjection,
           extent: gaMapUtils.defaultExtent,
-          center: ol.extent.getCenter(gaMapUtils.defaultExtent),
+          center: ol.extent.getCenter(gaGlobalOptions.swissExtent),
           resolution: gaMapUtils.defaultResolution,
           resolutions: gaMapUtils.viewResolutions
         }),
