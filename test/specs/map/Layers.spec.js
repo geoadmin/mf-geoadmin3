@@ -314,7 +314,6 @@ describe('ga_layers_service', function() {
           expect(prov._url).to.be(expectTerrainUrl('terrain', '20160101'));
           var rect = prov._rectangle;
           expect(rect).to.be.a(Cesium.Rectangle);
-          console.log([rect.west, rect.south, rect.east, rect.north]);
           expect([rect.west, rect.south, rect.east, rect.north]).to.eql([-1.3671959735812993, 1.3071865849496158, -0.9384297014361122, 1.4107187237269347]);
           expect(prov._terrainAvailabLeLevels).to.be(gaGlobalOptions.terrainAvailableLevels);
           expect(prov.bodId).to.be('terrain');
