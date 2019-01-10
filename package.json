@@ -40,7 +40,7 @@
     "slipjs": "2.1.1"
   },
   "devDependencies": {
-    "caniuse-db": "1.0.30000921",
+    "caniuse-db": "1.0.30000922",
     "angular-mocks": "1.7.5",
     "autoprefixer": "9.4.3",
     "babel-cli": "^6.24.1",
@@ -66,7 +66,7 @@
     "less-plugin-clean-css": "~1.5.1",
     "mocha": "5.2.0",
     "ng-annotate": "1.2.2",
-    "postcss-cli": "6.0.0",
+    "postcss-cli": "6.1.0",
     "phantomjs-prebuilt": "2.1.16",
     "sinon": "6.3.5"
   }
