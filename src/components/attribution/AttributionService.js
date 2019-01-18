@@ -64,7 +64,7 @@ goog.require('ga_urlutils_service');
             if (layer.url && gaUrlUtils.isThirdPartyValid(layer.url)) {
               return '<span class="ga-warning-tooltip">' + attribution +
                   '</span>';
-            // We add the public link after the data attributons
+            // We add the public link after the data attributions
             } else if (layer.externalStyleUrl &&
                 gaUrlUtils.isThirdPartyValid(layer.externalStyleUrl)) {
               return (attribution ? attribution + ', ' : '') +

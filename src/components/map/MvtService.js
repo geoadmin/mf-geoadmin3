@@ -19,8 +19,8 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaMvt', function() {
 
-    this.$get = function($http, $window, $q, gaGlStyle, gaLayers, gaMapUtils,
-        gaUrlUtils) {
+    this.$get = function($http, $window, $q, gaLayers, gaMapUtils, gaUrlUtils,
+        gaStorage) {
 
       var Mvt = function() {
 
@@ -57,7 +57,7 @@ goog.require('ga_urlutils_service');
 
           olLayer.useThirdPartyData = gaUrlUtils.isThirdPartyValid(styleUrl);
 
-          return gaGlStyle.get(styleUrl).then(function(glStyle) {
+          return gaStorage.load(styleUrl).then(function(glStyle) {
             gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
             return glStyle;
           });

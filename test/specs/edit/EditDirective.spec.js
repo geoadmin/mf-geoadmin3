@@ -3,7 +3,7 @@ describe('ga_edit_directive', function() {
 
   describe('gaEdit', function() {
     var map, elt, parentScope, $timeout, $httpBackend, $rootScope,
-      $compile, gaDebounce, gaExportGlStyle, gaGlStyleStorage, gaGlStyle, gaLayers,
+      $compile, gaDebounce, gaExportGlStyle, gaGlStyleStorage, gaStorage, gaLayers,
       $window, scope, $q, gaMapUtils;
 
     var loadDirective = function(map, layer, active) {
@@ -60,7 +60,7 @@ describe('ga_edit_directive', function() {
       gaDebounce = $injector.get('gaDebounce');
       gaGlStyleStorage = $injector.get('gaGlStyleStorage');
       gaExportGlStyle = $injector.get('gaExportGlStyle');
-      gaGlStyle = $injector.get('gaGlStyle');
+      gaStorage = $injector.get('gaStorage');
       gaLayers = $injector.get('gaLayers');
       gaMapUtils = $injector.get('gaMapUtils');
     };
@@ -345,7 +345,7 @@ describe('ga_edit_directive', function() {
               withArgs('subfoo', 'styles').returns([
                 {id: 'bar', url: '//bar'}
               ]);
-          sinon.stub(gaGlStyle, 'get').withArgs('http://bar').returns($q.when(glStyle));
+          sinon.stub(gaStorage, 'load').withArgs('http://bar').returns($q.when(glStyle));
 
           var stub3 = sinon.stub(gaMapUtils, 'applyGlStyleToOlLayer').withArgs(layer, glStyle).returns();
           scope.reset(evt, layer);
@@ -354,7 +354,7 @@ describe('ga_edit_directive', function() {
           $rootScope.$digest();
           expect(stub3.callCount).to.be(1);
 
-          gaGlStyle.get.restore();
+          gaStorage.load.restore();
           gaMapUtils.applyGlStyleToOlLayer.restore();
         });
 

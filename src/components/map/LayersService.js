@@ -1,7 +1,6 @@
 goog.provide('ga_layers_service');
 
 goog.require('ga_definepropertiesforlayer_service');
-goog.require('ga_glstyle_service');
 goog.require('ga_maputils_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_permalink_service');
@@ -23,7 +22,6 @@ goog.require('ga_urlutils_service');
     'ga_time_service',
     'ga_urlutils_service',
     'ga_permalink_service',
-    'ga_glstyle_service',
     'ga_translation_service',
     'pascalprecht.translate'
   ]);
@@ -37,7 +35,7 @@ goog.require('ga_urlutils_service');
         gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapUtils,
         gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils,
         gaStylesFromLiterals, gaGlobalOptions, gaPermalink,
-        gaLang, gaTime, gaStyleFactory, gaGlStyle) {
+        gaLang, gaTime, gaStyleFactory) {
 
       var h2 = function(domainsArray) {
         if (gaBrowserSniffer.h2) {
@@ -143,20 +141,20 @@ goog.require('ga_urlutils_service');
         // The tile load function which loads tiles from local
         // storage if they exist otherwise try to load the tiles normally.
         var tileLoadFunction = function(imageTile, src) {
-          var onSuccess = function(content) {
-            if (content && $window.URL && $window.atob) {
+          var onSuccess = function(base64) {
+            if (base64 && $window.URL && $window.atob) {
               try {
-                var blob = gaMapUtils.dataURIToBlob(content);
+                var blob = gaMapUtils.dataURIToBlob(base64);
                 imageTile.getImage().addEventListener('load', revokeBlob);
                 imageTile.getImage().src = $window.URL.createObjectURL(blob);
               } catch (e) {
                 // INVALID_CHAR_ERROR on ie and ios(only jpeg), it's an
                 // encoding problem.
                 // TODO: fix it
-                imageTile.getImage().src = content;
+                imageTile.getImage().src = base64;
               }
             } else {
-              imageTile.getImage().src = (content) || src;
+              imageTile.getImage().src = base64 || src;
             }
           };
           gaStorage.getTile(gaMapUtils.getTileKey(src)).then(onSuccess);
@@ -299,10 +297,11 @@ goog.require('ga_urlutils_service');
               }, {
                 serverLayerName: 'ch.swisstopo.amtliches-strassenverzeichnis_validiert'
               }, {
-                serverLayerName: 'ch.bav.haltestellen-oev.vt',
+                serverLayerName: 'ch.bav.haltestellen.vt',
                 sourceId: 'ch.bav.haltestellen-oev'
               }, {
                 serverLayerName: 'ch.swisstopo.vektorkarte.vt',
+                background: true, // Allow save offline from 0 to 16
                 opacity: 0.75 // Show swissalti
               }, {
                 serverLayerName: 'OpenMapTiles'
@@ -333,11 +332,10 @@ goog.require('ga_urlutils_service');
                 subLayersIds: [
                   'ch.swisstopo.swissalti3d-reliefschattierung',
                   'ch.swisstopo.vektorkarte.vt',
-                  'ch.bav.haltestellen-oev.vt',
+                  'ch.bav.haltestellen.vt',
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
-                  'ch.swisstopo.swissnames3d.vt'
-                  // Once cut dataset is ok add it back
-                  // 'OpenMapTiles'
+                  'ch.swisstopo.swissnames3d.vt',
+                  'OpenMapTiles'
                 ],
                 styles: [{
                   id: 'default',
@@ -608,6 +606,11 @@ goog.require('ga_urlutils_service');
               (config.styles && config.styles[0].url), opts.externalStyleUrl);
           var glStyle = opts.glStyle;
 
+          // Set dynamically the parentLayerId for aggregate layer
+          if (opts.parentLayerId) {
+            config.parentLayerId = opts.parentLayerId;
+          }
+
           // The tileGridMinRes is the resolution at which the client
           // zoom is activated. It's different from the config.minResolution
           // value at which the layer stop being displayed.
@@ -726,7 +729,8 @@ goog.require('ga_urlutils_service');
               olLayer.glStyle = glStyle;
               for (i = 0; i < len; i++) {
                 subLayers[i] = that.getOlLayerById(subLayersIds[i], {
-                  glStyle: glStyle
+                  glStyle: glStyle,
+                  parentLayerId: bodId
                 });
               }
               olLayer.setLayers(new ol.Collection(subLayers));
@@ -738,7 +742,7 @@ goog.require('ga_urlutils_service');
             });
             gaDefinePropertiesForLayer(olLayer);
             if (glStyle || styleUrl) {
-              var p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
+              var p = (glStyle) ? $q.when(glStyle) : gaStorage.load(styleUrl);
               p.then(function(glStyle) {
                 createSubLayers(olLayer, glStyle);
               });
@@ -790,18 +794,12 @@ goog.require('ga_urlutils_service');
                 });
           } else if (config.type === 'vectortile') {
             olLayer = new ol.layer.VectorTile({
-              declutter: true,
-              style: new ol.style.Style(),
-              source: new ol.source.VectorTile({
-                format: new ol.format.MVT(),
-                maxZoom: config.maxZoom,
-                url: config.url
-              })
+              declutter: true
             });
             gaDefinePropertiesForLayer(olLayer);
             olLayer.setOpacity(config.opacity || 1);
             olLayer.sourceId = config.sourceId;
-            p = (glStyle) ? $q.when(glStyle) : gaGlStyle.get(styleUrl);
+            p = (glStyle) ? $q.when(glStyle) : gaStorage.load(styleUrl);
             p.then(function(glStyle) {
               if (!glStyle) {
                 return;
@@ -833,8 +831,6 @@ goog.require('ga_urlutils_service');
                   gaUrlUtils.isThirdPartyValid(styleUrl);
             }
             olLayer.background = config.background || false;
-            // For MVT only
-            olLayer.sourceId = config.sourceId || null;
             olLayer.getCesiumImageryProvider = function() {
               return that.getCesiumImageryProviderById(bodId, olLayer);
             };
