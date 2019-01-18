@@ -294,15 +294,8 @@ goog.require('ga_urlutils_service');
               //                      It will apply styles associated to the sourceId value.
               //                      Used only if the parent has no styleUrl defined (see background layers).
               var vts = [{
-                serverLayerName: 'ch.swisstopo.swissnames3d.vt',
-                sourceId: 'ch.swisstopo.swissnames3d'
-              }, {
-                serverLayerName: 'ch.swisstopo.amtliches-strassenverzeichnis_validiert'
-              }, {
-                serverLayerName: 'ch.bav.haltestellen-oev.vt',
-                sourceId: 'ch.bav.haltestellen-oev'
-              }, {
-                serverLayerName: 'ch.swisstopo.vektorkarte.vt',
+                serverLayerName: 'ch.swisstopo.leichte-basiskarte.vt',
+                sourceId: 'Leichte Basiskarte',
                 opacity: 0.75 // Show swissalti
               }, {
                 serverLayerName: 'OpenMapTiles'
@@ -332,17 +325,16 @@ goog.require('ga_urlutils_service');
                   '<a target="_blank" href="https://www.swisstopo.admin.ch/' + lang + '/home.html">swisstopo</a>',
                 subLayersIds: [
                   'ch.swisstopo.swissalti3d-reliefschattierung',
-                  'ch.swisstopo.vektorkarte.vt',
-                  'ch.bav.haltestellen-oev.vt',
-                  'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
-                  'ch.swisstopo.swissnames3d.vt'
+                  'ch.swisstopo.leichte-basiskarte.vt'
                   // Once cut dataset is ok add it back
                   // 'OpenMapTiles'
                 ],
                 styles: [{
                   id: 'default',
-                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v004/style.json'
-                }, {
+                  url: 'https://vectortiles.geo.admin.ch/gl-styles/' +
+                      'ch.swisstopo.leichte-basiskarte.vt/' +
+                      'v006/style.json'
+                }/*, {
                   id: 'color',
                   url: 'https://gist.githubusercontent.com/davidoesch/6223bb04dee87172e93e98d1e7c0bbc3/raw/e75972dfc0edcb572b7efe0525b4de49957f634b/styles-ch.swisstopo.basiskarte.vt_v004.json'
                 }, {
@@ -351,7 +343,7 @@ goog.require('ga_urlutils_service');
                 }, {
                   id: 'lsd',
                   url: 'https://gist.githubusercontent.com/davidoesch/f6a23f30c653e1dac5709dcd9be92b29/raw/b09cec946961adb34f619bc59a11e71d04af5438/styles-ch.swisstopo.basiskarte-lsd.vt_v004.json'
-                }],
+                } */],
                 edits: [{
                   id: 'settlement',
                   regex: /^settlement/,
