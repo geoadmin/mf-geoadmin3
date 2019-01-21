@@ -712,7 +712,7 @@ goog.require('ga_urlutils_service');
               // Create sublayers.
               var subLayers = [];
               olLayer.glStyle = glStyle;
-              for (i = 0; i < subLayersIds.length; i++) {
+              for (var i = 0; i < subLayersIds.length; i++) {
                 var id = subLayersIds[i];
 
                 // If a raster config already exists,
