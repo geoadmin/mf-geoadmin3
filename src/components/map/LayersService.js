@@ -326,13 +326,6 @@ goog.require('ga_urlutils_service');
                   '<a target="_blank" href="https://openmaptiles.org/">OpenMapTiles</a>, ' +
                   '<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, ' +
                   '<a target="_blank" href="https://www.swisstopo.admin.ch/' + lang + '/home.html">swisstopo</a>',
-                subLayersIds: [
-                  'ch.swisstopo.swissalti3d-reliefschattierung',
-                  'ch.swisstopo.vektorkarte.vt',
-                  'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
-                  'ch.swisstopo.swissnames3d.vt',
-                  'OpenMapTiles'
-                ],
                 styles: [{
                   id: 'default',
                   url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v006/style.json'
