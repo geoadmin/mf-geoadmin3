@@ -294,11 +294,14 @@ goog.require('ga_urlutils_service');
               //                      It will apply styles associated to the sourceId value.
               //                      Used only if the parent has no styleUrl defined (see background layers).
               var vts = [{
-                serverLayerName: 'ch.swisstopo.leichte-basiskarte.vt',
-                sourceId: 'Leichte Basiskarte',
-                opacity: 0.75 // Show swissalti
+                serverLayerName: 'ch.swisstopo.swissnames3d.vt',
+                sourceId: 'ch.swisstopo.swissnames3d'
               }, {
-                serverLayerName: 'OpenMapTiles'
+                serverLayerName: 'ch.bav.haltestellen-oev.vt',
+                sourceId: 'ch.bav.haltestellen-oev'
+              }, {
+                serverLayerName: 'ch.swisstopo.vektorkarte.vt',
+                opacity: 0.75 // Show swissalti
               }];
               /* eslint-enable max-len */
 
@@ -309,12 +312,6 @@ goog.require('ga_urlutils_service');
                 });
               });
 
-              // Bg layer with relief and a vector tile tileset
-              var relief = 'ch.swisstopo.swissalti3d-reliefschattierung';
-              if (response.data[relief]) {
-                response.data[relief + '-custom'] = response.data[relief];
-                response.data[relief + '-custom'].opacity = 0.4;
-              }
               response.data['ch.swisstopo.leichte-basiskarte.vt'] = {
                 type: 'aggregate',
                 background: true,
@@ -323,27 +320,19 @@ goog.require('ga_urlutils_service');
                   '<a target="_blank" href="https://openmaptiles.org/">OpenMapTiles</a>, ' +
                   '<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, ' +
                   '<a target="_blank" href="https://www.swisstopo.admin.ch/' + lang + '/home.html">swisstopo</a>',
-                subLayersIds: [
-                  'ch.swisstopo.swissalti3d-reliefschattierung',
-                  'ch.swisstopo.leichte-basiskarte.vt'
-                  // Once cut dataset is ok add it back
-                  // 'OpenMapTiles'
-                ],
                 styles: [{
                   id: 'default',
-                  url: 'https://vectortiles.geo.admin.ch/gl-styles/' +
-                      'ch.swisstopo.leichte-basiskarte.vt/' +
-                      'v006/style.json'
-                }/*, {
+                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v006/style.json'
+                }, {
                   id: 'color',
                   url: 'https://gist.githubusercontent.com/davidoesch/6223bb04dee87172e93e98d1e7c0bbc3/raw/e75972dfc0edcb572b7efe0525b4de49957f634b/styles-ch.swisstopo.basiskarte.vt_v004.json'
                 }, {
                   id: 'grey',
-                  url: 'https://gist.githubusercontent.com/davidoesch/b531a80d89f982cd38fcebaf8f23a0fe/raw/684d357d72e10e7b1eb20994ad84e930e5d50d6f/styles-ch.swisstopo.leichte-basiskarte-grey.vt_v004.json'
+                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte-grey.vt/v006/style.json'
                 }, {
                   id: 'lsd',
-                  url: 'https://gist.githubusercontent.com/davidoesch/f6a23f30c653e1dac5709dcd9be92b29/raw/b09cec946961adb34f619bc59a11e71d04af5438/styles-ch.swisstopo.basiskarte-lsd.vt_v004.json'
-                } */],
+                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte-vintage.vt/v006/style.json'
+                }],
                 edits: [{
                   id: 'settlement',
                   regex: /^settlement/,
@@ -711,15 +700,59 @@ goog.require('ga_urlutils_service');
               gaDefinePropertiesForLayer(olLayer);
             }
           } else if (config.type === 'aggregate') {
-            var subLayersIds = config.subLayersIds;
-            var i, len = subLayersIds.length;
+            var subLayersIds = config.subLayersIds || [];
             var createSubLayers = function(olLayer, glStyle) {
-              var subLayers = new Array(len);
+              if (!subLayersIds.length) {
+                // No sublayerIds provided so we use directly what is available
+                // in sources list of the glStyle.
+                for (var s in glStyle.sources) {
+                  subLayersIds.push(s);
+                }
+              }
+              // Create sublayers.
+              var subLayers = [];
               olLayer.glStyle = glStyle;
-              for (i = 0; i < len; i++) {
-                subLayers[i] = that.getOlLayerById(subLayersIds[i], {
+              for (i = 0; i < subLayersIds.length; i++) {
+                var id = subLayersIds[i];
+
+                // If a raster config already exists,
+                // we inform the developer.
+                if (layers[id] &&
+                    layers[id].type !== 'vectortile' &&
+                    glStyle && glStyle.sources &&
+                    glStyle.sources[id] &&
+                    glStyle.sources[id].type === 'vector') {
+                  $window.console.log('A raster config already exists ' +
+                    'for the glStyle source ' + id + '. ' +
+                    'Please change the source\'s ' +
+                    'name in the glStyle to avoid conflicts.');
+                  continue;
+                }
+
+                // If there is no config for this id, we assume it's
+                // a vectortile so we create a default config.
+                if (!layers[id]) {
+                  layers[id] = {
+                    serverLayerName: id,
+                    type: 'vectortile',
+                    sourceId: id
+                  }
+                }
+
+                // If the sourceId doesn't correspond to a source in glStyle
+                // object, we inform the developer.
+                var sourceId = layers[id].sourceId;
+                if (sourceId && glStyle && glStyle.sources &&
+                    !glStyle.sources[sourceId]) {
+                  $window.console.log('The glStyle has no source with ' +
+                    'the name ' +
+                    layers[id].sourceId + '. Please change the source\'s ' +
+                    'name in the glStyle to avoid conflicts.');
+                  continue;
+                }
+                subLayers.push(that.getOlLayerById(id, {
                   glStyle: glStyle
-                });
+                }));
               }
               olLayer.setLayers(new ol.Collection(subLayers));
             };
