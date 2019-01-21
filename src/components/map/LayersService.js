@@ -334,8 +334,9 @@ goog.require('ga_urlutils_service');
                   'ch.swisstopo.vektorkarte.vt',
                   'ch.bav.haltestellen.vt',
                   'ch.swisstopo.amtliches-strassenverzeichnis_validiert',
-                  'ch.swisstopo.swissnames3d.vt',
-                  'OpenMapTiles'
+                  'ch.swisstopo.swissnames3d.vt'
+                  // Once cut dataset is ok add it back
+                  // 'OpenMapTiles'
                 ],
                 styles: [{
                   id: 'default',
