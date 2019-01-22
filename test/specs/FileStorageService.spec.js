@@ -60,9 +60,9 @@ describe('ga_filestorage_service', function() {
       it('updates a file', inject(function($timeout) {
         var expectedUrl = serviceUrl + '/' + adminId;
         $httpBackend.expectPOST(expectedUrl, fileContent, function(headers) {
-          return headers['Content-Type'] === 'text/plain';
+          return headers['Content-Type'] === 'application/vnd.google-earth.kml+xml';
         }).respond(fileInfo);
-        gaFileStorage.save(adminId, fileContent, 'text/plain');
+        gaFileStorage.save(adminId, fileContent);
         $httpBackend.flush();
       }));
     });

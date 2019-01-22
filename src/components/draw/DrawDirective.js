@@ -759,17 +759,17 @@ goog.require('ga_styles_service');
               map.getView().getProjection());
           var id = layer.adminId ||
               gaFileStorage.getFileIdFromFileUrl(layer.url);
-          gaFileStorage.save(id, kmlString || '<kml></kml>',
-              'application/vnd.google-earth.kml+xml').then(function(data) {
-            scope.statusMsgId = 'draw_file_saved';
+          gaFileStorage.save(id, kmlString || '<kml></kml>').then(
+              function(data) {
+                scope.statusMsgId = 'draw_file_saved';
 
-            // If a file has been created we set the correct id to the layer
-            if (data.adminId && data.adminId !== layer.adminId) {
-              layer.adminId = data.adminId;
-              layer.url = data.fileUrl;
-              layer.id = 'KML||' + layer.url;
-            }
-          });
+                // If a file has been created we set the correct id to the layer
+                if (data.adminId && data.adminId !== layer.adminId) {
+                  layer.adminId = data.adminId;
+                  layer.url = data.fileUrl;
+                  layer.id = 'KML||' + layer.url;
+                }
+              });
         };
         var saveDebounced = gaDebounce.debounce(save, 2000, false, false);
 
