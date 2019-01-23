@@ -750,9 +750,19 @@ goog.require('ga_urlutils_service');
                     'name in the glStyle to avoid conflicts.');
                   continue;
                 }
-                subLayers.push(that.getOlLayerById(id, {
+                var sublayer = that.getOlLayerById(id, {
                   glStyle: glStyle
-                }));
+                });
+
+                // fix ordering of layer groups, otherwise things get mixed up
+                // between groups (label overlapping and such)
+                if (id === 'OpenMapTiles') {
+                  // OSM pushed back to the background
+                  sublayer.setZIndex(0);
+                } else {
+                  sublayer.setZIndex(1 + i);
+                }
+                subLayers.push(sublayer);
               }
               olLayer.setLayers(new ol.Collection(subLayers));
             };
