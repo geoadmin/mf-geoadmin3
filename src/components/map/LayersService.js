@@ -646,7 +646,8 @@ goog.require('ga_urlutils_service');
               source: olSource,
               extent: extent,
               preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
-              useInterimTilesOnError: gaNetworkStatus.offline
+              useInterimTilesOnError: gaNetworkStatus.offline,
+              zIndex: 1
             });
             gaDefinePropertiesForLayer(olLayer);
           } else if (config.type === 'wms') {
@@ -669,7 +670,8 @@ goog.require('ga_urlutils_service');
                 maxResolution: config.maxResolution,
                 opacity: config.opacity || 1,
                 source: olSource,
-                extent: extent
+                extent: extent,
+                zIndex: 2
               });
               gaDefinePropertiesForLayer(olLayer);
             } else {
@@ -695,7 +697,8 @@ goog.require('ga_urlutils_service');
                 source: olSource,
                 extent: extent,
                 preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
-                useInterimTilesOnError: gaNetworkStatus.offline
+                useInterimTilesOnError: gaNetworkStatus.offline,
+                zIndex: 2
               });
               gaDefinePropertiesForLayer(olLayer);
             }
@@ -760,7 +763,7 @@ goog.require('ga_urlutils_service');
                   // OSM pushed back to the background
                   sublayer.setZIndex(0);
                 } else {
-                  sublayer.setZIndex(1 + i);
+                  sublayer.setZIndex(1);
                 }
                 subLayers.push(sublayer);
               }
@@ -791,7 +794,8 @@ goog.require('ga_urlutils_service');
               maxResolution: config.maxResolution,
               opacity: config.opacity || 1,
               source: olSource,
-              extent: extent
+              extent: extent,
+              zIndex: 2
             });
             gaDefinePropertiesForLayer(olLayer);
             geojsonPromises[bodId] = gaUrlUtils.proxifyUrl(config.geojsonUrl).
@@ -831,7 +835,8 @@ goog.require('ga_urlutils_service');
                 format: new ol.format.MVT(),
                 maxZoom: config.maxZoom,
                 url: config.url
-              })
+              }),
+              zIndex: 2
             });
             gaDefinePropertiesForLayer(olLayer);
             olLayer.setOpacity(config.opacity || 1);
