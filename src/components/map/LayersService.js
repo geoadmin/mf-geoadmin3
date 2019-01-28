@@ -325,13 +325,13 @@ goog.require('ga_urlutils_service');
                   url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v006/style.json'
                 }, {
                   id: 'color',
-                  url: 'https://gist.githubusercontent.com/davidoesch/6223bb04dee87172e93e98d1e7c0bbc3/raw/e75972dfc0edcb572b7efe0525b4de49957f634b/styles-ch.swisstopo.basiskarte.vt_v004.json'
+                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte-vintage.vt/v006/style.json'
                 }, {
                   id: 'grey',
                   url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte-grey.vt/v006/style.json'
                 }, {
                   id: 'lsd',
-                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte-vintage.vt/v006/style.json'
+                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte-lsd.vt/v006/style.json'
                 }],
                 edits: [{
                   id: 'settlement',
@@ -646,8 +646,7 @@ goog.require('ga_urlutils_service');
               source: olSource,
               extent: extent,
               preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
-              useInterimTilesOnError: gaNetworkStatus.offline,
-              zIndex: 1
+              useInterimTilesOnError: gaNetworkStatus.offline
             });
             gaDefinePropertiesForLayer(olLayer);
           } else if (config.type === 'wms') {
@@ -670,8 +669,7 @@ goog.require('ga_urlutils_service');
                 maxResolution: config.maxResolution,
                 opacity: config.opacity || 1,
                 source: olSource,
-                extent: extent,
-                zIndex: 2
+                extent: extent
               });
               gaDefinePropertiesForLayer(olLayer);
             } else {
@@ -697,8 +695,7 @@ goog.require('ga_urlutils_service');
                 source: olSource,
                 extent: extent,
                 preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
-                useInterimTilesOnError: gaNetworkStatus.offline,
-                zIndex: 2
+                useInterimTilesOnError: gaNetworkStatus.offline
               });
               gaDefinePropertiesForLayer(olLayer);
             }
@@ -753,19 +750,10 @@ goog.require('ga_urlutils_service');
                     'name in the glStyle to avoid conflicts.');
                   continue;
                 }
-                var sublayer = that.getOlLayerById(id, {
-                  glStyle: glStyle
-                });
 
-                // fix ordering of layer groups, otherwise things get mixed up
-                // between groups (label overlapping and such)
-                if (id === 'OpenMapTiles') {
-                  // OSM pushed back to the background
-                  sublayer.setZIndex(0);
-                } else {
-                  sublayer.setZIndex(1);
-                }
-                subLayers.push(sublayer);
+                subLayers.push(that.getOlLayerById(id, {
+                  glStyle: glStyle
+                }));
               }
               olLayer.setLayers(new ol.Collection(subLayers));
             };
@@ -794,8 +782,7 @@ goog.require('ga_urlutils_service');
               maxResolution: config.maxResolution,
               opacity: config.opacity || 1,
               source: olSource,
-              extent: extent,
-              zIndex: 2
+              extent: extent
             });
             gaDefinePropertiesForLayer(olLayer);
             geojsonPromises[bodId] = gaUrlUtils.proxifyUrl(config.geojsonUrl).
@@ -834,9 +821,12 @@ goog.require('ga_urlutils_service');
               source: new ol.source.VectorTile({
                 format: new ol.format.MVT(),
                 maxZoom: config.maxZoom,
-                url: config.url
-              }),
-              zIndex: 2
+                url: config.url,
+                loader: function (extent, resolution, projection) {
+                  console.log('loader', config.url, extent,
+                    resolution, projection);
+                }
+              })
             });
             gaDefinePropertiesForLayer(olLayer);
             olLayer.setOpacity(config.opacity || 1);
