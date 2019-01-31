@@ -9,7 +9,7 @@ describe('ga_query_service', function() {
       'ch.bazl.luftfahrthindernis': [{
         id: 'obstacle_started_last_2_weeks',
         filters: [{
-          attrName: 'startofconstruction',
+          attrName: 'bgdi_activesince',
           operator: '>=',
           value: twoWeeksAgo
         }, {
