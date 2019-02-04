@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 describe('ga_contextpopup_directive', function() {
-  var elt, scope, parentScope, handlers = {}, map, $rootScope, gaReframe, $compile, $httpBackend, $timeout, gaWhat3Words, $q, gaPermalink, gaHeight;
+  var elt, scope, parentScope, handlers = {}, map, $rootScope, $compile, $httpBackend, $timeout, gaWhat3Words, $q, gaPermalink, gaHeight;
   var expectedHeightUrl = 'http://api3.geo.admin.ch/rest/services/height?easting=2661473&elevation_model=COMB&northing=1188192&sr=2056';
   var expectedReframeUrl = '//api.example.com/reframe/lv95tolv03?easting=2661473&northing=1188192';
   var expectedw3wUrl = 'dummy.test.url.com/v2/reverse?coords=46.84203157398991,8.244528382656728&key=testkey&lang=de';
@@ -73,7 +73,6 @@ describe('ga_contextpopup_directive', function() {
     $httpBackend = $injector.get('$httpBackend');
     $q = $injector.get('$q');
     gaPermalink = $injector.get('gaPermalink');
-    gaReframe = $injector.get('gaReframe');
     gaWhat3Words = $injector.get('gaWhat3Words');
     gaHeight = $injector.get('gaHeight');
   };
@@ -136,7 +135,6 @@ describe('ga_contextpopup_directive', function() {
     });
 
     it('displays information on contextmenu events', function() {
-      var spy = sinon.spy(gaReframe, 'get95To03');
       var spy2 = sinon.spy(gaWhat3Words, 'getWords');
       var spy3 = sinon.spy(gaHeight, 'get');
       var evt = $.Event('contextmenu');
@@ -147,7 +145,6 @@ describe('ga_contextpopup_directive', function() {
       $httpBackend.flush();
       $timeout.flush();
 
-      expect(spy.callCount).to.eql(1);
       expect(spy2.callCount).to.eql(1);
       expect(spy3.callCount).to.eql(1);
 
@@ -157,7 +154,7 @@ describe('ga_contextpopup_directive', function() {
       expect($(tds[1]).find('a').attr('href')).to.be(contextPermalink);
       expect($(tds[1]).text()).to.be('2\'661\'473.0, 1\'188\'192.0');
       expect($(tds[2]).find('a').attr('href')).to.be('contextpopup_lv03_url');
-      expect($(tds[3]).text()).to.be('725\'984.40, 180\'787.40');
+      expect($(tds[3]).text()).to.be('661\'473.00, 188\'192.00');
       expect($(tds[5]).text()).to.be('46.84203, 8.24453');
       expect($(tds[9]).text()).to.be('442\'396, 5\'187\'887 (zone 32T)');
       expect($(tds[11]).text()).to.be('32TMS 42396 87887 ');
@@ -167,7 +164,6 @@ describe('ga_contextpopup_directive', function() {
     });
 
     it('reopens popup on 2nd contextmenu event', function() {
-      var spy = sinon.spy(gaReframe, 'get95To03');
       var spy2 = sinon.spy(gaWhat3Words, 'getWords');
       var spy3 = sinon.spy(scope, 'hidePopover');
       var evt = $.Event('contextmenu');
@@ -177,7 +173,6 @@ describe('ga_contextpopup_directive', function() {
       $httpBackend.flush();
       $timeout.flush();
 
-      expect(spy.callCount).to.eql(1);
       expect(spy2.callCount).to.eql(1);
       expect(spy3.callCount).to.eql(0);
 
@@ -188,13 +183,11 @@ describe('ga_contextpopup_directive', function() {
       $httpBackend.flush();
       $timeout.flush();
 
-      expect(spy.callCount).to.eql(2);
       expect(spy2.callCount).to.eql(2);
       expect(spy3.callCount).to.eql(1);
     });
 
     it('displays informations on long touch press', function() {
-      var spy = sinon.spy(gaReframe, 'get95To03');
       var spy2 = sinon.spy(gaWhat3Words, 'getWords');
       var spyStop = sinon.spy(touchEvt, 'stopPropagation');
       var spyPrev = sinon.spy(touchEvt, 'preventDefault');
@@ -205,7 +198,6 @@ describe('ga_contextpopup_directive', function() {
 
       expect(elt.css('display')).to.be('block');
 
-      expect(spy.callCount).to.eql(1);
       expect(spy2.callCount).to.eql(1);
       expect(spyStop.callCount).to.eql(1);
       expect(spyPrev.callCount).to.eql(1);
@@ -216,7 +208,7 @@ describe('ga_contextpopup_directive', function() {
       expect($(tds[1]).find('a').attr('href')).to.be(contextPermalink);
       expect($(tds[1]).text()).to.be('2\'661\'473.0, 1\'188\'192.0');
       expect($(tds[2]).find('a').attr('href')).to.be('contextpopup_lv03_url');
-      expect($(tds[3]).text()).to.be('725\'984.40, 180\'787.40');
+      expect($(tds[3]).text()).to.be('661\'473.00, 188\'192.00');
       expect($(tds[5]).text()).to.be('46.84203, 8.24453');
       expect($(tds[9]).text()).to.be('442\'396, 5\'187\'887 (zone 32T)');
       expect($(tds[11]).text()).to.be('32TMS 42396 87887 ');
@@ -226,30 +218,24 @@ describe('ga_contextpopup_directive', function() {
     });
 
     it('doesn\'t display informations on long touch press if ctrlKey is pressed', function() {
-      var spy = sinon.spy(gaReframe, 'get95To03');
       var ctrlEvt = $.extend({ctrlKey: true}, touchEvt);
       handlers.pointerdown(ctrlEvt);
       $timeout.flush();
-      expect(spy.callCount).to.eql(0);
       expect(elt.css('display')).to.be('none');
     });
 
     it('doesn\'t display informations on long mouse press', function() {
-      var spy = sinon.spy(gaReframe, 'get95To03');
       handlers.pointerdown(mouseEvt);
-      expect(spy.callCount).to.eql(0);
       expect(elt.css('display')).to.be('none');
     });
 
     it('doesn\'t display information if pointerup event happens before 300ms', function() {
-      var spy = sinon.spy(gaReframe, 'get95To03');
 
       // Touch
       handlers.pointerdown(touchEvt);
       handlers.pointerup(touchEvt);
       $timeout.verifyNoPendingTasks();
       $rootScope.$digest();
-      expect(spy.callCount).to.eql(0);
       expect(elt.css('display')).to.be('none');
 
       // Mouse
@@ -257,12 +243,10 @@ describe('ga_contextpopup_directive', function() {
       handlers.pointerup(mouseEvt);
       $timeout.verifyNoPendingTasks();
       $rootScope.$digest();
-      expect(spy.callCount).to.eql(0);
       expect(elt.css('display')).to.be('none');
     });
 
     it('doesn\'t display information if pointermove event happens before 300ms', function() {
-      var spy = sinon.spy(gaReframe, 'get95To03');
 
       // Touch
       handlers.pointerdown(touchEvt);
@@ -270,7 +254,6 @@ describe('ga_contextpopup_directive', function() {
       $timeout.verifyNoPendingTasks();
       $rootScope.$digest();
 
-      expect(spy.callCount).to.eql(0);
       expect(elt.css('display')).to.be('none');
 
       // Mouse
@@ -279,7 +262,6 @@ describe('ga_contextpopup_directive', function() {
       $timeout.verifyNoPendingTasks();
       $rootScope.$digest();
 
-      expect(spy.callCount).to.eql(0);
       expect(elt.css('display')).to.be('none');
     });
 
@@ -321,14 +303,12 @@ describe('ga_contextpopup_directive', function() {
     }));
 
     it('doesn\'t display informations on events', function() {
-      var spy = sinon.spy(gaReframe, 'get03To95');
       var spy2 = sinon.spy(gaWhat3Words, 'getWords');
       var evt = $.Event('contextmenu');
       evt.coordinate = [661473, 188192];
       evt.pixel = [25, 50];
       handlers.pointerdown(touchEvt);
       $(map.getViewport()).trigger(evt);
-      expect(spy.callCount).to.eql(0);
       expect(spy2.callCount).to.eql(0);
       $timeout.verifyNoPendingTasks();
       $rootScope.$digest();

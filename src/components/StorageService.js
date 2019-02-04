@@ -58,7 +58,8 @@ goog.require('ga_browsersniffer_service');
     };
     var isInitialized = false;
 
-    this.$get = function($window, gaBrowserSniffer, $q) {
+    this.$get = function($window, gaBrowserSniffer, $q, gaNetworkStatus,
+        $http) {
       var Storage = function() {
 
         // Initialize the database config, needed when using webSQL to avoid ios
@@ -135,6 +136,35 @@ goog.require('ga_browsersniffer_service');
         this.clearTiles = function() {
           this.init();
           return $window.localforage.clear();
+        };
+
+        /**
+         * Load an url and store it in localstorage. Get content from
+         * localStorage if offline.
+         * Only json.
+         */
+        this.load = function(url) {
+          var that = this;
+          return $http.get(url, {
+            cache: true
+          }).then(function(response) {
+            that.setItem(url, JSON.stringify(response.data));
+            return response.data;
+          }, function(res) {
+            // if it can t be loaded try in the storage
+            $window.console.error('Unable to load data from ' + url +
+            ' response status is ' + res.status +
+            '. We try to load from localstorage.');
+            var item = that.getItem(url);
+            if (angular.isString(item)) {
+              item = JSON.parse(item);
+            }
+            if (item) {
+              $window.console.error('Loading of ' + url +
+              ' from localstorage succeed');
+            }
+            return $q.when(item);
+          });
         };
       };
       return new Storage();

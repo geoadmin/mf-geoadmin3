@@ -29,10 +29,22 @@ goog.require('ga_urlutils_service');
             return;
           }
 
-          var regex = ',{0,1}' + gaUrlUtils.encodeUriQuery(layer.id, true);
           var href = gaPermalink.getHref();
-          var adminHref = href.replace(new RegExp(regex), '') + '&adminId=' +
-              layer.adminId;
+
+          // Params for Draw directive (KML layer)
+          var adminParam = 'adminId'
+          var regex = ',{0,1}' + gaUrlUtils.encodeUriQuery(layer.id, true);
+
+          // Params for Edit directive (MVT layer)
+          if (layer.externalStyleUrl) {
+            adminParam = 'glStylesAdminId';
+            regex = 'bgLayer_styleUrl=' + gaUrlUtils.encodeUriQuery(
+                layer.externalStyleUrl, true);
+          }
+
+          // Replace the KML layer from layers param
+          var adminHref = href.replace(new RegExp(regex), '') + '&' +
+              adminParam + '=' + layer.adminId;
 
           gaUrlUtils.shorten(href).then(function(url) {
             scope.userShareUrl = url;

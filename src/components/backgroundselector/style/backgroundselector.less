@@ -3,45 +3,49 @@
 [ga-background-selector] {
   user-select: none;
 
-  .ga-bg-layer-bt, .ga-bg-layer, .ga-bg-layer-bt-close {
+  .ga-bg-layer-bt,
+  .ga-bg-layer,
+  .ga-bg-layer-bt-close {
     bottom: unit(@bt-bottom, px);
     overflow: hidden;
     cursor: pointer;
-    position: absolute; 
-    background: #fff data-uri('bg-layersx2.jpg') no-repeat 0 center;
+    position: absolute;
+    background: #fff data-uri('bg-layersx2.png') no-repeat 0 center;
     background-size: 275px 58px;
     border: 3px solid;
-    transition: transform .5s,  bottom .5s, width .5s;
+    transition: transform 0.5s, bottom 0.5s, width 0.5s;
 
     @media (max-width: @screen-tablet) {
       bottom: unit(@bt-bottom-sm, px);
     }
   }
 
-  .ga-bg-layer:hover, .ga-bg-highlight {
-    border-color: red !important;
+  .ga-bg-layer:hover,
+  .ga-bg-highlight {
+    border-color: @red !important;
     cursor: normal;
   }
 
-  .ga-bg-layer-bt, .ga-bg-layer {
+  .ga-bg-layer-bt,
+  .ga-bg-layer {
     z-index: 1005;
   }
 
-
   .zIndexes(@index) when (@index < @nbBgs) {
     .ga-bg-layer-@{index} {
-      z-index: 1005 - @index
+      z-index: 1005 - @index;
     }
     .zIndexes(@index + 1);
   }
   .zIndexes(1);
 
-  .ga-bg-layer-text, .ga-bg-layer-bt-text {
+  .ga-bg-layer-text,
+  .ga-bg-layer-bt-text {
     padding: 1px;
     font-size: 75%;
     text-align: center;
   }
-   
+
   .ga-bg-layer-text {
     background-color: rgba(255, 255, 255, 0.95);
   }
@@ -51,19 +55,42 @@
     background-color: rgba(0, 0, 0, 0.7);
   }
 
-  @media (max-width: @screen-tablet) {
+  .ga-bg-layer-edit {
+    display: none;
+    &:hover,
+    &.active {
+      color: @red;
+    }
+  }
 
-    .ga-bg-layer-text, .ga-bg-layer-bt-text, .fa-chevron-sign-right {
+  button.fa-user-edit {
+    top: 13px;
+    left: 1px;
+    background-color: rgba(254, 254, 254, 0.65);
+    padding-top: 2px;
+    width: 27px;
+    height: 27px;
+  }
+
+  i.fa-user-edit {
+    padding: 9px;
+  }
+
+  @media (max-width: @screen-tablet) {
+    .ga-bg-layer-text,
+    .ga-bg-layer-bt-text,
+    .fa-chevron-sign-right {
       display: none;
     }
 
-    .ga-bg-layer-bt, .ga-bg-layer {
+    .ga-bg-layer-bt,
+    .ga-bg-layer {
       left: unit(@control-btns-right, px);
     }
 
     .ga-bg-layer {
       &:active {
-        border-color: red;
+        border-color: @red;
       }
     }
 
@@ -75,44 +102,59 @@
       }
     }
 
-    .ga-bg-layer-bt, .ga-bg-layer {
+    .ga-bg-layer-bt,
+    .ga-bg-layer {
       width: unit(@control-btn-size - 2, px);
       height: unit(@control-btn-size - 2, px);
       border-radius: 21px;
       margin: 1px;
     }
 
-    .ga-pixelkarte-grau {
-      background-position: -118px center;
+    .ga-leichte-basiskarte {
+      background-position: -92px 0;
     }
 
     .ga-pixelkarte-farbe {
-      background-position: -210px center;
+      background-position: -185px 0;
+    }
+
+    .ga-bg-layer-edit {
+      display: block;
     }
 
     &.ga-open {
-
       .transformVertical(@index) when (@index < @nbBgs) {
         @y: -49px * (@index + 1);
         .ga-bg-layer-@{index} {
-          transform:  translate3d(0, @y, 0);
+          transform: translate3d(0, @y, 0);
           -ms-transform: translateY(@y); /* IE 9*/
         }
         .transformVertical(@index + 1);
       }
       .transformVertical(0);
+      .ga-bg-layer-edit {
+        left: unit(@control-btns-right + 45, px);
+      }
+    }
+
+    button.fa-user-edit {
+      display: none;
+    }
+
+    i.fa-user-edit {
+      display: block;
     }
   }
 
   @media (min-width: (@screen-tablet + 1)) {
-    
     .fa-chevron-sign-right {
       line-height: 64px;
       text-align: center;
       display: none;
     }
 
-    .ga-bg-layer, .ga-bg-layer-bt {
+    .ga-bg-layer,
+    .ga-bg-layer-bt {
       width: 96px;
       height: 64px;
       right: unit(@control-btns-right, px);
@@ -122,13 +164,11 @@
     .ga-pixelkarte-farbe {
       background-position: -185px 0;
     }
-
-    .ga-pixelkarte-grau {
+    .ga-leichte-basiskarte {
       background-position: -92px 0;
     }
 
     &.ga-open {
-
       .ga-bg-layer-bt {
         width: 20px;
         background-image: none;
@@ -145,20 +185,68 @@
       .transformHorizontal(@index) when (@index < @nbBgs) {
         @x: -25px - (101px * @index);
         .ga-bg-layer-@{index} {
-          transform:  translate3d(@x, 0, 0);
+          transform: translate3d(@x, 0, 0);
           -ms-transform: translateX(@x); /* IE 9*/
         }
         .transformHorizontal(@index + 1);
       }
       .transformHorizontal(0);
     }
+
+    button.fa-user-edit {
+      display: block;
+    }
+
+    i.fa-user-edit {
+      display: none;
+    }
+  }
+
+  &.ga-open .ga-bg-layer-bt {
+    button.fa-user {
+      display: none;
+      @media (max-width: @screen-tablet) {
+        display: block;
+      }
+    }
+  }
+
+  .fa-user-edit,
+  .fa-user {
+    font-size: 1.6em;
+  }
+
+  .fa-user {
+    float: right;
+    color: @red;
+    top: 18px;
+    @media (max-width: @screen-tablet) {
+      font-size: 1.3rem;
+    }
+  }
+  .ga-bg-layer-bt .fa-user {
+    @media (max-width: @screen-tablet) {
+      top: 8px;
+      right: 6px;
+    }
+  }
+  .ga-bg-layer .fa-user {
+    @media (max-width: @screen-tablet) {
+      top: 12px;
+      right: 11px;
+    }
+  }
+
+  .fa-user-edit {
+    &:hover,
+    &.active {
+      color: @red;
+    }
   }
 }
 
 .ga-3d-active {
-
   [ga-background-selector] {
-
     .ga-disable3d {
       cursor: not-allowed;
       border-color: gray !important;

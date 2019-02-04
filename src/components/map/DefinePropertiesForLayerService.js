@@ -73,7 +73,7 @@ goog.provide('ga_definepropertiesforlayer_service');
           },
           adminId: {
             get: function() {
-              return this.get('adminId') || this.bodId;
+              return this.get('adminId');
             },
             set: function(val) {
               this.set('adminId', val);
@@ -215,6 +215,14 @@ goog.provide('ga_definepropertiesforlayer_service');
             writable: true,
             value: null
           },
+          glStyle: {
+            writable: true,
+            value: null
+          },
+          styles: {
+            writable: true,
+            value: null
+          },
           userVisible: {
             writable: true,
             value: olLayer.getVisible()
@@ -222,6 +230,10 @@ goog.provide('ga_definepropertiesforlayer_service');
           displayIn3d: {
             writable: true,
             value: true
+          },
+          sourceId: {
+            writable: true,
+            default: null
           }
         });
       };

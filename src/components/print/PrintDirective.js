@@ -7,6 +7,7 @@ goog.require('ga_maputils_service');
 goog.require('ga_printlayer_service');
 goog.require('ga_translation_service');
 goog.require('ga_urlutils_service');
+goog.require('ga_vector_service');
 
 (function() {
 
@@ -18,13 +19,14 @@ goog.require('ga_urlutils_service');
     'ga_maputils_service',
     'ga_layers_service',
     'ga_urlutils_service',
-    'ga_translation_service'
+    'ga_translation_service',
+    'ga_vector_service'
   ]);
 
   module.controller('GaPrintDirectiveController', function($scope,
       $http, $q, $window, $translate, $timeout, gaLayers, gaMapUtils,
       gaPermalink, gaBrowserSniffer, gaWaitCursor, gaLang,
-      gaPrintLayer, gaAttribution, gaUrlUtils) {
+      gaPrintLayer, gaAttribution, gaUrlUtils, gaVector) {
     var pdfLegendString = '_big.pdf';
     var printRectangle;
     var deregister = [];
@@ -54,10 +56,15 @@ goog.require('ga_urlutils_service');
       return http;
     };
 
+    // Layer used for clipping
+    var layer = gaVector.getTransparentLayer();
+
     var activate = function() {
+      layer.setMap($scope.map);
+      // TOFIX: map has no access to vector context anymore. since > 5.3.0
       deregister = [
-        $scope.map.on('precompose', handlePreCompose),
-        $scope.map.on('postcompose', handlePostCompose),
+        layer.on('prerender', handlePreCompose),
+        layer.on('postrender', handlePostCompose),
         $scope.map.on('change:size', function(event) {
           updatePrintRectanglePixels($scope.scale);
         }),
@@ -73,6 +80,7 @@ goog.require('ga_urlutils_service');
     };
 
     var deactivate = function() {
+      layer.setMap();
       var item;
       while ((item = deregister.pop())) {
         if (angular.isFunction(item)) {

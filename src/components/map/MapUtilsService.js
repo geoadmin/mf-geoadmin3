@@ -9,15 +9,16 @@ goog.require('ga_urlutils_service');
   var module = angular.module('ga_maputils_service', [
     'ga_definepropertiesforlayer_service',
     'ga_urlutils_service',
-    'ga_height_service'
+    'ga_height_service',
+    'ga_storage_service'
   ]);
 
   /**
    * Service provides map util functions.
    */
   module.provider('gaMapUtils', function() {
-    this.$get = function($window, gaGlobalOptions, gaUrlUtils, $q,
-        gaDefinePropertiesForLayer, $rootScope, gaHeight) {
+    this.$get = function($window, gaGlobalOptions, gaUrlUtils, $q, gaStorage,
+        gaDefinePropertiesForLayer, $http, $rootScope, gaHeight) {
       var resolutions = gaGlobalOptions.resolutions;
       var lodsForRes = gaGlobalOptions.lods;
       var isExtentEmpty = function(extent) {
@@ -31,6 +32,19 @@ goog.require('ga_urlutils_service');
       // Level of detail for the default resolution
       var proj = ol.proj.get(gaGlobalOptions.defaultEpsg);
       var extent = gaGlobalOptions.defaultExtent || proj.getExtent();
+      var BASE64_MARKER = ';base64,';
+
+      // For mobile, redefine disposeInternal function for mvt.
+      // TODO: verify if it's useful
+      var disposeInternal = ol.VectorImageTile.prototype.disposeInternal;
+      ol.VectorImageTile.prototype.disposeInternal = function() {
+        for (var key in this.context_) {
+          var context = this.context_[key];
+          context.canvas.width = context.canvas.height = 0;
+        }
+        disposeInternal.call(this);
+      };
+
       return {
         Z_PREVIEW_LAYER: 1000,
         Z_PREVIEW_FEATURE: 1100,
@@ -42,19 +56,25 @@ goog.require('ga_urlutils_service');
         getViewResolutionForZoom: function(zoom) {
           return resolutions[zoom];
         },
+
         // Example of a dataURI: 'data:image/png;base64,sdsdfdfsdfdf...'
         dataURIToBlob: function(dataURI) {
-          var BASE64_MARKER = ';base64,';
+          var base64Index = dataURI.indexOf(BASE64_MARKER);
+          var contentType = dataURI.substring(5, base64Index);
+          var arrayBuffer = this.dataURIToArrayBuffer(dataURI);
+          return this.arrayBufferToBlob(arrayBuffer, contentType);
+        },
+
+        dataURIToArrayBuffer: function(dataURI) {
           var base64Index = dataURI.indexOf(BASE64_MARKER);
           var base64 = dataURI.substring(base64Index + BASE64_MARKER.length);
-          var contentType = dataURI.substring(5, base64Index);
           var raw = $window.atob(base64);
           var rawLength = raw.length;
           var uInt8Array = new Uint8Array(rawLength);
           for (var i = 0; i < rawLength; ++i) {
             uInt8Array[i] = raw.charCodeAt(i);
           }
-          return this.arrayBufferToBlob(uInt8Array.buffer, contentType);
+          return uInt8Array.buffer;
         },
 
         // Advantage of the blob is we have easy access to the size and the
@@ -85,7 +105,7 @@ goog.require('ga_urlutils_service');
          * Use by offline to store in local storage.
          */
         getTileKey: function(tileUrl) {
-          return tileUrl.replace(/^\/\/(wmts|tod)[0-9]{0,3}/, '').
+          return tileUrl.replace(/^\/\/(vectortiles|wmts|tod)[0-9]{0,3}/, '').
               replace('prod.bgdi', 'geo.admin');
         },
 
@@ -113,6 +133,20 @@ goog.require('ga_urlutils_service');
           var layer;
           map.getLayers().forEach(function(l) {
             if (l.bodId === bodId && !l.background && !l.preview) {
+              layer = l;
+            }
+          });
+          return layer;
+        },
+
+        /**
+         * Search for a background layer in the map. If not found (voidLayer),
+         * it returns undefined.
+         */
+        getMapBackgroundLayer: function(map) {
+          var layer;
+          map.getLayers().forEach(function(l) {
+            if (!layer && l.background) {
               layer = l;
             }
           });
@@ -474,6 +508,156 @@ goog.require('ga_urlutils_service');
               olLayer.getSource &&
               (olLayer.getSource() instanceof ol.source.ImageWMS ||
               olLayer.getSource() instanceof ol.source.TileWMS));
+        },
+
+        /**
+         * Applies a gl style to an ol layer
+         */
+        applyGlStyleToOlLayer: function(olLayer, glStyle) {
+          if (!olLayer || !glStyle) {
+            return;
+          }
+
+          if (olLayer instanceof ol.layer.Group) {
+            var that = this;
+            var layers = olLayer.getLayers();
+            layers.forEach(function(subOlLayer) {
+              that.applyGlStyleToOlLayer(subOlLayer, glStyle);
+            })
+            olLayer.glStyle = glStyle;
+            return;
+          }
+
+          if (!olLayer.sourceId) {
+            return;
+          }
+
+          gaStorage.load(glStyle.sprite + '.json').then(function(spriteData) {
+            $window.olms.stylefunction(
+                olLayer,
+                glStyle,
+                olLayer.sourceId,
+                undefined,
+                spriteData,
+                glStyle.sprite + '.png',
+                ['Helvetica']);
+            olLayer.glStyle = glStyle;
+          });
+        },
+
+        // This function creates  an ol source and set it to the layer from the
+        // sourceConfig of a glStyle.
+        // This function set also the extent and minZoom, maxZoom infos.
+        // ex: https://vectortiles.geo.admin.ch/mbtiles/ch.astra.wanderland_1539077150.json
+        applyGlSourceToOlLayer: function(olLayer, sourceConfig) {
+          var that = this;
+          return gaStorage.load(sourceConfig.url).then(function(data) {
+            var olSource;
+            var sourceOpts = {
+              minZoom: sourceConfig.minZoom || data.minzoom,
+              maxZoom: sourceConfig.maxZoom || data.maxzoom,
+              urls: data.tiles,
+              tileLoadFunction: function(tile, url) {
+                tile.setLoader(function() {
+                  gaStorage.getTile(that.getTileKey(url)
+                  ).then(function(base64) {
+                    if (!base64) {
+                      return $http.get(url, {
+                        responseType: 'arraybuffer'
+                      }).then(function(resp) {
+                        return resp.data;
+                      });
+                    }
+                    // Content from cache is a base64 string
+                    return $q.when(that.dataURIToArrayBuffer(base64));
+                  }).then(function(arrayBuffer) {
+                    return $q.when(arrayBuffer || new ArrayBuffer(0));
+                  }, function() {
+                    // Very important otherwise failed requests breaks rendering
+                    // of all tiles.
+                    return $q.when(new ArrayBuffer(0));
+                  }).then(function(arrayBuffer) {
+                    var format = tile.getFormat();
+                    tile.setProjection(format.readProjection(arrayBuffer));
+                    tile.setFeatures(format.readFeatures(arrayBuffer));
+                    // the line below is only required for ol/format/MVT
+                    tile.setExtent(format.getLastExtent());
+                  });
+                });
+              }
+            };
+
+            if (sourceConfig.type === 'raster') {
+              olSource = new ol.source.XYZ(sourceOpts);
+
+            } else { // vector
+              sourceOpts.format = new ol.format.MVT();
+              // Setting it to 0 makes tiles disappear on each zoom.
+              sourceOpts.cacheSize = 20;
+              olSource = new ol.source.VectorTile(sourceOpts);
+            }
+            olLayer.setSource(olSource);
+
+            if (data.bounds) {
+              // Extent in epsg:4326
+              olLayer.setExtent(ol.proj.transformExtent(data.bounds,
+                  ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857')));
+            }
+
+          }, function(reason) {
+            $window.console.error('Loading source config failed. Reason: ',
+                reason);
+          });
+        },
+
+        /**
+         * Transform a geometry in swissprojection.
+         * Used to have a better measurement.
+         */
+        transform: function(geom) {
+          return geom.clone().transform(
+              ol.proj.get(gaGlobalOptions.defaultEpsg),
+              ol.proj.get('EPSG:2056')
+          );
+        },
+
+        /**
+         * Transform a geometry from swissprojection to map's proj.
+         * Used to have a better measurement.
+         */
+        transformBack: function(geom) {
+          return geom.clone().transform(
+              ol.proj.get('EPSG:2056'),
+              ol.proj.get(gaGlobalOptions.defaultEpsg)
+          );
+        },
+
+        /**
+         * Mapping between Swiss map zooms and Web Mercator zooms.
+        */
+        swissZoomToMercator: function(zoom) {
+          var gridZoom = zoom + 14;
+          var wmtsMaxZoom = gaGlobalOptions.tileGridResolutions.length;
+          var mapMaxZoom = gaGlobalOptions.resolutions.length;
+          var zoomOffset = wmtsMaxZoom - mapMaxZoom;
+          var mapping = {
+            14: 7.35,
+            15: 7.75,
+            16: 8.75,
+            17: 10,
+            18: 11,
+            19: 12.5,
+            20: 13.5,
+            21: 14.5,
+            22: 15.5,
+            23: 15.75,
+            24: 16.7,
+            25: 17.75,
+            26: 18.75,
+            27: 20,
+            28: 21 // not defined at the moment
+          };
+          return mapping[gridZoom] - zoomOffset;
         }
       };
     };

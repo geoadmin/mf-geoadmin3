@@ -3,28 +3,32 @@ describe('ga_background_service', function() {
 
   describe('gaBackground', function() {
     var gaBg, gaPermalink, gaTopic, deferGaLayers, deferGaTopic, map, $rootScope,
-      gaPermalinkMock, $rootScopeMock, $q;
+      gaPermalinkMock, $rootScopeMock, $q, gaGlStyleStorage;
+
+    // Only vector bg and void layer are always added to the map
+    var nbBgs = 2;
+    var firstBgId = 'ch.swisstopo.leichte-basiskarte.vt';
     var topic1 = {
-      'defaultBackground': 'bg1',
+      'defaultBackground': 'ch.swisstopo.leichte-basiskarte.vt',
       'backgroundLayers': [
-        'bg2',
-        'bg1'
+        'ch.swisstopo.leichte-basiskarte.vt',
+        'voidLayer'
       ]
     };
     var topic2 = {
-      'defaultBackground': 'bg3',
+      'defaultBackground': 'ch.swisstopo.leichte-basiskarte.vt',
       'backgroundLayers': [
-        'bg1',
-        'bg2',
-        'bg3'
+        'ch.swisstopo.leichte-basiskarte.vt',
+        'ch.swisstopo.pixelkarte-farbe',
+        'ch.swisstopo.swissimage'
       ]
     };
     var topicVoidLayer = {
       'defaultBackground': 'voidLayer',
       'backgroundLayers': [
-        'bg1',
-        'bg2',
-        'bg3'
+        'ch.swisstopo.leichte-basiskarte.vt',
+        'ch.swisstopo.pixelkarte-farbe',
+        'ch.swisstopo.swissimage'
       ]
     };
     var topicPlConfig = {
@@ -34,6 +38,12 @@ describe('ga_background_service', function() {
         'bg1',
         'bg2',
         'bg3'
+      ]
+    };
+    var topic4 = {
+      'defaultBackground': 'ch.swisstopo.leichte-basiskarte.vt',
+      'backgroundLayers': [
+        'ch.swisstopo.pixelkarte-farbe'
       ]
     };
 
@@ -46,8 +56,11 @@ describe('ga_background_service', function() {
           getLayerProperty: function() {
             return 'label';
           },
-          getOlLayerById: function() {
-            return new ol.layer.Layer({});
+          getOlLayerById: function(id, opts) {
+            var l = new ol.layer.Layer({});
+            l.id = id;
+            l.externalStyleUrl = opts && opts.externalStyleUrl;
+            return l;
           }
         });
 
@@ -62,7 +75,10 @@ describe('ga_background_service', function() {
           getParams: function() {
             return {};
           },
-          updateParams: function() {}
+          updateParams: function() {
+          },
+          deleteParam: function() {
+          }
         });
 
       });
@@ -73,6 +89,7 @@ describe('ga_background_service', function() {
         gaBg = $injector.get('gaBackground');
         gaTopic = $injector.get('gaTopic');
         gaPermalink = $injector.get('gaPermalink');
+        gaGlStyleStorage = $injector.get('gaGlStyleStorage');
         gaPermalinkMock = sinon.mock(gaPermalink);
         $rootScopeMock = sinon.mock($rootScope);
       });
@@ -127,14 +144,13 @@ describe('ga_background_service', function() {
 
         it('initializes the list of background layers', function(done) {
           gaBg.init(map).then(function() {
+            // no bg in topic we only add basis and voidLayer
             var bgs = gaBg.getBackgrounds();
-            expect(bgs.length).to.equal(3);
-            expect(bgs[0].id).to.equal('bg2');
-            expect(bgs[0].label).to.equal('label');
-            expect(bgs[1].id).to.equal('bg1');
-            expect(bgs[1].label).to.equal('label');
-            expect(bgs[2].id).to.equal('voidLayer');
-            expect(bgs[2].label).to.equal('void_layer');
+            expect(bgs.length).to.equal(nbBgs);
+            expect(bgs[0].id).to.equal(firstBgId);
+            expect(bgs[0].label).to.equal('basis');
+            expect(bgs[1].id).to.equal('voidLayer');
+            expect(bgs[1].label).to.equal('void_layer');
             done();
           });
           deferGaTopic.resolve();
@@ -145,7 +161,7 @@ describe('ga_background_service', function() {
         it('initializes the default background from topic', function(done) {
           gaBg.init(map).then(function() {
             var bg = gaBg.get();
-            expect(bg.id).to.equal('bg1');
+            expect(bg.id).to.equal(firstBgId);
             done();
           });
           deferGaTopic.resolve();
@@ -156,7 +172,7 @@ describe('ga_background_service', function() {
         it('adds a bg layer to the map', function(done) {
           gaBg.init(map).then(function() {
             var bg = gaBg.get();
-            expect(bg.id).to.equal('bg1');
+            expect(bg.id).to.equal(firstBgId);
 
             var layer = map.getLayers().item(0);
             expect(layer.background).to.be.ok();
@@ -175,10 +191,10 @@ describe('ga_background_service', function() {
           };
           gaBg.init(map).then(function() {
             var bg = gaBg.get();
-            expect(bg.id).to.equal('voidLayer');
+            expect(bg.id).to.equal(firstBgId);
 
             var length = map.getLayers().getLength();
-            expect(length).to.be(0);
+            expect(length).to.be(1);
             done();
           });
           deferGaTopic.resolve();
@@ -187,7 +203,7 @@ describe('ga_background_service', function() {
         });
 
         it('updates permalink', function(done) {
-          var upParams = gaPermalinkMock.expects('updateParams').withArgs({bgLayer: 'bg1'}).once();
+          var upParams = gaPermalinkMock.expects('updateParams').withArgs({bgLayer: firstBgId}).once();
           gaBg.init(map).then(function() {
             upParams.verify();
             done();
@@ -195,6 +211,62 @@ describe('ga_background_service', function() {
           deferGaTopic.resolve();
           deferGaLayers.resolve();
           $rootScope.$digest();
+        });
+
+        it('deletes/updates permalink if externalStyleUrl property change', function() {
+          gaBg.init(map);
+          deferGaTopic.resolve();
+          deferGaLayers.resolve();
+
+          var upParams = gaPermalinkMock.expects('deleteParam').
+              withArgs('bgLayer_styleUrl').once();
+          $rootScope.$digest();
+          upParams.verify();
+
+          var upParams2 = gaPermalinkMock.expects('updateParams').
+              withArgs({'bgLayer_styleUrl': 'myStyleFoo'}).atLeast(1);
+          map.getLayers().getArray()[0].externalStyleUrl = 'myStyleFoo';
+          $rootScope.$digest();
+          upParams2.verify();
+
+          upParams = gaPermalinkMock.expects('deleteParam').
+              withArgs('bgLayer_styleUrl').once();
+          map.getLayers().getArray()[0].externalStyleUrl = null;
+          $rootScope.$digest();
+          upParams.verify();
+        });
+
+        it('uses bgLayer_styleUrl permalink on load', function() {
+          var p = gaPermalinkMock.expects('getParams').exactly(2).returns({
+            bgLayer: firstBgId,
+            bgLayer_styleUrl: 'http://myStyleBar'
+          });
+          gaBg.init(map);
+          deferGaTopic.resolve();
+          deferGaLayers.resolve();
+          $rootScope.$digest();
+          p.verify();
+          expect(map.getLayers().getArray()[0].adminId).to.be(undefined);
+          expect(map.getLayers().getArray()[0].externalStyleUrl).to.be('http://myStyleBar');
+        });
+
+        it('uses glStyleAdminId permalink on load', function() {
+          var p = gaPermalinkMock.expects('getParams').exactly(2).returns({
+            bgLayer: firstBgId,
+            glStylesAdminId: 'myId'
+          });
+          var p2 = gaPermalinkMock.expects('deleteParam').withArgs('glStylesAdminId');
+          var stub = sinon.stub(gaGlStyleStorage, 'getFileUrlFromAdminId').
+              withArgs('myId').returns($q.when('http://myStyleBario'));
+          gaBg.init(map);
+          deferGaTopic.resolve();
+          deferGaLayers.resolve();
+          $rootScope.$digest();
+          p.verify();
+          p2.verify();
+          expect(stub.callCount).to.be(1);
+          expect(map.getLayers().getArray()[0].adminId).to.be('myId');
+          expect(map.getLayers().getArray()[0].externalStyleUrl).to.be('http://myStyleBario');
         });
 
         it('broadcast gaBgChange event', function(done) {
@@ -222,20 +294,20 @@ describe('ga_background_service', function() {
         it('changes bg on gaTopicChange event', function(done) {
           gaBg.init(map).then(function() {
             var layers = map.getLayers();
-            expect(gaBg.get().id).to.equal('bg1');
-            expect(gaBg.getBackgrounds().length).to.equal(3);
+            expect(gaBg.get().id).to.equal(firstBgId);
+            expect(gaBg.getBackgrounds().length).to.equal(nbBgs);
             expect(layers.getLength()).to.equal(1);
 
             $rootScope.$broadcast('gaTopicChange', topic2);
-            expect(gaBg.get().id).to.equal('bg3');
+            expect(gaBg.get().id).to.equal(firstBgId);
             expect(gaBg.getBackgrounds().length).to.equal(4);
             expect(layers.getLength()).to.equal(1);
 
             $rootScope.$broadcast('gaTopicChange', topicVoidLayer);
-            expect(gaBg.get().id).to.equal('voidLayer');
+            // default layer is always vt layer
+            expect(gaBg.get().id).to.equal(firstBgId);
             expect(gaBg.getBackgrounds().length).to.equal(4);
-            expect(layers.getLength()).to.equal(0);
-
+            expect(layers.getLength()).to.equal(1);
             done();
           });
           deferGaTopic.resolve();
@@ -255,7 +327,7 @@ describe('ga_background_service', function() {
         it('uses default bg from plConfig (priority over defaultBackground property)', function(done) {
           gaBg.init(map).then(function() {
             var bg = gaBg.get();
-            expect(bg.id).to.equal('bg3');
+            expect(bg.id).to.equal(firstBgId);
             done();
           });
           deferGaTopic.resolve();
@@ -263,18 +335,107 @@ describe('ga_background_service', function() {
           $rootScope.$digest();
         });
 
-        it('initializes the default background from permalink (priority over plConfig)', function(done) {
+        it('initializes the default background from permalink (priority over plConfig)', function() {
           var getParams = gaPermalinkMock.expects('getParams').twice().returns({bgLayer: 'voidLayer'});
-          gaBg.init(map).then(function() {
-            getParams.verify();
-            var bg = gaBg.get();
-            expect(bg.id).to.equal('voidLayer');
-            done();
-          });
+          gaBg.init(map);
           deferGaTopic.resolve();
           deferGaLayers.resolve();
           $rootScope.$digest();
+          getParams.verify();
+          var bg = gaBg.get();
+          expect(bg.id).to.equal('voidLayer');
         });
+      });
+    });
+
+    describe('#set()', function() {
+
+      beforeEach(function() {
+        gaTopic.get = function() {
+          return topic1;
+        };
+        gaBg.init(map);
+        deferGaTopic.resolve();
+        deferGaLayers.resolve();
+        $rootScope.$digest();
+      });
+
+      it('calls setBgById', function() {
+        var bg = {id: 'bg1'};
+        var stub = sinon.stub(gaBg, 'setById').withArgs(map, 'bg1');
+        gaBg.set(map, bg);
+        expect(stub.callCount).to.be(1);
+      });
+
+      it('does nothing ', function() {
+        var bg = {id: 'bg1'};
+        var stub = sinon.stub(gaBg, 'setById').withArgs(null, bg);
+        gaBg.set(null, bg);
+        expect(stub.callCount).to.be(0);
+        gaBg.set(map, null);
+        expect(stub.callCount).to.be(0);
+      });
+    });
+
+    describe('#setById()', function() {
+
+      beforeEach(function() {
+        gaTopic.get = function() {
+          return topic4;
+        };
+        gaBg.init(map);
+        deferGaTopic.resolve();
+        deferGaLayers.resolve();
+        $rootScope.$digest();
+      });
+
+      it('switch bgLayer from vt to wmts then to vt', function() {
+        var dfltBg = gaBg.get(); // ch.swisstopo.leichte-basiskarte.vt
+        var bg = gaBg.getBackgrounds()[1]; // pixelkartefarbe
+        expect(dfltBg.id).to.not.equal(bg.id);
+        var bcast = $rootScopeMock.expects('$broadcast').
+            withArgs('gaBgChange', bg).once();
+
+        // from vt to wmts
+        var id = 'ch.swisstopo.pixelkarte-farbe';
+        var stub = sinon.stub(gaPermalink, 'updateParams').withArgs({
+          bgLayer: id
+        });
+        var stub2 = sinon.stub(gaPermalink, 'deleteParam').withArgs(
+            'bgLayer_styleUrl');
+        gaBg.setById(map, id);
+        expect(stub.callCount).to.be(1);
+        expect(bg.olLayer).to.be.an(ol.layer.Base);
+        expect(bg.olLayer.background).to.be(true);
+        expect(bg.olLayer.displayInLayerManager).to.be(false);
+        $rootScope.$digest();
+        bcast.verify();
+        expect(stub2.callCount).to.be(1);
+        expect(map.getLayers().getLength()).to.be(1);
+        gaPermalink.updateParams.restore();
+        gaPermalink.deleteParam.restore();
+
+        // from wmts to vt with externalStyleUrl
+        id = 'ch.swisstopo.leichte-basiskarte.vt';
+        bg = gaBg.getBackgrounds()[0];
+        bg.olLayer.externalStyleUrl = 'foo';
+        bcast = $rootScopeMock.expects('$broadcast').
+            withArgs('gaBgChange', bg).once();
+        stub = sinon.stub(gaPermalink, 'updateParams');
+        stub2 = stub.withArgs({ bgLayer: id });
+        var stub3 = stub.withArgs({ 'bgLayer_styleUrl': 'foo' });
+        gaBg.setById(map, id);
+        expect(stub2.callCount).to.be(1);
+        expect(bg.olLayer).to.be.an(ol.layer.Base);
+        expect(bg.olLayer.background).to.be(true);
+        expect(bg.olLayer.displayInLayerManager).to.be(false);
+        expect(bg.olLayer.externalStyleUrl).to.be('foo');
+        $rootScope.$digest();
+        bcast.verify();
+        expect(stub3.callCount).to.be(1);
+        expect(map.getLayers().getLength()).to.be(1);
+        gaPermalink.updateParams.restore();
+
       });
     });
   });
