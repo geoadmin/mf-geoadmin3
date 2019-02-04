@@ -1,0 +1,72 @@
+.ga-query-vector-popup {
+  position: absolute;
+  background-color: white;
+  -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+  border-radius: 5px;
+  border: 1px solid #cccccc;
+  bottom: 12px;
+  left: -50px;
+  min-width: 280px;
+  z-index: 20502;
+}
+
+.ga-query-vector-popup:after,
+.ga-query-vector-popup:before {
+  top: 100%;
+  border: solid transparent;
+  content: ' ';
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.ga-query-vector-popup:after {
+  border-top-color: white;
+  border-width: 10px;
+  left: 48px;
+  margin-left: -10px;
+}
+
+.ga-query-vector-popup:before {
+  border-top-color: #cccccc;
+  border-width: 11px;
+  left: 48px;
+  margin-left: -11px;
+}
+
+.ga-query-vector-popup-title {
+  padding: 10px;
+  font-weight: 400;
+  background-color: rgb(235, 235, 235);
+  border-radius: 5px 5px 0 0;
+}
+
+.ga-query-vector-popup-content {
+  padding: 5px;
+  tr:first-child > td {
+    padding-top: 7px;
+  }
+  tr:last-child > td {
+    padding-bottom: 7px;
+  }
+}
+
+.ga-query-vector-item-separator {
+  border-bottom: 1px solid #cccccc !important;
+}
+
+.ga-query-vector-button {
+  cursor: pointer;
+  text-decoration: none;
+  background: white;
+  padding: 5px;
+  &:hover {
+    text-decoration: none;
+  }
+  &.ga-query-vector-button-active {
+    background-color: black;
+    color: white;
+  }
+}

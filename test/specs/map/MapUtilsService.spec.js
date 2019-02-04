@@ -492,7 +492,7 @@ describe('ga_maputils_service', function() {
 
     /* TODO fix this test
     describe('#resetMapToNorth()', function() {
-      it.only('reset map to north', function(done) {
+      it('reset map to north', function(done) {
         map.getView().setRotation(90);
         expect(map.getView().getRotation()).to.be(90);
         gaMapUtils.resetMapToNorth(map).then(function() {

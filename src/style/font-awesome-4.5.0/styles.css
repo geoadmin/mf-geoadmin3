@@ -632,4 +632,6 @@
 .fa-whatsapp:before {
   content: "\f237";
 }
-
+.fa-user-edit:before {
+  content: "\f238";
+}

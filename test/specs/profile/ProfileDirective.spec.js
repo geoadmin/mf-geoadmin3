@@ -308,7 +308,7 @@ describe('ga_profile_directive', function() {
         });
 
         afterEach(function() {
-          stub.restore();
+          $window.confirm.restore();
         });
 
         it('remove the unique feature of the layer', function() {
