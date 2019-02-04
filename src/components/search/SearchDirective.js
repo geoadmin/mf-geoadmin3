@@ -159,8 +159,8 @@ goog.require('ga_what3words_service');
               return;
             }
 
-            // Coordinate?
-            var extent = $scope.map.getView().getProjection().getExtent();
+            // Use view extent not proj extent
+            var extent = gaMapUtils.defaultExtent;
             gaSearchGetCoordinate(extent, q).then(function(position) {
               if (position) {
                 gaMapUtils.moveTo($scope.map, $scope.ol3d, 8, position);

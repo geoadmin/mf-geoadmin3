@@ -38,6 +38,7 @@
 @import "../components/help/style/help.less";
 @import "../components/offline/style/offline.less";
 @import "../components/query/style/query.less";
+@import "../components/queryvector/style/queryvector.less";
 @import "../components/timestampcontrol/style/timestampcontrol.less";
 @import "../components/translation/style/translation.less";
 @import "../components/tilt3d/style/tilt3d.less";
@@ -46,6 +47,11 @@
 @import "../components/shop/style/shopmsg.less";
 @import "../components/shop/style/shoprectangle.less";
 @import "../components/tabs/style/tabs.less";
+@import "../components/vectorfeedback/style/vectorfeedback.less";
+@import "../components/vectorfeedback/style/vectorfeedbackmodal.less";
+@import "../components/edit/style/edit.less";
+@import "../components/edit/style/color.less";
+@import "../components/edit/style/size.less";
 
 
 @cdbund-margin: 12;
@@ -337,10 +343,6 @@ button.ga-btn,
 
 .ga-draw-active {
 
-  #header {
-    top: unit(-@header-height, px);
-  }
-
   #draw .panel-body {
 
     @media (max-width: @screen-phone) {
@@ -352,12 +354,36 @@ button.ga-btn,
   #drawModeHeader {
     top: 0px;
   }
+}
 
-  #buttonGroup, #pulldown {
+.ga-edit-active {
+
+  #edit .panel-body {
+
+    @media (max-width: @screen-phone) {
+      padding-top: 0;
+      padding-bottom: 5px;
+    }
+  }
+
+  #editModeHeader {
+    top: 0px;
+  }
+}
+
+.ga-draw-active,
+.ga-edit-active {
+  #header {
+    top: unit(-@header-height, px);
+  }
+
+  #buttonGroup,
+  #pulldown {
     top: unit(@small-header-height, px);
   }
 
-  #pulldown-content .panel-heading, #search-container {
+  #pulldown-content .panel-heading,
+  #search-container {
     display: none;
   }
 
@@ -652,12 +678,13 @@ input[type="text"][readonly] {
 }
 
 // ***** MAP
-[ga-map], [ga-background-selector] .ga-voidLayer{
+[ga-background-selector] .ga-voidLayer{
   background: #fff data-uri("../img/mapbg.png") !important;
 }
 
 // ***** DRAW MODE HEADER
-#drawModeHeader {
+#drawModeHeader,
+#editModeHeader {
   top: unit(-15-@small-header-height, px); //-15 for the shadow
   height: unit(@small-header-height, px);
   font-weight: bold;
@@ -691,11 +718,11 @@ input[type="text"][readonly] {
       right: 5px;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
 
-      @media (max-width: @screen-phone) {
-        left: 50px;
-        right: 50px;
-      }
+    @media (max-width: @screen-phone) {
+      left: 50px;
+      right: 50px;
     }
   }
 
@@ -767,6 +794,9 @@ input[type="text"][readonly] {
   select,
   [ga-mouse-position] {
     display: inline-block;
+  }
+  .ol-mouse-position {
+    width: 230px;
   }
 }
 
@@ -1807,6 +1837,13 @@ body:not(.embed) {
     background: rgba(255, 255, 255, 0.7);
   }
 
+  .corner-ribbon {
+    @media (max-width: @screen-tablet), (max-width: @screen-phone) {
+      top: 25px;
+      padding-right: 35px;
+    }
+  }
+
   @media (max-width: 350px) {
     #buttonGroup {
       display: none;
@@ -1822,6 +1859,34 @@ body:not(.embed) {
       font-size: 22px;
       margin: -4px 0;
     }
+  }
+}
+
+/* Corner ribbons, from http://codepen.io/eode9/pen/twkKm */
+.corner-ribbon {
+  position: absolute;
+  /* bottom-left */
+  top: auto;
+  bottom: 50px; /* Under cesium inspectors */
+  left: -100px;
+  z-index: 40;
+  width: 300px;
+  background: @red;
+  color: white;
+  text-align: center;
+  line-height: 50px;
+  letter-spacing: 1px;
+  transform: rotate(45deg);
+  @media (max-width: @screen-tablet) {
+    /* top-left */
+    top: 108px;
+    bottom: auto;
+    left: -195px;
+    width: 500px;
+    transform: rotate(-45deg);
+  }
+  @media (max-width: @screen-phone) {
+    top: 70px;
   }
 }
 
@@ -1873,6 +1938,15 @@ body:not(.embed) {
   [ga-attribution] {
     bottom: 0;
   }
+}
+
+.ga-no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 @import "print.less";
