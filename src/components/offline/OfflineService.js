@@ -29,7 +29,6 @@ goog.require('ga_window_service');
     var bgKey = 'ga-offline-layers-bg';
     var promptKey = 'ga-offline-prompt-db';
 
-    var maxZoom = 8; // max zoom level cached
     var minRes; // res for zoom 8
     var extentFeature = new ol.Feature(
         new ol.geom.Polygon([[[0, 0], [0, 0], [0, 0]]]));
@@ -67,9 +66,17 @@ goog.require('ga_window_service');
         gaBrowserSniffer, gaGlobalOptions, gaLayers, gaMapUtils,
         gaStorage, gaStyleFactory, gaUrlUtils, gaBackground, gaWindow) {
 
+      // min zoom level cached (0 for swissproj ,8 for mercator proj)
+      var minZoom = gaGlobalOptions.offlineMinZoom;
+      var minZoomNonBgLayer = gaGlobalOptions.offlineMinZoomNonBgLayer;
+
+      // max zoom level cached (8 for swiss proj, 16 for mercator proj)
+      var maxZoom = gaGlobalOptions.offlineMaxZoom;
+      var zOffset = gaGlobalOptions.offlineZOffset;
+
       // Defines if a layer is cacheable at a specific data zoom level.
       var isCacheableLayer = function(layer, z) {
-        if (layer.getSource() instanceof ol.source.TileImage &&
+        if (layer.getSource() instanceof ol.source.UrlTile &&
             layer.getSource().getTileGrid()) {
           var resolutions = layer.getSource().getTileGrid().getResolutions();
           var max = layer.getMaxResolution() || resolutions[0];
@@ -216,14 +223,15 @@ goog.require('ga_window_service');
             return false;
           }
           var timestamp = gaStorage.getItem(timestampKey);
-          var isObsolete = !timestamp;// old version hasn't timestamps stored
+          // old version hasn't timestamps stored
+          var isObsolete = (timestamp === undefined || timestamp === null);
           if (!isObsolete) {
             var ts = timestamp.split(',');
             // We go through all saved bod layers and test if the timestamp has
             // changed.
             gaStorage.getItem(layersKey).split(',').forEach(function(id, idx) {
               var layer = gaLayers.getLayer(id);
-              if (layer && !layer.timeEnabled &&
+              if (layer && !layer.timeEnabled && layer.timestamps &&
                   layer.timestamps[0] !== ts[idx]) {
                 isObsolete = true;
               }
@@ -252,26 +260,42 @@ goog.require('ga_window_service');
               });
               this.refreshLayers(layer.getLayers().getArray(), useClientZoom,
                   force || hasCachedLayer);
+
             } else if (force || (layersIds &&
                 layersIds.indexOf(layer.id) !== -1)) {
               var source = layer.getSource();
-              // Clear the internal tile cache of ol
-              // TODO: Ideally we should flush the cache for the tile range
-              // cached
               source.setTileLoadFunction(source.getTileLoadFunction());
 
-              // Defined a new min resolution to allow client zoom on layer with
-              // a min resolution between the max zoom level and the max client
-              // zoom level
-              var origMinRes = gaLayers.getLayer(layer.id).minResolution;
-              if (!useClientZoom && origMinRes) {
-                layer.setMinResolution(origMinRes);
-              } else if (useClientZoom && minRes >= origMinRes) {
-                layer.setMinResolution(0);
+              // WARN: from offline to online only!!! otherwise requests to pbf
+              // tiles are made until it gets something.
+              if (source instanceof ol.source.VectorTile) {
+                layer.setUseInterimTilesOnError(useClientZoom);
+
+                // Clear the internal tile cache of ol and the source tiles.
+                if (!useClientZoom) {
+                  source.clear();
+                }
+
+              } else {
+
+                // Defined a new min resolution to allow client zoom on layer
+                // with a min resolution between the max zoom level and the
+                // max client zoom level
+                var origMinRes = gaLayers.getLayer(layer.id).minResolution;
+                if (!useClientZoom && origMinRes) {
+                  layer.setMinResolution(origMinRes);
+                } else if (useClientZoom && minRes >= origMinRes) {
+                  layer.setMinResolution(0);
+                }
+
+                // Allow client zoom on all layer when offline
+                layer.setUseInterimTilesOnError(useClientZoom);
+                layer.setPreload(useClientZoom ? gaMapUtils.preload : 0);
               }
-              // Allow client zoom on all layer when offline
-              layer.setUseInterimTilesOnError(useClientZoom);
-              layer.setPreload(useClientZoom ? gaMapUtils.preload : 0);
+
+              // Clear the internal tile cache of ol
+              source.setTileLoadFunction(source.getTileLoadFunction());
+              source.refresh();
             }
           }
         };
@@ -467,8 +491,8 @@ goog.require('ga_window_service');
               continue;
             }
 
-            // if it's a tiled layer (WMTS or WMS) prepare the list of tiles to
-            // download
+            // if it's a tiled layer (WMTS or WMS or MVT) prepare the list of
+            // tiles to download
             var isBgLayer = false;
             if (layer.bodId) {
               var parentLayerId = gaLayers.getLayerProperty(layer.bodId,
@@ -482,21 +506,35 @@ goog.require('ga_window_service');
             var tileGrid = source.getTileGrid();
             var tileUrlFunction = source.getTileUrlFunction();
 
+            // Mercator:
             // For each zoom level we generate the list of tiles to download:
-            //   - bg layer: zoom 0 to 3 => swiss extent
-            //               zoom 4 to 8 => 15km2 extent
-            //   - other layers: zoom 4,6,8 => 15km2 extent
+            //
+            //   - bg layer and vector tiles:
+            //     zoom 0 to minZoom-1(7) => projection extent
+            //     zoom minZoom(8) to maxZoom(16) => 15km2 extent
+            //
+            //   - other layers:
+            //     zoom minZoomNonBgLayer(12), 14, maxZoom(16) => 15km2 extent
+
+            // We load all the zoom for vector tiles from minZoomNonBgLayer to
+            // maxZoom.
+            var modulo2 = function(source, z) {
+              if (source instanceof ol.source.VectorTile) {
+                return true;
+              }
+              return (z % 2 !== 0)
+            };
             for (var zoom = 0; zoom <= maxZoom; zoom++) {
-              var z = zoom + 14; // data zoom level
-              if (!isCacheableLayer(layer, z) || (!isBgLayer && (zoom < 4 ||
-                zoom % 2 !== 0))) {
+              var z = zoom + zOffset; // data zoom level
+              if (!isCacheableLayer(layer, z) || (!isBgLayer &&
+                 (zoom < minZoomNonBgLayer || modulo2(source, z)))) {
                 continue;
               }
 
               var queueByZ = [];
               var minX, minY, maxX, maxY;
-              var tileExtent = (isBgLayer && zoom >= 0 && zoom <= 2) ?
-                gaMapUtils.defaultExtent : extent;
+              var tileExtent = (isBgLayer && zoom >= 0 && zoom < minZoom) ?
+                gaGlobalOptions.swissExtent : extent;
               tileGrid.forEachTileCoord(tileExtent, z, function(tileCoord) {
                 maxX = tileCoord[1];
                 maxY = tileCoord[2];
@@ -515,7 +553,7 @@ goog.require('ga_window_service');
               // We sort tiles by distance from the center
               // The first must be dl in totality so no need to sort tiles,
               // the storage goes full only for the 2nd or 3rd layers.
-              if (i > 0 && zoom > 6) {
+              if (i > 0 && zoom > minZoom) {
                 var centerTileCoord = [
                   z, (minX + maxX) / 2, (minY + maxY) / 2
                 ];

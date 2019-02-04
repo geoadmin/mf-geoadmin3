@@ -75,13 +75,12 @@ goog.require('ga_window_service');
         view: new ol.View({
           projection: defaultProjection,
           extent: gaMapUtils.defaultExtent,
-          center: ol.extent.getCenter(gaMapUtils.defaultExtent),
+          center: ol.extent.getCenter(gaGlobalOptions.swissExtent),
           resolution: gaMapUtils.defaultResolution,
           resolutions: gaMapUtils.viewResolutions
         }),
         logo: false
       });
-
       return map;
     };
 
@@ -101,8 +100,10 @@ goog.require('ga_window_service');
 
     if (gaGlobalOptions.dev3d && gaBrowserSniffer.webgl) {
 
-      if (gaPermalink.getParams().lon !== undefined &&
-          gaPermalink.getParams().lat !== undefined) {
+      // 3d specific parameters
+      if (gaPermalink.getParams().elevation !== undefined &&
+          gaPermalink.getParams().heading !== undefined &&
+          gaPermalink.getParams().pitch !== undefined) {
         startWith3D = true;
       }
 
@@ -169,6 +170,7 @@ goog.require('ga_window_service');
     // Activate the "features" permalink manager for the map.
     gaPermalinkFeaturesManager($scope.map);
 
+    // Activate watcher for layers with real-time data
     gaRealtimeLayersManager($scope.map);
 
     // Optimize performance by hiding non-visible layers
@@ -177,7 +179,10 @@ goog.require('ga_window_service');
     var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
     var initWithFeedback = /feedback/g.test(gaPermalink.getParams().widgets);
     var initWithDraw = /draw/g.test(gaPermalink.getParams().widgets) ||
-        !!(gaPermalink.getParams().adminId);
+        (!!(gaPermalink.getParams().adminId) &&
+        !gaPermalink.getParams().glStyleAdminId);
+    var initWithEdit = /edit/g.test(gaPermalink.getParams().widgets) ||
+        !!(gaPermalink.getParams().glStylesAdminId);
     gaPermalink.deleteParam('widgets');
 
     var onTopicsLoaded = function() {
@@ -222,6 +227,8 @@ goog.require('ga_window_service');
         $scope.globals.feedbackPopupShown = initWithFeedback;
       } else if (initWithDraw) {
         $scope.globals.isDrawActive = initWithDraw;
+      } else if (initWithEdit) {
+        $scope.globals.isEditActive = initWithEdit;
       } else {
         onTopicChange(null, gaTopic.get());
       }
@@ -266,6 +273,7 @@ goog.require('ga_window_service');
       queryShown: false,
       isShareActive: false,
       isDrawActive: false,
+      isEditActive: false,
       isFeatureTreeActive: false,
       isPrintActive: false,
       isSwipeActive: false,
@@ -295,6 +303,16 @@ goog.require('ga_window_service');
         $scope.globals.feedbackPopupShown = false;
         $scope.globals.isFeatureTreeActive = false;
         $scope.globals.isSwipeActive = false;
+        $scope.globals.isEditActive = false;
+      }
+    });
+    // Deactivate all tools when draw is opening
+    $scope.$watch('globals.isEditActive', function(active) {
+      if (active) {
+        $scope.globals.feedbackPopupShown = false;
+        $scope.globals.isFeatureTreeActive = false;
+        $scope.globals.isSwipeActive = false;
+        $scope.globals.isDrawActive = false;
       }
     });
     // Deactivate all tools when 3d is opening
@@ -304,13 +322,17 @@ goog.require('ga_window_service');
         $scope.globals.isFeatureTreeActive = false;
         $scope.globals.isSwipeActive = false;
         $scope.globals.isDrawActive = false;
+        $scope.globals.isEditActive = false;
         $scope.globals.isShareActive = false;
       }
     });
     // Activate share tool when menu is opening.
     $scope.$watch('globals.pulldownShown', function(active) {
-      if (active && !$scope.globals.isDrawActive &&
-          !$scope.globals.isShareActive && gaWindow.isWidth('xs')) {
+      if (active &&
+          gaWindow.isWidth('xs') &&
+          !$scope.globals.isDrawActive &&
+          !$scope.globals.isEditActive &&
+          !$scope.globals.isShareActive) {
         $scope.globals.isShareActive = true;
       }
     });
@@ -344,8 +366,9 @@ goog.require('ga_window_service');
         }
       }
       if ((evt.which === 8 || evt.which === 27) &&
-          $scope.globals.isDrawActive) {
+          ($scope.globals.isDrawActive || $scope.globals.isEditActive)) {
         $scope.globals.isDrawActive = false;
+        $scope.globals.isEditActive = false;
         $scope.$digest();
       }
     });
@@ -360,10 +383,27 @@ goog.require('ga_window_service');
         gaHistory.pushState(null, '', gaPermalink.getHref());
       }
     });
+
+    // Browser back button management
+    $scope.$watch('globals.isEditActive', function(isActive) {
+      if (isActive && gaHistory) {
+        gaHistory.replaceState({
+          isEditActive: false
+        }, '', gaPermalink.getHref());
+
+        gaHistory.pushState(null, '', gaPermalink.getHref());
+      }
+    });
+
     $window.onpopstate = function(evt) {
       // When we go to full screen evt.state is null
       if (evt.state && evt.state.isDrawActive === false) {
         $scope.globals.isDrawActive = false;
+        gaPermalink.refresh();
+        $scope.$digest();
+      }
+      if (evt.state && evt.state.isEditActive === false) {
+        $scope.globals.isEditActive = false;
         gaPermalink.refresh();
         $scope.$digest();
       }
@@ -382,7 +422,8 @@ goog.require('ga_window_service');
 
       // Open share panel by default on phone
       if ($scope.globals.pulldownShown && !$scope.globals.isShareActive &&
-          !$scope.globals.isDrawActive && gaWindow.isWidth('xs')) {
+          !$scope.globals.isDrawActive && !$scope.globals.isEditActive &&
+          gaWindow.isWidth('xs')) {
         $scope.$applyAsync(function() {
           $scope.globals.isShareActive = true;
         });

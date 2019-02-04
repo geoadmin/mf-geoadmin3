@@ -96,6 +96,13 @@ goog.require('ga_urlutils_service');
           angular.extend(params, p);
         };
 
+        this.deleteSwissCoords = function() {
+          this.deleteParam('E');
+          this.deleteParam('N');
+          this.deleteParam('X');
+          this.deleteParam('Y');
+        };
+
         this.deleteParam = function(key) {
           delete params[key];
         };

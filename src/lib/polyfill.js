@@ -1,15 +1,17 @@
-/* Polyfill service v3.21.3
+/* Polyfill service v3.25.1
  * For detailed credits and licence information see https://github.com/financial-times/polyfill-service.
  * 
- * UA detected: curl/7.38.0 (unknown/unsupported; using policy `unknown=polyfill`)
- * Features requested: Array.isArray,Element.prototype.classList,URL,requestAnimationFrame
+ * UA detected: other/0.0.0 (unknown/unsupported; using policy `unknown=polyfill`)
+ * Features requested: Array.isArray,Array.prototype.findIndex,Element.prototype.classList,URL,requestAnimationFrame
  * 
- * - Object.defineProperty, License: CC0 (required by "Array.isArray", "Element.prototype.classList", "Object.defineProperties", "URL")
+ * - Object.defineProperty, License: CC0 (required by "Array.isArray", "Array.prototype.findIndex", "Element.prototype.classList", "Object.defineProperties", "URL", "_DOMTokenList", "DOMTokenList")
  * - Array.isArray, License: CC0
- * - _DOMTokenList, License: CC0 (required by "Element.prototype.classList")
+ * - Array.prototype.findIndex, License: CC0
+ * - _DOMTokenList, License: ISC (required by "DOMTokenList", "Element.prototype.classList")
+ * - DOMTokenList, License: CC0 (required by "Element.prototype.classList")
  * - Document, License: CC0 (required by "Element", "Element.prototype.classList")
  * - Element, License: CC0 (required by "Element.prototype.classList")
- * - Element.prototype.classList, License: CC0
+ * - Element.prototype.classList, License: ISC
  * - Object.defineProperties, License: CC0 (required by "URL")
  * - Array.prototype.forEach, License: CC0 (required by "URL")
  * - URL, License: CC0
@@ -68,7 +70,7 @@ if (!(// In IE8, defineProperty could only act on DOM elements, so full support
 			if (hasValueOrWritable) {
 				throw new TypeError(ERR_VALUE_ACCESSORS);
 			}
-			object.__defineGetter__(propertyString, descriptor.get);
+			Object.__defineGetter__.call(object, propertyString, descriptor.get);
 		} else {
 			object[propertyString] = descriptor.value;
 		}
@@ -84,7 +86,7 @@ if (!(// In IE8, defineProperty could only act on DOM elements, so full support
 			if (hasValueOrWritable) {
 				throw new TypeError(ERR_VALUE_ACCESSORS);
 			}
-			object.__defineSetter__(propertyString, descriptor.set);
+			Object.__defineSetter__.call(object, propertyString, descriptor.set);
 		}
 
 		// OK to define value unconditionally - if a getter has been specified as well, an error would be thrown above
@@ -113,100 +115,326 @@ if (!('isArray' in Array)) {
 
 }
 
+if (!('findIndex' in Array.prototype)) {
+
+// Array.prototype.findIndex
+Object.defineProperty(Array.prototype, 'findIndex', {
+	configurable: true,
+	value: function findIndex(callback) {
+		if (this === undefined || this === null) {
+			throw new TypeError(this + ' is not an object');
+		}
+
+		if (typeof callback !== 'function') {
+			throw new TypeError(callback + ' is not a function');
+		}
+
+		var
+		object = Object(this),
+		scope = arguments[1],
+		arraylike = object instanceof String ? object.split('') : object,
+		length = Math.max(Math.min(arraylike.length, 9007199254740991), 0) || 0,
+		index = -1;
+
+		while (++index < length) {
+			if (index in arraylike) {
+				if (callback.call(scope, arraylike[index], index, object)) {
+					return index;
+				}
+			}
+		}
+
+		return -1;
+	},
+	writable: true
+});
+
+}
+
 
 // _DOMTokenList
-var _DOMTokenList = (function () { // eslint-disable-line no-unused-vars
+/*
+Copyright (c) 2016, John Gardner
 
-	function tokenize(token) {
-		if (/^-?[_a-zA-Z]+[_a-zA-Z0-9-]*$/.test(token)) {
-			return String(token);
-		} else {
-			throw new Error('InvalidCharacterError: DOM Exception 5');
-		}
-	}
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
-	function toObject(self) {
-		for (var index = -1, object = {}, element; element = self[++index];) {
-			object[element] = true;
-		}
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*/
+var _DOMTokenList = (function() { // eslint-disable-line no-unused-vars
+	var dpSupport = true;
+	var defineGetter = function (object, name, fn, configurable) {
+		if (Object.defineProperty)
+			Object.defineProperty(object, name, {
+				configurable: false === dpSupport ? true : !!configurable,
+				get: fn
+			});
 
-		return object;
-	}
-
-	function fromObject(self, object) {
-		var array = [], token;
-
-		for (token in object) {
-			if (object[token]) {
-				array.push(token);
-			}
-		}
-
-		[].splice.apply(self, [0, self.length].concat(array));
-	}
-
-	var DTL = function() {};
-
-	DTL.prototype = {
-		constructor: DTL,
-		item: function item(index) {
-			return this[parseFloat(index)] || null;
-		},
-		length: Array.prototype.length,
-		toString: function toString() {
-			return [].join.call(this, ' ');
-		},
-
-		add: function add() {
-			for (var object = toObject(this), index = 0, token; index in arguments; ++index) {
-				token = tokenize(arguments[index]);
-
-				object[token] = true;
-			}
-
-			fromObject(this, object);
-		},
-		contains: function contains(token) {
-			return token in toObject(this);
-		},
-		remove: function remove() {
-			for (var object = toObject(this), index = 0, token; index in arguments; ++index) {
-				token = tokenize(arguments[index]);
-
-				object[token] = false;
-			}
-
-			fromObject(this, object);
-		},
-		toggle: function toggle(token) {
-			var
-			object = toObject(this),
-			contains = 1 in arguments ? !arguments[1] : tokenize(token) in object;
-
-			object[token] = !contains;
-
-			fromObject(this, object);
-
-			return !contains;
-		}
+		else object.__defineGetter__(name, fn);
 	};
 
-	return DTL;
+	/** Ensure the browser allows Object.defineProperty to be used on native JavaScript objects. */
+	try {
+		defineGetter({}, "support");
+	}
+	catch (e) {
+		dpSupport = false;
+	}
 
+
+	var _DOMTokenList = function (el, prop) {
+		var that = this;
+		var tokens = [];
+		var tokenMap = {};
+		var length = 0;
+		var maxLength = 0;
+		var addIndexGetter = function (i) {
+			defineGetter(that, i, function () {
+				preop();
+				return tokens[i];
+			}, false);
+
+		};
+		var reindex = function () {
+
+			/** Define getter functions for array-like access to the tokenList's contents. */
+			if (length >= maxLength)
+				for (; maxLength < length; ++maxLength) {
+					addIndexGetter(maxLength);
+				}
+		};
+
+		/** Helper function called at the start of each class method. Internal use only. */
+		var preop = function () {
+			var error;
+			var i;
+			var args = arguments;
+			var rSpace = /\s+/;
+
+			/** Validate the token/s passed to an instance method, if any. */
+			if (args.length)
+				for (i = 0; i < args.length; ++i)
+					if (rSpace.test(args[i])) {
+						error = new SyntaxError('String "' + args[i] + '" ' + "contains" + ' an invalid character');
+						error.code = 5;
+						error.name = "InvalidCharacterError";
+						throw error;
+					}
+
+
+			/** Split the new value apart by whitespace*/
+			if (typeof el[prop] === "object") {
+				tokens = ("" + el[prop].baseVal).replace(/^\s+|\s+$/g, "").split(rSpace);
+			} else {
+				tokens = ("" + el[prop]).replace(/^\s+|\s+$/g, "").split(rSpace);
+			}
+
+			/** Avoid treating blank strings as single-item token lists */
+			if ("" === tokens[0]) tokens = [];
+
+			/** Repopulate the internal token lists */
+			tokenMap = {};
+			for (i = 0; i < tokens.length; ++i)
+				tokenMap[tokens[i]] = true;
+			length = tokens.length;
+			reindex();
+		};
+
+		/** Populate our internal token list if the targeted attribute of the subject element isn't empty. */
+		preop();
+
+		/** Return the number of tokens in the underlying string. Read-only. */
+		defineGetter(that, "length", function () {
+			preop();
+			return length;
+		});
+
+		/** Override the default toString/toLocaleString methods to return a space-delimited list of tokens when typecast. */
+		that.toLocaleString =
+			that.toString = function () {
+				preop();
+				return tokens.join(" ");
+			};
+
+		that.item = function (idx) {
+			preop();
+			return tokens[idx];
+		};
+
+		that.contains = function (token) {
+			preop();
+			return !!tokenMap[token];
+		};
+
+		that.add = function () {
+			preop.apply(that, args = arguments);
+
+			for (var args, token, i = 0, l = args.length; i < l; ++i) {
+				token = args[i];
+				if (!tokenMap[token]) {
+					tokens.push(token);
+					tokenMap[token] = true;
+				}
+			}
+
+			/** Update the targeted attribute of the attached element if the token list's changed. */
+			if (length !== tokens.length) {
+				length = tokens.length >>> 0;
+				if (typeof el[prop] === "object") {
+					el[prop].baseVal = tokens.join(" ");
+				} else {
+					el[prop] = tokens.join(" ");
+				}
+				reindex();
+			}
+		};
+
+		that.remove = function () {
+			preop.apply(that, args = arguments);
+
+			/** Build a hash of token names to compare against when recollecting our token list. */
+			for (var args, ignore = {}, i = 0, t = []; i < args.length; ++i) {
+				ignore[args[i]] = true;
+				delete tokenMap[args[i]];
+			}
+
+			/** Run through our tokens list and reassign only those that aren't defined in the hash declared above. */
+			for (i = 0; i < tokens.length; ++i)
+				if (!ignore[tokens[i]]) t.push(tokens[i]);
+
+			tokens = t;
+			length = t.length >>> 0;
+
+			/** Update the targeted attribute of the attached element. */
+			if (typeof el[prop] === "object") {
+				el[prop].baseVal = tokens.join(" ");
+			} else {
+				el[prop] = tokens.join(" ");
+			}
+			reindex();
+		};
+
+		that.toggle = function (token, force) {
+			preop.apply(that, [token]);
+
+			/** Token state's being forced. */
+			if (undefined !== force) {
+				if (force) {
+					that.add(token);
+					return true;
+				} else {
+					that.remove(token);
+					return false;
+				}
+			}
+
+			/** Token already exists in tokenList. Remove it, and return FALSE. */
+			if (tokenMap[token]) {
+				that.remove(token);
+				return false;
+			}
+
+			/** Otherwise, add the token and return TRUE. */
+			that.add(token);
+			return true;
+		};
+
+		return that;
+	};
+
+	return _DOMTokenList;
 }());
+if (!('DOMTokenList' in this && (function (x) {
+	return 'classList' in x ? !x.classList.toggle('x', false) && !x.className : true;
+})(document.createElement('x')))) {
+
+// DOMTokenList
+(function (global) {
+	var nativeImpl = "DOMTokenList" in global && global.DOMTokenList;
+
+	if (
+			!nativeImpl ||
+			(
+				!!document.createElementNS &&
+				!!document.createElementNS('http://www.w3.org/2000/svg', 'svg') &&
+				!(document.createElementNS("http://www.w3.org/2000/svg", "svg").classList instanceof DOMTokenList)
+			)
+		) {
+		global.DOMTokenList = _DOMTokenList;
+	}
+
+	// Add second argument to native DOMTokenList.toggle() if necessary
+	(function () {
+		var e = document.createElement('span');
+		if (!('classList' in e)) return;
+		e.classList.toggle('x', false);
+		if (!e.classList.contains('x')) return;
+		e.classList.constructor.prototype.toggle = function toggle(token /*, force*/) {
+			var force = arguments[1];
+			if (force === undefined) {
+				var add = !this.contains(token);
+				this[add ? 'add' : 'remove'](token);
+				return add;
+			}
+			force = !!force;
+			this[force ? 'add' : 'remove'](token);
+			return force;
+		};
+	}());
+
+	// Add multiple arguments to native DOMTokenList.add() if necessary
+	(function () {
+		var e = document.createElement('span');
+		if (!('classList' in e)) return;
+		e.classList.add('a', 'b');
+		if (e.classList.contains('b')) return;
+		var native = e.classList.constructor.prototype.add;
+		e.classList.constructor.prototype.add = function () {
+			var args = arguments;
+			var l = arguments.length;
+			for (var i = 0; i < l; i++) {
+				native.call(this, args[i]);
+			}
+		};
+	}());
+
+	// Add multiple arguments to native DOMTokenList.remove() if necessary
+	(function () {
+		var e = document.createElement('span');
+		if (!('classList' in e)) return;
+		e.classList.add('a');
+		e.classList.add('b');
+		e.classList.remove('a', 'b');
+		if (!e.classList.contains('b')) return;
+		var native = e.classList.constructor.prototype.remove;
+		e.classList.constructor.prototype.remove = function () {
+			var args = arguments;
+			var l = arguments.length;
+			for (var i = 0; i < l; i++) {
+				native.call(this, args[i]);
+			}
+		};
+	}());
+
+}(this));
+
+}
+
 if (!("Document" in this)) {
 
 // Document
-if (this.HTMLDocument) { // IE8
+if ((typeof WorkerGlobalScope === "undefined") && (typeof importScripts !== "function")) {
 
-	// HTMLDocument is an extension of Document.  If the browser has HTMLDocument but not Document, the former will suffice as an alias for the latter.
-	this.Document = this.HTMLDocument;
+	if (this.HTMLDocument) { // IE8
 
-} else {
+		// HTMLDocument is an extension of Document.  If the browser has HTMLDocument but not Document, the former will suffice as an alias for the latter.
+		this.Document = this.HTMLDocument;
 
-	// Create an empty function to act as the missing constructor for the document object, attach the document object as its prototype.  The function needs to be anonymous else it is hoisted and causes the feature detect to prematurely pass, preventing the assignments below being made.
-	this.Document = this.HTMLDocument = document.constructor = (new Function('return function Document() {}')());
-	this.Document.prototype = document;
+	} else {
+
+		// Create an empty function to act as the missing constructor for the document object, attach the document object as its prototype.  The function needs to be anonymous else it is hoisted and causes the feature detect to prematurely pass, preventing the assignments below being made.
+		this.Document = this.HTMLDocument = document.constructor = (new Function('return function Document() {}')());
+		this.Document.prototype = document;
+	}
 }
 
 }
@@ -301,7 +529,7 @@ if (!('Element' in this && 'HTMLElement' in this)) {
 		}
 		return false;
 	}
-	if (!bodyCheck(true)) {
+	if (!bodyCheck()) {
 		document.onreadystatechange = bodyCheck;
 		interval = setInterval(bodyCheck, 25);
 	}
@@ -318,74 +546,93 @@ if (!('Element' in this && 'HTMLElement' in this)) {
 
 }
 
-if (!('document' in this && "classList" in document.documentElement)) {
+if (!('document' in this && "classList" in document.documentElement && 'Element' in this && 'classList' in Element.prototype && (function () {
+	var e = document.createElement('span');
+	e.classList.add('a', 'b');
+	return e.classList.contains('b');
+}()))) {
 
 // Element.prototype.classList
-Object.defineProperty(Element.prototype, 'classList', {
-	configurable: true,
-	get: function () {
+/*
+Copyright (c) 2016, John Gardner
 
-		function pull() {
-			var className = (typeof element.className === "object" ? element.className.baseVal : element.className);
-			[].splice.apply(classList, [0, classList.length].concat((className || '').replace(/^\s+|\s+$/g, '').split(/\s+/)));
-		}
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
-		function push() {
-			if (element.attachEvent) {
-				element.detachEvent('onpropertychange', pull);
-			}
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*/
+(function (global) {
+	var dpSupport = true;
+	var defineGetter = function (object, name, fn, configurable) {
+		if (Object.defineProperty)
+			Object.defineProperty(object, name, {
+				configurable: false === dpSupport ? true : !!configurable,
+				get: fn
+			});
 
-			if (typeof element.className === "object") {
-				element.className.baseVal = original.toString.call(classList);
-			} else {
-				element.className = original.toString.call(classList);
-			}
-
-			if (element.attachEvent) {
-				element.attachEvent('onpropertychange', pull);
-			}
-		}
-
-		var element = this;
-		var original = _DOMTokenList.prototype;
-		var ClassList = function ClassList() {};
-		var classList;
-
-		ClassList.prototype = new _DOMTokenList;
-
-		ClassList.prototype.item = function item(index) { // eslint-disable-line no-unused-vars
-			return pull(), original.item.apply(classList, arguments);
-		};
-
-		ClassList.prototype.toString = function toString() {
-			return pull(), original.toString.apply(classList, arguments);
-		};
-
-		ClassList.prototype.add = function add() {
-			return pull(), original.add.apply(classList, arguments), push();
-		};
-
-		ClassList.prototype.contains = function contains(token) { // eslint-disable-line no-unused-vars
-			return pull(), original.contains.apply(classList, arguments);
-		};
-
-		ClassList.prototype.remove = function remove() {
-			return pull(), original.remove.apply(classList, arguments), push();
-		};
-
-		ClassList.prototype.toggle = function toggle(token) {
-			return pull(), token = original.toggle.apply(classList, arguments), push(), token;
-		};
-
-		classList = new ClassList;
-
-		if (element.attachEvent) {
-			element.attachEvent('onpropertychange', pull);
-		}
-
-		return classList;
+		else object.__defineGetter__(name, fn);
+	};
+	/** Ensure the browser allows Object.defineProperty to be used on native JavaScript objects. */
+	try {
+		defineGetter({}, "support");
 	}
-});
+	catch (e) {
+		dpSupport = false;
+	}
+	/** Polyfills a property with a DOMTokenList */
+	var addProp = function (o, name, attr) {
+
+		defineGetter(o.prototype, name, function () {
+			var tokenList;
+
+			var THIS = this,
+
+			/** Prevent this from firing twice for some reason. What the hell, IE. */
+			gibberishProperty = "__defineGetter__" + "DEFINE_PROPERTY" + name;
+			if(THIS[gibberishProperty]) return tokenList;
+			THIS[gibberishProperty] = true;
+
+			/**
+			 * IE8 can't define properties on native JavaScript objects, so we'll use a dumb hack instead.
+			 *
+			 * What this is doing is creating a dummy element ("reflection") inside a detached phantom node ("mirror")
+			 * that serves as the target of Object.defineProperty instead. While we could simply use the subject HTML
+			 * element instead, this would conflict with element types which use indexed properties (such as forms and
+			 * select lists).
+			 */
+			if (false === dpSupport) {
+
+				var visage;
+				var mirror = addProp.mirror || document.createElement("div");
+				var reflections = mirror.childNodes;
+				var l = reflections.length;
+
+				for (var i = 0; i < l; ++i)
+					if (reflections[i]._R === THIS) {
+						visage = reflections[i];
+						break;
+					}
+
+				/** Couldn't find an element's reflection inside the mirror. Materialise one. */
+				visage || (visage = mirror.appendChild(document.createElement("div")));
+
+				tokenList = DOMTokenList.call(visage, THIS, attr);
+			} else tokenList = new DOMTokenList(THIS, attr);
+
+			defineGetter(THIS, name, function () {
+				return tokenList;
+			});
+			delete THIS[gibberishProperty];
+
+			return tokenList;
+		}, true);
+	};
+
+	addProp(global.Element, "classList", "className");
+	addProp(global.HTMLElement, "classList", "className");
+	addProp(global.HTMLLinkElement, "relList", "rel");
+	addProp(global.HTMLAnchorElement, "relList", "rel");
+	addProp(global.HTMLAreaElement, "relList", "rel");
+}(this));
 
 }
 
@@ -394,7 +641,9 @@ if (!('defineProperties' in Object)) {
 // Object.defineProperties
 Object.defineProperties = function defineProperties(object, descriptors) {
 	for (var property in descriptors) {
-		Object.defineProperty(object, property, descriptors[property]);
+		if (descriptors.hasOwnProperty(property)) {
+			Object.defineProperty(object, property, descriptors[property]);
+		}
 	}
 
 	return object;
@@ -729,29 +978,39 @@ if (!((function (global) {
       if (base) {
         url = (function () {
           if (nativeURL) return new origURL(url, base).href;
+          var iframe;
+          try {
+            var doc;
+            // Use another document/base tag/anchor for relative URL resolution, if possible
+            if (Object.prototype.toString.call(window.operamini) === "[object OperaMini]") {
+              iframe = document.createElement('iframe');
+              iframe.style.display = 'none';
+              document.documentElement.appendChild(iframe);
+              doc = iframe.contentWindow.document;
+            } else if (document.implementation && document.implementation.createHTMLDocument) {
+              doc = document.implementation.createHTMLDocument('');
+            } else if (document.implementation && document.implementation.createDocument) {
+              doc = document.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', null);
+              doc.documentElement.appendChild(doc.createElement('head'));
+              doc.documentElement.appendChild(doc.createElement('body'));
+            } else if (window.ActiveXObject) {
+              doc = new window.ActiveXObject('htmlfile');
+              doc.write('<head><\/head><body><\/body>');
+              doc.close();
+            }
 
-          var doc;
-          // Use another document/base tag/anchor for relative URL resolution, if possible
-          if (document.implementation && document.implementation.createHTMLDocument) {
-            doc = document.implementation.createHTMLDocument('');
-          } else if (document.implementation && document.implementation.createDocument) {
-            doc = document.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', null);
-            doc.documentElement.appendChild(doc.createElement('head'));
-            doc.documentElement.appendChild(doc.createElement('body'));
-          } else if (window.ActiveXObject) {
-            doc = new window.ActiveXObject('htmlfile');
-            doc.write('<head><\/head><body><\/body>');
-            doc.close();
+            if (!doc) throw Error('base not supported');
+
+            var baseTag = doc.createElement('base');
+            baseTag.href = base;
+            doc.getElementsByTagName('head')[0].appendChild(baseTag);
+            var anchor = doc.createElement('a');
+            anchor.href = url;
+            return anchor.href;
+          } finally {
+            if (iframe)
+              iframe.parentNode.removeChild(iframe);
           }
-
-          if (!doc) throw Error('base not supported');
-
-          var baseTag = doc.createElement('base');
-          baseTag.href = base;
-          doc.getElementsByTagName('head')[0].appendChild(baseTag);
-          var anchor = doc.createElement('a');
-          anchor.href = url;
-          return anchor.href;
         }());
       }
 

@@ -18,8 +18,11 @@ describe('ga_attribution_service', function() {
         attribution: 'Some text',
         attributionUrl: 'just.some.stuff',
         config3d: 'layer3dNoLink'
+      },
+      'layerVtWithAttr': {
+        bodId: 'layerVtWithAttr',
+        attribution: '<a>Some text</a>'
       }
-
     };
     var layersConfig3d = {
       'layer3d': {
@@ -144,6 +147,31 @@ describe('ga_attribution_service', function() {
       expect(attrib).to.eql(getThirdPartyAttrib(host));
       attrib = gaAttribution.getTextFromLayer(olLayer);
       expect(attrib).to.eql(host);
+
+      // VectorTile
+      olLayer = {externalStyleUrl: 'http://public.geo.admin.ch/idsfdsf'};
+      host = 'public.geo.admin.ch';
+      attrib = gaAttribution.getHtmlFromLayer(olLayer);
+      expect(attrib).to.eql(getThirdPartyAttrib(host));
+      attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
+      expect(attrib).to.eql(getThirdPartyAttrib(host));
+      attrib = gaAttribution.getTextFromLayer(olLayer);
+      expect(attrib).to.eql(undefined);
+
+      // VectorTile 2
+      olLayer = {
+        bodId: 'layerVtWithAttr',
+        externalStyleUrl: 'http://public.geo.admin.ch/idsfdsf'
+      };
+      host = 'public.geo.admin.ch';
+      var expectedAttrib = '<a>Some text</a>, ' +
+      '<span class="ga-warning-tooltip">public.geo.admin.ch</span>';
+      attrib = gaAttribution.getHtmlFromLayer(olLayer);
+      expect(attrib).to.eql(expectedAttrib);
+      attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
+      expect(attrib).to.eql(expectedAttrib);
+      attrib = gaAttribution.getTextFromLayer(olLayer);
+      expect(attrib).to.eql('<a>Some text</a>');
     });
 
     it('gets attribution of external (but admin) layer', function() {

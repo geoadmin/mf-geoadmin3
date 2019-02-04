@@ -23,6 +23,11 @@ describe('ga_storage_service', function() {
           });
 
           $provide.value('gaBrowserSniffer', {});
+          $provide.value('gaNetworkStatus', {
+            offline: false
+          });
+          $provide.value('gaWaitCursor', {
+          });
         });
 
         injectSt();

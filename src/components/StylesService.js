@@ -143,6 +143,13 @@ goog.require('ga_measure_service');
       zIndex: 10000
     });
 
+    // Transparent style
+    var transparentFill = new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: '#ffffff00'
+      })
+    });
+
     var labelStyle = {
       show: true,
       color: 'rgb(255, 255, 255)',
@@ -241,6 +248,7 @@ goog.require('ga_measure_service');
       'kml': kmlStyle,
       'gpx': gpxStyle,
       'transparentCircle': transparentCircle,
+      'transparent': transparentFill,
       'redCircle': redCircle,
       'label': labelStyle,
       'labelEnhanced': labelStyleEnhanced
@@ -332,7 +340,7 @@ goog.require('ga_measure_service');
               if (gaMeasure.canShowAzimuthCircle(feature.getGeometry())) {
                 var coords = feature.getGeometry().getCoordinates();
                 var circle = new ol.geom.Circle(coords[0],
-                    gaMeasure.getLength(feature.getGeometry()));
+                    feature.getGeometry().getLength());
                 return circle;
               }
             },
@@ -343,9 +351,28 @@ goog.require('ga_measure_service');
         return styles;
       };
 
+      var labelsStyleFunction = function(feature, resolution) {
+        var style = new ol.style.Style({
+          zIndex: 100,
+          text: new ol.style.Text({
+            text: feature.get('name'),
+            textAlign: 'center',
+            textBaseline: 'alphabetic',
+            font: '12px arial',
+            fill: new ol.style.Fill(),
+            stroke: new ol.style.Stroke({
+              color: 'white',
+              width: 3
+            })
+          })
+        });
+        return [style];
+      };
+
       var stylesFunction = {
         'geolocation': geolocationStyleFunction,
-        'measure': measureStyleFunction
+        'measure': measureStyleFunction,
+        'labels': labelsStyleFunction
       };
 
       return {

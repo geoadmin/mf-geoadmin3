@@ -98,6 +98,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           'mobile': globals.mobile,
           'embed': globals.embed,
           'ga-draw-active': globals.isDrawActive,
+          'ga-edit-active': globals.isEditActive,
           'ga-3d-active': globals.is3dActive,
           'ga-fps-active': globals.isFpsActive,
           'ios': globals.ios
@@ -172,9 +173,34 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div class="ga-offline-msg alert-danger" translate>offline_sorry</div>
     </div><!-- #drawModeHeader -->
 
+    <div id="editModeHeader" class="navbar navbar-fixed-top">
+      <div class="ga-centered ga-title" translate>edit_mode_title</div>
+      <button class="btn btn-primary pull-left" ng-click="globals.isEditActive = false">
+        <i class="fa fa-arrow-left"></i>
+        <span translate>edit_back</span>
+      </button>
+      <span ga-help="82"></span>
+      <button class="btn ga-menu-bt" ng-click="globals.pulldownShown=true" translate>menu</button>
+      ## css animation doesnt work on pseudo element, let use this instead
+      <div class="ga-offline-msg alert-danger" translate>offline_sorry</div>
+    </div><!-- #editModeHeader -->
+
 % endif
     <div id="loader"></div>
+    <!-- Vector feedback -->
+    <div ng-controller="GaVectorFeedbackController">
+      <div ga-vector-feedback
+           ga-vector-feedback-map="::map"
+           ga-vector-feedback-options="::options"
+           ga-vector-feedback-toggle="!globals.isEditActive"
+           ga-vector-feedback-ol3d="::ol3d">
+      </div>
+    </div>
     <div tabindex="1" ga-map ga-map-map="map" ga-map-ol3d="::ol3d">
+
+    <!-- TEST Ribbon -->
+    <div class="corner-ribbon">TEST</div>
+
   % if device == 'embed':
       <a ng-cloak translate-cloak id="bigMapLink" target="_blank" href="{{toMainHref}}">
         <div>
@@ -187,7 +213,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div ga-search ga-search-map="map" ga-search-options="options" ga-search-ol3d="::ol3d"></div>
       </div>
 
-      <div ga-scale-line ga-scale-line-map="map" ng-show="!globals.is3dActive"></div>
+      <div ga-scale-line ga-scale-line-map="map" ng-show="false && !globals.is3dActive"></div>
   % endif
 
       <div id='buttonGroup' ng-cloak translate-cloak>
@@ -201,14 +227,15 @@ itemscope itemtype="http://schema.org/WebApplication"
   % endif
         <div ga-rotate ga-rotate-map="map"></div>
   % if device != 'embed':
-        <div ga-offline-bt></div>
+        <div ga-offline-bt ng-if="false"></div>
   % endif
       </div>
   % if device != 'embed':
       <div ng-cloak translate-cloak
            ga-background-selector
            ga-background-selector-map="::map"
-           ga-background-selector-ol3d="::ol3d">
+           ga-background-selector-ol3d="::ol3d"
+           ga-background-selector-is-edit-active="globals.isEditActive">
       </div>
   % endif
       <div ga-swipe
@@ -237,10 +264,10 @@ itemscope itemtype="http://schema.org/WebApplication"
         <span translate>3d_overlay_warning</span>
       </div>
     </div>
-    <div ng-cloak ga-offline-selector ga-offline-selector-map="::map"></div>
+    <div ng-cloak ga-offline-selector ga-offline-selector-map="::map" ng-if="false"></div>
 % if device != 'embed':
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">
-      <div  class="pull-left" ga-scale-line ga-scale-line-map="::map" ng-show="!globals.is3dActive"></div>
+      <div  class="pull-left" ga-scale-line ga-scale-line-map="::map" ng-show="false && !globals.is3dActive"></div>
       <div id="mouseposition" class="pull-left" ng-controller="GaMousePositionController">
         <select ng-model="options.projection"
                 ng-options="p.label for p in ::mousePositionProjections">
@@ -250,6 +277,7 @@ itemscope itemtype="http://schema.org/WebApplication"
              ga-mouse-position-ol3d="::ol3d"
              ga-mouse-position-options="options"></div>
       </div>
+
       <div class="pull-right">
         <a target="_blank" href="https://www.geo.admin.ch/{{langId}}/about-swiss-geoportal/impressum.html#copyright" translate>copyright_label</a>
       </div>
@@ -264,7 +292,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div ga-context-popup
            ga-context-popup-map="::map"
            ga-context-popup-options="::options"
-           ga-context-popup-active="!globals.is3dActive && !globals.isDrawActive">
+           ga-context-popup-active="!globals.is3dActive && !globals.isDrawActive && !globals.isEditActive">
       </div>
     </div>
 % endif
@@ -289,7 +317,7 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-tooltip-map="::map"
            ga-tooltip-ol3d="::ol3d"
            ga-tooltip-options="options"
-           ga-tooltip-active="!globals.feedbackPopupShown && !globals.isDrawActive">
+           ga-tooltip-active="!globals.feedbackPopupShown && !globals.isDrawActive && !globals.isEditActive">
       </div>
     </div>
 
@@ -317,7 +345,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
 
         <!-- Print -->
-        <div class="panel" ng-show="!globals.is3dActive">
+        <div class="panel" ng-show="false && !globals.is3dActive">
           <a id="printHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#print"
              ga-collapsible-show="globals.isPrintActive">
@@ -348,6 +376,20 @@ itemscope itemtype="http://schema.org/WebApplication"
                    ga-draw-map="map"
                    ga-draw-options="options"
                    ga-draw-active="globals.isDrawActive">
+              </div>
+            </div>
+          </div>
+        </div> <!-- .panel -->
+
+        <!-- Edit -->
+        <div class="panel" ng-show="globals.isEditActive">
+          <div id="edit" class="panel-collapse">
+            <div class="panel-body" ng-controller="GaEditController">
+              <div ga-edit
+                   ga-edit-map="map"
+                   ga-edit-options="options"
+                   ga-edit-layer="layer"
+                   ga-edit-active="globals.isEditActive">
               </div>
             </div>
           </div>
@@ -390,7 +432,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
 
         <!-- Catalog -->
-        <div class="panel" ng-hide="globals.isDrawActive">
+        <div class="panel" ng-hide="globals.isDrawActive || globals.isEditActive">
           <div class="theme-toggle">
             <a class="topic-modal-toggle" data-toggle="modal" data-target="#topicSelector .modal" href="#">
               <span translate>choose_theme</span>
@@ -412,7 +454,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
 
         <!-- Selection -->
-        <div class="panel" ng-hide="globals.isDrawActive">
+        <div class="panel" ng-hide="globals.isDrawActive || globals.isEditActive">
           <a id="selectionHeading" class="panel-heading accordion-toggle light collapsed"
              data-toggle="collapse" href="#selection"
              ga-collapsible-show="globals.selectionShown">
@@ -470,6 +512,9 @@ itemscope itemtype="http://schema.org/WebApplication"
         </button>
       </div> <!-- #pulldown-content -->
     </div> <!-- #pulldown -->
+
+    <!-- Modal: vector tiles survey -->
+    <div ng-cloak translate-cloak ga-vector-feedback-modal></div>
 
     <!-- Modal: offline menu -->
     <div ng-cloak translate-cloak ga-offline-menu ga-offline-menu-map="map"></div>
@@ -599,6 +644,11 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div>
 
+    <!-- Query Vector -->
+    <div ga-query-vector
+         ga-query-vector-map="::map">
+    </div>
+
     <div ng-if="globals.homescreen" class="popover homescreen"
          ng-class="{
            'visible': globals.homescreen,
@@ -660,6 +710,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script src="${s3basepath}lib/filesaver.js"></script>
     <script src="${s3basepath}lib/moment-with-customlocales.js"></script>
     <script src="${s3basepath}lib/gyronorm.complete.js"></script>
+    <script src="${s3basepath}lib/tinycolor.js"></script>
     <script src="${s3basepath}lib/Cesium/Cesium.js"></script>
 
 
@@ -669,6 +720,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     </script>
 
     <script src="${s3basepath}lib/olcesium-debug.js"></script>
+    <script src="${s3basepath}lib/olms.js"></script>
     <script src="${s3basepath}deps.js"></script>
     <script>
       goog.require('geoadmin');
@@ -782,7 +834,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           w3wApiKey: 'OM48J50Y',
           whitelist: [
             'https://' + window.location.host + '/**',
-            'https://www.googleapis.com/**'
+            'https://www.googleapis.com/**',
+            'https://findmind.ch/**'
           ],
 
           // App state values
@@ -795,6 +848,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
           // Map state values
           defaultExtent: JSON.parse(${default_extent}),
+          swissExtent: JSON.parse(${swiss_extent}),
           defaultResolution: ${default_resolution},
           defaultEpsg: '${default_epsg}',
           defaultEpsgExtent: JSON.parse(${default_epsg_extend}),
@@ -805,7 +859,13 @@ itemscope itemtype="http://schema.org/WebApplication"
           lods: JSON.parse(${level_of_details}),
           tileGridOrigin: JSON.parse(${tilegrid_origin}),
           tileGridResolutions: JSON.parse(${tilegrid_resolutions}),
-          tileGridWmtsDfltMinRes: ${tilegrid_wmts_dflt_min_res}
+          tileGridWmtsDfltMinRes: ${tilegrid_wmts_dflt_min_res},
+
+          // Offline parameters
+          offlineMinZoom: ${offline_min_zoom},
+          offlineMinZoomNonBgLayer: ${offline_min_zoom_nonbglayer},
+          offlineMaxZoom: ${offline_max_zoom},
+          offlineZOffset: ${offline_z_offset}
         });
       })();
 

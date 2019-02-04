@@ -22,7 +22,7 @@ describe('ga_filestorage_service', function() {
       inject(function($injector, gaGlobalOptions) {
         gaFileStorage = $injector.get('gaFileStorage');
         $httpBackend = $injector.get('$httpBackend');
-        serviceUrl = gaGlobalOptions.apiUrl + '/files';
+        serviceUrl = gaGlobalOptions.apiUrl;
         publicUrl = gaGlobalOptions.publicUrl;
       });
     });
@@ -52,13 +52,13 @@ describe('ga_filestorage_service', function() {
 
     describe('#save()', function() {
       it('creates a file', inject(function($timeout, gaGlobalOptions) {
-        $httpBackend.expectPOST(serviceUrl, fileContent).respond(fileInfo);
+        $httpBackend.expectPOST(serviceUrl + '/files', fileContent).respond(fileInfo);
         gaFileStorage.save(null, fileContent);
         $httpBackend.flush();
       }));
 
       it('updates a file', inject(function($timeout) {
-        var expectedUrl = serviceUrl + '/' + adminId;
+        var expectedUrl = serviceUrl + '/files/' + adminId;
         $httpBackend.expectPOST(expectedUrl, fileContent, function(headers) {
           return headers['Content-Type'] === 'application/vnd.google-earth.kml+xml';
         }).respond(fileInfo);
@@ -69,7 +69,7 @@ describe('ga_filestorage_service', function() {
 
     describe('#del()', function() {
       it('deletes a file', inject(function($timeout) {
-        var expectedUrl = serviceUrl + '/' + adminId;
+        var expectedUrl = serviceUrl + '/files/' + adminId;
         $httpBackend.expectDELETE(expectedUrl).respond({success: true});
         gaFileStorage.del(adminId);
         $httpBackend.flush();

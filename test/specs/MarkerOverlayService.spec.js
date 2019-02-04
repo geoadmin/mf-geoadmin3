@@ -69,7 +69,7 @@ describe('ga_marker_overlay_service', function() {
         var layer = map.getLayers().item(0);
         expect(layer.getVisible()).to.be(true);
 
-        map.getView().setZoom(9);
+        map.getView().setZoom(15);
         gaMarkerOverlay.add(map, pt, false, extent);
         layer = map.getLayers().item(0);
         expect(layer.getVisible()).to.be(false);
@@ -94,7 +94,7 @@ describe('ga_marker_overlay_service', function() {
         expect(layer.getVisible()).to.be(true);
         gaMarkerOverlay.setVisibility(6);
         expect(layer.getVisible()).to.be(true);
-        gaMarkerOverlay.setVisibility(7);
+        gaMarkerOverlay.setVisibility(15);
         expect(layer.getVisible()).to.be(false);
       });
     });

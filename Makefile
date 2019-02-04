@@ -15,8 +15,8 @@ USER_SOURCE ?= rc_user
 
 
 # Map libs variables
-OL_VERSION ?= be12573# September 25 2018 (mind the absence of a space character after the version)
-OL_CESIUM_VERSION ?= 695253277d66a8917fa456f3346c049b88f88eb7 # October 12 2018
+OL_VERSION ?= 348186e2f847eab31158bbbe7c9bebadb527832a# master December 17 2018 (mind the absence of a space character after the version)
+OL_CESIUM_VERSION ?= 167663bb7230cc30e86e63d207807df8df4579c0 # v2.6.0 November 9 2018
 CESIUM_VERSION ?= 54d850855346610fde9b7aa8262a03d27e71c663 # c2c/c2c_patches (Cesium 1.44), April 23 2018
 GEOBLOCKS_LEGACYLIB_VERSION ?= 0101a217be1b7525be8d590910fb8f70295194be # September 24 2018
 
@@ -110,21 +110,29 @@ TRANSLATE_EMPTY_JSON ?= src/locales/empty.json
 TRANSLATE_OUTPUT ?= src/locales
 
 
-# Map variables
-DEFAULT_EPSG ?= EPSG:2056
-DEFAULT_EPSG_EXTEND ?= '[2420000, 1030000, 2900000, 1350000]'
-DEFAULT_EXTENT ?= '[2420000, 1030000, 2900000, 1350000]'
-DEFAULT_RESOLUTION ?= 500.0
-RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.0, 0.5, 0.25, 0.1]'
-TILEGRID_ORIGIN ?= '[2420000, 1350000]'
-TILEGRID_RESOLUTIONS ?= '[4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5, 0.25, 0.1]'
-TILEGRID_WMTS_DFLT_MIN_RES ?= 0.5
-
 # Globe variables
 DEFAULT_LEVEL_OF_DETAIL ?= 7 #level of detail for the default resolution
 LEVEL_OF_DETAILS ?= '[6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 16, 17, 18, 18]' #lods corresponding to resolutions
 DEFAULT_TERRAIN ?= ch.swisstopo.terrain.3d
 DEFAULT_ELEVATION_MODEL ?= COMB
+
+# Map (Mercator)
+DEFAULT_EPSG = EPSG:3857
+DEFAULT_EPSG_EXTEND = '[-20037508.3428, -20037508.3428, 20037508.3428, 20037508.3428]'
+# Only for WMS services
+# The Swiss bounds expressed as $DEFAULT_EPSG 
+SWISS_EXTENT = '[558147.7958306982, 5677741.814085617, 1277662.36597472, 6152731.529704217]'
+DEFAULT_EXTENT = $(DEFAULT_EPSG_EXTEND)
+DEFAULT_RESOLUTION = 611.496226280
+RESOLUTIONS = '[9783.939620504, 4891.969810252, 2445.984905126, 1222.9924525616, 611.4962262808, 305.7481131404, 152.87405657048, 76.43702828524, 38.21851414248, 19.109257071296, 9.554628535648, 4.777314267824, 2.388657133912, 1.194328566956, 0.597164283478, 0.2985821417404, 0.1492910708702]'
+TILEGRID_ORIGIN = '[-20037508.3428, 20037508.3428]'
+TILEGRID_RESOLUTIONS = '[156543.03392812, 78271.51696392, 39135.75848196, 19567.879241008, 9783.939620504, 4891.969810252, 2445.984905126, 1222.9924525616, 611.4962262808, 305.7481131404, 152.87405657048, 76.43702828524, 38.21851414248, 19.109257071296, 9.554628535648, 4.777314267824, 2.388657133912, 1.194328566956, 0.597164283478, 0.2985821417404, 0.1492910708702]'
+TILEGRID_WMTS_DFLT_MIN_RES ?= 0.5
+OFFLINE_MIN_ZOOM ?= 8    # First zoom from which we save the 15km2, before we save tiles on the entire DEFAULT_EXTENT.
+OFFLINE_MIN_ZOOM_NON_BGLAYER ?= 12 # For non bg layer we only save the 15km2 from this zoom level. Must be a even number because we load only 1 level on 2.
+OFFLINE_MAX_ZOOM ?= 16   # Last zoom saved
+OFFLINE_Z_OFFSET ?= 0   # Difference between map zoom levekl and layer zoom lvel to request. In swiss coordinate it's 14 for stop layer.
+
 
 # Build variables
 KEEP_VERSION ?= false
@@ -136,6 +144,7 @@ NVM_VERSION ?= v0.33.8
 LAST_NVM_VERSION := $(call lastvalue,nvm-version)
 NODE_VERSION ?= 6.13.1
 LAST_NODE_VERSION := $(call lastvalue,node-version)
+
 
 # S3 deploy variables
 DEPLOY_TARGET ?= int
@@ -592,7 +601,8 @@ prd/lib/: src/lib/d3.min.js \
 	    src/lib/IE9Fixes.js \
 	    src/lib/jquery.xdomainrequest.min.js \
 	    src/lib/Cesium.min.js \
-	    src/lib/olcesium.js
+	    src/lib/olcesium.js \
+        src/lib/olms.js
 	mkdir -p $@
 	cp -rf  $^ $@
 
@@ -621,12 +631,14 @@ prd/lib/build.js: src/lib/polyfill.min.js \
 	    src/lib/EPSG32631.js \
 	    src/lib/EPSG32632.js \
 	    src/lib/olcesium.js \
+        src/lib/olms.js \
 	    src/lib/angular-translate.min.js \
 	    src/lib/angular-translate-loader-static-files.min.js \
 	    src/lib/fastclick.min.js \
 	    src/lib/localforage.min.js \
 	    src/lib/filesaver.min.js \
 	    src/lib/gyronorm.complete.min.js \
+        src/lib/tinycolor.min.js \
 	    .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*\.map//' > $@
@@ -695,9 +707,14 @@ define buildpage
 		--var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
 		--var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
 		--var "languages=$(LANGUAGES)" \
+		--var "swiss_extent"="$(SWISS_EXTENT)" \
 		--var "default_extent"="$(DEFAULT_EXTENT)" \
 		--var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 		--var "default_level_of_detail"="$(DEFAULT_LEVEL_OF_DETAIL)" \
+		--var "offline_min_zoom"="$(OFFLINE_MIN_ZOOM)" \
+		--var "offline_min_zoom_nonbglayer"="$(OFFLINE_MIN_ZOOM_NON_BGLAYER)" \
+		--var "offline_max_zoom"="$(OFFLINE_MAX_ZOOM)" \
+		--var "offline_z_offset"="$(OFFLINE_Z_OFFSET)" \
 		--var "resolutions"="$(RESOLUTIONS)" \
 		--var "level_of_details"="$(LEVEL_OF_DETAILS)" \
 		--var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
@@ -849,11 +866,14 @@ libs:
 	cp -f $(addprefix node_modules/bootstrap/dist/js/, bootstrap.js bootstrap.min.js) src/lib/;
 	cp -f $(addprefix node_modules/gyronorm/dist/, gyronorm.complete.js gyronorm.complete.min.js) src/lib/;
 	cp -f $(addprefix node_modules/corejs-typeahead/dist/, typeahead.jquery.js typeahead.jquery.min.js) src/lib/;
+	cp -f $(addprefix node_modules/tinycolor2/, tinycolor.js) src/lib/;
 	cp -f node_modules/slipjs/slip.js src/lib;
 	cp -f node_modules/fastclick/lib/fastclick.js src/lib/;
 	$(call applypatches)
 	$(call compilejs,fastclick)
 	$(call compilejs,slip)
+	$(call compilejs,tinycolor)
+
 
 .build-artefacts/app.js: .build-artefacts/js-files
 	mkdir -p $(dir $@)
@@ -862,6 +882,7 @@ libs:
 	    --jscomp_error checkVars \
 	    --externs externs/ol.js \
 	    --externs externs/olcesium.js \
+	    --externs externs/olms.js \
 	    --externs externs/Cesium.externs.js \
 	    --externs externs/slip.js \
 	    --externs externs/angular.js \
@@ -984,8 +1005,8 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 # We use the service to get only the minimal polyfill file for ie9
 .build-artefacts/polyfill:
 	mkdir -p $@
-	curl -q -o $@/polyfill.js 'https://cdn.polyfill.io/v2/polyfill.js?features=URL,Array.isArray,requestAnimationFrame,Element.prototype.classList&flags=always,gated&unknown=polyfill'
-	curl -q -o $@/polyfill.min.js 'https://cdn.polyfill.io/v2/polyfill.min.js?features=URL,Array.isArray,requestAnimationFrame,Element.prototype.classList&flags=always,gated&unknown=polyfill'
+	curl -q -o $@/polyfill.js 'https://cdn.polyfill.io/v2/polyfill.js?features=URL,Array.isArray,Array.prototype.findIndex,requestAnimationFrame,Element.prototype.classList&flags=always,gated&unknown=polyfill'
+	curl -q -o $@/polyfill.min.js 'https://cdn.polyfill.io/v2/polyfill.min.js?features=URL,Array.isArray,Array.prototype.findIndex,requestAnimationFrame,Element.prototype.classList&flags=always,gated&unknown=polyfill'
 
 .PHONY: cleanall
 cleanall: clean

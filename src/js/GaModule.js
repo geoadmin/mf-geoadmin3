@@ -14,6 +14,8 @@ goog.require('ga_draw');
 goog.require('ga_draw_controller');
 goog.require('ga_drawstyle_controller');
 goog.require('ga_drawstylepopup_controller');
+goog.require('ga_edit');
+goog.require('ga_edit_controller');
 goog.require('ga_featuretree');
 goog.require('ga_featuretree_controller');
 goog.require('ga_feedback');
@@ -41,6 +43,7 @@ goog.require('ga_profile');
 goog.require('ga_profile_controller');
 goog.require('ga_profilepopup_controller');
 goog.require('ga_query');
+goog.require('ga_query_vector');
 goog.require('ga_rotate');
 goog.require('ga_scaleline');
 goog.require('ga_search');
@@ -62,6 +65,8 @@ goog.require('ga_tooltip_controller');
 goog.require('ga_topic');
 goog.require('ga_translation');
 goog.require('ga_translation_controller');
+goog.require('ga_vector_feedback');
+goog.require('ga_vector_feedback_controller');
 goog.require('ga_waitcursor_service');
 (function() {
 
@@ -96,11 +101,14 @@ goog.require('ga_waitcursor_service');
     'ga_stylesfromliterals_service',
     'ga_seo',
     'ga_draw',
+    'ga_edit',
     'ga_query',
+    'ga_query_vector',
     'ga_print',
     'ga_shop',
     'ga_tabs',
     'ga_tilt3d',
+    'ga_vector_feedback',
     'ga_modal_directive',
     'ga_draggable_directive',
     'ga_placeholder_directive',
@@ -126,9 +134,11 @@ goog.require('ga_waitcursor_service');
     'ga_timeselector_controller',
     'ga_tooltip_controller',
     'ga_featuretree_controller',
+    'ga_edit_controller',
     'ga_draw_controller',
     'ga_drawstyle_controller',
-    'ga_drawstylepopup_controller'
+    'ga_drawstylepopup_controller',
+    'ga_vector_feedback_controller'
   ]);
 
   module.config(function($translateProvider, gaGlobalOptions) {
@@ -191,9 +201,14 @@ goog.require('ga_waitcursor_service');
         '/downloadkml';
   });
 
+  /* TODO: VERIFY THIS CHANGE WORKS
   module.config(function(gaFileStorageProvider, gaGlobalOptions) {
     gaFileStorageProvider.fileStorageUrl = gaGlobalOptions.apiUrl + '/files';
     gaFileStorageProvider.publicUrl = gaGlobalOptions.publicUrl;
+  }); */
+  module.config(function(gaExportGlStyleProvider, gaGlobalOptions) {
+    gaExportGlStyleProvider.downloadUrl = gaGlobalOptions.apiUrl +
+        '/downloadkml';
   });
 
   module.config(function(gaPreviewFeaturesProvider, gaGlobalOptions) {

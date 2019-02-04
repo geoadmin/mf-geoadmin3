@@ -157,7 +157,7 @@ describe('ga_definepropertiesforlayer_service', function() {
       gaDefine(layer);
       layer.bodId = 'bodId';
       expect(layer.get(prop)).to.be(undefined);
-      expect(layer[prop]).to.be('bodId');
+      expect(layer[prop]).to.be(undefined);
       expectLinkedToLayer(layer, prop);
     });
 

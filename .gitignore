@@ -5,9 +5,11 @@
 /src/jscomp.js
 /src/style/app.css
 /src/index.html
+/src/layersConfig*
 /src/mobile.html
 /src/embed.html
 /src/TemplateCacheModule.js
+/src/services*
 /prd
 /.build-artefacts
 /apache/app.conf

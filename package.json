@@ -9,6 +9,9 @@
     "type": "git",
     "url": "git://github.com/geoadmin/mf-geoadmin3"
   },
+  "engine": {
+    "node": ">=6.13.1"
+  },
   "author": "Swisstopo",
   "readmeFileName": "README.md",
   "//": "http://browserl.ist/?q=IE+9%2C+IE+10%2C+Android+%3E%3D+4%2C+%3E+0.5%25+in+CH",
@@ -33,7 +36,9 @@
     "gyronorm": "2.0.6",
     "jquery-ajax-transport-xdomainrequest": "1.0.4",
     "localforage": "1.7.3",
-    "slipjs": "2.1.1"
+    "ol-mapbox-style": "^3.1.0",
+    "slipjs": "2.1.1",
+    "tinycolor2": "1.4.1"
   },
   "devDependencies": {
     "caniuse-db": "1.0.30000928",

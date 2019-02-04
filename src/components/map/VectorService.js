@@ -1,6 +1,7 @@
 goog.provide('ga_vector_service');
 
 goog.require('ga_definepropertiesforlayer_service');
+goog.require('ga_file_service');
 goog.require('ga_geomutils_service');
 goog.require('ga_gpx_service');
 goog.require('ga_kml_service');
@@ -8,8 +9,8 @@ goog.require('ga_maputils_service');
 goog.require('ga_measure_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
+goog.require('ga_styles_service');
 goog.require('ga_urlutils_service');
-goog.require('ga_file_service');
 
 (function() {
 
@@ -23,7 +24,8 @@ goog.require('ga_file_service');
     'ga_urlutils_service',
     'ga_measure_service',
     'ga_geomutils_service',
-    'ga_file_service'
+    'ga_file_service',
+    'ga_styles_service'
   ]);
 
   /**
@@ -33,7 +35,7 @@ goog.require('ga_file_service');
 
     this.$get = function($http, $q, gaDefinePropertiesForLayer, gaMapUtils,
         gaNetworkStatus, gaStorage, gaUrlUtils, gaMeasure, gaGeomUtils,
-        gaFile, gaGpx, gaKml) {
+        gaFile, gaGpx, gaKml, gaStyleFactory, gaGlobalOptions) {
 
       // Find the good parser according to the raw data
       var getService = function(data) {
@@ -244,6 +246,18 @@ goog.require('ga_file_service');
         this.useImageVector = function(fileSize) {
           return (!!fileSize && parseInt(fileSize) >= 1000000); // < 1mo
         };
+
+        // Vector layer with a transparent style used for clipping rectangle
+        this.getTransparentLayer = function() {
+          return new ol.layer.Vector({
+            source: new ol.source.Vector({
+              features: [new ol.Feature(
+                  ol.geom.Polygon.fromExtent(gaGlobalOptions.defaultExtent)
+              )]
+            }),
+            style: [gaStyleFactory.getStyle('transparent')]
+          })
+        }
       };
       return new Vector();
     };
