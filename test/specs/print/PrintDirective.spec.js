@@ -331,9 +331,7 @@ describe('ga_print_directive', function() {
         scope.active = true;
         $rootScope.$digest();
         $httpBackend.flush();
-        expect(spy.args[0][0]).to.be('precompose');
-        expect(spy.args[1][0]).to.be('postcompose');
-        expect(spy.args[2][0]).to.be('change:size');
+        expect(spy.args[0][0]).to.be('change:size');
         expect(spy2.args[0][0]).to.be('propertychange');
         expect(spy3.args[0][0]).to.eql(['scale', 'layout']);
 

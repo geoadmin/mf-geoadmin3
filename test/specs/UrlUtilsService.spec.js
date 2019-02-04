@@ -36,6 +36,7 @@ describe('ga_urlutils_service', function() {
 
     describe('#isAdminValid()', function() {
       it('verifies admin validity', function() {
+        expect(gaUrlUtils.isAdminValid('https://tileserver.int.bgdi.ch/styles/')).to.be(true);
         expect(gaUrlUtils.isAdminValid('http://')).to.be(false);
         expect(gaUrlUtils.isAdminValid('https://')).to.be(false);
         expect(gaUrlUtils.isAdminValid('http://heig.ch')).to.be(false);
@@ -397,6 +398,43 @@ describe('ga_urlutils_service', function() {
         expect(urls[1]).to.be('wms1.geo.admin.ch');
         expect(urls[2]).to.be('wms2.geo.admin.ch');
         expect(urls[3]).to.be('wms3.geo.admin.ch');
+      });
+    });
+
+    describe('#resolveStyleUrl', function() {
+      it('uses the external style url if valid', function() {
+        var styleUrl = 'https://toto.admin.ch/style.json';
+        var externalUrl = 'https://externalstyle.json';
+        var url = gaUrlUtils.resolveStyleUrl(styleUrl, externalUrl);
+        expect(url).to.equal(externalUrl);
+      });
+
+      it('adds protocol to agnostic external style url', function() {
+        var styleUrl = 'https://toto.admin.ch/style.json';
+        var externalUrl = '//externalstyle.json';
+        var url = gaUrlUtils.resolveStyleUrl(styleUrl, externalUrl);
+        expect(url).to.equal('http:' + externalUrl);
+      });
+
+      it('uses the base style url if external style is undefined', function() {
+        var styleUrl = 'https://toto.admin.ch/style.json';
+        var externalUrl;
+        var url = gaUrlUtils.resolveStyleUrl(styleUrl, externalUrl);
+        expect(url).to.equal(styleUrl);
+      });
+
+      it('uses the base style url if external style is not valid', function() {
+        var styleUrl = 'https://toto.admin.ch/style.json';
+        var externalUrl = 'invalid_url';
+        var url = gaUrlUtils.resolveStyleUrl(styleUrl, externalUrl);
+        expect(url).to.equal(styleUrl);
+      });
+
+      it('adds to protocol to base style url if agnostic', function() {
+        var styleUrl = '//toto.admin.ch/style.json';
+        var externalUrl;
+        var url = gaUrlUtils.resolveStyleUrl(styleUrl, externalUrl);
+        expect(url).to.equal('http:' + styleUrl);
       });
     });
   });

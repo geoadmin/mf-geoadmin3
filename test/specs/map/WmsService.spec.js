@@ -22,7 +22,6 @@ describe('ga_wms_service', function() {
       expect(layer).to.be.an(options.layerClass || ol.layer.Image);
       expect(layer.id).to.be(options.id || 'WMS||' + options.label + '||' + options.url + '||' + options.LAYERS);
       expect(layer.url).to.be(options.url);
-      expect(layer.type).to.be(options.layerType || 'IMAGE');
       expect(layer.invertedOpacity).to.be(options.invertedOpacity || 0);
       expect(layer.visible).to.be(angular.isDefined(options.visible) ? options.visible : true);
       expect(layer.get('attribution')).to.be(options.attribution);
@@ -233,7 +232,6 @@ describe('ga_wms_service', function() {
         var layer = map.getLayers().item(0);
         expectProperties(layer, {
           layerClass: ol.layer.Tile,
-          layerType: 'TILE',
           sourceClass: ol.source.TileWMS,
           url: options.url,
           urls: [
