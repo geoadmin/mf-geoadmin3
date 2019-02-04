@@ -281,3 +281,119 @@ Regional :
 - Geoportal of <b> Thurgau</b> https://map.geo.tg.ch/
 
 - Environmental Portal of <b> Niedersachsen</b> https://numis.niedersachsen.de/kartendienste
+
+
+
+# Vector Tiles layer
+Like others layer, a vector tile layer can be defined in the layersConfig as
+a `vectortile` layer:
+
+```
+'ch.swisstopo.vektorkarte.vt':{
+  type: 'vectortile',
+  sourceId: 'ch.swisstopo.vektorkarte.vt',
+  serverLayerName: 'ch.swisstopo.vektorkarte.vt',
+  styles: [{
+    id: 'default',
+    url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v003/style.json'
+  }, {
+    id: 'artist',
+    url: 'https://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
+  }],
+  edits: [{
+    id: 'settlement',
+    regex: /^settlement/,
+    props: [
+      ['paint', 'fill-color', '{color}']
+    ]
+  }, {
+    id: 'roadtraffic',
+    regex: /^roadtraffic/,
+    props: [
+      ['paint', 'line-color', '{color}'],
+      ['paint', 'line-width', '{size}']
+    ]
+  }, {
+    id: 'labels',
+    regex: /^labels/,
+    props: [
+      ['layout', 'visibility', '{toggle}', 'visible', 'none'],
+      ['paint', 'text-color', '{color}'],
+      ['layout', 'text-size', '{size}']
+    ]
+  }]
+}
+```
+or an `aggregate` layer:
+
+```
+'ch.swisstopo.leichte-basiskarte.vt': {
+  type: 'aggregate',
+  background: true,
+  serverLayerName: 'ch.swisstopo.leichte-basiskarte.vt',
+  attribution: 'OpenMapTiles, OpenStreetMap contributors, swisstopo',
+  subLayersIds: [
+    'ch.swisstopo.vektorkarte.vt',
+    'ch.swissnames3d.vt'
+  ],
+  styles: [{
+    id: 'default',
+    url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v003/style.json'
+  }, {
+    id: 'artist',
+    url: 'https://public.dev.bgdi.ch/gl-styles/NgtR6hsOR5aUAonuKBR5qw'
+  }],
+  edits: [{
+    id: 'settlement',
+    regex: /^settlement/,
+    props: [
+      ['paint', 'fill-color', '{color}']
+    ]
+  }, {
+    id: 'roadtraffic',
+    regex: /^roadtraffic/,
+    props: [
+      ['paint', 'line-color', '{color}'],
+      ['paint', 'line-width', '{size}']
+    ]
+  }, {
+    id: 'labels',
+    regex: /^labels/,
+    props: [
+      ['layout', 'visibility', '{toggle}', 'visible', 'none'],
+      ['paint', 'text-color', '{color}'],
+      ['layout', 'text-size', '{size}']
+    ]
+  }]
+},
+'ch.swisstopo.vektorkarte.vt':{
+  type: 'vectortile',
+  sourceId: 'ch.swisstopo.vektorkarte.vt',
+  serverLayerName: 'ch.swisstopo.vektorkarte.vt'
+},
+'ch.swissnames3d.vt': {
+  type: 'vectortile',
+  sourceId: 'ch.swissnames3d',
+  serverLayerName: 'ch.swisstopo.vektorkarte.vt'
+},
+```
+
+A vector tile layer has some specific properties:
+
+`sourceId` : The id used in the [sources](https://www.mapbox.com/mapbox-gl-js/style-spec/#root-sources) list of the mapbox gl style.
+             Each vector tile layer corresponds to one source in the mapbox gl style.
+`styles` : An array of objects with an id and an url pointing to a mapbox gl style.
+           See [mapboxgl style reference](https://www.mapbox.com/mapbox-gl-js/style-spec/)
+`edits` : An array of objects defining which properties are editable by the advanced edit tool.
+
+These `edits` objects have 3 properties:
+- `id`: A string, mainly used for title translations
+- `regex`: A Regex object, used to filter the [layers](https://www.mapbox.com/mapbox-gl-js/style-spec/#root-layers) from the mapbox gl style to modify.
+           The regex is tested against the layer's [id](https://www.mapbox.com/mapbox-gl-js/style-spec/#layer-id) and [source-layer](https://www.mapbox.com/mapbox-gl-js/style-spec/#layer-source-layer) properties.
+- `props`: An array of properties allowed for modification. These properties are defined as an array of string.
+  + Example with `['paint', 'text-color', '{color}']`:
+    - `paint` and `text-color` define the properties of the layer object to modify: `layer.paint.fill-color`
+    - `{color}` defines which directive to used to modify the value here the ga-color directive. 3 possibilities: `{color}`, `{size}`, `{toggle}`
+      + When using the `{toggle}` directive, if the property is not a boolean, you have to defined 2 values to toggle.
+      + Example for [visibility](https://www.mapbox.com/mapbox-gl-js/style-spec/#layout-background-visibility) property:
+        ['layout', 'visibility', '{toggle}', 'visible', 'none'] , The toggle directive will switch between the 2 values, visible' and 'none'.

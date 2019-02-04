@@ -7,7 +7,9 @@ describe('ga_backgroundselector_directive', function() {
 
       map = new ol.Map({});
       layer1 = new ol.layer.Tile();
+      layer1.id = 'ch.swisstopo.swissimage';
       layer2 = new ol.layer.Tile();
+      layer2.id = 'ch.swisstopo.leichte-basiskarte.vt';
 
       module(function($provide) {
         $provide.value('gaLayers', {
@@ -23,6 +25,8 @@ describe('ga_backgroundselector_directive', function() {
           getLayerProperty: function(id, propertyName) {
             if (propertyName === 'label') {
               switch (id) {
+                case 'ch.swisstopo.leichte-basiskarte.vt':
+                  return 'bg_leichte-basiskarte';
                 case 'ch.swisstopo.swissimage':
                   return 'bg_luftbild';
                 case 'ch.swisstopo.pixelkarte-farbe':
@@ -63,9 +67,7 @@ describe('ga_backgroundselector_directive', function() {
 
       $rootScope.map = map;
       element = angular.element(
-          '<div ga-background-selector ' +
-            'ga-background-selector-map="map">' +
-          '</div>');
+          '<div ga-background-selector ga-background-selector-map="map">');
       gaBackground.init(map);
       $compile(element)($rootScope);
       def.resolve();
@@ -87,15 +89,14 @@ describe('ga_backgroundselector_directive', function() {
         element.find('.ga-bg-layer-bt').click();
         expect(element.hasClass('ga-open')).to.be(true);
 
-        element.find('.ga-swissimage').click();
-        $rootScope.$digest();
+        element.find('.ga-leichte-basiskarte:nth-child(1)').click();
         expect(element.hasClass('ga-open')).to.be(false);
-        expect(element.find('.ga-swissimage').hasClass('ga-bg-highlight')).to.be(true);
       });
 
-      it('creates 4 layer bgselectors div', function() {
+      it('creates 5 layer bgselectors div', function() {
+        // edit button 4 layers + 1 vector layer (edit btn)
         var divsBg = element.find('.ga-bg-layer');
-        expect(divsBg.length).to.equal(4);
+        expect(divsBg.length).to.equal(5);
       });
     });
   });
@@ -121,6 +122,8 @@ describe('ga_backgroundselector_directive', function() {
           getLayerProperty: function(id, propertyName) {
             if (propertyName === 'label') {
               switch (id) {
+                case 'ch.swisstopo.leichte-basiskarte.vt':
+                  return 'bg_leichte-basiskarte';
                 case 'ch.swisstopo.swissimage':
                   return 'bg_luftbild';
                 case 'ch.swisstopo.pixelkarte-farbe':
@@ -169,12 +172,6 @@ describe('ga_backgroundselector_directive', function() {
       $compile(element)($rootScope);
       def.resolve();
       $rootScope.$digest();
-    });
-
-    it('voidLayer is only added once', function() {
-      var divsBg = element.find('.ga-bg-layer');
-      expect(divsBg.length).to.equal(4);
-      expect(divsBg[1].className).to.contain('ga-voidLayer');
     });
   });
 });

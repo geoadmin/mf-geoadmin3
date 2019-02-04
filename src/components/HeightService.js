@@ -24,12 +24,14 @@ goog.provide('ga_height_service');
           if (!map || !coord) {
             return reject('Missing required parameters');
           }
+          // TODO: Fix service height in web mercator
           var proj = map.getView().getProjection();
+          var coord2056 = ol.proj.transform(coord, proj, 'EPSG:2056');
           return $http.get(url, {
             params: {
-              easting: coord[0],
-              northing: coord[1],
-              sr: proj.getCode().split(':')[1],
+              easting: coord2056[0],
+              northing: coord2056[1],
+              sr: '2056', // proj.getCode().split(':')[1],
               elevation_model: gaGlobalOptions.defaultElevationModel
             },
             cache: true,

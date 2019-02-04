@@ -407,66 +407,64 @@ describe('ga_printlayer_service', function() {
         var matrixIds = gaPrintLayer.encodeMatrixIds(tileGrid, extent);
 
         expect(matrixIds).to.eql([{
-          'identifier': '0',
-          'resolution': 66.14596562525627,
-          'topLeftCorner': [-29386400, 30814500],
-          'tileSize': [512, 512],
-          'matrixSize': [889, 904]
+          identifier: '0',
+          resolution: 66.14596562525627,
+          topLeftCorner: [ -29386400, 30814500 ],
+          tileSize: [ 512, 512 ],
+          matrixSize: [ 889, -901 ]
         }, {
-          'identifier': '1',
-          'resolution': 33.07298281262813,
-          'topLeftCorner': [-29386400, 30814500],
-          'tileSize': [512, 512],
-          'matrixSize': [1777, 1807]
+          identifier: '1',
+          resolution: 33.07298281262813,
+          topLeftCorner: [ -29386400, 30814500 ],
+          tileSize: [ 512, 512 ],
+          matrixSize: [ 1777, -1804 ]
+        }, { identifier: '2',
+          resolution: 16.933367200065604,
+          topLeftCorner: [ -29386400, 30814500 ],
+          tileSize: [ 512, 512 ],
+          matrixSize: [ 3470, -3525 ]
         }, {
-          'identifier': '2',
-          'resolution': 16.933367200065604,
-          'topLeftCorner': [-29386400, 30814500],
-          'tileSize': [512, 512],
-          'matrixSize': [3470, 3528]
+          identifier: '3',
+          resolution: 8.466683600032802,
+          topLeftCorner: [ -29386400, 30814500 ],
+          tileSize: [ 512, 512 ],
+          matrixSize: [ 6939, -7052 ]
         }, {
-          'identifier': '3',
-          'resolution': 8.466683600032802,
-          'topLeftCorner': [-29386400, 30814500],
-          'tileSize': [512, 512],
-          'matrixSize': [6939, 7055]
+          identifier: '4',
+          resolution: 4.233341800016401,
+          topLeftCorner: [ -29386400, 30814500 ],
+          tileSize: [ 512, 512 ],
+          matrixSize: [ 13877, -14105 ]
         }, {
-          'identifier': '4',
-          'resolution': 4.233341800016401,
-          'topLeftCorner': [-29386400, 30814500],
-          'tileSize': [512, 512],
-          'matrixSize': [13877, 14108]
+          identifier: '5',
+          resolution: 2.1166709000082005,
+          topLeftCorner: [ -29386400, 30814500 ],
+          tileSize: [ 512, 512 ],
+          matrixSize: [ 27753, -28212 ]
         }, {
-          'identifier': '5',
-          'resolution': 2.1166709000082005,
-          'topLeftCorner': [-29386400, 30814500],
-          'tileSize': [512, 512],
-          'matrixSize': [27753, 28215]
+          identifier: '6',
+          resolution: 1.0583354500041002,
+          topLeftCorner: [ -29386400, 30814500 ],
+          tileSize: [ 512, 512 ],
+          matrixSize: [ 55506, -56425 ]
         }, {
-          'identifier': '6',
-          'resolution': 1.0583354500041002,
-          'topLeftCorner': [-29386400, 30814500],
-          'tileSize': [512, 512],
-          'matrixSize': [55506, 56428]
+          identifier: '7',
+          resolution: 0.5291677250020501,
+          topLeftCorner: [ -29386400, 30814500 ],
+          tileSize: [ 512, 512 ],
+          matrixSize: [ 111011, -112851 ]
         }, {
-          'identifier': '7',
-          'resolution': 0.5291677250020501,
-          'topLeftCorner': [-29386400, 30814500],
-          'tileSize': [512, 512],
-          'matrixSize': [111011, 112854]
+          identifier: '8',
+          resolution: 0.26458386250102506,
+          topLeftCorner: [ -29386400, 30814500 ],
+          tileSize: [ 512, 512 ],
+          matrixSize: [ 222021, -225703 ]
         }, {
-          'identifier': '8',
-          'resolution': 0.26458386250102506,
-          'topLeftCorner': [-29386400, 30814500],
-          'tileSize': [512, 512],
-          'matrixSize': [222021, 225706]
-        }, {
-          'identifier': '9',
-          'resolution': 0.13229193125051253,
-          'topLeftCorner': [-29386400, 30814500],
-          'tileSize': [512, 512],
-          'matrixSize': [444041, 451411]
-        }]);
+          identifier: '9',
+          resolution: 0.13229193125051253,
+          topLeftCorner: [ -29386400, 30814500 ],
+          tileSize: [ 512, 512 ],
+          matrixSize: [ 444041, -451408 ] } ]);
       });
     });
 

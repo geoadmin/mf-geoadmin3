@@ -3,8 +3,31 @@
      class="ga-bg-layer ga-bg-layer-{{$index}} {{getClass(layer)}}"
      translate-attr="{title: layer.label}">
   <div class="ga-bg-layer-text" translate>{{layer.label}}</div>
+  <button class="ga-icon ga-btn fa fa-user"
+          ng-click="showWarning(layer)"
+          ng-show="layer.olLayer.useThirdPartyData"></button>
+  <button class="ga-icon ga-btn fa fa-user-edit {{getClass(layer)}}"
+          ng-click="toggleEdit(layer)"
+          ng-class="{'active': layer.id === activeEditLayerId }"
+          ng-if="!layer.disableEdit"
+          ng-disabled="ol3d && layer.disable3d"
+          translate-attr="{title: 'open_edit_bt_title'}">
+  </button>
+</div>
+<div class="ga-bg-layer ga-bg-layer-edit ga-bg-layer-{{$index}} {{getClass(layer)}}"
+     ng-repeat="layer in backgroundLayers"
+     ng-click="toggleEditSmallScreen(layer)"
+     ng-class="{'active': layer.id === activeEditLayerId }"
+     ng-if="!layer.disableEdit"
+     ng-disabled="ol3d && layer.disable3d"
+     translate-attr="{title: 'open_edit_bt_title'}">
+  <div class="ga-bg-layer-text" translate>{{layer.label}}</div>
+  <i class="fa fa-user-edit"></i>
 </div>
 <div class="ga-bg-layer-bt" translate-attr="{title: 'bg_toggle'}">
   <div class="ga-bg-layer-bt-text" translate>bg_chooser_label</div>
+  <button class="ga-icon ga-btn fa fa-user"
+          ng-click="showWarning(currentLayer)"
+          ng-show="currentLayer.olLayer.useThirdPartyData"></button>
   <i class="fa fa-chevron-sign-right"></i>
-</div> 
+</div>
