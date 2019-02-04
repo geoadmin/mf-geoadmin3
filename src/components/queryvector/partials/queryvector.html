@@ -1,0 +1,18 @@
+<div class="ga-query-vector-popup">
+  <div class="ga-query-vector-popup-title" translate>object_information</div>
+  <div class="ga-query-vector-popup-content">
+    <div class="htmlpopup-container">
+      <div class="htmlpopup-content">
+        <table ng-repeat="f in flatFeatures track by $index"
+               ng-class="{'ga-query-vector-item-separator': $index < flatFeatures.length - 1 && flatFeatures.length !== 1}">
+          <tbody>
+            <tr ng-repeat="p in f">
+              <td class="cell-left">{{ p[0] }}</td>
+              <td>{{ p[1] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

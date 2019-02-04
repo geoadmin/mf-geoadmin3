@@ -276,6 +276,100 @@ goog.require('ga_urlutils_service');
                   response.data[data.config3d].config2d = l;
                 }
               }
+
+              /* eslint-disable max-len */
+              // VectorTile
+              // Each object simulates a definition in LayersConfig file and
+              // represents a source in a glStyle file.
+              // Possible properties:
+              //     type:            The type of the layer, always 'vectortile'.
+              //     serverLayerName: The id of the layer in the layers config.
+              //     sourceId:        The source's id  in the glStyle.
+              //                      By default, it takes the serverLayername value.
+              //     url:             Template of the url where to get the vectortiles.
+              //                      Overrides the source's url property of the glStyle.
+              //     styleUrl:        Url's a the glStyle to apply to this layer.
+              //                      It will apply styles associated to the sourceId value.
+              //                      Used only if the parent has no styleUrl defined (see background layers).
+              var vts = [{
+                serverLayerName: 'ch.swisstopo.swissnames3d.vt',
+                sourceId: 'ch.swisstopo.swissnames3d'
+              }, {
+                serverLayerName: 'ch.bav.haltestellen-oev.vt',
+                sourceId: 'ch.bav.haltestellen-oev'
+              }, {
+                serverLayerName: 'ch.swisstopo.vektorkarte.vt',
+                opacity: 0.75 // Show swissalti
+              }];
+              /* eslint-enable max-len */
+
+              vts.forEach(function(vt) {
+                response.data[vt.serverLayerName] = angular.extend(vt, {
+                  type: 'vectortile',
+                  sourceId: vt.sourceId || vt.serverLayerName
+                });
+              });
+
+              response.data['ch.swisstopo.leichte-basiskarte.vt'] = {
+                type: 'aggregate',
+                background: true,
+                serverLayerName: 'ch.swisstopo.leichte-basiskarte.vt',
+                attribution: '' +
+                  '<a target="_blank" href="https://openmaptiles.org/">OpenMapTiles</a>, ' +
+                  '<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, ' +
+                  '<a target="_blank" href="https://www.swisstopo.admin.ch/' + lang + '/home.html">swisstopo</a>',
+                styles: [{
+                  id: 'default',
+                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v006/style.json'
+                }, {
+                  id: 'color',
+                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte-vintage.vt/v006/style.json'
+                }, {
+                  id: 'grey',
+                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte-grey.vt/v006/style.json'
+                }, {
+                  id: 'lsd',
+                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte-lsd.vt/v006/style.json'
+                }],
+                edits: [{
+                  id: 'settlement',
+                  regex: /^settlement/,
+                  props: [
+                    ['paint', 'fill-color', '{color}']
+                  ]
+
+                }, {
+                  id: 'landuse',
+                  regex: /^landuse/,
+                  props: [
+                    ['paint', 'fill-color', '{color}']
+                  ]
+
+                }, {
+                  id: 'hydrology',
+                  regex: /^hydrology/,
+                  props: [
+                    ['paint', 'fill-color', '{color}']
+                  ]
+
+                }, {
+                  id: 'roadtraffic',
+                  regex: /^roadtraffic/,
+                  props: [
+                    ['paint', 'line-color', '{color}'],
+                    ['paint', 'line-width', '{size}']
+                  ]
+
+                }, {
+                  id: 'labels',
+                  regex: /^labels/,
+                  props: [
+                    ['layout', 'visibility', '{toggle}', 'visible', 'none'],
+                    ['paint', 'text-color', '{color}'],
+                    ['layout', 'text-size', '{size}']
+                  ]
+                }]
+              };
             }
 
             if (!layers) { // First load
@@ -319,7 +413,7 @@ goog.require('ga_urlutils_service');
             url: getTerrainUrl(requestedLayer, timestamp),
             availableLevels: gaGlobalOptions.terrainAvailableLevels,
             rectangle: gaMapUtils.extentToRectangle(
-                gaGlobalOptions.defaultExtent)
+                gaGlobalOptions.swissExtent)
           });
           provider.bodId = bodId;
           return provider;
@@ -419,7 +513,7 @@ goog.require('ga_urlutils_service');
               subdomains: wmsSubdomains
             };
           }
-          var extent = config3d.extent || gaMapUtils.defaultExtent;
+          var extent = config3d.extent || gaGlobalOptions.swissExtent;
           if (params) {
             var minRetLod = gaMapUtils.getLodFromRes(config3d.maxResolution) ||
                 gaGlobalOptions.minimumRetrievingLevel;
@@ -482,11 +576,21 @@ goog.require('ga_urlutils_service');
          * Return an ol.layer.Layer object for a layer id.
          */
         this.getOlLayerById = function(bodId, opts) {
-          var config = layers[bodId];
+          opts = opts || {};
+          var that = this;
           var olLayer;
+          var config = layers[bodId];
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var crossOrigin = 'anonymous';
-          var extent = config.extent || gaMapUtils.defaultExtent;
+          var extent = config.extent || gaGlobalOptions.swissExtent;
+          var styleUrl = gaUrlUtils.resolveStyleUrl(config.styleUrl ||
+              (config.styles && config.styles[0].url), opts.externalStyleUrl);
+          var glStyle = opts.glStyle;
+
+          // Set dynamically the parentLayerId for aggregate layer
+          if (opts.parentLayerId) {
+            config.parentLayerId = opts.parentLayerId;
+          }
 
           // The tileGridMinRes is the resolution at which the client
           // zoom is activated. It's different from the config.minResolution
@@ -547,6 +651,7 @@ goog.require('ga_urlutils_service');
               preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
               useInterimTilesOnError: gaNetworkStatus.offline
             });
+            gaDefinePropertiesForLayer(olLayer);
           } else if (config.type === 'wms') {
             var wmsParams = {
               LAYERS: config.wmsLayers,
@@ -569,6 +674,7 @@ goog.require('ga_urlutils_service');
                 source: olSource,
                 extent: extent
               });
+              gaDefinePropertiesForLayer(olLayer);
             } else {
               if (!olSource) {
                 olSource = config.olSource = new ol.source.TileWMS({
@@ -594,20 +700,82 @@ goog.require('ga_urlutils_service');
                 preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
                 useInterimTilesOnError: gaNetworkStatus.offline
               });
+              gaDefinePropertiesForLayer(olLayer);
             }
           } else if (config.type === 'aggregate') {
-            var subLayersIds = config.subLayersIds;
-            var i, len = subLayersIds.length;
-            var subLayers = new Array(len);
-            for (i = 0; i < len; i++) {
-              subLayers[i] = this.getOlLayerById(subLayersIds[i]);
-            }
+            var subLayersIds = config.subLayersIds || [];
+            var createSubLayers = function(olLayer, glStyle) {
+              if (!subLayersIds.length) {
+                // No sublayerIds provided so we use directly what is available
+                // in sources list of the glStyle.
+                for (var s in glStyle.sources) {
+                  subLayersIds.push(s);
+                }
+              }
+              // Create sublayers.
+              var subLayers = [];
+              olLayer.glStyle = glStyle;
+              for (var i = 0; i < subLayersIds.length; i++) {
+                var id = subLayersIds[i];
+
+                // If a raster config already exists,
+                // we inform the developer.
+                if (layers[id] &&
+                    layers[id].type !== 'vectortile' &&
+                    glStyle && glStyle.sources &&
+                    glStyle.sources[id] &&
+                    glStyle.sources[id].type === 'vector') {
+                  $window.console.log('A raster config already exists ' +
+                    'for the glStyle source ' + id + '. ' +
+                    'Please change the source\'s ' +
+                    'name in the glStyle to avoid conflicts.');
+                  continue;
+                }
+
+                // If there is no config for this id, we assume it's
+                // a vectortile so we create a default config.
+                if (!layers[id]) {
+                  layers[id] = {
+                    serverLayerName: id,
+                    type: 'vectortile',
+                    sourceId: id
+                  }
+                }
+
+                // If the sourceId doesn't correspond to a source in glStyle
+                // object, we inform the developer.
+                var sourceId = layers[id].sourceId;
+                if (sourceId && glStyle && glStyle.sources &&
+                    !glStyle.sources[sourceId]) {
+                  $window.console.log('The glStyle has no source with ' +
+                    'the name ' +
+                    layers[id].sourceId + '. Please change the source\'s ' +
+                    'name in the glStyle to avoid conflicts.');
+                  continue;
+                }
+
+                subLayers.push(that.getOlLayerById(id, {
+                  glStyle: glStyle,
+                  parentLayerId: bodId
+                }));
+              }
+              olLayer.setLayers(new ol.Collection(subLayers));
+            };
             olLayer = new ol.layer.Group({
               minResolution: config.minResolution,
               maxResolution: config.maxResolution,
-              opacity: config.opacity || 1,
-              layers: subLayers
+              opacity: config.opacity || 1
             });
+            gaDefinePropertiesForLayer(olLayer);
+            if (glStyle || styleUrl) {
+              var p = (glStyle) ? $q.when(glStyle) : gaStorage.load(styleUrl);
+              p.then(function(glStyle) {
+                createSubLayers(olLayer, glStyle);
+              });
+            } else {
+              createSubLayers(olLayer);
+            }
+
           } else if (config.type === 'geojson') {
             // cannot request resources over https in S3
             olSource = new ol.source.Vector({
@@ -620,6 +788,7 @@ goog.require('ga_urlutils_service');
               source: olSource,
               extent: extent
             });
+            gaDefinePropertiesForLayer(olLayer);
             geojsonPromises[bodId] = gaUrlUtils.proxifyUrl(config.geojsonUrl).
                 then(function(proxyUrl) {
                   return $http.get(proxyUrl).then(function(response) {
@@ -635,13 +804,7 @@ goog.require('ga_urlutils_service');
                     return olSource.getFeatures();
                   });
                 });
-            var styleUrl;
-            if (opts && opts.externalStyleUrl &&
-                gaUrlUtils.isValid(opts.externalStyleUrl)) {
-              styleUrl = opts.externalStyleUrl;
-            } else {
-              styleUrl = $window.location.protocol + config.styleUrl;
-            }
+
             // IE doesn't understand agnostic URLs
             stylePromises[bodId] = gaUrlUtils.proxifyUrl(styleUrl).
                 then(function(proxyStyleUrl) {
@@ -655,9 +818,41 @@ goog.require('ga_urlutils_service');
                     return olStyleForVector;
                   });
                 });
+          } else if (config.type === 'vectortile') {
+            olLayer = new ol.layer.VectorTile({
+              declutter: true/*,
+              Note: This part was removed by 'mvt offline',
+              not sure if needed for v006?
+              style: new ol.style.Style(),
+              source: new ol.source.VectorTile({
+                format: new ol.format.MVT(),
+                maxZoom: config.maxZoom,
+                url: config.url,
+                loader: function (extent, resolution, projection) {
+                  console.log('loader', config.url, extent,
+                    resolution, projection);
+                }
+              }) */
+            });
+            gaDefinePropertiesForLayer(olLayer);
+            olLayer.setOpacity(config.opacity || 1);
+            olLayer.sourceId = config.sourceId;
+            p = (glStyle) ? $q.when(glStyle) : gaStorage.load(styleUrl);
+            p.then(function(glStyle) {
+              if (!glStyle) {
+                return;
+              }
+              gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
+              // Load informations from tileset.json file of a source
+              var sourceConfig = glStyle.sources[olLayer.sourceId];
+              sourceConfig.minZoom = config.minZoom;
+              sourceConfig.maxZoom = config.maxZoom;
+              if (sourceConfig) {
+                gaMapUtils.applyGlSourceToOlLayer(olLayer, sourceConfig);
+              }
+            });
           }
           if (angular.isDefined(olLayer)) {
-            gaDefinePropertiesForLayer(olLayer);
             olLayer.bodId = bodId;
             olLayer.label = config.label;
             olLayer.time = timestamp;
@@ -666,10 +861,13 @@ goog.require('ga_urlutils_service');
             olLayer.timestamps = config.timestamps;
             olLayer.geojsonUrl = config.geojsonUrl;
             olLayer.updateDelay = config.updateDelay;
-            olLayer.externalStyleUrl = opts && opts.externalStyleUrl ?
-              opts.externalStyleUrl : null;
-            olLayer.useThirdPartyData = !(!opts) && !(!opts.externalStyleUrl);
-            var that = this;
+            olLayer.externalStyleUrl = opts.externalStyleUrl;
+            olLayer.styles = config.styles;
+            if (styleUrl) {
+              olLayer.useThirdPartyData =
+                  gaUrlUtils.isThirdPartyValid(styleUrl);
+            }
+            olLayer.background = config.background || false;
             olLayer.getCesiumImageryProvider = function() {
               return that.getCesiumImageryProviderById(bodId, olLayer);
             };

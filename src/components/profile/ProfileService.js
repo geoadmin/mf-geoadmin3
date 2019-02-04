@@ -1,13 +1,15 @@
 goog.provide('ga_profile_service');
 
 goog.require('ga_geomutils_service');
+goog.require('ga_maputils_service');
 goog.require('ga_urlutils_service');
 (function() {
 
   var module = angular.module('ga_profile_service', [
     'ga_urlutils_service',
     'pascalprecht.translate',
-    'ga_geomutils_service'
+    'ga_geomutils_service',
+    'ga_maputils_service'
   ]);
 
   module.filter('gaTimeFormat', function() {
@@ -77,7 +79,7 @@ goog.require('ga_urlutils_service');
     };
 
     this.$get = function($q, $http, $translate, $window,
-        gaGlobalOptions, gaGeomUtils) {
+        gaGlobalOptions, gaGeomUtils, gaMapUtils) {
 
       var d3LibUrl = this.d3libUrl;
       var profileUrl = this.profileUrl;
@@ -108,7 +110,9 @@ goog.require('ga_urlutils_service');
           } else if (ratio > 1) {
             ratio = 1;
           }
-          return this.lineString.getCoordinateAt(ratio);
+          return gaMapUtils.transformBack(new ol.geom.Point(
+              this.lineString.getCoordinateAt(ratio)
+          )).getCoordinates();
         };
 
         this.formatData = function(data) {
@@ -277,7 +281,7 @@ goog.require('ga_urlutils_service');
           // Avoid hudge request by simplifying the line string with Douglas
           // Peucker if there is more than 1000 coordinates.
           geom = gaGeomUtils.simplify(geom, 1000);
-          var coordinates = geom.getCoordinates();
+          var coordinates = gaMapUtils.transform(geom).getCoordinates();
 
           // TODO: manage all kind of geometry
           if (geom instanceof ol.geom.Polygon ||
