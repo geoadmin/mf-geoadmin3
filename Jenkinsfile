@@ -17,12 +17,19 @@ node(label: 'jenkins-slave') {
     deployGitBranch = env.CHANGE_BRANCH
     namedBranch = true
   }
+  
+  // Project legacy/mf-geoadmin3 --> mf-geoadmin3 bucket
+  // Project mvt                 --> mf-geoadmin4 bucket
+  def project = 'mf-geoadmin3'
+  if (env.CHANGE_TARGET !='master') {
+     project = 'mvt'
+  }
 
   // from jenkins-shared-librairies 
   utils.abortPreviousBuilds()
 
   try { 
-    stage('Checkout') {
+    stage('Checkout') { 
       checkout scm
     }
     
@@ -42,14 +49,16 @@ node(label: 'jenkins-slave') {
     stage('Build') {
       sh 'make ' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' NAMED_BRANCH=' + namedBranch
     }
-
-    stage('Deploy') {
-      stdout = sh returnStdout: true, script: 'make s3copybranch DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' NAMED_BRANCH=' + namedBranch
+    // Different project --> different targets
+    stage('Deploy to int') {
+      echo 'Building project:'
+      echo project
+      stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' NAMED_BRANCH=' + namedBranch
       echo stdout
       def lines = stdout.readLines()
       s3VersionPath = lines.get(lines.size()-3)
       e2eTargetUrl = lines.get(lines.size()-1)
-    }
+    }  
      
     if (namedBranch) {
       // Add the test link in the PR

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -7,6 +8,7 @@ import sys
 import os
 import json
 import subprocess
+import click
 
 import StringIO
 import gzip
@@ -14,47 +16,7 @@ from datetime import datetime
 from textwrap import dedent
 import mimetypes
 
-
-def usage():
-    print(dedent('''\
-        Manage map.geo.admin.ch versions in AWS S3 bucket. Please make sure all your env variables are set.
-        (namely S3_MF_GEOADMIN3_INFRA)
-
-        Usage:
-
-            .build-artefacts/python-venv/bin/python scripts/s3manage.py
-                                                    <upload|list|info|activate|delete> (cmd type)
-                                                    <options>
-
-        A verions deployed to S3 is always defined by:
-
-        <s3version> = <branch_name>/<sha>/<version>
-
-        Commands:
-
-            upload:   Upload content of /prd (and /src) directory to a bucket.
-                      You may specify a directory (it defaults to current).
-
-                      Example: python scripts/s3manage.py upload <snapshotdir> <deploy_target>
-                                                          <named_branch|optional>
-
-            list:     List available <version> in a bucket.
-
-                      Example: python scripts/s3manage.py list <deploy_target>
-
-            info:     Print the info.json file.
-
-                      Example: python scripts/s3manage.py info <s3version> <deploy_target>
-
-            activate: Activate a version at the root of a bucket.
-
-                      Example: python scripts/s3manage.py activate <s3version> <deploy_target>
-
-            delete:   Delete an existing project.
-
-                      Example: python scripts/s3manage.py delete <s3version> <deploy_target>
-    '''))
-
+TARGETS = ['infra', 'dev', 'int', 'prod']
 
 mimetypes.init()
 mimetypes.add_type('application/x-font-ttf', '.ttf')
@@ -72,6 +34,22 @@ NO_COMPRESS = [
     'application/x-font-ttf',
     'application/x-font-opentype',
     'application/vnd.ms-fontobject']
+
+project = os.environ.get('PROJECT', 'mf-geoadmin3')
+
+
+def _get_bucket_name(deploy_target):
+    if project == 'mf-geoadmin3':
+        return 'mf-geoadmin3-%s-dublin' % deploy_target.lower()
+    else:
+        return 'mf-geoadmin4-%s-dublin' % deploy_target.lower()
+
+
+def get_bucket_name(target):
+    if target in TARGETS:
+        return _get_bucket_name(target)
+    else:
+        return target
 
 
 def local_git_last_commit(basedir):
@@ -166,7 +144,8 @@ def _save_to_s3(in_data, dest, mimetype, bucket_name, compress=True, cached=True
     extra_args['CacheControl'] = cache_control
 
     try:
-        print('Uploading to %s - %s, gzip: %s, cache headers: %s' % (dest, mimetype, compressed, cached))
+        print('Uploading to %s - %s, gzip: %s, cache headers: %s' %
+              (dest, mimetype, compressed, cached))
         if compressed:
             extra_args['ContentEncoding'] = content_encoding
 
@@ -219,7 +198,7 @@ def get_file_mimetype(local_file):
         return 'text/plain'
 
 
-def upload(bucket_name, base_dir, deploy_target, named_branch, git_branch):
+def upload(bucket_name, base_dir, deploy_target, named_branch, git_branch, bucket_url):
     s3_dir_path, version = create_s3_dir_path(base_dir, named_branch, git_branch)
     print('Destination folder is:')
     print('%s' % s3_dir_path)
@@ -250,14 +229,25 @@ def upload(bucket_name, base_dir, deploy_target, named_branch, git_branch):
                         # Don't cache some files
                         cached = is_cached(file_name, named_branch)
                         mimetype = get_file_mimetype(local_file)
-                        save_to_s3(local_file, remote_file, bucket_name, cached=cached, mimetype=mimetype)
+                        save_to_s3(
+                            local_file,
+                            remote_file,
+                            bucket_name,
+                            cached=cached,
+                            mimetype=mimetype)
                         # Also upload chsdi metadata file to src folder if available
                         if is_chsdi_cache:
                             relative_file_path = relative_file_path.replace(version + '/', '')
-                            remote_file = os.path.join(s3_dir_path, 'src/', relative_file_path, file_name)
-                            save_to_s3(local_file, remote_file, bucket_name, cached=cached, mimetype=mimetype)
+                            remote_file = os.path.join(
+                                s3_dir_path, 'src/', relative_file_path, file_name)
+                            save_to_s3(
+                                local_file,
+                                remote_file,
+                                bucket_name,
+                                cached=cached,
+                                mimetype=mimetype)
 
-    url_to_check = 'https://mf-geoadmin3.%s.bgdi.ch/' % deploy_target
+    url_to_check = bucket_url if bucket_url.endswith('/') else bucket_url + '/'
     print('S3 version path: ')
     # This line is used by jenkins to get the S3_VERSION_PATH
     print(s3_dir_path)
@@ -287,13 +277,16 @@ def list_version():
                                                                  Delimiter='/')
                         for v in builds.get('CommonPrefixes'):
                             build = v.get('Prefix')
-                            print('Full version: %s%s/%s' % (branch,
-                                                             nice_sha,
-                                                             build.replace(sha, '').replace('/', '')))
+                            print(
+                                'Full version: %s%s/%s' %
+                                (branch, nice_sha, build.replace(
+                                    sha, '').replace(
+                                    '/', '')))
                     else:
                         # Matching a version of the deployed branch
                         if re.match('[0-9]{10}', nice_sha):
-                            print('Named branch: %s (version: %s)' % (branch.replace('/', ''), nice_sha))
+                            print('Named branch: %s (version: %s)' %
+                                  (branch.replace('/', ''), nice_sha))
             else:
                 print('Not a official path for branch %s' % branch)
 
@@ -338,64 +331,52 @@ def delete_version(s3_path, bucket_name):
         n = 200
         indexes = [{'Key': k.key} for k in files]
         for i in xrange(0, len(indexes), n):
-            resp = s3client.delete_objects(Bucket=bucket_name, Delete={'Objects': indexes[i: i + n]})
+            resp = s3client.delete_objects(
+                Bucket=bucket_name, Delete={
+                    'Objects': indexes[
+                        i: i + n]})
             for v in resp['Deleted']:
                 print(v)
     else:
         print('Aborting deletion of <%s>.' % s3_path)
 
 
-def get_url(deploy_target, key_name='index.html'):
-    bucket_host = 'mf-geoadmin3.%s.bgdi.ch' % deploy_target
-    object_url = 'https://%s/%s' % (bucket_host, key_name)
-    return object_url
+def activate_version(s3_path, bucket_name, deploy_target, bucket_url):
+    # Prod files
+    for n in ('index', 'embed', 'mobile', '404'):
+        src_key_name = '{}/{}.html'.format(s3_path, n)
+        print('{} --> {}.html'.format(src_key_name, n))
+        s3client.copy_object(
+            Bucket=bucket_name,
+            CopySource=bucket_name + '/' + src_key_name,
+            Key=n + '.html',
+            ACL='public-read')
+    # Delete older appcache files
+    appcache_versioned_files = list(bucket.objects.filter(Prefix='geoadmin.').all())
+    indexes = [{'Key': k.key} for k in appcache_versioned_files if k.key.endswith('.appcache')]
+    if len(indexes) > 0:
+        s3client.delete_objects(Bucket=bucket_name, Delete={'Objects': indexes})
 
-
-def activate_version(s3_path, bucket_name, deploy_target):
-    if version_exists(s3_path) is False:
-        print('Version <%s> does not exists in AWS S3. Aborting' % s3_path)
-        sys.exit(1)
-
-    msg = raw_input('Are you sure you want to activate version <%s>?\n' % s3_path)
-    if msg.lower() in ('y', 'yes'):
-        # Prod files
-        for n in ('index', 'embed', 'mobile', '404'):
-            src_key_name = '{}/{}.html'.format(s3_path, n)
-            print('{} --> {}.html'.format(src_key_name, n))
+    appcache = None
+    files = list(bucket.objects.filter(Prefix='{}/geoadmin.'.format(s3_path)).all())
+    if len(files) > 0:
+        appcache = os.path.basename(sorted(files)[-1].key)
+    for j in ('robots.txt', 'checker', 'favicon.ico', appcache):
+        # In prod move robots prod
+        src_file_name = 'robots_prod.txt' if j == 'robots.txt' and deploy_target == 'prod' else j
+        src_key_name = '{}/{}'.format(s3_path, src_file_name)
+        print('%s ---> %s' % (src_key_name, j))
+        try:
             s3client.copy_object(
                 Bucket=bucket_name,
                 CopySource=bucket_name + '/' + src_key_name,
-                Key=n + '.html',
+                Key=j,
+                CopySourceIfModifiedSince=datetime(2015, 1, 1),
                 ACL='public-read')
-        # Delete older appcache files
-        appcache_versioned_files = list(bucket.objects.filter(Prefix='geoadmin.').all())
-        indexes = [{'Key': k.key} for k in appcache_versioned_files if k.key.endswith('.appcache')]
-        if len(indexes) > 0:
-            s3client.delete_objects(Bucket=bucket_name, Delete={'Objects': indexes})
-
-        appcache = None
-        files = list(bucket.objects.filter(Prefix='{}/geoadmin.'.format(s3_path)).all())
-        if len(files) > 0:
-            appcache = os.path.basename(sorted(files)[-1].key)
-        for j in ('robots.txt', 'checker', 'favicon.ico', appcache):
-            # In prod move robots prod
-            src_file_name = 'robots_prod.txt' if j == 'robots.txt' and deploy_target == 'prod' else j
-            src_key_name = '{}/{}'.format(s3_path, src_file_name)
-            print('%s ---> %s' % (src_key_name, j))
-            try:
-                s3client.copy_object(
-                    Bucket=bucket_name,
-                    CopySource=bucket_name + '/' + src_key_name,
-                    Key=j,
-                    CopySourceIfModifiedSince=datetime(2015, 1, 1),
-                    ACL='public-read')
-            except botocore.exceptions.ClientError as e:
-                print('Cannot copy {}: {}'.format(j, e))
-        print('\nPlease check it on:\n{}'.format(get_url(deploy_target)))
-        print('And:\n{}'.format(get_url(deploy_target, key_name=s3_path + '/src/index.html')))
-    else:
-        print('Aborting activation of version {}'.format(s3_path))
-        sys.exit(1)
+        except botocore.exceptions.ClientError as e:
+            print('Cannot copy {}: {}'.format(j, e))
+    print('\nSuccessfuly deployed into bucket {}'.format(bucket_name))
+    print('Check:\n{}/{}'.format(bucket_url, s3_path + '/index.html'))
 
 
 def init_connection(bucket_name):
@@ -414,108 +395,126 @@ def init_connection(bucket_name):
 
 
 def exit_usage(cmd_type):
-    usage()
-    print('Missing one arg for %s command' % cmd_type)
-    sys.exit(1)
+    with click.Context(cmd_type) as ctx:
+        click.echo(cmd_type.get_help(ctx))
 
 
-def parse_arguments(argv):
-    if len(argv) < 2:
-        exit_usage('UNKNOWN')
-
-    cmd_type = str(argv[1])
-
-    supported_cmds = ('upload', 'list', 'info', 'activate', 'delete')
-    if cmd_type not in supported_cmds:
-        usage()
-        print('Command %s not supported' % cmd_type)
+def parse_s3_path(s3_path, cmd_type):
+    if s3_path.endswith('/'):
+        s3_path = s3_path[:len(s3_path) - 1]
+    # Delete named branch as well
+    if s3_path.count('/') not in (0, 2):
+        exit_usage(cmd_type)
+        print('Bad version definition')
         sys.exit(1)
-
-    if cmd_type == 'upload' and len(argv) < 5:
-        exit_usage(cmd_type)
-    elif cmd_type == 'list' and len(argv) != 3:
-        exit_usage(cmd_type)
-    elif cmd_type == 'info' and len(argv) != 4:
-        exit_usage(cmd_type)
-    elif cmd_type == 'activate' and len(argv) != 4:
-        exit_usage(cmd_type)
-    elif cmd_type == 'delete' and len(argv) != 4:
-        exit_usage(cmd_type)
-
-    named_branch = None
-    git_branch = None
-    base_dir = os.getcwd()
-    if cmd_type == 'upload':
-        base_dir = os.path.abspath(argv[2])
-        if not os.path.isdir(base_dir):
-            print('No code found in directory %s' % base_dir)
-            sys.exit(1)
-        if len(argv) >= 5:
-            named_branch = True if argv[4] == 'true' else False
-        if len(argv) == 6:
-            git_branch = argv[5]
-
-    if cmd_type in ('activate', 'upload', 'info', 'delete'):
-        deploy_target = argv[3].lower()
-    elif cmd_type in ('list'):
-        deploy_target = argv[2].lower()
-
-    if deploy_target not in ('infra', 'int', 'prod'):
-        print('%s is not a valid deploy target' % deploy_target)
+    if s3_path.count('/') == 0 and cmd_type in ('activate', 'info'):
+        exit_usage(eval(cmd_type + '_cmd'))
+        print('Cmd activate/info not supported for named branches.')
+        print('Please provide a full version path.')
         sys.exit(1)
-
-    s3_path = None
-    if cmd_type in ('info', 'activate', 'delete'):
-        s3_path = argv[2]
-        if s3_path.endswith('/'):
-            s3_path = s3_path[:len(s3_path) - 1]
-        # Delete named branch as well
-        if s3_path.count('/') not in (0, 2):
-            usage()
-            print('Bad version definition')
-            sys.exit(1)
-        if s3_path.count('/') == 0 and cmd_type in ('activate', 'info'):
-            usage()
-            print('Cmd activate/info not supported for named branches.')
-            print('Please provide a full version path.')
-            sys.exit(1)
-
-    bucket_name = 'mf-geoadmin3-%s-dublin' % deploy_target.lower()
-
-    return (cmd_type, deploy_target, base_dir, named_branch, git_branch,
-            bucket_name, s3_path)
+    return s3_path
 
 
-def main():
-    global s3, s3client, bucket
-    print(parse_arguments(sys.argv))
-    cmd_type, deploy_target, base_dir, named_branch, git_branch, bucket_name, s3_path = \
-        parse_arguments(sys.argv)
+@click.group()
+def cli():
+    """Manage map.geo.admin.ch versions in AWS S3 bucket. Please do not use any credentials or profile, as this script
+        relies on aws instance's role.
+
+    A version deployed to S3 is always defined by:\n
+                <s3version> = <branch_name>/<sha>/<version>
+    """
+
     for var in ('AWS_PROFILE', 'AWS_ACCESS_KEY_ID'):
         val = os.environ.get(var)
         if val is not None:
             print('Please unset: {}. We use instance roles'.format(var))
             sys.exit(2)
-    s3, s3client, bucket = init_connection(bucket_name)
 
-    if cmd_type == 'upload':
-        print('Uploading %s to s3' % base_dir)
-        upload(bucket_name, base_dir, deploy_target, named_branch, git_branch)
-    elif cmd_type == 'list':
-        if len(sys.argv) < 2:
-            usage()
-            sys.exit(1)
-        list_version()
-    elif cmd_type == 'info':
-        version_info(s3_path)
-    elif cmd_type == 'activate':
-        print('Activating version \'{}\''.format(s3_path))
-        activate_version(s3_path, bucket_name, deploy_target)
-    elif cmd_type == 'delete':
-        print('Trying to delete version \'{}\''.format(s3_path))
-        delete_version(s3_path, bucket_name)
+
+@cli.command('list')
+@click.argument('target', required=True)
+def list_cmd(target):
+    """List available <version> in a bucket."""
+    global s3, s3client, bucket
+    bucket_name = get_bucket_name(target)
+    s3, s3client, bucket = init_connection(bucket_name)
+    list_version()
+
+
+@cli.command('upload')
+@click.option('--force', help='Do not prompt for confirmation', is_flag=True)
+@click.option('--url', 'bucket_url', help='Bucket url to check', required=True)
+@click.argument('snapshotdir', required=True, default=os.getcwd())
+@click.argument('target', required=True)
+@click.argument('named_branch', required=False, default=False)
+@click.argument('git_branch', required=False)
+def upload_cmd(force, snapshotdir, named_branch, target, git_branch, bucket_url):
+    """Upload content of /prd (and /src) directory to a bucket. You may specify a directory (it defaults to current)."""
+    global s3, s3client, bucket
+    bucket_name = get_bucket_name(target)
+    s3, s3client, bucket = init_connection(bucket_name)
+    named_branch = True if named_branch == 'true' else False
+    base_dir = os.path.abspath(snapshotdir)
+    if not os.path.isdir(base_dir):
+        print('No code found in directory %s' % base_dir)
+        sys.exit(1)
+    if not force and not click.confirm(
+            'You are about to upload {} to {}. Continue?'.format(
+            base_dir, bucket_name)):
+        click.echo('Aborting.')
+        sys.exit()
     else:
-        usage()
+        upload(bucket_name, base_dir, target, named_branch, git_branch, bucket_url)
+
+
+@cli.command('info')
+@click.argument('s3_path', required=True)
+@click.argument('target', required=True)
+def info_cmd(s3_path, target):
+    """Print the info.json file"""
+    global s3, s3client, bucket
+    bucket_name = get_bucket_name(target)
+    s3, s3client, bucket = init_connection(bucket_name)
+    s3_path = parse_s3_path(s3_path, 'info')
+    version_info(s3_path)
+
+
+@cli.command('activate')
+@click.option('--force', help='Do not prompt for confirmation', is_flag=True)
+@click.option('--url', 'bucket_url', help='Bucket url to check',
+              required=False, default='https://<bucket public url>')
+@click.argument('s3_path', required=True)
+@click.argument('target', required=True)
+def activate_cmd(s3_path, target, force, bucket_url):
+    """Activate a version at the root of a bucket (by copying index.html and co to the root)"""
+    global s3, s3client, bucket
+    bucket_name = get_bucket_name(target)
+    s3, s3client, bucket = init_connection(bucket_name)
+    s3_path = parse_s3_path(s3_path, 'activate')
+    if version_exists(s3_path) is False:
+        print('Version <%s> does not exists in AWS S3. Aborting' % s3_path)
+        sys.exit(1)
+    if not force and not click.confirm(
+        'Are you sure you want to activate version <{}> in bucket <{}>?'.format(
+            s3_path,
+            bucket_name)):
+        click.echo('Aborting activation.')
+        sys.exit()
+    else:
+        activate_version(s3_path, bucket_name, target, bucket_url)
+
+
+@cli.command('delete')
+@click.argument('s3_path', required=True)
+@click.argument('target', required=False)
+def delete_cmd(s3_path, target):
+    """Delete a s3_path on a give bucket"""
+    global s3, s3client, bucket
+    bucket_name = get_bucket_name(target)
+    s3, s3client, bucket = init_connection(bucket_name)
+    s3_path = parse_s3_path(s3_path, 'delete')
+    print('Trying to delete version \'{}\''.format(s3_path))
+    delete_version(s3_path, bucket_name)
 
 if __name__ == '__main__':
-    main()
+    cli()
