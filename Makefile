@@ -343,6 +343,7 @@ prod:
 .PHONY: release
 release: showVariables \
 	.build-artefacts/devlibs \
+	configs \
 	prd/lib/ \
 	prd/lib/Cesium/ \
 	prd/lib/Cesium/Workers/ \
@@ -366,6 +367,7 @@ release: showVariables \
 .PHONY: debug
 debug: showVariables \
 	.build-artefacts/devlibs \
+	configs \
 	src/deps.js \
 	src/style/app.css \
 	src/index.html \
@@ -719,11 +721,6 @@ define cachelastvariable
 	    echo "$2" > .build-artefacts/last-$4 || :
 endef
 
-index.prod.html: src/index.mako.html \
-	    ${MAKO_CMD} \
-	    ${MAKO_LAST_VARIABLES_PROD}
-	$(call buildpage,desktop,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
-
 .PHONY: configs
 configs:
 	$(foreach target, $(TARGETS), source rc_$(shell echo $(target) | tr A-Z a-z) && make src/config.$(shell echo $(target) | tr A-Z a-z).mako ;)
@@ -740,12 +737,6 @@ src/config.%.mako: src/config.mako \
 	    ${MAKO_CMD} \
 	    ${MAKO_LAST_VARIABLES_PROD}
 	$(call buildpage,embed,$*,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
-
-
-prd/complete.html: src/complete.mako  \
-	    ${MAKO_CMD} \
-	    ${MAKO_LAST_VARIABLES_PROD}
-	$(call buildpage,embed,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
 
 
 prd/mobile.html: src/index.mako.html \
