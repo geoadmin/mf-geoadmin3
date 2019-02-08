@@ -42,6 +42,9 @@ LAST_APACHE_BASE_DIRECTORY := $(call lastvalue,apache-base-directory)
 APACHE_BASE_PATH ?= /$(shell id -un)
 LAST_APACHE_BASE_PATH := $(call lastvalue,apache-base-path)
 
+# Local server
+PORT ?= 9001
+
 
 # App services variables
 TECH_SUFFIX = .bgdi.ch
@@ -349,6 +352,53 @@ debug: showVariables \
 	src/mobile.html \
 	src/embed.html \
 	src/404.html
+
+BUILD_DIR = dist
+RELEASE_DIR = prd
+COPY_FILES = $(BUILD_DIR)/index.html $(BUILD_DIR)/info.json $(BUILD_DIR)/checker $(BUILD_DIR)/favicon.ico \
+						 $(BUILD_DIR)/robots.txt $(BUILD_DIR)/robots_prod.txt $(BUILD_DIR)/404.html $(BUILD_DIR)/embed.html \
+						 $(BUILD_DIR)/mobile.html 
+
+CACHES = $(wildcard $(RELEASE_DIR)/*.appcache)
+COPY_FILES += $(patsubst $(RELEASE_DIR)/%.appcache,$(BUILD_DIR)/%.appcache,$(CACHES))
+
+$(BUILD_DIR):
+	    mkdir -p $@
+
+$(BUILD_DIR)/index.html: prd/index.html
+$(BUILD_DIR)/info.json: prd/info.json
+$(BUILD_DIR)/checker: prd/checker
+$(BUILD_DIR)/favicon.ico: prd/favicon.ico
+$(BUILD_DIR)/robots.txt: prd/robots.txt
+$(BUILD_DIR)/robots_prod.txt: prd/robots_prod.txt
+$(BUILD_DIR)/404.html: prd/404.html
+$(BUILD_DIR)/embed.html: prd/embed.html
+$(BUILD_DIR)/mobile.html: prd/mobile.html
+$(BUILD_DIR)/geoadmin.%.appcache:  prd/geoadmin.%.appcache
+		cp -f $< $@
+
+$(BUILD_DIR)/src: $(BUILD_DIR)
+	rsync -rupE src $(BUILD_DIR)/
+
+$(BUILD_DIR)/prd: $(BUILD_DIR)
+	rsync -rupE prd/lib prd/img prd/locales prd/style prd/cache/   $(BUILD_DIR)/$(VERSION)/
+
+# Or simply symlink?
+#$(BUILD_DIR)/src: $(BUILD_DIR)
+#	ln -s  $@  src
+
+$(BUILD_DIR)/%: 
+		cp -f $< $@
+
+.PHONY: dist
+dist: $(BUILD_DIR) $(COPY_FILES) $(BUILD_DIR)/prd $(BUILD_DIR)/src
+
+.PHONY: serve
+serve: $(PYTHON_CMD)
+		cd dist && $(PYTHON_CMD) -m SimpleHTTPServer $(PORT)
+
+distclean:
+	rm -rf $(BUILD_DIR)
 
 .PHONY: lint
 lint: .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) linttest lintpy

@@ -9,6 +9,7 @@
 /src/embed.html
 /src/TemplateCacheModule.js
 /prd
+/dist
 /.build-artefacts
 /apache/app.conf
 /test/karma-conf-*.js
