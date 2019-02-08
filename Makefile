@@ -306,10 +306,10 @@ all: showVariables lint debug release apache testdebug testrelease fixrights
 
 .PHONY: user
 user: env
-	source $(USER_SOURCE) && make all
+	make configs && source $(USER_SOURCE) && make src/config.dev.mako all
 
 .PHONY: build
-build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) debug release
+build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) configs debug release
 
 
 .PHONY: .build-artefacts/nvm-version
@@ -330,20 +330,19 @@ env: .build-artefacts/nvm-version .build-artefacts/node-version
 
 .PHONY: dev
 dev:
-	source rc_dev && make build
+	make configs build
 
 .PHONY: int
 int:
-	source rc_int && make build
+	make configs build
 
 .PHONY: prod
 prod:
-	source rc_prod && make build
+	make configs build
 
 .PHONY: release
 release: showVariables \
 	.build-artefacts/devlibs \
-	configs \
 	prd/lib/ \
 	prd/lib/Cesium/ \
 	prd/lib/Cesium/Workers/ \
@@ -367,7 +366,6 @@ release: showVariables \
 .PHONY: debug
 debug: showVariables \
 	.build-artefacts/devlibs \
-	configs \
 	src/deps.js \
 	src/style/app.css \
 	src/index.html \
