@@ -8,6 +8,10 @@
 /src/mobile.html
 /src/embed.html
 /src/TemplateCacheModule.js
+/src/config.dev.mako
+/src/config.int.mako
+/src/config.prod.mako
+/src/config.infra.mako
 /prd
 /.build-artefacts
 /apache/app.conf
