@@ -24,6 +24,7 @@ GEOBLOCKS_LEGACYLIB_VERSION ?= 0101a217be1b7525be8d590910fb8f70295194be # Septem
 # Info variables
 USER_NAME ?= $(shell id -un)
 GIT_COMMIT_HASH ?= $(shell git rev-parse --verify HEAD)
+GIT_COMMIT_SHORT ?= $(shell git rev-parse --short $(GIT_COMMIT_HASH))
 GIT_COMMIT_DATE ?= $(shell git log -1  --date=iso --pretty=format:%cd)
 CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
 
@@ -145,8 +146,8 @@ DEPLOY_TARGET ?= int
 DEPLOY_GIT_BRANCH ?= $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
 CODE_DIR ?= .
-S3_BASE_PATH =
-S3_SRC_BASE_PATH =
+S3_BASE_PATH ?=
+S3_SRC_BASE_PATH ?=
 ifeq ($(NAMED_BRANCH), false)
   SHA := $(shell git rev-parse HEAD | cut -c1-7)
   S3_BASE = /$(DEPLOY_GIT_BRANCH)/$(SHA)/$(VERSION)
@@ -353,7 +354,8 @@ debug: showVariables \
 	src/embed.html \
 	src/404.html
 
-BUILD_DIR = dist
+BUILD_BASE_DIR = dist
+BUILD_DIR = $(BUILD_BASE_DIR)/$(DEPLOY_GIT_BRANCH)/$(VERSION)
 RELEASE_DIR = prd
 COPY_FILES = $(BUILD_DIR)/index.html $(BUILD_DIR)/info.json $(BUILD_DIR)/checker $(BUILD_DIR)/favicon.ico \
 						 $(BUILD_DIR)/robots.txt $(BUILD_DIR)/robots_prod.txt $(BUILD_DIR)/404.html $(BUILD_DIR)/embed.html \
@@ -395,7 +397,7 @@ dist: $(BUILD_DIR) $(COPY_FILES) $(BUILD_DIR)/prd $(BUILD_DIR)/src
 
 .PHONY: serve
 serve: $(PYTHON_CMD)
-		cd dist && $(PYTHON_CMD) -m SimpleHTTPServer $(PORT)
+		$(PYTHON_CMD) scripts/server.py -p $(PORT) -d dist
 
 distclean:
 	rm -rf $(BUILD_DIR)
@@ -785,7 +787,7 @@ prd/index.html: src/index.mako.html \
 	    ${MAKO_LAST_VARIABLES_PROD}
 	mkdir -p $(dir $@)
 	$(call buildpage,desktop,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
-	${HTMLMIN_CMD} $@ $@
+## TODO reactivate	${HTMLMIN_CMD} $@ $@
 
 prd/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
