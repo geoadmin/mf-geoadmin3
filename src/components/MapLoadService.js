@@ -20,6 +20,7 @@ goog.require('ga_layerfilters_service');
       var layersPending = 0;
       var layersDone = 0;
       var mapStartTime;
+      var renderStartTime;
 
       var updateMapLoading = function() {
         if (layersPending === layersDone) {
@@ -33,6 +34,7 @@ goog.require('ga_layerfilters_service');
         if (mapStartTime === undefined) {
           $window.console.info('Start loading map.');
           mapStartTime = new Date();
+          renderStartTime = new Date();
         }
         layersPending++;
         updateMapLoading();
@@ -72,11 +74,13 @@ goog.require('ga_layerfilters_service');
         };
 
         if (layer instanceof ol.layer.Tile ||
-            layer instanceof ol.layer.Image) {
+            layer instanceof ol.layer.Image ||
+            layer instanceof ol.layer.VectorTile) {
           var start, error, end;
           src = layer.getSource();
           if (src instanceof ol.source.WMTS ||
-              src instanceof ol.source.TileWMS) {
+              src instanceof ol.source.TileWMS ||
+              src instanceof ol.source.VectorTile) {
             start = 'tileloadstart';
             error = 'tileloaderror';
             end = 'tileloadend';
@@ -107,6 +111,19 @@ goog.require('ga_layerfilters_service');
         };
 
         this.init = function(scope) {
+          var appStart = new Date();
+          $window.console.info('App Start.');
+          scope.map.on('rendercomplete', function(event) {
+            var seconds = (new Date() - appStart) / 1000;
+            $window.console.info('Rendering since app start: ' + seconds + 's');
+            if (renderStartTime) {
+              var mapseconds = (new Date() - renderStartTime) / 1000;
+              $window.console.info('Rendering since maploading start: ' +
+                  mapseconds + 's');
+              renderStartTime = undefined;
+            }
+          });
+
           scope.maploadLayers = scope.map.getLayers().getArray();
           scope.maploadFilter = function(l) {
             return gaLayerFilters.selectedAndVisible(l) ||
