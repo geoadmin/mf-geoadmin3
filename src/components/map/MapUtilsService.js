@@ -540,7 +540,8 @@ goog.require('ga_urlutils_service');
                 undefined,
                 spriteData,
                 glStyle.sprite + '.png',
-                ['Helvetica']);
+                ['Roboto Regular', 'Roboto Italic',
+                  'Roboto Condensed Bold', 'Helvetica']);
             olLayer.glStyle = glStyle;
           });
         },
