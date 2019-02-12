@@ -711,24 +711,26 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         // Because s3 is hosted on infra
         var supportedEnv = ['dev', 'int', 'prod', 'ci'];
-        var staging = getParam('staging') ;
-        if (!staging || Object.keys(configs).indexOf(staging) < 0) {
+        var requestedStaging = getParam('staging') ;
+        var staging = 'prod';
+        var cfg = configs['prod'];
+        if (!requestedStaging || Object.keys(configs).indexOf(requestedStaging) < 0) {
           var res = /.*\.(dev|int|ci|infra|prod)\.bgdi\.ch$/.exec(location.hostname);
           if (res && res.length > 0) {
-              if (supportedEnv.indexOf(res[1]) !== -1) {
-                  staging = res[1];
-              }
-          } else {
-              staging = 'prod';
-          }
+            if (Object.keys(configs).indexOf(res[1]) !== -1) {
+              staging = res[1];
+            } 
+          }  
+        } else {
+            staging = requestedStaging;
         }
-        var cfg = configs[staging];
+        var cfg = Object.assign(cfg, configs[staging]);
 
         var adminUrlRegexp = new RegExp(cfg['admin_url_regexp']);
         var module = angular.module('geoadmin');
         var cacheAdd = cfg['version'] != '' ? '/' + cfg['version'] : '';
         var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
-        var s3pathname = cfg['s3basepath'] == '' ? pathname : cfg[s3basepath];
+        var s3pathname = cfg['s3basepath'] == '' ? pathname : cfg['s3basepath'];
         var prtl = location.protocol;
         var hostIsProd = true;
 
