@@ -13,7 +13,9 @@ goog.require('ga_glstylestorage_service');
     'ga_layers_service',
     'ga_urlutils_service',
     'ga_layerfilters_service',
-    'ga_glstylestorage_service'
+    'ga_glstylestorage_service',
+    'ga_storage_service',
+    'ga_maputils_service'
   ]);
 
   /**
@@ -21,7 +23,7 @@ goog.require('ga_glstylestorage_service');
    */
   module.provider('gaBackground', function() {
     this.$get = function($rootScope, $q, gaTopic, gaLayers, gaPermalink,
-        gaUrlUtils, gaLayerFilters, gaGlStyleStorage) {
+        gaUrlUtils, gaLayerFilters, gaGlStyleStorage, gaStorage, gaMapUtils) {
       var bg; // The current background
       var bgs = []; // The list of backgrounds available
       var bgsP; // Promise resolved when the background service is initialized.
@@ -183,6 +185,22 @@ goog.require('ga_glstylestorage_service');
                 } else {
                   initBg.externalStyleUrl = params.bgLayer_styleUrl;
                   that.set(map, initBg);
+
+                  // set default GLStyle background rules
+                  // this is needed because we don't use olms defautl function
+                  // but rather apply olms.stylefunction at every layer
+                  // we created (instead of letting olms create the layers
+                  // for us, and style them correctly for background rules)
+                  if (initBg.olLayer
+                      && initBg.olLayer.styles
+                      && initBg.olLayer.styles[0]
+                      && initBg.olLayer.styles[0].url) {
+                    gaStorage.load(initBg.olLayer.styles[0].url).then(
+                      function (glStyle) {
+                        gaMapUtils.setGlBackground(map, glStyle);
+                      }
+                    )
+                  }
                 }
 
                 $rootScope.$on('gaTopicChange', function(evt, newTopic) {
