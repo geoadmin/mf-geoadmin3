@@ -5,18 +5,18 @@
   # remove them.
   languages = json.loads(languages[1:-1])
 %>CACHE MANIFEST
-# Version ${version}
+# Version ${git_commit_short}
 
 CACHE:
-${s3basepath}${version}/lib/build.js
-${s3basepath}${version}/style/app.css
-${s3basepath}${version}/style/font-awesome-4.5.0/font/fontawesome-webfont.woff
-${s3basepath}${version}/services
+${s3basepath}${git_commit_short}/lib/build.js
+${s3basepath}${git_commit_short}/style/app.css
+${s3basepath}${git_commit_short}/style/font-awesome-4.5.0/font/fontawesome-webfont.woff
+${s3basepath}${git_commit_short}/services
 % for lang in languages:
-${s3basepath}${version}/layersConfig.${lang}.json
-${s3basepath}${version}/locales/${lang}.json
+${s3basepath}${git_commit_short}/layersConfig.${lang}.json
+${s3basepath}${git_commit_short}/locales/${lang}.json
 % endfor
-${s3basepath}${version}/img/geolocation_heading_marker.png
+${s3basepath}${git_commit_short}/img/geolocation_heading_marker.png
 
 NETWORK:
 #use by CatalogServer, checker, tiles
