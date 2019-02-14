@@ -13,6 +13,8 @@ endef
 # rc file used
 USER_SOURCE ?= rc_user
 
+# mf-geoadmin3 or
+PROJECT ?= mf-geoadmin3
 
 # Map libs variables
 OL_VERSION ?= be12573# September 25 2018 (mind the absence of a space character after the version)
@@ -142,6 +144,7 @@ NODE_VERSION ?= 6.13.1
 LAST_NODE_VERSION := $(call lastvalue,node-version)
 
 # S3 deploy variables
+TARGETS = DEV INT PROD INFRA
 DEPLOY_TARGET ?= int
 DEPLOY_GIT_BRANCH ?= $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
@@ -166,6 +169,17 @@ BRANCH_TO_DELETE ?=
 CONFIG_FILES := $(wildcard configs/**/*.json)
 S3_UPLOAD_HEADERS = --content-encoding gzip --acl public-read --cache-control 'max-age=60' --content-type 'application/json'
 
+# Bucket name
+ifeq ($(PROJECT),mf-geoadmin3)
+		S3_BUCKET_PROD := $(S3_MF_GEOADMIN3_PROD)
+		S3_BUCKET_INT := $(S3_MF_GEOADMIN3_INT)
+		S3_BUCKET_DEV := $(S3_MF_GEOADMIN3_DEV)
+		S3_BUCKET_INFRA := $(S3_MF_GEOADMIN3_INFRA)
+else
+		S3_BUCKET_PROD := mf-geoadmin4-prod-dublin
+		S3_BUCKET_INT:=   mf-geoadmin4-int-dublin
+
+endif
 
 
 ## Python interpreter can't have space in path name
@@ -263,6 +277,7 @@ help:
 	@echo
 	@echo "Variables:"
 	@echo
+	@echo "- PROJECT                     (current value: ${PROJECT})"
 	@echo "- API_URL Service URL         (build with: $(LAST_API_URL), current value: $(API_URL))"
 	@echo "- CONFIG_URL Service URL      (build with: $(LAST_CONFIG_URL), current value: $(CONFIG_URL))"
 	@echo "- ALTI_URL Alti service URL   (build with: $(LAST_ALTI_URL), current value: $(ALTI_URL))"
@@ -282,6 +297,10 @@ help:
 	@echo "- GIT_COMMIT_HASH             (current value: $(GIT_COMMIT_HASH))"
 	@echo "- VARNISH_HOSTS               (current value: ${VARNISH_HOSTS})"
 	@echo "- DEPLOY_TARGET               (current value: ${DEPLOY_TARGET})"
+	@echo "- S3_BUCKET_PROD              (current value: ${S3_BUCKET_PROD})"
+	@echo "- S3_BUCKET_INT               (current value: ${S3_BUCKET_INT})"
+	@echo "- S3_BUCKET_DEV               (current value: ${S3_BUCKET_DEV})"
+	@echo "- S3_BUCKET_INFRA             (current value: ${S3_BUCKET_INFRA})"
 	@echo
 
 showVariables:
@@ -289,16 +308,19 @@ showVariables:
 	@echo "VERSION = $(VERSION)"
 	@echo "S3_BASE_PATH = $(S3_BASE_PATH)"
 	@echo "S3_SRC_BASE_PATH = $(S3_SRC_BASE_PATH)"
+	@echo "S3_BUCKET_PROD   = $(S3_BUCKET_PROD)"
+	@echo "S3_BUCKET_INT    = $(S3_BUCKET_INT)"
+	@echo "S3_BUCKET_DEV    = $(S3_BUCKET_DEV)"
 
 .PHONY: all
 all: showVariables lint debug release apache testdebug testrelease fixrights
 
 .PHONY: user
 user: env
-	source $(USER_SOURCE) && make all
+	make configs && source $(USER_SOURCE) && make src/config.dev.mako all
 
 .PHONY: build
-build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) debug release
+build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) configs debug release
 
 
 .PHONY: .build-artefacts/nvm-version
@@ -319,15 +341,15 @@ env: .build-artefacts/nvm-version .build-artefacts/node-version
 
 .PHONY: dev
 dev:
-	source rc_dev && make build
+	make configs build
 
 .PHONY: int
 int:
-	source rc_int && make build
+	make configs build
 
 .PHONY: prod
 prod:
-	source rc_prod && make build
+	make configs build
 
 .PHONY: release
 release: showVariables \
@@ -407,17 +429,10 @@ deploydev:
 		./scripts/deploydev.sh; \
 	fi
 
-.PHONY: s3deployinfra
-s3deployinfra: guard-SNAPSHOT .build-artefacts/requirements.timestamp
-	./scripts/deploysnapshot.sh $(SNAPSHOT) infra;
-
-.PHONY: s3deployint
-s3deployint: guard-SNAPSHOT .build-artefacts/requirements.timestamp
-	./scripts/deploysnapshot.sh $(SNAPSHOT) int;
-
-.PHONY: s3deployprod
-s3deployprod: guard-SNAPSHOT .build-artefacts/requirements.timestamp
-	./scripts/deploysnapshot.sh $(SNAPSHOT) prod;
+s3deploy := $(patsubst %,s3deploy%,int,infra,prod)
+PHONY: $(s3deploy)
+s3deploy%: guard-SNAPSHOT .build-artefacts/requirements.timestamp
+	./scripts/deploysnapshot.sh $(SNAPSHOT) $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
 
 s3deploybranch: guard-CLONEDIR \
                 guard-DEPLOY_TARGET \
@@ -451,53 +466,25 @@ s3copybranch: guard-DEPLOY_TARGET \
               .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py upload ${CODE_DIR} ${DEPLOY_TARGET} ${NAMED_BRANCH} ${DEPLOY_GIT_BRANCH};
 
-.PHONY: s3listinfra
-s3listinfra: .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py list infra;
+s3list := $(patsubst %,s3list%,int,infra,prod)
+PHONY: $(s3list)
+s3list%: .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py list $(S3_BUCKET_$(shell echo $*| tr a-z A-Z))
 
-.PHONY: s3listint
-s3listint: .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py list int;
+s3info := $(patsubst %,s3info%,int,infra,prod)
+PHONY: $(s3info)
+s3info%: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
 
-.PHONY: s3listprod
-s3listprod: .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py list prod;
+s3activate := $(patsubst %,s3activate%,int,infra,prod)
+PHONY: $(s3activate)
+s3activate%: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
 
-.PHONY: s3infoinfra
-s3infoinfra: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} infra;
-
-.PHONY: s3infoint
-s3infoint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} int;
-
-.PHONY: s3infoprod
-s3infoprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} prod;
-
-.PHONY: s3activateinfra
-s3activateinfra: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} infra;
-
-.PHONY: s3activateint
-s3activateint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} int;
-
-.PHONY: s3activateprod
-s3activateprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} prod;
-
-.PHONY: s3deleteinfra
-s3deleteinfra: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} infra;
-
-.PHONY: s3deleteint
-s3deleteint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} int;
-
-.PHONY: s3deleteprod
-s3deleteprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} prod;
+s3delete := $(patsubst %,s3delete%,int,infra,prod)
+PHONY: $(s3delete)
+s3delete%: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
 
 .PHONY: flushvarnish
 flushvarnish: guard-DEPLOY_TARGET
@@ -751,12 +738,24 @@ define cachelastvariable
 	test "$2" != "$3" && \
 	    echo "$2" > .build-artefacts/last-$4 || :
 endef
+
+.PHONY: configs
+configs:
+	$(foreach target, $(TARGETS), source rc_$(shell echo $(target) | tr A-Z a-z) && make src/config.$(shell echo $(target) | tr A-Z a-z).mako ;)
+
 prd/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    ${MAKO_LAST_VARIABLES_PROD}
 	mkdir -p $(dir $@)
 	$(call buildpage,desktop,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
-	${HTMLMIN_CMD} $@ $@
+# TODO reactivate minify
+#	${HTMLMIN_CMD} $@ $@
+#
+src/config.%.mako: src/config.mako \
+	    ${MAKO_CMD} \
+	    ${MAKO_LAST_VARIABLES_PROD}
+	$(call buildpage,embed,$*,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
+
 
 prd/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
@@ -1032,5 +1031,9 @@ clean:
 	rm -f src/index.html
 	rm -f src/mobile.html
 	rm -f src/embed.html
+	rm -f src/config.dev.mako
+	rm -f src/config.int.mako
+	rm -f src/config.prod.mako
+	rm -f src/config.infra.mako
 	rm -rf prd
 	rm -rf configs
