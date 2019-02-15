@@ -1,0 +1,6 @@
+[submodule "libs/ol-mapbox-style"]
+	path = libs/ol-mapbox-style
+	url = git@github.com:geoadmin/ol-mapbox-style.git
+[submodule "libs/ol-cesium"]
+	path = libs/ol-cesium
+	url = git@github.com:geoadmin/ol-cesium.git
