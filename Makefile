@@ -316,11 +316,11 @@ showVariables:
 all: showVariables lint debug release apache testdebug testrelease fixrights
 
 .PHONY: user
-user: env
-	make configs && source $(USER_SOURCE) && make src/config.dev.mako all
+user: env .build-artefacts/requirements.timestamp
+	make appconfig && source $(USER_SOURCE) && make src/config.dev.mako all
 
 .PHONY: build
-build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) configs debug release
+build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) appconfig debug release
 
 
 .PHONY: .build-artefacts/nvm-version
@@ -341,15 +341,15 @@ env: .build-artefacts/nvm-version .build-artefacts/node-version
 
 .PHONY: dev
 dev:
-	make configs build
+	make build
 
 .PHONY: int
 int:
-	make configs build
+	make build
 
 .PHONY: prod
 prod:
-	make configs build
+	make build
 
 .PHONY: release
 release: showVariables \
@@ -370,6 +370,7 @@ release: showVariables \
 	prd/locales/ \
 	prd/checker \
 	configs/ \
+	appconfig \
 	prd/info.json \
 	prd/robots.txt \
 	prd/robots_prod.txt
@@ -380,6 +381,7 @@ debug: showVariables \
 	src/deps.js \
 	src/style/app.css \
 	src/index.html \
+	appconfig \
 	src/mobile.html \
 	src/embed.html \
 	src/404.html
@@ -739,8 +741,8 @@ define cachelastvariable
 	    echo "$2" > .build-artefacts/last-$4 || :
 endef
 
-.PHONY: configs
-configs:
+# Variables for the different staging.
+appconfig: src/config.dev.mako src/config.int.mako src/config.prod.mako
 	$(foreach target, $(TARGETS), source rc_$(shell echo $(target) | tr A-Z a-z) && make src/config.$(shell echo $(target) | tr A-Z a-z).mako ;)
 
 prd/index.html: src/index.mako.html \
@@ -750,12 +752,12 @@ prd/index.html: src/index.mako.html \
 	$(call buildpage,desktop,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
 # TODO reactivate minify
 #	${HTMLMIN_CMD} $@ $@
-#
+
 src/config.%.mako: src/config.mako \
 	    ${MAKO_CMD} \
 	    ${MAKO_LAST_VARIABLES_PROD}
-	$(call buildpage,embed,$*,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
-
+	mkdir -p $(dir $@)
+	$(call buildpage,desktop,$*,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
 
 prd/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
