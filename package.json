@@ -36,7 +36,7 @@
     "gyronorm": "2.0.6",
     "jquery-ajax-transport-xdomainrequest": "1.0.4",
     "localforage": "1.7.3",
-    "ol-mapbox-style": "^3.1.0",
+    "ol": "openlayers/openlayers#346cd56",
     "slipjs": "2.1.1",
     "tinycolor2": "1.4.1"
   },
