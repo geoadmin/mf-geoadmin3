@@ -892,8 +892,17 @@ build-libs:
 	$(MAKE) -C libs all
 
 .PHONY: install-libs
-install-libs: build-libs
+install-libs: 
 	cp libs/ol-mapbox-style/dist/olms-debug.js src/lib/olms.js
+
+# This should be run once when starting to work on mvt_clean
+# or any descendant branch
+.PHONY: init-submodules
+init-submodules:
+	git config --global status.submoduleSummary true
+	git config --global submodule.recurse true
+	git submodule init
+	git submodule update
 
 .build-artefacts/app.js: .build-artefacts/js-files
 	mkdir -p $(dir $@)
