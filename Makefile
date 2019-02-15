@@ -155,6 +155,26 @@ test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.j
 	mkdir -p $(dir $@)
 	touch $@
 
+.PHONY: build-olcesium
+build-olcesiums:
+	$(MAKE) -C libs build-ol-cesium
+
+.PHONY: build-olms
+build-olms:
+	$(MAKE) -C libs build-ol-mapbox-style
+
+.PHONY: clean-libs
+clean-libs:
+	$(MAKE) -C libs clean
+
+.PHONY: build-libs
+build-libs:
+	$(MAKE) -C libs all
+
+.PHONY: install-libs
+install-libs: build-libs
+	cp libs/ol-mapbox-style/dist/olms-debug.js src/lib/olms.js
+
 .build-artefacts/app.js: .build-artefacts/js-files
 	mkdir -p $(dir $@)
 	java -jar ${CLOSURE_COMPILER} $(SRC_JS_FILES_FOR_COMPILER) \
