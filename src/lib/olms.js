@@ -18661,6 +18661,11 @@ function fromTemplate(text, properties) {
     if (zoom == -1) {
       zoom = Object(_util__WEBPACK_IMPORTED_MODULE_11__["getZoomForResolution"])(resolution, resolutions);
     }
+    if (zoom > 0) {
+      // mapbox zoom level is counted from 0 to X, OL zoom level is counted from 1 to X
+      // so here we substract 1 to adjust to zoom level described in Mapbox Style
+      zoom -= 1;
+    }
     var type = types[feature.getGeometry().getType()];
     var f = {
       properties: properties,
