@@ -59,7 +59,7 @@ prd/style/app.css: $(SRC_LESS_FILES)
 	${LESSC} $(LESS_PARAMETERS) --clean-css src/style/app.less $@
 	${POSTCSS} $@ --use autoprefixer --replace --no-map
 
-prd/geoadmin.$(GIT_COMMIT_SHORT).appcache: src/geoadmin.mako.appcache \
+prd/geoadmin.%.appcache: src/geoadmin.mako.appcache \
 			${MAKO_CMD} \
 			.build-artefacts/last-version
 	rm -f prd/*.appcache
