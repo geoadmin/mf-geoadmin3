@@ -22,7 +22,7 @@ CODE_DIR=/var/www/vhosts/mf-geoadmin3/private/snapshots/$1/geoadmin/code/geoadmi
 # Go to snapshot folder
 cd $CODE_DIR
 
-# Build the app 
+# Build the app
 make $DEPLOY_TARGET NAMED_BRANCH=false \
                     KEEP_VERSION=$KEEP_VERSION
 

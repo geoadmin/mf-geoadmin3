@@ -38,7 +38,7 @@ describe('ga_catalogtree_controller', function() {
     });
 
     it('set scope values', function() {
-      expect(scope.options.catalogUrlTemplate).to.be('http://api3.geo.admin.ch/123456/rest/services/{Topic}/CatalogServer');
+      expect(scope.options.catalogUrlTemplate).to.be('http://map.geo.admin.ch/configs/{Lang}/catalog.{Topic}.json');
     });
   });
 });

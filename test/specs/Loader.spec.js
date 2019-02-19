@@ -7,6 +7,7 @@ beforeEach(function() {
     var version = '123456';
     var versionSlashed = version + '/';
     var apiUrl = '//api3.geo.admin.ch';
+    var configUrl = '//map.geo.admin.ch';
     var altiUrl = '//api3.geo.admin.ch';
     var publicUrl = '//public.geo.admin.ch';
     var printUrl = '//print.geo.admin.ch';
@@ -35,6 +36,7 @@ beforeEach(function() {
 
       // Api services urls
       apiUrl: location.protocol + apiUrl,
+      configUrl: location.protocol + configUrl,
       altiUrl: location.protocol + altiUrl,
       printUrl: location.protocol + printUrl,
       shopUrl: location.protocol + shopUrl,

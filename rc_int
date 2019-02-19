@@ -13,3 +13,4 @@ export WMS_URL=//wms-bgdi-cdn-{s}.int.bgdi.ch
 export WMTS_URL=//wmts{s}.bgdi.ch
 export TERRAIN_URL=//terrain100.bgdi.ch
 export VECTORTILES_URL=//vectortiles{s}.int.bgdi.ch/3d-tiles
+export CONFIG_URL=//mf-geoadmin3.int.bgdi.ch

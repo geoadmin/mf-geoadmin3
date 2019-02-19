@@ -166,23 +166,25 @@ goog.require('ga_waitcursor_service');
     gaLayersProvider.vectorTilesUrl = gaGlobalOptions.vectorTilesUrl +
         '/{Layer}/{Time}/';
 
-    // Api services urls
-    if (gaGlobalOptions.apiOverwrite) {
-      gaLayersProvider.layersConfigUrl = gaGlobalOptions.apiUrl +
-          '/rest/services/all/MapServer/layersConfig?lang={Lang}';
+    // Config services urls (layers)
+    if (gaGlobalOptions.configOverwrite) {
+      gaLayersProvider.layersConfigUrl = gaGlobalOptions.configUrl +
+          '/{Lang}/layersConfig.json';
     } else {
-      gaLayersProvider.layersConfigUrl = gaGlobalOptions.resourceUrl +
-          'layersConfig.{Lang}.json';
+      gaLayersProvider.layersConfigUrl = gaGlobalOptions.configUrl +
+          '/configs/{Lang}/layersConfig.json';
     }
     gaLayersProvider.legendUrl = gaGlobalOptions.apiUrl +
         '/rest/services/all/MapServer/{Layer}/legend?lang={Lang}';
   });
 
   module.config(function(gaTopicProvider, gaGlobalOptions) {
-    if (gaGlobalOptions.apiOverwrite) {
-      gaTopicProvider.topicsUrl = gaGlobalOptions.apiUrl + '/rest/services';
+    // Config services urls (topics list)
+    if (gaGlobalOptions.configOverwrite) {
+      gaTopicProvider.topicsUrl = gaGlobalOptions.configUrl + '/services.json';
     } else {
-      gaTopicProvider.topicsUrl = gaGlobalOptions.resourceUrl + 'services';
+      gaTopicProvider.topicsUrl = gaGlobalOptions.configUrl +
+          '/configs/services.json';
     }
   });
 
