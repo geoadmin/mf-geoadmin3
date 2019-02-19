@@ -205,6 +205,8 @@ def get_file_mimetype(local_file):
 
 # DEPR: this is the legacy upload method and can be removed in a future
 # release if dist stuff works properly
+
+
 def upload(bucket_name, base_dir, deploy_target, named_branch, git_branch, bucket_url):
     s3_dir_path, version = create_s3_dir_path(base_dir, named_branch, git_branch)
     print('Destination folder is:')
@@ -403,7 +405,7 @@ def version_exists(s3_path):
 
 def delete_version(s3_path, bucket_name):
     if version_exists(s3_path) is False:
-        print('Version <%s> does not exists in AWS S3. Aborting' % s3_path)
+        print("Version <{}> does not exists in AWS S3 bucket '{}'. Aborting".format(s3_path, bucket_name))
         sys.exit(1)
 
     msg = raw_input('Are you sure you want to delete all files in <%s>?\n' % s3_path)
@@ -640,7 +642,7 @@ def activate_cmd(branch_name, version, target, force, bucket_url):
     s3, s3client, bucket = init_connection(bucket_name)
     s3_path = os.path.join(branch_name, version)
     if version_exists(s3_path) is False:
-        print('Version <%s> does not exists in AWS S3. Aborting' % s3_path)
+        print("Version <{}> does not exists in AWS S3 bucket '{}'. Aborting".format(s3_path, bucket_name))
         sys.exit(1)
     if not force and not click.confirm(
         'Are you sure you want to activate version <{}> for branch <{}> in bucket <{}>?'.format(
@@ -655,6 +657,8 @@ def activate_cmd(branch_name, version, target, force, bucket_url):
 # DEPR:
 # This is the legacy activate command to activate legacy (i.e. before dist)
 # master branches
+
+
 @cli.command('activate_legacy')
 @click.option('--force', help='Do not prompt for confirmation', is_flag=True)
 @click.option('--url', 'bucket_url', help='Bucket url to check',
@@ -678,7 +682,6 @@ def activate_cmd(s3_path, target, force, bucket_url):
         sys.exit()
     else:
         activate_version(s3_path, bucket_name, target, bucket_url)
-
 
 
 @cli.command('delete')
