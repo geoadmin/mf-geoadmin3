@@ -14,4 +14,4 @@ export WMTS_URL=//wmts{s}.geo.admin.ch
 export WMTS_TECH_URL=//wmts.
 export TERRAIN_URL=//terrain100.geo.admin.ch
 export VECTORTILES_URL=//vectortiles{s}.geo.admin.ch/3d-tiles
-export CONFIG_URL=//mf-geoadmin3.prod.bgdi.ch
+export CONFIG_URL=//map.geo.admin.ch
