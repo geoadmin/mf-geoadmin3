@@ -211,11 +211,12 @@ def upload(bucket_name, base_dir, deploy_target, named_branch, git_branch, bucke
     s3_dir_path, version = create_s3_dir_path(base_dir, named_branch, git_branch)
     print('Destination folder is:')
     print('%s' % s3_dir_path)
+    git_short_sha = local_git_last_commit(base_dir)[:7]
     upload_directories = ['prd', 'src']
     exclude_filename_patterns = ['.less', '.gitignore', '.mako.']
     root_files = ('index.html', 'mobile.html', 'embed.html', '404.html',
                   'robots.txt', 'robots_prod.txt', 'favicon.ico',
-                  'checker', 'geoadmin.%s.appcache' % version)
+                  'checker', 'geoadmin.%s.appcache' % git_short_sha)
 
     for directory in upload_directories:
         for file_path_list in os.walk(os.path.join(base_dir, directory)):
