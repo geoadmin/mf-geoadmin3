@@ -89,10 +89,8 @@ prd/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    ${MAKO_LAST_VARIABLES_PROD}
 	mkdir -p $(dir $@)
-
 	$(call buildpage,desktop,prod,$(GIT_COMMIT_SHORT),$(GIT_COMMIT_SHORT)/,$(S3_BASE_PATH))
-# TODO reactivate minify
-#	${HTMLMIN_CMD} $@ $@
+	${HTMLMIN_CMD} $@ $@
 
 prd/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
