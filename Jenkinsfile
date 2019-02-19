@@ -10,7 +10,7 @@ node(label: 'jenkins-slave') {
 
   // If it's a branch
   def deployGitBranch = env.BRANCH_NAME
-  def namedBranch = false
+  def namedBranch = true  // was false, we don't use named branch
 
   // If it's a PR
   if (env.CHANGE_ID) {
@@ -21,7 +21,9 @@ node(label: 'jenkins-slave') {
   // Project legacy/mf-geoadmin3 --> mf-geoadmin3 bucket
   // Project mvt                 --> mf-geoadmin4 bucket
   def project = 'mf-geoadmin3'
-  if (env.CHANGE_TARGET !='master') {
+  
+  
+  if (env.BRANCH_NAME == 'mvt_clean' || (env.CHANGE_TARGET != null && env.CHANGE_TARGET == 'mvt_clean' )) {
      project = 'mvt'
   }
 
@@ -35,6 +37,7 @@ node(label: 'jenkins-slave') {
     
     stage('env') {
       sh 'make env'
+      echo sh(returnStdout: true, script: 'env')
     }
 
     stage('Lint') {
@@ -53,15 +56,15 @@ node(label: 'jenkins-slave') {
     stage('Deploy to int') {
       echo 'Building project:'
       echo project
-      stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' NAMED_BRANCH=' + namedBranch
+      stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' NAMED_BRANCH=' + namedBranch 
       echo stdout
       def lines = stdout.readLines()
       deployedVersion = lines.get(lines.size()-5)
       s3VersionPath = lines.get(lines.size()-3)
       e2eTargetUrl = lines.get(lines.size()-1)
     }  
-     
-    if (namedBranch) {
+    //It's a PR
+    if (env.CHANGE_ID) {
       // Add the test link in the PR
       stage('Publish test link') {
         def url = 'https://api.github.com/repos/geoadmin/mf-geoadmin3/pulls/' + env.CHANGE_ID
