@@ -3,7 +3,7 @@ BUILD_DIR = $(BUILD_BASE_DIR)
 RELEASE_DIR = prd
 COPY_FILES = $(BUILD_DIR)/index.html $(BUILD_DIR)/info.json $(BUILD_DIR)/checker $(BUILD_DIR)/favicon.ico \
 						 $(BUILD_DIR)/robots.txt $(BUILD_DIR)/robots_prod.txt $(BUILD_DIR)/404.html $(BUILD_DIR)/embed.html \
-						 $(BUILD_DIR)/mobile.html 
+						 $(BUILD_DIR)/geoadmin.$(GIT_COMMIT_SHORT).appcache $(BUILD_DIR)/mobile.html 
 
 CACHES = $(wildcard $(RELEASE_DIR)/*.appcache)
 COPY_FILES += $(patsubst $(RELEASE_DIR)/%.appcache,$(BUILD_DIR)/%.appcache,$(CACHES))
