@@ -11,9 +11,9 @@ CACHE:
 ${s3basepath}${git_commit_short}/lib/build.js
 ${s3basepath}${git_commit_short}/style/app.css
 ${s3basepath}${git_commit_short}/style/font-awesome-4.5.0/font/fontawesome-webfont.woff
-${s3basepath}${git_commit_short}/services
+configs/services.json
 % for lang in languages:
-${s3basepath}${git_commit_short}/layersConfig.${lang}.json
+${lang}/layersConfig.json
 ${s3basepath}${git_commit_short}/locales/${lang}.json
 % endfor
 ${s3basepath}${git_commit_short}/img/geolocation_heading_marker.png
