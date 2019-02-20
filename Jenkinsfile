@@ -133,7 +133,7 @@ node(label: 'jenkins-slave') {
       )
 
       // Activate the new version if tests succceed
-      sh 'echo "yes" | make DEPLOY_GIT_BRANCH=' + deployGitBranch + ' VERSION=' + deployedVersion + ' s3activate' + deployTarget
+      sh 'echo "yes" | make DRYRUN=false DEPLOY_GIT_BRANCH=' + deployGitBranch + ' SNAPSHOT=' + deployedVersion + ' s3activate' + deployTarget
     }
 
   } catch(e) {
