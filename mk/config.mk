@@ -155,6 +155,7 @@ LAST_NODE_VERSION := $(call lastvalue,node-version)
 ## See: https://bugs.launchpad.net/virtualenv/+bug/241581/comments/11
 PYTHON_VENV=.build-artefacts/python-venv
 PYTHON_CMD=${PYTHON_VENV}/bin/python
+AWS_CMD=${PYTHON_VENV}/bin/aws
 PIP_CMD=${PYTHON_VENV}/bin/pip
 MAKO_CMD=${PYTHON_VENV}/bin/mako-render
 FLAKE8_CMD=${PYTHON_VENV}/bin/flake8
