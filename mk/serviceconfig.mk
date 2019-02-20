@@ -29,7 +29,7 @@ src/config.%.mako: src/config.mako \
 	$(call buildpage,desktop,$*,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
 
 # Upload the configs to s3://mf-geoadmin3-(dev|int|prod)-dublin/configs/
-.PHONY: s3uploadconfigint s3uploadconfigprod
 s3uploadconfig%: $(CONFIG_FILES)
-	$(foreach json,$^, gzip -c $(json) | aws s3 cp  $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_$(shell echo $(*)| tr a-z A-Z))/$(json);)
+	$(foreach json,$^, gzip -c $(json) | ${AWS_CMD} s3 cp  $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_$(shell echo $(*)| tr a-z A-Z))/$(json);)
+
 
