@@ -724,8 +724,10 @@ itemscope itemtype="http://schema.org/WebApplication"
         } else {
             staging = requestedStaging;
         }
-        var cfg = Object.assign(cfg, configs[staging]);
 
+        // Use 'prod' setting per default
+        var cfg = Object.assign(cfg, configs[staging]);
+        
         var adminUrlRegexp = new RegExp(cfg['admin_url_regexp']);
         var module = angular.module('geoadmin');
         var cacheAdd = cfg['version'] != '' ? '/' + cfg['version'] : '';
