@@ -8,15 +8,15 @@
 # Version ${git_commit_short}
 
 CACHE:
-${s3basepath}${git_commit_short}/lib/build.js
-${s3basepath}${git_commit_short}/style/app.css
-${s3basepath}${git_commit_short}/style/font-awesome-4.5.0/font/fontawesome-webfont.woff
-configs/services.json
+/${s3basepath}${git_commit_short}/lib/build.js
+/${s3basepath}${git_commit_short}/style/app.css
+/${s3basepath}${git_commit_short}/style/font-awesome-4.5.0/font/fontawesome-webfont.woff
+/configs/services.json
 % for lang in languages:
-${lang}/layersConfig.json
-${s3basepath}${git_commit_short}/locales/${lang}.json
+/configs/${lang}/layersConfig.json
+/${s3basepath}${git_commit_short}/locales/${lang}.json
 % endfor
-${s3basepath}${git_commit_short}/img/geolocation_heading_marker.png
+/${s3basepath}${git_commit_short}/img/geolocation_heading_marker.png
 
 NETWORK:
 #use by CatalogServer, checker, tiles
@@ -26,10 +26,10 @@ checker #we need to specify the checker here to avoid the appcache callback to b
 FALLBACK:
 
 # With Permalink
-${apache_base_path}/? index.html
+/? index.html
 index.html? index.html
 mobile.html? mobile.html
 
 # Without permalink
-${apache_base_path}/ index.html
+/ index.html
 
