@@ -26,6 +26,7 @@ $(BUILD_DIR)/geoadmin.%.appcache:  prd/geoadmin.%.appcache
 $(BUILD_DIR)/src: $(BUILD_DIR)/
 	@echo "Sync src/ dir to dist/"
 	rsync -rupE src $(BUILD_DIR)/
+	rsync -rupE prd/locales $(BUILD_DIR)/src/$(GIT_COMMIT_SHORT)
 
 $(BUILD_DIR)/$(GIT_COMMIT_SHORT): $(BUILD_DIR)/
 	@echo "Sync prd/ dir to dist/$(GIT_COMMIT_SHORT)"
