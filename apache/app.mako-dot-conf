@@ -29,6 +29,7 @@ Header always set Access-Control-Allow-Headers "x-requested-with, Content-Type, 
 RedirectMatch ^${apache_base_path}$ ${apache_base_path}/
 
 Alias ${apache_base_path}/src/coverage ${apache_base_directory}/.build-artefacts/coverage
+RewriteRule ${apache_base_path}/src/([0-9a-f]+)/locales/(de|fr|it|rm|en).json  ${apache_base_directory}/prd/locales/$2.json [NC,L]
 Alias ${apache_base_path}/src ${apache_base_directory}/src
 Alias ${apache_base_path}/ ${apache_base_directory}/prd/
 RewriteRule ${apache_base_path}/src/layersConfig\.(\w+)\.json http:${api_url}/rest/services/all/MapServer/layersConfig?lang=$1 [P]
