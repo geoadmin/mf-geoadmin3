@@ -4,6 +4,7 @@
 
 # Configs
 CONFIG_FILES := $(wildcard configs/**/*.json)
+CONFIG_FILES += configs/services.json
 S3_UPLOAD_HEADERS = --content-encoding gzip --acl public-read --cache-control 'max-age=60' --content-type 'application/json'
 
 
@@ -29,5 +30,6 @@ src/config.%.mako: src/config.mako \
 
 # Upload the configs to s3://mf-geoadmin3-(dev|int|prod)-dublin/configs/
 s3uploadconfig%: $(CONFIG_FILES)
-    $(foreach json,$^, gzip -c $(json) | aws s3 cp  $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_$(shell echo $(*)| tr a-z A-Z))/$(json);)
+		$(foreach json,$^, gzip -c $(json) | ${AWS_CMD} s3 cp  $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_$(shell echo $(*)| tr a-z A-Z))/$(json);)
+
 
