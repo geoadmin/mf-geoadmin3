@@ -59,7 +59,7 @@ prd/style/app.css: $(SRC_LESS_FILES)
 	${LESSC} $(LESS_PARAMETERS) --clean-css src/style/app.less $@
 	${POSTCSS} $@ --use autoprefixer --replace --no-map
 
-prd/geoadmin.$(GIT_COMMIT_SHORT).appcache: src/geoadmin.mako.appcache \
+prd/geoadmin.%.appcache: src/geoadmin.mako.appcache \
 			${MAKO_CMD} \
 			.build-artefacts/last-version
 	rm -f prd/*.appcache
@@ -89,10 +89,8 @@ prd/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    ${MAKO_LAST_VARIABLES_PROD}
 	mkdir -p $(dir $@)
-
 	$(call buildpage,desktop,prod,$(GIT_COMMIT_SHORT),$(GIT_COMMIT_SHORT)/,$(S3_BASE_PATH))
-# TODO reactivate minify
-#	${HTMLMIN_CMD} $@ $@
+	${HTMLMIN_CMD} $@ $@
 
 prd/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
