@@ -14,7 +14,7 @@ configs/: .build-artefacts/last-version \
 	curl -s -q -o configs/services.json http:$(API_URL)/rest/services
 	$(foreach lang, $(LANGS), mkdir -p $@$(lang) && curl -s --retry 3 -o configs/$(lang)/layersConfig.json http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang);)
 	echo $(TOPICS)
-	$(foreach topic, $(TOPICS), $(foreach lang, $(LANGS),curl -s -o configs/${lang}/catalog.${topic}.json http:$(API_URL)/rest/services/$(topic)/CatalogServer?lang=$(lang); ))
+	$(foreach topic, $(TOPICS), $(foreach lang, $(LANGS),curl -s --retry 3 -o configs/${lang}/catalog.${topic}.json http:$(API_URL)/rest/services/$(topic)/CatalogServer?lang=$(lang); ))
 
 
 # Variables for the different staging.

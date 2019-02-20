@@ -111,7 +111,7 @@ LESS_PARAMETERS ?= -ru
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"fr\", \"it\", \"en\", \"rm\"]'
 DEFAULT_TOPIC_ID ?= ech
-TOPICS =$(shell curl -s https://api3.geo.admin.ch/rest/services | jq -r '.topics[].id')
+TOPICS =$(shell curl -s --retry 3 https://api3.geo.admin.ch/rest/services | jq -r '.topics[].id')
 
 
 # Translations variables
