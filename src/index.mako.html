@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <html ng-app="geoadmin" ng-controller="GaMainController"
 itemscope itemtype="http://schema.org/WebApplication"
-% if device == 'mobile' and mode=='prod' :
- manifest="geoadmin.${version}.appcache"
+% if device == 'mobile' :
+ manifest="geoadmin.${git_commit_short}.appcache"
 % endif
 >
   <head>

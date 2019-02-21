@@ -10,12 +10,10 @@ node(label: 'jenkins-slave') {
 
   // If it's a branch
   def deployGitBranch = env.BRANCH_NAME
-  def namedBranch = true  // was false, we don't use named branch
 
   // If it's a PR
   if (env.CHANGE_ID) {
     deployGitBranch = env.CHANGE_BRANCH
-    namedBranch = true
   }
   
   // Project legacy/mf-geoadmin3 --> mf-geoadmin3 bucket
@@ -50,13 +48,13 @@ node(label: 'jenkins-slave') {
     }
 
     stage('Build') {
-      sh 'make ' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' NAMED_BRANCH=' + namedBranch
+      sh 'make build GIT_BRANCH=' + deployGitBranch
     }
     // Different project --> different targets
     stage('Deploy to int') {
       echo 'Building project:'
       echo project
-      stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' NAMED_BRANCH=' + namedBranch 
+      stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
       echo stdout
       def lines = stdout.readLines()
       deployedVersion = lines.get(lines.size()-5)
@@ -131,9 +129,13 @@ node(label: 'jenkins-slave') {
           sh target + ' E2E_BROWSER=safari'
         }
       )
+    }
 
+    stage('Activate') {
+      echo 'Activating the new version <' + deployedVersion + ' of branch  <' + deployGitBranch + '>'
       // Activate the new version if tests succceed
-      sh 'echo "yes" | make DRYRUN=false DEPLOY_GIT_BRANCH=' + deployGitBranch + ' SNAPSHOT=' + deployedVersion + ' s3activate' + deployTarget
+      // sh 'echo "yes" | make DRYRUN=false DEPLOY_GIT_BRANCH=' + deployGitBranch + ' SNAPSHOT=' + deployedVersion + ' s3activatedist' + deployTarget
+      sh 'echo "yes" | .build-artefacts/python-venv/bin/python ./scripts/s3manage.py activate --branch ' + deployGitBranch + ' --version ' + deployedVersion + ' ' + deployTarget
     }
 
   } catch(e) {

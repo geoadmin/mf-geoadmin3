@@ -1,47 +1,51 @@
-BUILD_BASE_DIR = dist
-BUILD_DIR = $(BUILD_BASE_DIR)
+# ==================================================================
+# This Makefile contains all targets that are necessary to create
+# a bundle with a minified build (from prd/) and the corresponding
+# source (from src/). Those parts from the build that should be under
+# cache control are copied to a subdirectory named with the git commit
+# hash, the rest is copied to the root of dist/
+
+BUILD_DIR = dist
 RELEASE_DIR = prd
-COPY_FILES = $(BUILD_DIR)/index.html $(BUILD_DIR)/info.json $(BUILD_DIR)/checker $(BUILD_DIR)/favicon.ico \
-						 $(BUILD_DIR)/robots.txt $(BUILD_DIR)/robots_prod.txt $(BUILD_DIR)/404.html $(BUILD_DIR)/embed.html \
-						 $(BUILD_DIR)/geoadmin.$(GIT_COMMIT_SHORT).appcache $(BUILD_DIR)/mobile.html 
 
-CACHES = $(wildcard $(RELEASE_DIR)/*.appcache)
-COPY_FILES += $(patsubst $(RELEASE_DIR)/%.appcache,$(BUILD_DIR)/%.appcache,$(CACHES))
-
+# Make sure dist dir exists
 $(BUILD_DIR)/:
 	    mkdir -p $@
 
-$(BUILD_DIR)/index.html: prd/index.html
-$(BUILD_DIR)/info.json: prd/info.json
-$(BUILD_DIR)/checker: prd/checker
-$(BUILD_DIR)/favicon.ico: prd/favicon.ico
-$(BUILD_DIR)/robots.txt: prd/robots.txt
-$(BUILD_DIR)/robots_prod.txt: prd/robots_prod.txt
-$(BUILD_DIR)/404.html: prd/404.html
-$(BUILD_DIR)/embed.html: prd/embed.html
-$(BUILD_DIR)/mobile.html: prd/mobile.html
-$(BUILD_DIR)/geoadmin.%.appcache:  prd/geoadmin.%.appcache
-		cp -f $< $@
+# Copy non cache-controlled files from build to dist
+NON_CACHE_FILES = $(BUILD_DIR)/index.html \
+			 $(BUILD_DIR)/info.json \
+			 $(BUILD_DIR)/checker \
+			 $(BUILD_DIR)/robots.txt \
+			 $(BUILD_DIR)/robots_prod.txt \
+			 $(BUILD_DIR)/404.html \
+			 $(BUILD_DIR)/embed.html \
+			 $(BUILD_DIR)/geoadmin.$(GIT_COMMIT_SHORT).appcache \
+			 $(BUILD_DIR)/mobile.html 
 
+$(BUILD_DIR)/%: $(RELEASE_DIR)/%
+	@echo "Copying $< to $@ (matched file: $*)"
+	cp -f $< $@
+
+# For some reason, it's doesn't work if favicon.ico is added
+# to the list above, therefore separate rule
+$(BUILD_DIR)/favicon.ico: prd/favicon.ico
+	@echo "Copying $< to $@"
+	cp -f $< $@
+
+# Copy current status from source to dist
 $(BUILD_DIR)/src: $(BUILD_DIR)/
 	@echo "Sync src/ dir to dist/"
 	rsync -rupE src $(BUILD_DIR)/
 	rsync -rupE prd/locales $(BUILD_DIR)/src/$(GIT_COMMIT_SHORT)
 
+# Copy cache-controlled files from build to dist/<sha>/
 $(BUILD_DIR)/$(GIT_COMMIT_SHORT): $(BUILD_DIR)/
 	@echo "Sync prd/ dir to dist/$(GIT_COMMIT_SHORT)"
-	#rsync -rupE prd/lib prd/img prd/locales prd/style prd/cache/   $(BUILD_DIR)/$(GIT_COMMIT_SHORT)/
 	rsync -rupE prd/lib prd/img prd/locales prd/style   $(BUILD_DIR)/$(GIT_COMMIT_SHORT)/
 
-# Or simply symlink?
-#$(BUILD_DIR)/src: $(BUILD_DIR)
-#	ln -s  $@  src
-
-$(BUILD_DIR)/%: $(BUILD_DIR)
-		cp -f $< $@
-
 .PHONY: dist
-dist: distclean $(BUILD_DIR)/ $(COPY_FILES) $(BUILD_DIR)/$(GIT_COMMIT_SHORT) $(BUILD_DIR)/src
+dist: distclean $(BUILD_DIR)/ $(NON_CACHE_FILES) $(BUILD_DIR)/$(GIT_COMMIT_SHORT) $(BUILD_DIR)/src
 
 .PHONY: serve
 serve: $(PYTHON_CMD)
