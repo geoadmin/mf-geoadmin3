@@ -703,11 +703,11 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         var configs = {};
         // prod env variables
-        <%include file="../config.dev.mako"/>
+        <%include file="./config.dev.mako"/>
         // int env variables
-        <%include file="../config.int.mako"/>
+        <%include file="./config.int.mako"/>
         // dev env variables
-        <%include file="../config.prod.mako"/>
+        <%include file="./config.prod.mako"/>
 
         // Because s3 is hosted on infra
         var supportedEnv = ['dev', 'int', 'prod', 'ci'];
