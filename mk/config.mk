@@ -191,4 +191,10 @@ MAKO_LAST_VARIABLES = .build-artefacts/last-api-url \
 MAKO_LAST_VARIABLES_PROD = ${MAKO_LAST_VARIABLES} \
 	    .build-artefacts/last-version
 
+# Config MVT
+# The Swiss bounds expressed as $DEFAULT_EPSG 
+OFFLINE_MIN_ZOOM ?= 8    # First zoom from which we save the 15km2, before we save tiles on the entire DEFAULT_EXTENT.
+OFFLINE_MIN_ZOOM_NON_BGLAYER ?= 12 # For non bg layer we only save the 15km2 from this zoom level. Must be a even number because e load only 1 level on 2.
+OFFLINE_MAX_ZOOM ?= 16   # Last zoom saved
+OFFLINE_Z_OFFSET ?= 0   # Difference between map zoom levekl and layer zoom lvel to request. In swiss coordinate it's 14 for stop layer.
 

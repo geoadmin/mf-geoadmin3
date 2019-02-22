@@ -105,5 +105,6 @@ libs:
 	$(call applypatches)
 	$(call compilejs,fastclick)
 	$(call compilejs,slip)
+	$(call compilejs,tinycolor)
 
 
