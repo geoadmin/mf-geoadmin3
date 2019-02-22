@@ -754,6 +754,11 @@ itemscope itemtype="http://schema.org/WebApplication"
           return url;
         }
 
+        // Determines if we're on a personal build on dev with pathname /ltxxxx/
+        if (!requestedStaging && staging == 'dev' && (/\/lt.*\/$/.test(pathname))) {
+            cfg['config_url'] += pathname.replace(/\/$/, '');
+        }
+
         // Map services urls
         var wmsUrl = setBackend(prtl + cfg['wms_url'],  prtl + cfg['wms_tech_url'], 'wms_url');
         var wmtsUrl = setBackend(prtl + cfg['wmts_url'], prtl + cfg['wmts_tech_url'], 'wmts_url');
