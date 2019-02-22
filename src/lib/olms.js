@@ -91,7 +91,7 @@ olms =
 /*!******************!*\
   !*** ./index.js ***!
   \******************/
-/*! exports provided: applyStyle, applyBackground, default, apply, getLayer, getSource, _finalizeLayer */
+/*! exports provided: applyStyle, applyBackground, default, apply, getLayer, getLayers, getSource, _finalizeLayer */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -101,6 +101,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return olms; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "apply", function() { return apply; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLayer", function() { return getLayer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLayers", function() { return getLayers; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSource", function() { return getSource; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "_finalizeLayer", function() { return finalizeLayer; });
 /* harmony import */ var mapbox_to_css_font__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! mapbox-to-css-font */ "./node_modules/mapbox-to-css-font/index.js");
@@ -535,12 +536,16 @@ function updateRasterLayerProperties(glLayer, layer, view) {
   var zoom = view.getZoom();
   var opacity = Object(_stylefunction__WEBPACK_IMPORTED_MODULE_1__["getValue"])(glLayer, 'paint', 'raster-opacity', zoom, emptyObj);
   layer.setOpacity(opacity);
-  layer.setVisible(zoom >= (glLayer.minzoom || 0) && zoom < (glLayer.maxzoom || 24));
+  var visible = (glLayer.layout ? glLayer.layout.visibility !== 'none' : true);
+  layer.setVisible(visible && zoom >= (glLayer.minzoom || 0) && zoom < (glLayer.maxzoom || Infinity));
 }
 
 function processStyle(glStyle, map, baseUrl, host, path, accessToken) {
   var promises = [];
   var view = map.getView();
+  if (view.getMaxZoom() > 25) {
+    view.setMaxZoom(25);
+  }
   if ('center' in glStyle && !view.getCenter()) {
     view.setCenter(Object(ol_proj__WEBPACK_IMPORTED_MODULE_3__["fromLonLat"])(glStyle.center));
   }
@@ -584,7 +589,6 @@ function processStyle(glStyle, map, baseUrl, host, path, accessToken) {
           layer = setupVectorLayer(glSource, accessToken, url);
         } else if (glSource.type == 'raster') {
           layer = setupRasterLayer(glSource, url);
-          layer.setVisible(glLayer.layout ? glLayer.layout.visibility !== 'none' : true);
           view.on('change:resolution', updateRasterLayerProperties.bind(this, glLayer, layer, view));
           updateRasterLayerProperties(glLayer, layer, view);
         } else if (glSource.type == 'geojson') {
@@ -794,15 +798,36 @@ function finalizeLayer(layer, layerIds, glStyle, path, map) {
  * OpenLayers layer instance when they use the same Mapbox Style `source`.
  * @param {ol.Map} map OpenLayers Map.
  * @param {string} layerId Mapbox Style layer id.
- * @return {ol.layer.Layer} layer OpenLayers layer instance.
+ * @return {ol.layer.Layer} OpenLayers layer instance.
  */
 function getLayer(map, layerId) {
   var layers = map.getLayers().getArray();
   for (var i = 0, ii = layers.length; i < ii; ++i) {
-    if (layers[i].get('mapbox-layers').indexOf(layerId) !== -1) {
+    var mapboxLayers = layers[i].get('mapbox-layers');
+    if (mapboxLayers && mapboxLayers.indexOf(layerId) !== -1) {
       return layers[i];
     }
   }
+}
+
+/**
+ * ```js
+ * import {getLayers} from 'ol-mapbox-style';
+ * ```
+ * Get the OpenLayers layer instances for the provided Mapbox Style `source`.
+ * @param {ol.Map} map OpenLayers Map.
+ * @param {string} sourceId Mapbox Style source id.
+ * @return {Array<ol.layer.Layer>} OpenLayers layer instances.
+ */
+function getLayers(map, sourceId) {
+  var result = [];
+  var layers = map.getLayers().getArray();
+  for (var i = 0, ii = layers.length; i < ii; ++i) {
+    if (layers[i].get('mapbox-source') === sourceId) {
+      result.push(layers[i]);
+    }
+  }
+  return result;
 }
 
 /**
@@ -812,13 +837,13 @@ function getLayer(map, layerId) {
  * Get the OpenLayers source instance for the provided Mapbox Style `source`.
  * @param {ol.Map} map OpenLayers Map.
  * @param {string} sourceId Mapbox Style source id.
- * @return {ol.layer.Layer} layer OpenLayers layer instance.
+ * @return {ol.source.Source} OpenLayers source instance.
  */
 function getSource(map, sourceId) {
   var layers = map.getLayers().getArray();
   for (var i = 0, ii = layers.length; i < ii; ++i) {
     var source = layers[i].getSource();
-    if (layers[i].get('mapbox-source').indexOf(sourceId) !== -1) {
+    if (layers[i].get('mapbox-source') === sourceId) {
       return source;
     }
   }
@@ -18243,7 +18268,7 @@ function getUid(obj) {
  * OpenLayers version.
  * @type {string}
  */
-var VERSION = '5.3.0';
+var VERSION = '5.3.1';
 
 //# sourceMappingURL=util.js.map
 
@@ -18396,6 +18421,7 @@ var isFunction = _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_9__["func
 var convertFunction = _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_9__["function"].convertFunction;
 var isExpression = _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_9__["expression"].isExpression;
 var createPropertyExpression = _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_9__["expression"].createPropertyExpression;
+var hairSpacePool = Array(256).join('\u200A');
 
 var types = {
   'Point': 1,
@@ -18552,7 +18578,7 @@ function fromTemplate(text, properties) {
 /* harmony default export */ __webpack_exports__["default"] = (function(olLayer, glStyle, source, resolutions, spriteData, spriteImageUrl, getFonts) {
   if (!resolutions) {
     resolutions = [];
-    for (var res = 78271.51696402048; resolutions.length < 21; res /= 2) {
+    for (var res = 78271.51696402048; resolutions.length <= 24; res /= 2) {
       resolutions.push(res);
     }
   }
@@ -18660,11 +18686,6 @@ function fromTemplate(text, properties) {
     var zoom = resolutions.indexOf(resolution);
     if (zoom == -1) {
       zoom = Object(_util__WEBPACK_IMPORTED_MODULE_11__["getZoomForResolution"])(resolution, resolutions);
-    }
-    if (zoom > 0) {
-      // mapbox zoom level is counted from 0 to X, OL zoom level is counted from 1 to X
-      // so here we substract 1 to adjust to zoom level described in Mapbox Style
-      zoom -= 1;
     }
     var type = types[feature.getGeometry().getType()];
     var f = {
@@ -18962,7 +18983,9 @@ function fromTemplate(text, properties) {
             style.setGeometry(undefined);
           }
           if (!style.getText()) {
-            style.setText(text || new ol_style_Text__WEBPACK_IMPORTED_MODULE_4__["default"]());
+            style.setText(text || new ol_style_Text__WEBPACK_IMPORTED_MODULE_4__["default"]({
+              padding: [2, 2, 2, 2]
+            }));
           }
           text = style.getText();
           var textSize = getValue(layer, 'layout', 'text-size', zoom, f);
@@ -18975,7 +18998,21 @@ function fromTemplate(text, properties) {
             label = label.toLowerCase();
           }
           var wrappedLabel = type == 2 ? label : wrapText(label, font, getValue(layer, 'layout', 'text-max-width', zoom, f));
-          text.setText(wrappedLabel);
+          var letterSpacing = getValue(layer, 'layout', 'text-letter-spacing', zoom, f);
+          if (letterSpacing >= 0.05) {
+            var wrappedLabelWithLetterSpacing = '';
+            var wrappedLabelLines = wrappedLabel.split('\n');
+            var joinSpaceString = hairSpacePool.slice(0, Math.round(letterSpacing / 0.1));
+            for (var l = 0, ll = wrappedLabelLines.length; l < ll; ++l) {
+              if (l > 0) {
+                wrappedLabelWithLetterSpacing += '\n';
+              }
+              wrappedLabelWithLetterSpacing += wrappedLabelLines[l].split('').join(joinSpaceString);
+            }
+            text.setText(wrappedLabelWithLetterSpacing);
+          } else {
+            text.setText(wrappedLabel);
+          }
           text.setFont(font);
           text.setRotation(Object(_util__WEBPACK_IMPORTED_MODULE_11__["deg2rad"])(getValue(layer, 'layout', 'text-rotate', zoom, f)));
           var textAnchor = getValue(layer, 'layout', 'text-anchor', zoom, f);
@@ -19012,6 +19049,11 @@ function fromTemplate(text, properties) {
             text.setStroke(textHalo);
           } else {
             text.setStroke(undefined);
+          }
+          var textPadding = getValue(layer, 'layout', 'text-padding', zoom, f);
+          var padding = text.getPadding();
+          if (textPadding !== padding[0]) {
+            padding[0] = padding[1] = padding[2] = padding[3] = textPadding;
           }
           style.setZIndex(99999 - index);
         }
