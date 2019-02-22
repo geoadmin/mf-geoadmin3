@@ -66,6 +66,7 @@ prd/geoadmin.%.appcache: src/geoadmin.mako.appcache \
 	mkdir -p $(dir $@);
 	${PYTHON_CMD} ${MAKO_CMD} \
 	    --var "version=$(VERSION)" \
+		--var "git_branch=$(GIT_BRANCH)" \
 		--var "git_commit_short=$(GIT_COMMIT_SHORT)" \
 	    --var "deploy_target=$(DEPLOY_TARGET)" \
 	    --var "apache_base_path=$(APACHE_BASE_PATH)" \

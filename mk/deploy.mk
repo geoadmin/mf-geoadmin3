@@ -115,13 +115,13 @@ s3activate%: guard-DEPLOY_GIT_BRANCH \
 	guard-VERSION .build-artefacts/requirements.timestamp
 	${AWS_CMD} s3 cp $(S3_OPTS) --recursive s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/${DEPLOY_GIT_BRANCH}/${SNAPSHOT}/  s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/
 
-s3deploydist := $(patsubst %,s3activate%,dev,infra,prod)
-PHONY: $(s3deploydist)
-s3deploydist%: guard-DEPLOY_GIT_BRANCH \
+s3activatedist := $(patsubst %,s3activatedist%,dev,infra,prod)
+PHONY: $(s3activatedist)
+s3activatedist%: guard-DEPLOY_GIT_BRANCH \
 		         guard-SNAPSHOT \
 						 guard-S3_BUCKET_INT \
 	guard-VERSION .build-artefacts/requirements.timestamp
-	${AWS_CMD} s3 cp $(S3_OPTS) --recursive s3://$(S3_BUCKET_INT)/${DEPLOY_GIT_BRANCH}/${SNAPSHOT}/  s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/${DEPLOY_GIT_BRANCH}/${SNAPSHOT}/
+	${PYTHON_CMD} ./scripts/s3manage.py activate --branch ${DEPLOY_GIT_BRANCH} --version ${VERSION} $(DEPLOY_TARGET);
 
 s3delete := $(patsubst %,s3delete%,int,infra,prod)
 PHONY: $(s3delete)

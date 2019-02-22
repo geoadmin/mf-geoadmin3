@@ -184,14 +184,26 @@ def create_s3_dir_path(base_dir, named_branch, git_branch):
     return (os.path.join(git_branch, git_short_sha, version), version)
 
 
-def is_cached(file_name, named_branch):
-    if named_branch:
-        return False
-    # 1 exception
-    if file_name == 'services':
-        return True
+def is_cached(file_name, legacy=None):
+    """ Determine which files should receive a cache-control header
+
+    Files that are not cached are:
+        - *.html (e.g. index.html, mobile.html)
+        - *.txt files
+        - the *.appcache file itself (although it's versioned with the
+            git_commit_short)
+
+    The behaviour is exactly the same for master and other branches
+    example:
+    <bucket_name>/master/1902211564/index.html           <= no cache header
+    <bucket_name>/master/1902211564/as5a56a/lib/build.js <= cache header
+
+    activated master or branch `fix_1234`
+    <bucket_name>/fix_1234/index.html                    <= no cache header
+    <bucket_name>/fix_1234/as5a56a/lib/build.js          <= cache header
+    """
     _, extension = os.path.splitext(file_name)
-    return bool(extension not in ['.html', '.txt', '.appcache', ''])
+    return extension not in ['.html', '.txt', '.appcache', '']
 
 
 def get_file_mimetype(local_file):
@@ -287,12 +299,15 @@ def upload_dist(bucket_name, base_dir, deploy_target, named_branch, git_branch, 
 
             file_nr += 1
 
+            # determine wheather file should receive the cache-control header
+            cached = is_cached(local_file_path)
+
             print("{} => s3://{}/{}".format(local_file_path, bucket_name, s3_file_path))
             save_to_s3(
                 local_file_path,
                 s3_file_path,
                 bucket_name,
-                cached=False,
+                cached=cached,
                 mimetype=None)
 
     print('Number of files uploaded: {}'.format(file_nr))
@@ -666,7 +681,7 @@ def activate_cmd(branch_name, version, target, force, bucket_url):
               required=False, default='https://<bucket public url>')
 @click.argument('s3_path', required=True)
 @click.argument('target', required=True)
-def activate_cmd(s3_path, target, force, bucket_url):
+def activate_legacy_cmd(s3_path, target, force, bucket_url):
     """Activate a version at the root of a bucket (by copying index.html and co to the root)"""
     global s3, s3client, bucket
     bucket_name = get_bucket_name(target)

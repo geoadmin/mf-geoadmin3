@@ -8,15 +8,15 @@
 # Version ${git_commit_short}
 
 CACHE:
-${s3basepath}${git_commit_short}/lib/build.js
-${s3basepath}${git_commit_short}/style/app.css
-${s3basepath}${git_commit_short}/style/font-awesome-4.5.0/font/fontawesome-webfont.woff
-configs/services.json
+/${git_branch}/${version}/${git_commit_short}/lib/build.js
+/${git_branch}/${version}/${git_commit_short}/style/app.css
+/${git_branch}/${version}/${git_commit_short}/style/font-awesome-4.5.0/font/fontawesome-webfont.woff
+/configs/services.json
 % for lang in languages:
-${lang}/layersConfig.json
-${s3basepath}${git_commit_short}/locales/${lang}.json
+/configs/${lang}/layersConfig.json
+/${git_branch}/${version}/${git_commit_short}/locales/${lang}.json
 % endfor
-${s3basepath}${git_commit_short}/img/geolocation_heading_marker.png
+/${git_branch}/${version}/${git_commit_short}/img/geolocation_heading_marker.png
 
 NETWORK:
 #use by CatalogServer, checker, tiles
