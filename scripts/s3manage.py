@@ -359,10 +359,12 @@ def list_version():
                 print('Not a official path for branch %s' % branch)
 
 
-def list_dist_version():
+def list_dist_version(branch=None):
     # Note: branch-names containing '/' are currently not supported!
+    branch_prefix = branch if branch else ''
     branches = bucket.meta.client.list_objects(
         Bucket=bucket.name,
+        Prefix=branch_prefix,
         Delimiter='/')
 
     # get list of 'unique' branch names
@@ -488,7 +490,7 @@ def activate_dist_version(branch_name, version, bucket_name, deploy_target, buck
     # other branches
     # root: s3://mf-geoadmin3-(int|prod)-dublin/
     # <branch>: s3://mf-geoadmin3-(int|prod)-dublin/<branch>/
-    if "branch_name" == "master":
+    if branch_name == "master":
         branch_root = ''
     else:
         branch_root = "{}/".format(branch_name)
@@ -594,7 +596,8 @@ def cli():
 @cli.command('list')
 @click.argument('target', required=True)
 @click.option('--legacy', is_flag=True)
-def list_cmd(target, legacy=False):
+@click.option('--branch', required=False, default=None)
+def list_cmd(target, branch, legacy=False):
     """List available <version> in a bucket."""
     global s3, s3client, bucket
     bucket_name = get_bucket_name(target)
@@ -602,7 +605,7 @@ def list_cmd(target, legacy=False):
     if legacy:
         list_version()
     else:
-        list_dist_version()
+        list_dist_version(branch)
 
 
 @cli.command('upload')
