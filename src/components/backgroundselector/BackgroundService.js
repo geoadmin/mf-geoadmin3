@@ -191,14 +191,14 @@ goog.require('ga_glstylestorage_service');
                   // but rather apply olms.stylefunction at every layer
                   // we created (instead of letting olms create the layers
                   // for us, and style them correctly for background rules)
-                  if (initBg.olLayer
-                      && initBg.olLayer.styles
-                      && initBg.olLayer.styles[0]
-                      && initBg.olLayer.styles[0].url) {
+                  if (initBg.olLayer &&
+                      initBg.olLayer.styles &&
+                      initBg.olLayer.styles[0] &&
+                      initBg.olLayer.styles[0].url) {
                     gaStorage.load(initBg.olLayer.styles[0].url).then(
-                      function (glStyle) {
-                        gaMapUtils.setGlBackground(map, glStyle);
-                      }
+                        function(glStyle) {
+                          gaMapUtils.setGlBackground(map, glStyle);
+                        }
                     )
                   }
                 }
