@@ -83,7 +83,7 @@ src/style/app.css: $(SRC_LESS_FILES)
 	${LESSC} $(LESS_PARAMETERS) src/style/app.less $@
 	${POSTCSS} $@ --use autoprefixer --replace --no-map
 
-src/index.html: src/index.mako.html \
+src/index.html: src/index.mako.html appconfig \
 	    ${MAKO_CMD} \
 	    ${MAKO_LAST_VARIABLES}
 	$(call buildpage,desktop,,,,$(S3_SRC_BASE_PATH))
