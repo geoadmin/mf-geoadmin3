@@ -534,12 +534,12 @@ goog.require('ga_urlutils_service');
 
           gaStorage.load(glStyle.sprite + '.json').then(function(spriteData) {
             $window.olms.stylefunction(
-              olLayer,
-              glStyle,
-              olLayer.sourceId,
-              undefined,
-              spriteData,
-              glStyle.sprite + '.png'
+                olLayer,
+                glStyle,
+                olLayer.sourceId,
+                undefined,
+                spriteData,
+                glStyle.sprite + '.png'
             );
             olLayer.glStyle = glStyle;
           });
@@ -610,7 +610,7 @@ goog.require('ga_urlutils_service');
           });
         },
 
-        setGlBackground: function (map, glLayer) {
+        setGlBackground: function(map, glLayer) {
           $window.olms.applyBackground(map, glLayer);
         },
 
