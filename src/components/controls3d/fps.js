@@ -348,22 +348,22 @@ FPS.prototype.getTimeDifference_ = function() {
  * @return {!Cesium.Cartesian3}
  * @private
  */
-FPS.prototype.clampAboveTerrain_ = function(gpos, minHeight, optMaxHeight, 
-  cameraHeading) {
+FPS.prototype.clampAboveTerrain_ = function(gpos, minHeight, optMaxHeight,
+    cameraHeading) {
   var lla = this.ellipsoid_.cartesianToCartographic(gpos),
-      lla25MetersAhead = this.ellipsoid_.cartesianToCartographic(gpos);
+    lla25MetersAhead = this.ellipsoid_.cartesianToCartographic(gpos);
   // projecting 25m ahead in the camera direction to check altitude
   // 111.111km is a rough estimate of kilometers per 1 deg of latitude
-  lla25MetersAhead.latitude = lla.latitude 
-                              + 0.025 / 111.111 * Math.PI / 180.0 
-                                * Math.cos(cameraHeading);
+  lla25MetersAhead.latitude = lla.latitude +
+                              0.025 / 111.111 * Math.PI / 180.0 *
+                                Math.cos(cameraHeading);
   // we have to take latitude into account for the km/deg estimate on longitude
-  lla25MetersAhead.longitude = lla.longitude
-                              + 0.025 * Math.cos(lla.latitude) / 111.111
-                                * Math.PI / 180.0
-                                * Math.sin(cameraHeading);
+  lla25MetersAhead.longitude = lla.longitude +
+                              0.025 * Math.cos(lla.latitude) / 111.111 *
+                                Math.PI / 180.0 *
+                                Math.sin(cameraHeading);
   var groundAlt = Cesium.defaultValue(this.scene_.globe.getHeight(lla), 0.0),
-      groundAlt25MetersAhead = Cesium.defaultValue(this.scene_.globe.getHeight(
+    groundAlt25MetersAhead = Cesium.defaultValue(this.scene_.globe.getHeight(
         lla25MetersAhead), 0.0);
   if (lla.height - groundAlt < minHeight) {
     lla.height = groundAlt + minHeight;
@@ -371,7 +371,7 @@ FPS.prototype.clampAboveTerrain_ = function(gpos, minHeight, optMaxHeight,
   if (optMaxHeight && (lla.height - groundAlt > optMaxHeight)) {
     lla.height = groundAlt + optMaxHeight;
   }
-  // if height set is below altitude 25m ahead, we raise the camera height 
+  // if height set is below altitude 25m ahead, we raise the camera height
   // to avoid terrain collision
   if (lla.height < groundAlt25MetersAhead) {
     lla.height = groundAlt25MetersAhead;
