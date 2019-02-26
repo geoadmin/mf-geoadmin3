@@ -53,9 +53,14 @@ define buildpage
 		--var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
 		--var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
 		--var "languages=$(LANGUAGES)" \
+		--var "swiss_extent"="$(SWISS_EXTENT)" \
 		--var "default_extent"="$(DEFAULT_EXTENT)" \
 		--var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 		--var "default_level_of_detail"="$(DEFAULT_LEVEL_OF_DETAIL)" \
+		--var "offline_min_zoom"="$(OFFLINE_MIN_ZOOM)" \
+		--var "offline_min_zoom_nonbglayer"="$(OFFLINE_MIN_ZOOM_NON_BGLAYER)" \
+		--var "offline_max_zoom"="$(OFFLINE_MAX_ZOOM)" \
+		--var "offline_z_offset"="$(OFFLINE_Z_OFFSET)" \
 		--var "resolutions"="$(RESOLUTIONS)" \
 		--var "level_of_details"="$(LEVEL_OF_DETAILS)" \
 		--var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
