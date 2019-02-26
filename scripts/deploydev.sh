@@ -51,7 +51,7 @@ else
 fi
 
 # build the project
-source rc_dev && make cleanall all
+source rc_dev && make cleanall dev
 
 exit_code=$?
 
