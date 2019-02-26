@@ -34,15 +34,15 @@ env: .build-artefacts/nvm-version .build-artefacts/node-version
 	source $(HOME)/.bashrc && source ${NVM_DIR}/nvm.sh && nvm use $(NODE_VERSION)
 
 .PHONY: dev
-dev: appconfig
+dev:
 	make build
 
 .PHONY: int
-int: appconfig
+int:
 	make build
 
 .PHONY: prod
-prod: appconfig
+prod:
 	make build
 
 # Include the handling of last values for specific variables
