@@ -64,6 +64,6 @@
     "ng-annotate": "1.2.2",
     "postcss-cli": "6.1.2",
     "phantomjs-prebuilt": "2.1.16",
-    "sinon": "7.2.4"
+    "sinon": "7.2.5"
   }
 }
