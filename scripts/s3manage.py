@@ -459,14 +459,14 @@ def activate_version(s3_path, bucket_name, deploy_target, bucket_url):
         s3client.delete_objects(Bucket=bucket_name, Delete={'Objects': indexes})
 
     appcache = None
-    files = list(bucket.objects.filter(Prefix='{}/_geoadmin.'.format(s3_path)).all())
+    files = list(bucket.objects.filter(Prefix='{}/no_snapshot_geoadmin.'.format(s3_path)).all())
     if len(files) > 0:
         appcache = os.path.basename(sorted(files)[-1].key)
     for j in ('robots.txt', 'checker', 'favicon.ico', appcache):
         # In prod move robots prod
         src_file_name = 'robots_prod.txt' if j == 'robots.txt' and deploy_target == 'prod' else j
-        # When activating do not use git sha in appcache
-        src_file_name = appcache.replace('_geoadmin.', 'geoadmin.') if j == appcache else j
+        # When activating do not use snapshot version in appcache
+        src_file_name = appcache.replace('no_snapshot_geoadmin.', 'geoadmin.') if j == appcache else j
         src_key_name = '{}/{}'.format(s3_path, src_file_name)
         print('%s ---> %s' % (src_key_name, j))
         try:

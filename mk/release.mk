@@ -72,7 +72,7 @@ prd/geoadmin.%.appcache: src/geoadmin.mako.appcache \
 	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
 	    --var "languages=$(LANGUAGES)" \
 	    --var "s3basepath=$(S3_BASE_PATH)" $< > $@
-	sed -e 's/\/$(GIT_BRANCH)\/$(VERSION)//g'  $@ >  prd/_geoadmin.$*.appcache
+	sed -e 's/\/$(GIT_BRANCH)\/$(VERSION)//g'  $@ >  prd/no_snapshot_geoadmin.$*.appcache
 
 
 prd/info.json: src/info.mako.json
