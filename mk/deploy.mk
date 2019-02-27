@@ -156,6 +156,7 @@ apache/app.conf: apache/app.mako-dot-conf \
 	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
 	    --var "apache_base_directory=$(APACHE_BASE_DIRECTORY)" \
 	    --var "api_url=$(API_URL)" \
+	    --var "s3_bucket_dev=$(S3_BUCKET_DEV)" \
 	    --var "version=$(VERSION)" $< > $@
 
 .PHONY: apache
