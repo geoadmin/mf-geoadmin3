@@ -51,15 +51,23 @@ node(label: 'jenkins-slave') {
       sh 'make build GIT_BRANCH=' + deployGitBranch
     }
     // Different project --> different targets
-    stage('Deploy to int') {
-      echo 'Building project:'
-      echo project
-      stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
-      echo stdout
-      def lines = stdout.readLines()
-      deployedVersion = lines.get(lines.size()-5)
-      s3VersionPath = lines.get(lines.size()-3)
-      e2eTargetUrl = lines.get(lines.size()-1)
+    stage('Deploy') {
+      echo 'Deploying  project <' + project + '>'
+      
+      parallel (
+        'int' {
+           stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
+           echo stdout
+           def lines = stdout.readLines()
+           deployedVersion = lines.get(lines.size()-5)
+          s3VersionPath = lines.get(lines.size()-3)
+          e2eTargetUrl = lines.get(lines.size()-1)
+       },
+       'dev' {
+         stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=int DEPLOY_GIT_BRANCH=' + deployGitBranch
+         echo stdout
+       }
+      )
     }  
     //It's a PR
     if (env.CHANGE_ID) {
