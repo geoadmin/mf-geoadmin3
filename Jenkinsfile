@@ -55,7 +55,7 @@ node(label: 'jenkins-slave') {
       echo 'Deploying  project <' + project + '>'
       
       parallel (
-        'int' {
+        'int': {
            stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
            echo stdout
            def lines = stdout.readLines()
@@ -63,8 +63,8 @@ node(label: 'jenkins-slave') {
           s3VersionPath = lines.get(lines.size()-3)
           e2eTargetUrl = lines.get(lines.size()-1)
        },
-       'dev' {
-         stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=int DEPLOY_GIT_BRANCH=' + deployGitBranch
+       'dev': {
+         stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=dev DEPLOY_GIT_BRANCH=' + deployGitBranch
          echo stdout
        }
       )
