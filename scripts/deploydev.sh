@@ -6,7 +6,7 @@ T="$(date +%s)"
 set -o errexit
 
 # adapt these for emergency deploys coming from branches
-GITBRANCH=master
+GITBRANCH=deploy_dev_fix
 echo "Deploying branch" $GITBRANCH "to dev"
 
 # set some variables
