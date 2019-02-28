@@ -50,16 +50,33 @@ node(label: 'jenkins-slave') {
     stage('Build') {
       sh 'make build GIT_BRANCH=' + deployGitBranch
     }
+    
     // Different project --> different targets
-    stage('Deploy to int') {
-      echo 'Building project:'
-      echo project
-      stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
-      echo stdout
-      def lines = stdout.readLines()
-      deployedVersion = lines.get(lines.size()-5)
-      s3VersionPath = lines.get(lines.size()-3)
-      e2eTargetUrl = lines.get(lines.size()-1)
+    stage('Deploy dev/int/prod') {
+      echo 'Deploying  project <' + project + '>'
+      
+      parallel (
+       'dev': {
+         stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=dev DEPLOY_GIT_BRANCH=' + deployGitBranch
+         echo stdout
+       },
+       'int': {
+           stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
+           echo stdout
+           def lines = stdout.readLines()
+           deployedVersion = lines.get(lines.size()-5)
+          s3VersionPath = lines.get(lines.size()-3)
+          e2eTargetUrl = lines.get(lines.size()-1)
+       },
+       'prod': {
+         if (deployGitBranch == 'mvt_clean' || deployGitBranch == 'master') {
+           stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=prod DEPLOY_GIT_BRANCH=' + deployGitBranch
+           echo stdout
+           } else {
+            echo 'Won\'t deploy branch <' + deployGitBranch + '> to production.'
+         }
+       }
+      )
     }  
     //It's a PR
     if (env.CHANGE_ID) {
@@ -131,11 +148,13 @@ node(label: 'jenkins-slave') {
       )
     }
 
-    stage('Activate') {
+    stage('Activate dev/int') {
+      def targets = ['dev', 'int']
       echo 'Activating the new version <' + deployedVersion + ' of branch  <' + deployGitBranch + '>'
-      // Activate the new version if tests succceed
-      // sh 'echo "yes" | make DRYRUN=false DEPLOY_GIT_BRANCH=' + deployGitBranch + ' SNAPSHOT=' + deployedVersion + ' s3activatedist' + deployTarget
-      sh 'echo "yes" | .build-artefacts/python-venv/bin/python ./scripts/s3manage.py activate --branch ' + deployGitBranch + ' --version ' + deployedVersion + ' ' + deployTarget
+      for (target in targets) {
+        echo 'Activating on ' + target
+        sh 'echo "yes" | .build-artefacts/python-venv/bin/python ./scripts/s3manage.py activate --branch ' + deployGitBranch + ' --version ' + deployedVersion + ' ' + target
+      }
     }
 
   } catch(e) {
