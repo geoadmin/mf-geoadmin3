@@ -57,8 +57,12 @@ node(label: 'jenkins-slave') {
       
       parallel (
        'dev': {
-         stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=dev DEPLOY_GIT_BRANCH=' + deployGitBranch
-         echo stdout
+         if (project == 'mf-geoadmin3') {
+           stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=dev DEPLOY_GIT_BRANCH=' + deployGitBranch
+           echo stdout
+         } else {
+           echo 'project <' + project + '> has no target <dev>. Skipping stage.'
+         }
        },
        'int': {
            stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
@@ -73,7 +77,7 @@ node(label: 'jenkins-slave') {
            stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=prod DEPLOY_GIT_BRANCH=' + deployGitBranch
            echo stdout
            } else {
-            echo 'Won\'t deploy branch <' + deployGitBranch + '> to production.'
+            echo 'Won\'t deploy branch <' + deployGitBranch + '> to production. Skipping stage'
          }
        }
       )
