@@ -192,6 +192,7 @@ def is_cached(file_name, legacy=None):
         - *.txt files
         - the *.appcache file itself (although it's versioned with the
             git_commit_short)
+        - info.json
 
     The behaviour is exactly the same for master and other branches
     example:
@@ -203,7 +204,8 @@ def is_cached(file_name, legacy=None):
     <bucket_name>/fix_1234/as5a56a/lib/build.js          <= cache header
     """
     _, extension = os.path.splitext(file_name)
-    return extension not in ['.html', '.txt', '.appcache', '']
+    return file_name not in ['info.json'] and
+        extension not in ['.html', '.txt', '.appcache', '']
 
 
 def get_file_mimetype(local_file):
