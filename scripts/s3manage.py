@@ -13,7 +13,6 @@ import click
 import StringIO
 import gzip
 from datetime import datetime
-from textwrap import dedent
 import mimetypes
 
 TARGETS = ['infra', 'dev', 'int', 'prod']
@@ -192,6 +191,7 @@ def is_cached(file_name, legacy=None):
         - *.txt files
         - the *.appcache file itself (although it's versioned with the
             git_commit_short)
+        - info.json
 
     The behaviour is exactly the same for master and other branches
     example:
@@ -203,7 +203,8 @@ def is_cached(file_name, legacy=None):
     <bucket_name>/fix_1234/as5a56a/lib/build.js          <= cache header
     """
     _, extension = os.path.splitext(file_name)
-    return extension not in ['.html', '.txt', '.appcache', '']
+    return os.path.basename(file_name) not in ['info.json'] and \
+        extension not in ['.html', '.txt', '.appcache', '']
 
 
 def get_file_mimetype(local_file):
@@ -534,7 +535,7 @@ def activate_dist_version(branch_name, version, bucket_name, deploy_target, buck
                 ACL='public-read'
             )
         except botocore.exceptions.ClientError as e:
-            print('Cannot copy {}: {}'.format(j, e))
+            print('Cannot copy {}: {}'.format(n, e))
 
     print('\nSuccessfuly activated version <{}> of branch <{}> in bucket {}'.format(
         version,
@@ -634,7 +635,6 @@ def upload_cmd(force, snapshotdir, named_branch, target, git_branch, bucket_url)
         click.echo('Aborting.')
         sys.exit()
     else:
-        #upload(bucket_name, base_dir, target, named_branch, git_branch, bucket_url)
         upload_dist(bucket_name, base_dir, target, named_branch, git_branch, bucket_url)
 
 
