@@ -59,6 +59,11 @@ prd/style/app.css: $(SRC_LESS_FILES)
 	${LESSC} $(LESS_PARAMETERS) --clean-css src/style/app.less $@
 	${POSTCSS} $@ --use autoprefixer --replace --no-map
 
+
+# We have two versionis of this file
+# geoadmin.<version>.appcache for use within the snapshot
+# no_snapshot_geoadmin.<version>.appcache which will be renamed into the former when activating
+# the snaphot (i.e. copying this file, index.html to the root)
 prd/geoadmin.%.appcache: src/geoadmin.mako.appcache \
 			${MAKO_CMD} \
 			.build-artefacts/last-version
@@ -72,7 +77,7 @@ prd/geoadmin.%.appcache: src/geoadmin.mako.appcache \
 	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
 	    --var "languages=$(LANGUAGES)" \
 	    --var "s3basepath=$(S3_BASE_PATH)" $< > $@
-	#mv prd/geoadmin.appcache $@
+	sed -e 's/\/$(GIT_BRANCH)\/$(VERSION)//g'  $@ >  prd/no_snapshot_geoadmin.$*.appcache
 
 
 prd/info.json: src/info.mako.json
