@@ -60,7 +60,7 @@ prd/style/app.css: $(SRC_LESS_FILES)
 	${POSTCSS} $@ --use autoprefixer --replace --no-map
 
 
-# We have to version of this file
+# We have two versionis of this file
 # geoadmin.<version>.appcache for use within the snapshot
 # no_snapshot_geoadmin.<version>.appcache which will be renamed into the former when activating
 # the snaphot (i.e. copying this file, index.html to the root)
