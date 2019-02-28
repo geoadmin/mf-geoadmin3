@@ -465,7 +465,8 @@ def activate_version(s3_path, bucket_name, deploy_target, bucket_url):
     for j in ('robots.txt', 'checker', 'favicon.ico', appcache):
         # In prod move robots prod
         src_file_name = 'robots_prod.txt' if j == 'robots.txt' and deploy_target == 'prod' else j
-        # When activating do not use snapshot version in appcache
+        # When activating, the path in the appcache file must match the path used in the application.
+        # So we use and rename a specially prepared no_snapshot_geoadmin.<version>.appcache file for this.
         src_file_name = appcache.replace('no_snapshot_geoadmin.', 'geoadmin.') if j == appcache else j
         src_key_name = '{}/{}'.format(s3_path, src_file_name)
         print('%s ---> %s' % (src_key_name, j))
