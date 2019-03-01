@@ -159,11 +159,12 @@ node(label: 'jenkins-slave') {
       if (project == 'mf-geoadmin3') {
         targets = ['dev', 'int']
       } else {
-       targets = ['int']
+        targets = ['int']
       }
       for (target in targets) {
         echo 'Activating on ' + target
-        sh 'echo "yes" | PROJECT=' + project + ' .build-artefacts/python-venv/bin/python ./scripts/s3manage.py activate --branch ' + deployGitBranch + ' --version ' + deployedVersion + ' ' + target
+        
+        sh 'PROJECT=' + project + ' .build-artefacts/python-venv/bin/python ./scripts/s3manage.py activate --force --branch ' + deployGitBranch + ' --version ' + deployedVersion + ' ' + target
       }
     }
 
