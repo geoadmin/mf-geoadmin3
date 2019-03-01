@@ -153,8 +153,14 @@ node(label: 'jenkins-slave') {
     }
 
     stage('Activate dev/int') {
-      def targets = ['dev', 'int']
+      echo 'Project <' + project + '>'
       echo 'Activating the new version <' + deployedVersion + ' of branch  <' + deployGitBranch + '>'
+      def targets = []
+      if (project == 'mf-geoadmin3') {
+        targets = ['dev', 'int']
+      } else {
+       targets = ['int']
+      }
       for (target in targets) {
         echo 'Activating on ' + target
         sh 'echo "yes" | .build-artefacts/python-venv/bin/python ./scripts/s3manage.py activate --branch ' + deployGitBranch + ' --version ' + deployedVersion + ' ' + target
