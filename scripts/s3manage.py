@@ -363,10 +363,14 @@ def list_version():
 def list_dist_version(branch=None):
     # Note: branch-names containing '/' are currently not supported!
     branch_prefix = branch if branch else ''
-    branches = bucket.meta.client.list_objects(
-        Bucket=bucket.name,
-        Prefix=branch_prefix,
-        Delimiter='/')
+    try:
+      branches = bucket.meta.client.list_objects(
+          Bucket=bucket.name,
+          Prefix=branch_prefix,
+          Delimiter='/')
+    except (botocore.exceptions.ClientError, botocore.exceptions.BotoCoreError) as e:
+        print("Error while listing version(s) in bucket <{}>: {}".format(bucket.name, e))
+        return None
 
     # get list of 'unique' branch names
     for b in branches.get('CommonPrefixes'):
@@ -418,8 +422,12 @@ def version_info(s3_path):
 
 
 def version_exists(s3_path):
-    files = bucket.objects.filter(Prefix=str(s3_path)).all()
-    return len(list(files)) > 0
+    try:
+        files = bucket.objects.filter(Prefix=str(s3_path)).all()
+        return len(list(files)) > 0
+    except botocore.exceptions.ClientError as e:
+        print("Error while listing objects with prefix={} in bucket={}: {}".format(s3_path, bucket.name, e))
+    return False
 
 
 def delete_version(s3_path, bucket_name):
