@@ -163,7 +163,7 @@ node(label: 'jenkins-slave') {
       }
       for (target in targets) {
         echo 'Activating on ' + target
-        sh 'echo "yes" | .build-artefacts/python-venv/bin/python ./scripts/s3manage.py activate --branch ' + deployGitBranch + ' --version ' + deployedVersion + ' ' + target
+        sh 'echo "yes" | PROJECT=' + project + ' .build-artefacts/python-venv/bin/python ./scripts/s3manage.py activate --branch ' + deployGitBranch + ' --version ' + deployedVersion + ' ' + target
       }
     }
 
