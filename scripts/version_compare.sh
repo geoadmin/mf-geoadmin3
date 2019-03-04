@@ -1,11 +1,18 @@
 #!/bin/bash
 
 # compare two dot separated version string and return
-# - 0 if versions match
-# - 1 if first version is greater than second
-# - 2 if first version is smaller than second
+# - match if versions match
+# - first_greater if first version is greater than second
+# - first_smaller if first version is smaller than second
 
-# exemple of usage : sh ./version_compare.sh '1.0.0' '1.0.1'
+# exemple of usage
+#
+# sh ./version_compare.sh 1.0.0 1.0.1
+#
+# or with lib called directly
+#
+# sh ./version_compare.sh $(node -v) 10.0.0
+#
 version_compare () {
     if [[ $1 == $2 ]]
     then
@@ -35,6 +42,16 @@ version_compare () {
         fi
     done
 }
-
-return_value=$(version_compare $1 $2)
-echo "version_compare returned value : $return_value"
+version_compare $1 $2
+result_value=$?
+if [[ $result_value == 1 ]];
+then
+    echo "first_greater";
+elif [[ $result_value == 2 ]];
+then
+    echo "first_smaller";
+elif [[ $result_value == 0 ]]; then
+    echo "matches"
+else
+    echo "Error, unknow result"
+fi

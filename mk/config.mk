@@ -165,16 +165,30 @@ CLOSURE_COMPILER=node_modules/google-closure-compiler/compiler.jar
 # Node executables
 NODE_BIN=node_modules/.bin
 NVM_DIR ?= $(HOME)/.nvm
-FORCE_NODE_VERSION_IF_NEEDED=source ${NVM_DIR}/nvm.sh && nvm use ${NODE_VERSION}
-# Node version must be forced at every step to ensure that the default OS version is not used
+NODE_VERSION_COMPARISON := $(shell ./scripts/version_compare.sh $(NODE_VERSION) $(shell node -v))
+# only set node version with NVM if needed (big impact on build perf)
+ifeq ($(NODE_VERSION_COMPARISON),matches)
+	# no need for nvm, you lucky bastard!
+	FORCE_NODE_VERSION_IF_NEEDED=
+else
+	# Big disclaimer as nvm tends to make build time plummet
+	FORCE_NODE_VERSION_IF_NEEDED= \
+		echo -e "\n\e[33m================================================================================\n \
+						Your node version doesn't match with the required version to build mf-geoadmin3 (\e[1m$(NODE_VERSION)\e[0m\e[33m).\n \
+						NVM will be used to force the required version during build, but this has a big impact on build performance.\n \
+						Please set your environment to use version \e[1m$(NODE_VERSION)\e[0m\e[33m of node.js for optimal build time\n \
+						================================================================================\n\e[0m" \
+		&& source ${NVM_DIR}/nvm.sh && nvm use ${NODE_VERSION} && 
+endif
+# Node version must (might, see above) be forced at every step to ensure that the default OS version is not used
 # as it was causing many syntax errors in node modules (default debian jessie version is 5.9.x, most modules need > 6.x.x)
-LESSC=${FORCE_NODE_VERSION_IF_NEEDED} && ${NODE_BIN}/lessc
-KARMA=${FORCE_NODE_VERSION_IF_NEEDED} && ${NODE_BIN}/karma
-PHANTOMJS=${FORCE_NODE_VERSION_IF_NEEDED} && ${NODE_BIN}/phantomjs
-NG_ANNOTATE=${FORCE_NODE_VERSION_IF_NEEDED} && ${NODE_BIN}/ng-annotate
-POSTCSS=${FORCE_NODE_VERSION_IF_NEEDED} && ${NODE_BIN}/postcss
-HTMLMIN_CMD=${FORCE_NODE_VERSION_IF_NEEDED} && ${NODE_BIN}/html-minifier --minify-css --minify-js --collapse-whitespace --process-conditional-comments --remove-comments --custom-attr-collapse /ng-class/ -o
-ES_LINT=${FORCE_NODE_VERSION_IF_NEEDED} && ${NODE_BIN}/eslint
+LESSC=${FORCE_NODE_VERSION_IF_NEEDED}${NODE_BIN}/lessc
+KARMA=${FORCE_NODE_VERSION_IF_NEEDED}${NODE_BIN}/karma
+PHANTOMJS=${FORCE_NODE_VERSION_IF_NEEDED}${NODE_BIN}/phantomjs
+NG_ANNOTATE=${FORCE_NODE_VERSION_IF_NEEDED}${NODE_BIN}/ng-annotate
+POSTCSS=${FORCE_NODE_VERSION_IF_NEEDED}${NODE_BIN}/postcss
+HTMLMIN_CMD=${FORCE_NODE_VERSION_IF_NEEDED}${NODE_BIN}/html-minifier --minify-css --minify-js --collapse-whitespace --process-conditional-comments --remove-comments --custom-attr-collapse /ng-class/ -o
+ES_LINT=${FORCE_NODE_VERSION_IF_NEEDED}${NODE_BIN}/eslint
 
 MAKO_LAST_VARIABLES = .build-artefacts/last-api-url \
 	    .build-artefacts/last-config-url \
