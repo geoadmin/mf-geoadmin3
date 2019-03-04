@@ -333,28 +333,28 @@ goog.require('ga_urlutils_service');
                 }],
                 edits: [{
                   id: 'settlement',
-                  regex: /^settlement/,
+                  regex: /settlement/,
                   props: [
                     ['paint', 'fill-color', '{color}']
                   ]
 
                 }, {
                   id: 'landuse',
-                  regex: /^landuse/,
+                  regex: /landuse/,
                   props: [
                     ['paint', 'fill-color', '{color}']
                   ]
 
                 }, {
                   id: 'hydrology',
-                  regex: /^hydrology/,
+                  regex: /hydrology/,
                   props: [
                     ['paint', 'fill-color', '{color}']
                   ]
 
                 }, {
                   id: 'roadtraffic',
-                  regex: /^roadtraffic/,
+                  regex: /roadtraffic/,
                   props: [
                     ['paint', 'line-color', '{color}'],
                     ['paint', 'line-width', '{size}']
@@ -362,11 +362,23 @@ goog.require('ga_urlutils_service');
 
                 }, {
                   id: 'labels',
-                  regex: /^labels/,
+                  regex: /labels/,
                   props: [
                     ['layout', 'visibility', '{toggle}', 'visible', 'none'],
                     ['paint', 'text-color', '{color}'],
                     ['layout', 'text-size', '{size}']
+                  ]
+                }, {
+                  id: 'woodland',
+                  regex: /woodland/,
+                  props: [
+                    ['paint', 'fill-color', '{color}']
+                  ]
+                }, {
+                  id: 'background',
+                  regex: /territory/,
+                  props: [
+                    ['paint', 'fill-color', '{color}']
                   ]
                 }]
               };
