@@ -16,13 +16,17 @@ node(label: 'jenkins-slave') {
     deployGitBranch = env.CHANGE_BRANCH
   }
   
-  // Project legacy/mf-geoadmin3 --> mf-geoadmin3 bucket
-  // Project mvt                 --> mf-geoadmin4 bucket
-  def project = 'mf-geoadmin3'
-  
+  // Two projects:
+  // Project legacy/mf-geoadmin3: branch 'master'                --> s3_mf-geoadmin3_(dev|int|prod)_dublin  bucket
+  // Project mvt/vib2d (vector tiles demo): branch 'mvt_clean'   --> s3_mf_geoadmin4_(int|prod)_dublin  bucket
+  def project
   
   if (env.BRANCH_NAME == 'mvt_clean' || (env.CHANGE_TARGET != null && env.CHANGE_TARGET == 'mvt_clean' )) {
-     project = 'mvt'
+    project = 'mvt'
+  } else if  (env.BRANCH_NAME == 'master' || (env.CHANGE_TARGET != null && env.CHANGE_TARGET == 'master' )) {
+    project = 'mf-geoadmin3'
+  } else {
+    error 'Fatal error: unknown project. Aborting.'
   }
 
   // from jenkins-shared-librairies 
@@ -57,9 +61,19 @@ node(label: 'jenkins-slave') {
       
       parallel (
        'dev': {
-         stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=dev DEPLOY_GIT_BRANCH=' + deployGitBranch
-         echo stdout
+         // Project mf-geoadmin3/legacy
+         // Script s3copybranch set bucket to deploy to base on project name (see above)
+         if (project == 'mf-geoadmin3') {
+           stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=dev DEPLOY_GIT_BRANCH=' + deployGitBranch
+           echo stdout
+        // Project 'mvt/vib2d' has no bucket for <dev>
+         } else if (project == 'mvt'){
+           echo 'project <' + project + '> has no target <dev>. Skipping stage.'
+         }
        },
+       // Both projects 'mvt' and 'mf-geoadmin3' are deployable to <int>
+       // All branches, including 'master' and 'mvt_clean' (which is 'master' for 'mvt')
+       // are deployed to <int>
        'int': {
            stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
            echo stdout
@@ -69,18 +83,20 @@ node(label: 'jenkins-slave') {
           e2eTargetUrl = lines.get(lines.size()-1)
        },
        'prod': {
+       // Both projects 'mvt' and 'mf-geoadmin3' are deployable to <prod>,
+       // but only the 'master' branches for both projects ('master' for mf-geoadmin3, 'mvt_clean' for mvt/vib2d) 
          if (deployGitBranch == 'mvt_clean' || deployGitBranch == 'master') {
            stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=prod DEPLOY_GIT_BRANCH=' + deployGitBranch
            echo stdout
            } else {
-            echo 'Won\'t deploy branch <' + deployGitBranch + '> to production.'
+            echo 'Won\'t deploy branch <' + deployGitBranch + '> to production. Skipping stage'
          }
        }
       )
     }  
     //It's a PR
     if (env.CHANGE_ID) {
-      // Add the test link in the PR
+      // Add the test link in the PR on GitHub
       stage('Publish test link') {
         def url = 'https://api.github.com/repos/geoadmin/mf-geoadmin3/pulls/' + env.CHANGE_ID
         def testLink = '<jenkins>[Test link](' + e2eTargetUrl + ')</jenkins>'
@@ -147,13 +163,22 @@ node(label: 'jenkins-slave') {
         }
       )
     }
-
+    // Activate all branches only on <dev> (which is only availabel to project 'mf-geoadmin3')
+    // and <int>
     stage('Activate dev/int') {
-      def targets = ['dev', 'int']
+      echo 'Project <' + project + '>'
       echo 'Activating the new version <' + deployedVersion + ' of branch  <' + deployGitBranch + '>'
+      def targets = []
+      // Unofortunately, bucket <dev> doesn't not exist for 'mvt'
+      if (project == 'mf-geoadmin3') {
+        targets = ['dev', 'int']
+      } else if (project == 'mvt'){
+        targets = ['int']
+      }
       for (target in targets) {
         echo 'Activating on ' + target
-        sh 'echo "yes" | .build-artefacts/python-venv/bin/python ./scripts/s3manage.py activate --branch ' + deployGitBranch + ' --version ' + deployedVersion + ' ' + target
+        
+        sh 'PROJECT=' + project + ' .build-artefacts/python-venv/bin/python ./scripts/s3manage.py activate --force --branch ' + deployGitBranch + ' --version ' + deployedVersion + ' ' + target
       }
     }
 
