@@ -42,7 +42,13 @@ version_compare () {
         fi
     done
 }
-version_compare $1 $2
+
+# removing anything not numerical or dot
+version_1=$(echo $1 | sed -e 's/[^0-9\.]*//g')
+version_2=$(echo $2 | sed -e 's/[^0-9\.]*//g')
+
+version_compare $version_1 $version_2
+
 result_value=$?
 if [[ $result_value == 1 ]];
 then
