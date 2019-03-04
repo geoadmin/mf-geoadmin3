@@ -19,11 +19,14 @@ node(label: 'jenkins-slave') {
   // Two projects:
   // Project legacy/mf-geoadmin3: branch 'master'                --> s3_mf-geoadmin3_(dev|int|prod)_dublin  bucket
   // Project mvt/vib2d (vector tiles demo): branch 'mvt_clean'   --> s3_mf_geoadmin4_(int|prod)_dublin  bucket
-  def project = 'mf-geoadmin3'
-  
+  def project
   
   if (env.BRANCH_NAME == 'mvt_clean' || (env.CHANGE_TARGET != null && env.CHANGE_TARGET == 'mvt_clean' )) {
-     project = 'mvt'
+    project = 'mvt'
+  } else if  (env.BRANCH_NAME == 'master' || (env.CHANGE_TARGET != null && env.CHANGE_TARGET == 'master' )) {
+    project = 'mf-geoadmin3'
+  } else {
+    error 'Fatal error: unknown project. Aborting.'
   }
 
   // from jenkins-shared-librairies 
@@ -64,7 +67,7 @@ node(label: 'jenkins-slave') {
            stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=dev DEPLOY_GIT_BRANCH=' + deployGitBranch
            echo stdout
         // Project 'mvt/vib2d' has no bucket for <dev>
-         } else {
+         } else if (project == 'mvt'){
            echo 'project <' + project + '> has no target <dev>. Skipping stage.'
          }
        },
@@ -169,7 +172,7 @@ node(label: 'jenkins-slave') {
       // Unofortunately, bucket <dev> doesn't not exist for 'mvt'
       if (project == 'mf-geoadmin3') {
         targets = ['dev', 'int']
-      } else {
+      } else if (project == 'mvt'){
         targets = ['int']
       }
       for (target in targets) {
