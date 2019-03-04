@@ -35,7 +35,7 @@ describe('ga_share_directive', function() {
 
     it('creates 5 <i>', function() {
       var icon = element.find('.ga-share-icons i');
-      expect(icon.length).to.be(5);
+      expect(icon.length).to.be(4);
     });
   });
 
@@ -54,7 +54,7 @@ describe('ga_share_directive', function() {
 
     it('creates 6 <i>', function() {
       var icon = element.find('.ga-share-icons i');
-      expect(icon.length).to.be(6);
+      expect(icon.length).to.be(5);
     });
   });
 
@@ -73,7 +73,7 @@ describe('ga_share_directive', function() {
 
     it('creates 6 <i>', function() {
       var icon = element.find('.ga-share-icons i');
-      expect(icon.length).to.be(6);
+      expect(icon.length).to.be(5);
     });
   });
 });
