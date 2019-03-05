@@ -140,6 +140,7 @@ goog.require('ga_urlutils_service');
           }
 
           gaMapUtils.applyGlStyleToOlLayer(scope.layer, glStyle);
+          gaMapUtils.setGlBackground(scope.map, glStyle);
           scope.saveDebounced({}, scope.layer, glStyle);
         });
       }

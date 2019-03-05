@@ -320,7 +320,7 @@ goog.require('ga_urlutils_service');
                   '<a target="_blank" href="https://www.swisstopo.admin.ch/' + lang + '/home.html">swisstopo</a>',
                 styles: [{
                   id: 'default',
-                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v006/style.json'
+                  url: 'https://tileserver.dev.bgdi.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v009/style.json'
                 }, {
                   id: 'color',
                   url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte-vintage.vt/v006/style.json'
@@ -376,9 +376,9 @@ goog.require('ga_urlutils_service');
                   ]
                 }, {
                   id: 'background',
-                  regex: /territory/,
+                  regex: /territory|background/,
                   props: [
-                    ['paint', 'fill-color', '{color}']
+                    ['paint', 'background-color', '{color}']
                   ]
                 }]
               };
