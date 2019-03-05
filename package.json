@@ -38,7 +38,7 @@
   "devDependencies": {
     "caniuse-db": "1.0.30000940",
     "angular-mocks": "1.7.7",
-    "autoprefixer": "9.4.9",
+    "autoprefixer": "9.4.10",
     "babel-cli": "^6.24.1",
     "babel-preset-env": "^1.4.0",
     "bootstrap": "3.4.1",
