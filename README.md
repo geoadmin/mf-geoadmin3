@@ -51,7 +51,7 @@ Use `make translate` to import directly translations from the Google spreadsheet
 For builds on test (rc_dev), integration (rc_int) and production (rc_prod), you
 should source the corresponding `rc` file.
 
-On mf0t, create an Apache configuration file for your environment. Ex:
+On `vpc-mf1-dev1`, create an Apache configuration file for your environment. Ex:
 
     $ cat /var/www/vhosts/mf-geoadmin3/conf/ltxxx.conf
     Include /home/ltxxx/mf-geoadmin3/apache/*.conf
@@ -155,17 +155,11 @@ These tests are not part of the normal build. They need to be launched manually.
 
 ## Building and deploying to AWS S3
 
-To build the current branch and upload it to AWS S3 int, use:
+Since March 2018, all branches are deployed by the CI to all three S3 staging bucket (dev, int and prod).
 
-    make s3deploybranch
+To manually build the current branch and upload it to AWS S3 int, use:
 
-Branches are stored in the user environments under:
-
-   ~/tmp/branches/{branch_name}
-
-To upload a different branch, use:
-
-    make s3deploybranch DEPLOY_GIT_BRANCH=<BRANCH_NAME>
+    make s3copybranch  DEPLOY_TARGET=int DEPLOY_GIT_BRANCH=<my branch>
 
 After the first clone, dev dependencies are not removed when uploading a branch
 to S3. If you want to also remove the dev depedencies, use:
@@ -184,11 +178,11 @@ If the project builds and the tests are passing, then, files will be uploaded to
 
 For instance:
 
-    mom_layersconfig_lang/75098c2/1468688399/index.html
+    mom_layersconfig_lang/1468688399/index.html
 
 and for source:
 
-    mom_layersconfig_lang/75098c2/1468688399/src/index.html
+    mom_layersconfig_lang/1468688399/src/index.html
 
 Metadata to a build are available next to the index.html, as info.json
 
@@ -196,13 +190,13 @@ Metadata to a build are available next to the index.html, as info.json
 
 #### Deploying to dev
 
-    make deploydev SNAPSHOT=true
+    make s3copybranch  DEPLOY_TARGET=dev DEPLOY_GIT_BRANCH=<my branch>
 
 will create a snapshot and output a snapshot version. (uses Apache)
 
 #### Deploying to int
 
-    make s3deployint SNAPSHOT=123456 (a snapshot version)
+    make s3copybranch  DEPLOY_TARGET=int DEPLOY_GIT_BRANCH=<my branch>
 
 
 Use the KEEP_VERSION option to generate a new version
@@ -212,16 +206,14 @@ Use the KEEP_VERSION option to generate a new version
 will deploy the snapshot to AWS S3 in the int bucket. It will output a S3 URL.
 Take the version and use the following command to activate the version.
 
-    make s3activateint S3_VERSION_PATH=<DEPLOY_GIT_BRANCH>/<DEPLOY_GIT_HASH>/<EPOCH_BUILD>
+    make s3activateint S3_VERSION_PATH=<DEPLOY_GIT_BRANCH>/<EPOCH_BUILD>
 
 #### Deploying to prod
 
-    make s3deployprod SNAPSHOT=123456 (a snapshot version)
+The CI is responsible for uploading to `prod`. The only required step is to `activate` a `version`, _i.e._
+copying from its directory to the root.
 
-will deploy the snapshot to AWS S3 in the int bucket. It will output a S3 URL.
-Take the version and use the following command to activate the version.
-
-    make s3activateprod S3_VERSION_PATH=<DEPLOY_GIT_BRANCH>/<DEPLOY_GIT_HASH>/<EPOCH_BUILD>
+    make s3activateprod S3_VERSION_PATH=<DEPLOY_GIT_BRANCH>/<EPOCH_BUILD>
 
 ## Deleting a build on AWS S3
 
@@ -244,13 +236,10 @@ Per default, the API used in the **main** instance of mf-chsdi3. If you want
 to target a specific branch of mf-chsdi3, please adapt the `API_URL` variable
 in the `rc_branch.mako` file on **your branch**
 
-# Flushing varnish
+# Flushing AWS CloudFront
 
-You can flush varnish instances manually.
+The AWS bucket from `int` and `prod` staging are behing AWS CloudFront distribution.
 
-    ./scripts/flushvarnish.sh varnihs_host_ip api_host
-
-Where `varnish_host_ip` is the ip of the varnish server and api_host is the hostname of the url you want to flush. e.g. mf-chsdi3.dev.bgdi.ch for dev and api3.geo.admin.ch for prod.
 
 # Point to a target env for all services
 

@@ -14,7 +14,7 @@ user: env .build-artefacts/requirements.timestamp
 	make appconfig && source $(USER_SOURCE) && make src/config.dev.mako all
 
 .PHONY: build
-build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) appconfig debug release dist
+build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) appconfig apache debug release dist
 
 
 .PHONY: .build-artefacts/nvm-version

@@ -1,3 +1,4 @@
+<%page args="apache_base_path, s3_bucket_dev" />
 RewriteEngine On
 ExpiresActive On
 
@@ -55,6 +56,15 @@ RewriteRule ${apache_base_path}/([0-9a-f]+)/(services|layersConfig)  ${apache_ba
    Order allow,deny
    Allow from all
 </LocationMatch>
+
+% if apache_base_path == '':
+# Serve everything but personal directory and configs from S3 bucket
+RewriteCond %{REQUEST_URI} !^/lt[a-z]{3}
+RewriteCond %{REQUEST_URI} !^/configs
+RewriteRule ^/(.*) http://${s3_bucket_dev}.s3-eu-west-1.amazonaws.com/$1 [P]
+
+% endif
+
 
 # index.html contains path with git-hash in folder, redirect that
 # part to prd directly

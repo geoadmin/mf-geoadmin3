@@ -30,13 +30,17 @@ else
   echo "Could not backup the project."
 fi
 
+function reset_rootdir_to_previous_state () {
+  echo $1 1>&2
+  rm -rf $DEPLOYDIR
+  mv -f $TEMPDIR $DEPLOYDIR
+  exit $2
+}
+
 if cd $ROOTDIR; then
   git clone https://github.com/geoadmin/mf-geoadmin3.git $DEPLOYDIR
 else
-  echo "Could not change directory. Restoring previous project." 1>&2
-  rm -rf $DEPLOYDIR
-  mv -f $TEMPDIR $DEPLOYDIR
-  exit 1
+  reset_rootdir_to_previous_state "Could not change directory. Restoring previous project." 1
 fi
 
 # Create a fresh clone of the project
@@ -44,23 +48,16 @@ if cd $DEPLOYDIR; then
   # remove all local changes and get latest GITBRANCH from remote
   git fetch origin && git reset --hard && git checkout $GITBRANCH && git reset --hard origin/$GITBRANCH
 else
-  echo "Could not change directory. Restoring previous project." 1>&2
-  rm -rf $DEPLOYDIR
-  mv -f $TEMPDIR $DEPLOYDIR
-  exit 1
+  reset_rootdir_to_previous_state "Could not change directory. Restoring previous project." 1
 fi
 
 # build the project
-source rc_dev && make cleanall all
+source rc_dev && make cleanall dev
 
 exit_code=$?
-
 if [ "$exit_code" -gt "0" ]
 then
-  echo "Failed to build the app. Restoring previous project." 1>&2
-  rm -rf $DEPLOYDIR
-  mv -f $TEMPDIR $DEPLOYDIR
-  exit $exit_code
+  reset_rootdir_to_previous_state "Failed to build the app. Restoring previous project." $exit_code
 else
   echo "Build is successfull. Deleting old project."
   rm -rf $TEMPDIR

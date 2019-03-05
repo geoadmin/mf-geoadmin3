@@ -13,7 +13,6 @@ import click
 import StringIO
 import gzip
 from datetime import datetime
-from textwrap import dedent
 import mimetypes
 
 TARGETS = ['infra', 'dev', 'int', 'prod']
@@ -192,6 +191,7 @@ def is_cached(file_name, legacy=None):
         - *.txt files
         - the *.appcache file itself (although it's versioned with the
             git_commit_short)
+        - info.json
 
     The behaviour is exactly the same for master and other branches
     example:
@@ -203,7 +203,8 @@ def is_cached(file_name, legacy=None):
     <bucket_name>/fix_1234/as5a56a/lib/build.js          <= cache header
     """
     _, extension = os.path.splitext(file_name)
-    return extension not in ['.html', '.txt', '.appcache', '']
+    return os.path.basename(file_name) not in ['info.json'] and \
+        extension not in ['.html', '.txt', '.appcache', '']
 
 
 def get_file_mimetype(local_file):
@@ -362,10 +363,14 @@ def list_version():
 def list_dist_version(branch=None):
     # Note: branch-names containing '/' are currently not supported!
     branch_prefix = branch if branch else ''
-    branches = bucket.meta.client.list_objects(
-        Bucket=bucket.name,
-        Prefix=branch_prefix,
-        Delimiter='/')
+    try:
+      branches = bucket.meta.client.list_objects(
+          Bucket=bucket.name,
+          Prefix=branch_prefix,
+          Delimiter='/')
+    except (botocore.exceptions.ClientError, botocore.exceptions.BotoCoreError) as e:
+        print("Error while listing version(s) in bucket <{}>: {}".format(bucket.name, e))
+        return None
 
     # get list of 'unique' branch names
     for b in branches.get('CommonPrefixes'):
@@ -417,8 +422,12 @@ def version_info(s3_path):
 
 
 def version_exists(s3_path):
-    files = bucket.objects.filter(Prefix=str(s3_path)).all()
-    return len(list(files)) > 0
+    try:
+        files = bucket.objects.filter(Prefix=str(s3_path)).all()
+        return len(list(files)) > 0
+    except botocore.exceptions.ClientError as e:
+        print("Error while listing objects with prefix={} in bucket={}: {}".format(s3_path, bucket.name, e))
+    return False
 
 
 def delete_version(s3_path, bucket_name):
@@ -459,12 +468,15 @@ def activate_version(s3_path, bucket_name, deploy_target, bucket_url):
         s3client.delete_objects(Bucket=bucket_name, Delete={'Objects': indexes})
 
     appcache = None
-    files = list(bucket.objects.filter(Prefix='{}/geoadmin.'.format(s3_path)).all())
+    files = list(bucket.objects.filter(Prefix='{}/no_snapshot_geoadmin.'.format(s3_path)).all())
     if len(files) > 0:
         appcache = os.path.basename(sorted(files)[-1].key)
     for j in ('robots.txt', 'checker', 'favicon.ico', appcache):
         # In prod move robots prod
         src_file_name = 'robots_prod.txt' if j == 'robots.txt' and deploy_target == 'prod' else j
+        # When activating, the path in the appcache file must match the path used in the application.
+        # So we use and rename a specially prepared no_snapshot_geoadmin.<version>.appcache file for this.
+        src_file_name = appcache.replace('no_snapshot_geoadmin.', 'geoadmin.') if j == appcache else j
         src_key_name = '{}/{}'.format(s3_path, src_file_name)
         print('%s ---> %s' % (src_key_name, j))
         try:
@@ -531,7 +543,7 @@ def activate_dist_version(branch_name, version, bucket_name, deploy_target, buck
                 ACL='public-read'
             )
         except botocore.exceptions.ClientError as e:
-            print('Cannot copy {}: {}'.format(j, e))
+            print('Cannot copy {}: {}'.format(n, e))
 
     print('\nSuccessfuly activated version <{}> of branch <{}> in bucket {}'.format(
         version,
@@ -631,7 +643,6 @@ def upload_cmd(force, snapshotdir, named_branch, target, git_branch, bucket_url)
         click.echo('Aborting.')
         sys.exit()
     else:
-        #upload(bucket_name, base_dir, target, named_branch, git_branch, bucket_url)
         upload_dist(bucket_name, base_dir, target, named_branch, git_branch, bucket_url)
 
 
