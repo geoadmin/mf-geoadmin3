@@ -91,7 +91,7 @@ olms =
 /*!******************!*\
   !*** ./index.js ***!
   \******************/
-/*! exports provided: applyStyle, applyBackground, default, apply, getLayer, getLayers, getSource, _finalizeLayer */
+/*! exports provided: applyStyle, applyBackground, default, apply, getLayer, getLayers, getSource, _finalizeLayer, _getFonts */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -104,6 +104,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLayers", function() { return getLayers; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSource", function() { return getSource; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "_finalizeLayer", function() { return finalizeLayer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "_getFonts", function() { return getFonts; });
 /* harmony import */ var mapbox_to_css_font__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! mapbox-to-css-font */ "./node_modules/mapbox-to-css-font/index.js");
 /* harmony import */ var mapbox_to_css_font__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(mapbox_to_css_font__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _stylefunction__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stylefunction */ "./stylefunction.js");
@@ -117,31 +118,36 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var ol_tilegrid_TileGrid__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(ol_tilegrid_TileGrid__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var ol_Map__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ol/Map */ "ol/Map");
 /* harmony import */ var ol_Map__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(ol_Map__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var ol_format_GeoJSON__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ol/format/GeoJSON */ "ol/format/GeoJSON");
-/* harmony import */ var ol_format_GeoJSON__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(ol_format_GeoJSON__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var ol_format_MVT__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ol/format/MVT */ "ol/format/MVT");
-/* harmony import */ var ol_format_MVT__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(ol_format_MVT__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var ol_Observable__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ol/Observable */ "ol/Observable");
-/* harmony import */ var ol_Observable__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(ol_Observable__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var ol_layer_Tile__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ol/layer/Tile */ "ol/layer/Tile");
-/* harmony import */ var ol_layer_Tile__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(ol_layer_Tile__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var ol_layer_Vector__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ol/layer/Vector */ "ol/layer/Vector");
-/* harmony import */ var ol_layer_Vector__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(ol_layer_Vector__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ol/layer/VectorTile */ "ol/layer/VectorTile");
-/* harmony import */ var ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ol/source/TileJSON */ "ol/source/TileJSON");
-/* harmony import */ var ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var ol_source_Vector__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ol/source/Vector */ "ol/source/Vector");
-/* harmony import */ var ol_source_Vector__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(ol_source_Vector__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ol/source/VectorTile */ "ol/source/VectorTile");
-/* harmony import */ var ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_15__);
-/* harmony import */ var _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @mapbox/mapbox-gl-style-spec */ "./node_modules/@mapbox/mapbox-gl-style-spec/dist/index.js");
-/* harmony import */ var _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(_mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_16__);
+/* harmony import */ var ol_View__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ol/View */ "ol/View");
+/* harmony import */ var ol_View__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(ol_View__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var ol_format_GeoJSON__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ol/format/GeoJSON */ "ol/format/GeoJSON");
+/* harmony import */ var ol_format_GeoJSON__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(ol_format_GeoJSON__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var ol_format_MVT__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ol/format/MVT */ "ol/format/MVT");
+/* harmony import */ var ol_format_MVT__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(ol_format_MVT__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var ol_Observable__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ol/Observable */ "ol/Observable");
+/* harmony import */ var ol_Observable__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(ol_Observable__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var ol_layer_Tile__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ol/layer/Tile */ "ol/layer/Tile");
+/* harmony import */ var ol_layer_Tile__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(ol_layer_Tile__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var ol_layer_Vector__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ol/layer/Vector */ "ol/layer/Vector");
+/* harmony import */ var ol_layer_Vector__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(ol_layer_Vector__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ol/layer/VectorTile */ "ol/layer/VectorTile");
+/* harmony import */ var ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ol/source/TileJSON */ "ol/source/TileJSON");
+/* harmony import */ var ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_14__);
+/* harmony import */ var ol_source_Vector__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ol/source/Vector */ "ol/source/Vector");
+/* harmony import */ var ol_source_Vector__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(ol_source_Vector__WEBPACK_IMPORTED_MODULE_15__);
+/* harmony import */ var ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ol/source/VectorTile */ "ol/source/VectorTile");
+/* harmony import */ var ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_16__);
+/* harmony import */ var _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @mapbox/mapbox-gl-style-spec */ "./node_modules/@mapbox/mapbox-gl-style-spec/dist/index.js");
+/* harmony import */ var _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(_mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./util */ "./util.js");
 /*
 ol-mapbox-style - Use Mapbox Style objects with OpenLayers
 Copyright 2016-present ol-mapbox-style contributors
-License: https://raw.githubusercontent.com/boundlessgeo/ol-mapbox-gl-style/master/LICENSE
+License: https://raw.githubusercontent.com/openlayers/ol-mapbox-style/master/LICENSE
 */
+
+
 
 
 
@@ -189,25 +195,29 @@ function hasFontFamily(family) {
   return family in loadedFontFamilies;
 }
 
-var fontFamilies = {};
+var processedFontFamilies = {};
 var googleFamilies = webfont_matcher_lib_fonts_google__WEBPACK_IMPORTED_MODULE_2___default.a.getNames();
 function getFonts(fonts) {
-  if (fonts in fontFamilies) {
-    return fontFamilies[fonts];
+  var fontsKey = fonts.toString();
+  if (fontsKey in processedFontFamilies) {
+    return fonts;
   }
   var families = fonts.map(function(font) {
     return mapbox_to_css_font__WEBPACK_IMPORTED_MODULE_0___default()(font, 1).split(' 1px ')[1].replace(/"/g, '');
   });
-  var family = families[0];
-  if (!hasFontFamily(family) && googleFamilies.indexOf(family) !== -1) {
-    var fontUrl = 'https://fonts.googleapis.com/css?family=' + family.replace(/ /g, '+');
-    if (!document.querySelector('link[href="' + fontUrl + '"]')) {
-      var markup = document.createElement('link');
-      markup.href = fontUrl;
-      markup.rel = 'stylesheet';
-      document.getElementsByTagName('head')[0].appendChild(markup);
+  for (var i = 0, ii = families.length; i < ii; ++i) {
+    var family = families[i];
+    if (!hasFontFamily(family) && googleFamilies.indexOf(family) !== -1) {
+      var fontUrl = 'https://fonts.googleapis.com/css?family=' + family.replace(/ /g, '+');
+      if (!document.querySelector('link[href="' + fontUrl + '"]')) {
+        var markup = document.createElement('link');
+        markup.href = fontUrl;
+        markup.rel = 'stylesheet';
+        document.head.appendChild(markup);
+      }
     }
   }
+  processedFontFamilies[fontsKey] = true;
   return fonts;
 }
 
@@ -268,7 +278,7 @@ function applyStyle(layer, glStyle, source, path, resolutions) {
     if (glStyle.version != 8) {
       return reject(new Error('glStyle version 8 required.'));
     }
-    if (!(layer instanceof ol_layer_Vector__WEBPACK_IMPORTED_MODULE_11___default.a || layer instanceof ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_12___default.a)) {
+    if (!(layer instanceof ol_layer_Vector__WEBPACK_IMPORTED_MODULE_12___default.a || layer instanceof ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_13___default.a)) {
       return reject(new Error('Can only apply to VectorLayer or VectorTileLayer'));
     }
 
@@ -346,7 +356,7 @@ function setBackground(map, layer) {
     var zoom = map.getView().getZoom();
     if (paint['background-color'] !== undefined) {
       var bg = Object(_stylefunction__WEBPACK_IMPORTED_MODULE_1__["getValue"])(background, 'paint', 'background-color', zoom, emptyObj);
-      element.style.backgroundColor = _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_16__["Color"].parse(bg).toString();
+      element.style.backgroundColor = _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_17__["Color"].parse(bg).toString();
     }
     if (paint['background-opacity'] !== undefined) {
       element.style.backgroundOpacity =
@@ -413,11 +423,11 @@ function setupVectorLayer(glSource, accessToken, url) {
       });
     }
   }
-  var layer = new ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_12___default.a({
+  var layer = new ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_13___default.a({
     declutter: true,
     visible: false
   });
-  var tilejson = new ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_13___default.a({
+  var tilejson = new ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_14___default.a({
     url: glSource.tiles ? undefined : url,
     tileJSON: glSource.tiles ? glSource : undefined
   });
@@ -436,30 +446,24 @@ function setupVectorLayer(glSource, accessToken, url) {
       }
       var tileGrid = tilejson.getTileGrid();
       var extent = extentFromTileJSON(tileJSONDoc);
-      var tileSize = tileJSONDoc.tileSize || 512;
-      var source = new ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_15___default.a({
+      var minZoom = tileJSONDoc.minzoom || 0;
+      var maxZoom = tileJSONDoc.maxzoom || 22;
+      var source = new ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_16___default.a({
         attributions: tilejson.getAttributions(),
-        format: new ol_format_MVT__WEBPACK_IMPORTED_MODULE_8___default.a(),
+        format: new ol_format_MVT__WEBPACK_IMPORTED_MODULE_9___default.a(),
         tileGrid: new ol_tilegrid_TileGrid__WEBPACK_IMPORTED_MODULE_5___default.a({
           origin: tileGrid.getOrigin(),
-          extent: extent,
-          resolutions: Object(ol_tilegrid__WEBPACK_IMPORTED_MODULE_4__["createXYZ"])({
-            minZoom: tileGrid.getMinZoom(),
-            maxZoom: tileGrid.getMaxZoom(),
-            tileSize: tileSize
-          }).getResolutions(),
-          tileSize: tileSize
+          extent: extent || tileGrid.getExtent(),
+          minZoom: minZoom,
+          resolutions: _util__WEBPACK_IMPORTED_MODULE_18__["defaultResolutions"].slice(0, maxZoom + 1),
+          tileSize: 512
         }),
         urls: tiles
       });
-      if (tileGrid.getMinZoom() > 0) {
-        layer.setMaxResolution(
-          tileGrid.getResolution(tileGrid.getMinZoom()));
-      }
-      Object(ol_Observable__WEBPACK_IMPORTED_MODULE_9__["unByKey"])(key);
+      Object(ol_Observable__WEBPACK_IMPORTED_MODULE_10__["unByKey"])(key);
       layer.setSource(source);
     } else if (state === 'error') {
-      Object(ol_Observable__WEBPACK_IMPORTED_MODULE_9__["unByKey"])(key);
+      Object(ol_Observable__WEBPACK_IMPORTED_MODULE_10__["unByKey"])(key);
       layer.setSource(undefined);
     }
   });
@@ -470,8 +474,8 @@ function setupVectorLayer(glSource, accessToken, url) {
 }
 
 function setupRasterLayer(glSource, url) {
-  var layer = new ol_layer_Tile__WEBPACK_IMPORTED_MODULE_10___default.a();
-  var source = new ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_13___default.a({
+  var layer = new ol_layer_Tile__WEBPACK_IMPORTED_MODULE_11___default.a();
+  var source = new ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_14___default.a({
     transition: 0,
     url: glSource.tiles ? undefined : url,
     tileJSON: glSource.tiles ? glSource : undefined,
@@ -480,25 +484,27 @@ function setupRasterLayer(glSource, url) {
   var key = source.on('change', function() {
     var state = source.getState();
     if (state === 'ready') {
-      Object(ol_Observable__WEBPACK_IMPORTED_MODULE_9__["unByKey"])(key);
+      Object(ol_Observable__WEBPACK_IMPORTED_MODULE_10__["unByKey"])(key);
       var tileJSONDoc = source.getTileJSON();
       var extent = extentFromTileJSON(tileJSONDoc);
       var tileGrid = source.getTileGrid();
-      var tileSize = tileJSONDoc.tileSize || 256;
+      var tileSize = tileJSONDoc.tileSize || 512;
+      var minZoom = tileJSONDoc.minzoom || 0;
+      var maxZoom = tileJSONDoc.maxzoom || 22;
       // Only works when using ES modules
       source.tileGrid = new ol_tilegrid_TileGrid__WEBPACK_IMPORTED_MODULE_5___default.a({
         origin: tileGrid.getOrigin(),
-        extent: extent,
+        extent: extent || tileGrid.getExtent(),
+        minZoom: minZoom,
         resolutions: Object(ol_tilegrid__WEBPACK_IMPORTED_MODULE_4__["createXYZ"])({
-          minZoom: tileGrid.getMinZoom(),
-          maxZoom: tileGrid.getMaxZoom(),
+          maxZoom: maxZoom,
           tileSize: tileSize
         }).getResolutions(),
         tileSize: tileSize
       });
       layer.setSource(source);
     } else if (state === 'error') {
-      Object(ol_Observable__WEBPACK_IMPORTED_MODULE_9__["unByKey"])(key);
+      Object(ol_Observable__WEBPACK_IMPORTED_MODULE_10__["unByKey"])(key);
       layer.setSource(undefined);
     }
   });
@@ -512,7 +518,7 @@ function setupRasterLayer(glSource, url) {
   return layer;
 }
 
-var geoJsonFormat = new ol_format_GeoJSON__WEBPACK_IMPORTED_MODULE_7___default.a();
+var geoJsonFormat = new ol_format_GeoJSON__WEBPACK_IMPORTED_MODULE_8___default.a();
 function setupGeoJSONLayer(glSource, path) {
   var data = glSource.data;
   var features, geoJsonUrl;
@@ -521,8 +527,8 @@ function setupGeoJSONLayer(glSource, path) {
   } else {
     features = geoJsonFormat.readFeatures(data, {featureProjection: 'EPSG:3857'});
   }
-  return new ol_layer_Vector__WEBPACK_IMPORTED_MODULE_11___default.a({
-    source: new ol_source_Vector__WEBPACK_IMPORTED_MODULE_14___default.a({
+  return new ol_layer_Vector__WEBPACK_IMPORTED_MODULE_12___default.a({
+    source: new ol_source_Vector__WEBPACK_IMPORTED_MODULE_15___default.a({
       attributions: glSource.attribution,
       features: features,
       format: geoJsonFormat,
@@ -536,21 +542,16 @@ function updateRasterLayerProperties(glLayer, layer, view) {
   var zoom = view.getZoom();
   var opacity = Object(_stylefunction__WEBPACK_IMPORTED_MODULE_1__["getValue"])(glLayer, 'paint', 'raster-opacity', zoom, emptyObj);
   layer.setOpacity(opacity);
-  var visible = (glLayer.layout ? glLayer.layout.visibility !== 'none' : true);
-  layer.setVisible(visible && zoom >= (glLayer.minzoom || 0) && zoom < (glLayer.maxzoom || Infinity));
 }
 
 function processStyle(glStyle, map, baseUrl, host, path, accessToken) {
   var promises = [];
   var view = map.getView();
-  if (view.getMaxZoom() > 25) {
-    view.setMaxZoom(25);
-  }
   if ('center' in glStyle && !view.getCenter()) {
     view.setCenter(Object(ol_proj__WEBPACK_IMPORTED_MODULE_3__["fromLonLat"])(glStyle.center));
   }
   if ('zoom' in glStyle && view.getZoom() === undefined) {
-    view.setZoom(glStyle.zoom);
+    view.setResolution(_util__WEBPACK_IMPORTED_MODULE_18__["defaultResolutions"][0] / Math.pow(2, glStyle.zoom));
   }
   if (!view.getCenter() || view.getZoom() === undefined) {
     view.fit(view.getProjection().getExtent(), {
@@ -569,7 +570,7 @@ function processStyle(glStyle, map, baseUrl, host, path, accessToken) {
   var glLayers = glStyle.layers;
   var layerIds = [];
 
-  var glLayer, glSource, glSourceId, id, layer, url;
+  var glLayer, glSource, glSourceId, id, layer, minZoom, maxZoom, url;
   for (var i = 0, ii = glLayers.length; i < ii; ++i) {
     glLayer = glLayers[i];
     if (glLayer.type == 'background') {
@@ -579,16 +580,22 @@ function processStyle(glStyle, map, baseUrl, host, path, accessToken) {
       // this technique assumes gl layers will be in a particular order
       if (id != glSourceId) {
         if (layerIds.length) {
-          promises.push(finalizeLayer(layer, layerIds, glStyle, path, map));
+          promises.push(finalizeLayer(layer, layerIds, glStyle, path, map, minZoom, maxZoom));
           layerIds = [];
         }
+        minZoom = 24;
+        maxZoom = 0;
         glSource = glStyle.sources[id];
         url = glSource.url;
+        if (url && path && url.startsWith('.')) {
+          url = path + url;
+        }
 
         if (glSource.type == 'vector') {
           layer = setupVectorLayer(glSource, accessToken, url);
         } else if (glSource.type == 'raster') {
           layer = setupRasterLayer(glSource, url);
+          layer.setVisible(glLayer.layout ? glLayer.layout.visibility !== 'none' : true);
           view.on('change:resolution', updateRasterLayerProperties.bind(this, glLayer, layer, view));
           updateRasterLayerProperties(glLayer, layer, view);
         } else if (glSource.type == 'geojson') {
@@ -600,9 +607,16 @@ function processStyle(glStyle, map, baseUrl, host, path, accessToken) {
         }
       }
       layerIds.push(glLayer.id);
+      minZoom = Math.min(
+        'minzoom' in glSource ?
+          // Limit layer minzoom to source minzoom. No underzooming, see https://github.com/mapbox/mapbox-gl-js/issues/7388
+          Math.max(Object(_util__WEBPACK_IMPORTED_MODULE_18__["getZoomForResolution"])(layer.getSource().getTileGrid().getResolutions()[glSource.minzoom], _util__WEBPACK_IMPORTED_MODULE_18__["defaultResolutions"]), glLayer.minzoom || 0) :
+          glLayer.minzoom || 0,
+        minZoom);
+      maxZoom = Math.max(glLayer.maxzoom || 24, maxZoom);
     }
   }
-  promises.push(finalizeLayer(layer, layerIds, glStyle, path, map));
+  promises.push(finalizeLayer(layer, layerIds, glStyle, path, map, minZoom, maxZoom));
   map.set('mapbox-style', glStyle);
   return Promise.all(promises);
 }
@@ -657,7 +671,10 @@ function olms(map, style) {
 
   if (!(map instanceof ol_Map__WEBPACK_IMPORTED_MODULE_6___default.a)) {
     map = new ol_Map__WEBPACK_IMPORTED_MODULE_6___default.a({
-      target: map
+      target: map,
+      view: new ol_View__WEBPACK_IMPORTED_MODULE_7___default.a({
+        resolutions: _util__WEBPACK_IMPORTED_MODULE_18__["defaultResolutions"]
+      })
     });
   }
 
@@ -752,14 +769,22 @@ function apply(map, style) {
  * @param {string|undefined} path The path part of the style URL. Only required
  * when a relative path is used with the `"sprite"` property of the style.
  * @param {ol.Map} map OpenLayers Map.
+ * @param {number} minZoom Minimum zoom.
+ * @param {number} maxZoom Maximum zoom.
  * @return {Promise} Returns a promise that resolves after the source has
  * been set on the specified layer, and the style has been applied.
  */
-function finalizeLayer(layer, layerIds, glStyle, path, map) {
+function finalizeLayer(layer, layerIds, glStyle, path, map, minZoom, maxZoom) {
+  if (minZoom > 0) {
+    layer.setMaxResolution(_util__WEBPACK_IMPORTED_MODULE_18__["defaultResolutions"][minZoom] + 1e-9);
+  }
+  if (maxZoom < 24) {
+    layer.setMinResolution(_util__WEBPACK_IMPORTED_MODULE_18__["defaultResolutions"][maxZoom] + 1e-9);
+  }
   return new Promise(function(resolve, reject) {
     var setStyle = function() {
       var source = layer.getSource();
-      if (source instanceof ol_source_Vector__WEBPACK_IMPORTED_MODULE_14___default.a || source instanceof ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_15___default.a) {
+      if (source instanceof ol_source_Vector__WEBPACK_IMPORTED_MODULE_15___default.a || source instanceof ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_16___default.a) {
         applyStyle(layer, glStyle, layerIds, path).then(function() {
           layer.setVisible(true);
           resolve();
@@ -18367,12 +18392,13 @@ _index__WEBPACK_IMPORTED_MODULE_0__["default"].stylefunction = _stylefunction__W
 /*!**************************!*\
   !*** ./stylefunction.js ***!
   \**************************/
-/*! exports provided: getValue, default, _filterCache, _evaluateFilter, _fromTemplate, _getValue, _functionCache */
+/*! exports provided: getValue, default, _colorWithOpacity, _filterCache, _evaluateFilter, _fromTemplate, _getValue, _functionCache */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getValue", function() { return getValue; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "_colorWithOpacity", function() { return colorWithOpacity; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "_filterCache", function() { return filterCache; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "_evaluateFilter", function() { return evaluateFilter; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "_fromTemplate", function() { return fromTemplate; });
@@ -18401,7 +18427,7 @@ __webpack_require__.r(__webpack_exports__);
 /*
 ol-mapbox-style - Use Mapbox Style objects with OpenLayers
 Copyright 2016-present ol-mapbox-style contributors
-License: https://raw.githubusercontent.com/boundlessgeo/ol-mapbox-gl-style/master/LICENSE
+License: https://raw.githubusercontent.com/openlayers/ol-mapbox-style/master/LICENSE
 */
 
 
@@ -18567,7 +18593,7 @@ function fromTemplate(text, properties) {
  * @param {Object} [spriteImageUrl=undefined] Sprite image url for the sprite
  * specified in the Mapbox Style object's `sprite` property. Only required if a
  * `sprite` property is specified in the Mapbox Style object.
- * @param {function(Array<string>):string} [getFonts=undefined] Function that
+ * @param {function(Array<string>):Array<string>} [getFonts=undefined] Function that
  * receives a font stack as arguments, and returns a (modified) font stack that
  * is available. Font names are the names used in the Mapbox Style object. If
  * not provided, the font stack will be used as-is. This function can also be
@@ -18576,12 +18602,8 @@ function fromTemplate(text, properties) {
  * `ol.layer.Vector` or `ol.layer.VectorTile`.
  */
 /* harmony default export */ __webpack_exports__["default"] = (function(olLayer, glStyle, source, resolutions, spriteData, spriteImageUrl, getFonts) {
-  if (!resolutions) {
-    resolutions = [];
-    for (var res = 78271.51696402048; resolutions.length <= 24; res /= 2) {
-      resolutions.push(res);
-    }
-  }
+  if ( resolutions === void 0 ) resolutions = _util__WEBPACK_IMPORTED_MODULE_11__["defaultResolutions"];
+
   if (typeof glStyle == 'string') {
     glStyle = JSON.parse(glStyle);
   }
@@ -18608,27 +18630,32 @@ function fromTemplate(text, properties) {
     var key = em + ',' + font + ',' + text;
     var wrappedText = measureCache[key];
     if (!wrappedText) {
-      ctx.font = font;
-      var oneEm = ctx.measureText('M').width;
-      var width = oneEm * em;
       var words = text.split(' ');
-      var line = '';
-      var lines = [];
-      for (var i = 0, ii = words.length; i < ii; ++i) {
-        var word = words[i];
-        if ((ctx.measureText(line + word).width <= width)) {
-          line += (line ? ' ' : '') + word;
-        } else {
-          if (line) {
-            lines.push(line);
+      if (words.length > 1) {
+        ctx.font = font;
+        var oneEm = ctx.measureText('M').width;
+        var width = oneEm * em;
+        var line = '';
+        var lines = [];
+        for (var i = 0, ii = words.length; i < ii; ++i) {
+          var word = words[i];
+          if ((ctx.measureText(line + word).width <= width)) {
+            line += (line ? ' ' : '') + word;
+          } else {
+            if (line) {
+              lines.push(line);
+            }
+            line = word;
           }
-          line = word;
         }
+        if (line) {
+          lines.push(line);
+        }
+        wrappedText = lines.join('\n');
+      } else {
+        wrappedText = text;
       }
-      if (line) {
-        lines.push(line);
-      }
-      measureCache[key] = wrappedText = lines.join('\n');
+      measureCache[key] = wrappedText;
     }
     return wrappedText;
   }
@@ -18753,35 +18780,25 @@ function fromTemplate(text, properties) {
           } else {
             color = colorWithOpacity(getValue(layer, 'paint', 'fill-color', zoom, f), opacity);
             if (color) {
+              if ('fill-outline-color' in paint) {
+                strokeColor = colorWithOpacity(getValue(layer, 'paint', 'fill-outline-color', zoom, f), opacity);
+              }
+              if (!strokeColor) {
+                strokeColor = color;
+              }
               ++stylesLength;
               style = styles[stylesLength];
-              if (!style || !style.getFill() || style.getStroke() || style.getText()) {
+              if (!style || !(style.getFill() && style.getStroke()) || style.getText()) {
                 style = styles[stylesLength] = new ol_style_Style__WEBPACK_IMPORTED_MODULE_0___default.a({
-                  fill: new ol_style_Fill__WEBPACK_IMPORTED_MODULE_1___default.a()
+                  fill: new ol_style_Fill__WEBPACK_IMPORTED_MODULE_1___default.a(),
+                  stroke: new ol_style_Stroke__WEBPACK_IMPORTED_MODULE_2___default.a()
                 });
               }
               fill = style.getFill();
               fill.setColor(color);
-              style.setZIndex(index);
-            }
-            if ('fill-outline-color' in paint) {
-              strokeColor = colorWithOpacity(getValue(layer, 'paint', 'fill-outline-color', zoom, f), opacity);
-            }
-            if (strokeColor) {
-              ++stylesLength;
-              style = styles[stylesLength];
-              if (!style || !style.getStroke() || style.getFill() || style.getText()) {
-                style = styles[stylesLength] = new ol_style_Style__WEBPACK_IMPORTED_MODULE_0___default.a({
-                  stroke: new ol_style_Stroke__WEBPACK_IMPORTED_MODULE_2___default.a()
-                });
-              }
               stroke = style.getStroke();
-              stroke.setLineCap(_mapbox_mapbox_gl_style_spec_reference_latest__WEBPACK_IMPORTED_MODULE_8__["default"]['layout_line']['line-cap']);
-              stroke.setLineJoin(_mapbox_mapbox_gl_style_spec_reference_latest__WEBPACK_IMPORTED_MODULE_8__["default"]['layout_line']['line-join']);
-              stroke.setMiterLimit(_mapbox_mapbox_gl_style_spec_reference_latest__WEBPACK_IMPORTED_MODULE_8__["default"]['layout_line']['line-miter-limit']);
               stroke.setColor(strokeColor);
               stroke.setWidth(1);
-              stroke.setLineDash(null);
               style.setZIndex(index);
             }
           }
@@ -18939,24 +18956,22 @@ function fromTemplate(text, properties) {
             style = styles[stylesLength] = new ol_style_Style__WEBPACK_IMPORTED_MODULE_0___default.a();
           }
           var circleRadius = getValue(layer, 'paint', 'circle-radius', zoom, f);
-          var circleStrokeColor = getValue(layer, 'paint', 'circle-stroke-color', zoom, f);
-          var circleColor = getValue(layer, 'paint', 'circle-color', zoom, f);
-          var circleOpacity = getValue(layer, 'paint', 'circle-opacity', zoom, f);
-          var circleStrokeOpacity = getValue(layer, 'paint', 'circle-stroke-opacity', zoom, f);
+          var circleStrokeColor = colorWithOpacity(getValue(layer, 'paint', 'circle-stroke-color', zoom, f), getValue(layer, 'paint', 'circle-stroke-opacity', zoom, f));
+          var circleColor = colorWithOpacity(getValue(layer, 'paint', 'circle-color', zoom, f), getValue(layer, 'paint', 'circle-opacity', zoom, f));
           var circleStrokeWidth = getValue(layer, 'paint', 'circle-stroke-width', zoom, f);
           var cache_key = circleRadius + '.' + circleStrokeColor + '.' +
-            circleColor + '.' + circleOpacity + '.' + circleStrokeWidth;
+            circleColor + '.' + circleStrokeWidth;
           iconImg = iconImageCache[cache_key];
           if (!iconImg) {
             iconImg = new ol_style_Circle__WEBPACK_IMPORTED_MODULE_5___default.a({
               radius: circleRadius,
-              stroke: circleStrokeWidth === 0 ? undefined : new ol_style_Stroke__WEBPACK_IMPORTED_MODULE_2___default.a({
+              stroke: circleStrokeColor && circleStrokeWidth > 0 ? new ol_style_Stroke__WEBPACK_IMPORTED_MODULE_2___default.a({
                 width: circleStrokeWidth,
-                color: colorWithOpacity(circleStrokeColor, circleStrokeOpacity)
-              }),
-              fill: new ol_style_Fill__WEBPACK_IMPORTED_MODULE_1___default.a({
-                color: colorWithOpacity(circleColor, circleOpacity)
-              })
+                color: circleStrokeColor
+              }) : undefined,
+              fill: circleColor ? new ol_style_Fill__WEBPACK_IMPORTED_MODULE_1___default.a({
+                color: circleColor
+              }) : undefined
             });
           }
           style.setImage(iconImg);
@@ -18971,8 +18986,9 @@ function fromTemplate(text, properties) {
         if ('text-field' in layout) {
           var textField = getValue(layer, 'layout', 'text-field', zoom, f).toString();
           label = fromTemplate(textField, properties);
+          opacity = getValue(layer, 'paint', 'text-opacity', zoom, f);
         }
-        if (label && !skipLabel) {
+        if (label && opacity && !skipLabel) {
           if (!hasImage) {
             ++stylesLength;
             style = styles[stylesLength];
@@ -19039,7 +19055,6 @@ function fromTemplate(text, properties) {
           var textOffset = getValue(layer, 'layout', 'text-offset', zoom, f);
           text.setOffsetX(textOffset[0] * textSize);
           text.setOffsetY(textOffset[1] * textSize);
-          opacity = getValue(layer, 'paint', 'text-opacity', zoom, f);
           textColor.setColor(colorWithOpacity(getValue(layer, 'paint', 'text-color', zoom, f), opacity));
           text.setFill(textColor);
           var haloColor = colorWithOpacity(getValue(layer, 'paint', 'text-halo-color', zoom, f), opacity);
@@ -19081,16 +19096,25 @@ function fromTemplate(text, properties) {
 /*!*****************!*\
   !*** ./util.js ***!
   \*****************/
-/*! exports provided: deg2rad, getZoomForResolution */
+/*! exports provided: deg2rad, defaultResolutions, getZoomForResolution */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deg2rad", function() { return deg2rad; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultResolutions", function() { return defaultResolutions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getZoomForResolution", function() { return getZoomForResolution; });
 function deg2rad(degrees) {
   return degrees * Math.PI / 180;
 }
+
+var defaultResolutions = (function() {
+  var resolutions = [];
+  for (var res = 78271.51696402048; resolutions.length <= 24; res /= 2) {
+    resolutions.push(res);
+  }
+  return resolutions;
+})();
 
 function getZoomForResolution(resolution, resolutions) {
   var i = 0;
@@ -19127,6 +19151,17 @@ module.exports = ol.Map;
 /***/ (function(module, exports) {
 
 module.exports = ol.Observable;
+
+/***/ }),
+
+/***/ "ol/View":
+/*!**************************!*\
+  !*** external "ol.View" ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ol.View;
 
 /***/ }),
 
