@@ -13,9 +13,6 @@ endef
 # rc file used
 USER_SOURCE ?= rc_user
 
-# mf-geoadmin3 or mvt_clean
-PROJECT ?= mf-geoadmin3
-
 # Map libs variables
 OL_VERSION ?= be12573# September 25 2018 (mind the absence of a space character after the version)
 OL_CESIUM_VERSION ?= 695253277d66a8917fa456f3346c049b88f88eb7 # October 12 2018
@@ -31,7 +28,16 @@ GIT_COMMIT_SHORT ?= $(shell git rev-parse --short $(GIT_COMMIT_HASH))
 LAST_GIT_COMMIT_SHORT ?= $(call lastvalue,git-commit-short)
 GIT_COMMIT_DATE ?= $(shell git log -1  --date=iso --pretty=format:%cd)
 CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
+GIT_BRANCH ?= $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 
+
+# possible values : mf-geoadmin3 or mvt (in the end, anything else than mf-geoadmin3 could do the trick to switch to testviewer deploy)
+# auto-detect MVT branches if branch name contains "mvt_", otherwise falls back to standard mf-geoadmin3
+ifneq (,$(findstring mvt_,$(GIT_BRANCH)))
+  PROJECT ?= mvt
+else
+  PROJECT ?= mf-geoadmin3
+endif
 
 # Files variables
 SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
