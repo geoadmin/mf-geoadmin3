@@ -4,7 +4,7 @@ S3_OPTS =  --dryrun
 ifeq ($(DRYRUN), false)
 S3_OPTS =
 endif
-TARGETS = DEV INT PROD INFRA
+TARGETS = DEV INT PROD
 DEPLOY_TARGET ?= int
 DEPLOY_GIT_BRANCH ?= $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
@@ -27,14 +27,12 @@ BRANCH_TO_DELETE ?=
 
 # Bucket name
 ifeq ($(PROJECT),mf-geoadmin3)
-		S3_BUCKET_PROD  := $(S3_MF_GEOADMIN3_PROD)
-		S3_BUCKET_INT   := $(S3_MF_GEOADMIN3_INT)
-		S3_BUCKET_DEV   := $(S3_MF_GEOADMIN3_DEV)
-		S3_BUCKET_INFRA := $(S3_MF_GEOADMIN3_INFRA)
+		S3_BUCKET_PROD  := mf-geoadmin4-prod-dublin
+		S3_BUCKET_INT   := mf-geoadmin4-int-dublin
+		S3_BUCKET_DEV   := mf-geoadmin4-dev-dublin
 		S3_BUCKET_PROD_URL   := https://map.geo.admin.ch
 		S3_BUCKET_INT_URL    := https://mf-geoadmin3.int.bgdi.ch
 		S3_BUCKET_DEV_URL    := https://mf-geoadmin3.dev.bgdi.ch
-		S3_BUCKET_INFRA_URL  := https://mf-geoadmin3.infra.bgdi.ch
 else
 		S3_BUCKET_PROD  := mf-geoadmin4-prod-dublin
 		S3_BUCKET_INT   := mf-geoadmin4-int-dublin
@@ -42,9 +40,6 @@ else
 		S3_BUCKET_PROD_URL  := https://test.map.geo.admin.ch
 endif
 # Bucket url (base url for automatic tests and provinding links, Jenkins stuff)
-ifeq ($(DEPLOY_TARGET),infra)
-		S3_BUCKET_URL := $(S3_BUCKET_INFRA_URL)
-endif
 ifeq ($(DEPLOY_TARGET),dev)
 		S3_BUCKET_URL := $(S3_BUCKET_DEV_URL)
 endif
@@ -64,7 +59,7 @@ deploydev:
 		./scripts/deploydev.sh; \
 	fi
 
-s3deploy := $(patsubst %,s3deploy%,int,infra,prod)
+s3deploy := $(patsubst %,s3deploy%,int,prod)
 PHONY: $(s3deploy)
 s3deploy%: guard-SNAPSHOT .build-artefacts/requirements.timestamp
 	./scripts/deploysnapshot.sh $(SNAPSHOT) $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
@@ -86,10 +81,6 @@ s3deploybranch: guard-CLONEDIR \
 s3deploybranchint:
 	make s3deploybranch DEPLOY_TARGET=int
 
-.PHONY: s3deploybranchinfra
-s3deploybranchinfra:
-	make s3deploybranch DEPLOY_TARGET=infra
-
 .PHONY: s3copybranch
 s3copybranch: guard-DEPLOY_TARGET \
               guard-NAMED_BRANCH \
@@ -98,32 +89,27 @@ s3copybranch: guard-DEPLOY_TARGET \
               .build-artefacts/requirements.timestamp
 	PROJECT=${PROJECT} ${PYTHON_CMD} ./scripts/s3manage.py upload --force --url $(S3_BUCKET_URL) ${CODE_DIR} ${DEPLOY_TARGET} ${NAMED_BRANCH} ${DEPLOY_GIT_BRANCH};
 
-s3list := $(patsubst %,s3list%,int,infra,prod)
+s3list := $(patsubst %,s3list%,int,prod)
 PHONY: $(s3list)
 s3list%: .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py list $(S3_BUCKET_$(shell echo $*| tr a-z A-Z))
 
-s3info := $(patsubst %,s3info%,int,infra,prod)
+s3info := $(patsubst %,s3info%,int,prod)
 PHONY: $(s3info)
 s3info%: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
 
-s3activate := $(patsubst %,s3activate%,int,infra,prod)
+s3activate := $(patsubst %,s3activate%,dev,int,prod)
 PHONY: $(s3activate)
 s3activate%: guard-DEPLOY_GIT_BRANCH \
 		         guard-SNAPSHOT \
-	guard-VERSION .build-artefacts/requirements.timestamp
-	${AWS_CMD} s3 cp $(S3_OPTS) --recursive s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/${DEPLOY_GIT_BRANCH}/${SNAPSHOT}/  s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/
-
-s3activatedist := $(patsubst %,s3activatedist%,dev,infra,prod)
-PHONY: $(s3activatedist)
-s3activatedist%: guard-DEPLOY_GIT_BRANCH \
-		         guard-SNAPSHOT \
-						 guard-S3_BUCKET_INT \
-	guard-VERSION .build-artefacts/requirements.timestamp
+		         guard-S3_BUCKET_INT \
+		         guard-S3_BUCKET_PROD \
+		         guard-VERSION \
+		         .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py activate --branch ${DEPLOY_GIT_BRANCH} --version ${VERSION} $(DEPLOY_TARGET);
 
-s3delete := $(patsubst %,s3delete%,int,infra,prod)
+s3delete := $(patsubst %,s3delete%,int,prod)
 PHONY: $(s3delete)
 s3delete%: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
