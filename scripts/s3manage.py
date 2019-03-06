@@ -14,6 +14,10 @@ import gzip
 from datetime import datetime
 import mimetypes
 
+# These branches are master and may activated to the root
+# directory of the bucket
+MASTER_BRANCHES = ['master', 'mvt_clean']
+
 mimetypes.init()
 mimetypes.add_type('application/x-font-ttf', '.ttf')
 mimetypes.add_type('application/x-font-opentype', '.otf')
@@ -434,11 +438,11 @@ def __activate_version__(branch_name, version, bucket_name, bucket_url):
     print('version', version)
     print('bucket_name', bucket_name)
 
-    # The root for copying the files is different for master and all
-    # other branches
+    # The root for copying the files is different for master and all other branches
     # root: s3://mf-geoadmin3-(int|prod)-dublin/
     # <branch>: s3://mf-geoadmin3-(int|prod)-dublin/<branch>/
-    if branch_name == "master":
+    # special case when branch = mvt_clean : s3://mf-geoadmin4-(int-prod)-dublin/
+    if branch_name in MASTER_BRANCHES:
         branch_root = ''
     else:
         branch_root = "{}/".format(branch_name)
