@@ -32,8 +32,8 @@ GIT_BRANCH ?= $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 
 
 # possible values : mf-geoadmin3 or mvt (in the end, anything else than mf-geoadmin3 could do the trick to switch to testviewer deploy)
-# auto-detect MVT branches if branch name contains "mvt_", otherwise falls back to standard mf-geoadmin3
-ifneq (,$(findstring mvt_,$(GIT_BRANCH)))
+# auto-detect mvt_clean branches, otherwise falls back to standard mf-geoadmin3 (same behavior as in the Jenkinsfile)
+ifeq ($(GIT_BRANCH),mvt_clean)
   PROJECT ?= mvt
 else
   PROJECT ?= mf-geoadmin3
