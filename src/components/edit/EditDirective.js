@@ -112,7 +112,7 @@ goog.require('ga_urlutils_service');
           if ($window.confirm(str)) {
             // Delete the file on server ?
             layer.externalStyleUrl = undefined;
-            gaMvt.reload(layer);
+            gaMvt.reload(layer, scope.map);
           }
         };
 
