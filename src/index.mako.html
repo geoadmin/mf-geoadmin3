@@ -754,6 +754,9 @@ itemscope itemtype="http://schema.org/WebApplication"
           return url;
         }
 
+        // Determines if tooltip should be disabled for this instance of map
+        var disableTooltip = getParam('disableTooltip') === 'true';
+
         // Determines if we're on a personal build on dev with pathname /ltxxxx/
         if (!requestedStaging && staging == 'dev' && (/\/lt.*\/$/.test(pathname))) {
             cfg['config_url'] += pathname.replace(/\/$/, '');
@@ -826,6 +829,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           staging: staging,
           apiOverwrite: apiOverwrite,
           configOverwrite: configOverwrite,
+          disableTooltip: disableTooltip,
 
           // Map state values
           defaultExtent: JSON.parse(${default_extent}),
