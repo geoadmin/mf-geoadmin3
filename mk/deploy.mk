@@ -82,7 +82,7 @@ s3deploybranch: guard-CLONEDIR \
 
 .PHONY: s3deploybranchint
 s3deploybranchint:
-  make s3deploybranch DEPLOY_TARGET=int
+	make s3deploybranch DEPLOY_TARGET=int
 
 .PHONY: s3copybranch
 s3copybranch: guard-S3_BUCKET \
