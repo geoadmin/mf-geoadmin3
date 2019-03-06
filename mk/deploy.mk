@@ -2,7 +2,7 @@
 # S3 deploy variables
 S3_OPTS =  --dryrun
 ifeq ($(DRYRUN), false)
-S3_OPTS =
+  S3_OPTS =
 endif
 TARGETS = DEV INT PROD
 DEPLOY_TARGET ?= int
@@ -27,42 +27,45 @@ BRANCH_TO_DELETE ?=
 
 # Bucket name
 ifeq ($(PROJECT),mf-geoadmin3)
-		S3_BUCKET_PROD  := mf-geoadmin4-prod-dublin
-		S3_BUCKET_INT   := mf-geoadmin4-int-dublin
-		S3_BUCKET_DEV   := mf-geoadmin4-dev-dublin
-		S3_BUCKET_PROD_URL   := https://map.geo.admin.ch
-		S3_BUCKET_INT_URL    := https://mf-geoadmin3.int.bgdi.ch
-		S3_BUCKET_DEV_URL    := https://mf-geoadmin3.dev.bgdi.ch
+  S3_BUCKET_PROD  := mf-geoadmin4-prod-dublin
+  S3_BUCKET_INT   := mf-geoadmin4-int-dublin
+  S3_BUCKET_DEV   := mf-geoadmin4-dev-dublin
+  S3_BUCKET_PROD_URL   := https://map.geo.admin.ch
+  S3_BUCKET_INT_URL    := https://mf-geoadmin3.int.bgdi.ch
+  S3_BUCKET_DEV_URL    := https://mf-geoadmin3.dev.bgdi.ch
 else
-		S3_BUCKET_PROD  := mf-geoadmin4-prod-dublin
-		S3_BUCKET_INT   := mf-geoadmin4-int-dublin
-		S3_BUCKET_INT_URL   := https://mf-geoadmin4.int.bgdi.ch
-		S3_BUCKET_PROD_URL  := https://test.map.geo.admin.ch
+  S3_BUCKET_PROD  := mf-geoadmin4-prod-dublin
+  S3_BUCKET_INT   := mf-geoadmin4-int-dublin
+  S3_BUCKET_INT_URL   := https://mf-geoadmin4.int.bgdi.ch
+  S3_BUCKET_PROD_URL  := https://test.map.geo.admin.ch
 endif
 # Bucket url (base url for automatic tests and provinding links, Jenkins stuff)
 ifeq ($(DEPLOY_TARGET),dev)
-		S3_BUCKET_URL := $(S3_BUCKET_DEV_URL)
+  S3_BUCKET := $(S3_BUCKET_DEV)
+  S3_BUCKET_URL := $(S3_BUCKET_DEV_URL)
 endif
 ifeq ($(DEPLOY_TARGET),int)
-		S3_BUCKET_URL := $(S3_BUCKET_INT_URL)
+  S3_BUCKET := $(S3_BUCKET_INT)
+  S3_BUCKET_URL := $(S3_BUCKET_INT_URL)
 endif
 ifeq ($(DEPLOY_TARGET),prod)
-		S3_BUCKET_URL := $(S3_BUCKET_PROD_URL)
+  S3_BUCKET := $(S3_BUCKET_PROD)
+  S3_BUCKET_URL := $(S3_BUCKET_PROD_URL)
 endif
 
 
 .PHONY: deploydev
 deploydev:
-	@ if test $(SNAPSHOT) = true; then \
-		./scripts/deploydev.sh -s; \
-	else \
-		./scripts/deploydev.sh; \
-	fi
+  @ if test $(SNAPSHOT) = true; then \
+    ./scripts/deploydev.sh -s; \
+  else \
+    ./scripts/deploydev.sh; \
+  fi
 
 s3deploy := $(patsubst %,s3deploy%,int,prod)
 PHONY: $(s3deploy)
 s3deploy%: guard-SNAPSHOT .build-artefacts/requirements.timestamp
-	./scripts/deploysnapshot.sh $(SNAPSHOT) $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
+  ./scripts/deploysnapshot.sh $(SNAPSHOT) $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
 
 s3deploybranch: guard-CLONEDIR \
                 guard-DEPLOY_TARGET \
@@ -71,79 +74,89 @@ s3deploybranch: guard-CLONEDIR \
                 guard-NAMED_BRANCH \
                 .build-artefacts/requirements.timestamp \
                 showVariables
-	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
-	make s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
+  ./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
+  make s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
                     DEPLOY_TARGET=${DEPLOY_TARGET} \
                     NAMED_BRANCH=${NAMED_BRANCH} \
                     PROJECT=${PROJECT}
 
 .PHONY: s3deploybranchint
 s3deploybranchint:
-	make s3deploybranch DEPLOY_TARGET=int
+  make s3deploybranch DEPLOY_TARGET=int
 
 .PHONY: s3copybranch
-s3copybranch: guard-DEPLOY_TARGET \
-              guard-NAMED_BRANCH \
+s3copybranch: guard-S3_BUCKET \
               guard-CODE_DIR \
+              guard-NAMED_BRANCH \
               guard-DEPLOY_GIT_BRANCH \
               .build-artefacts/requirements.timestamp
-	PROJECT=${PROJECT} ${PYTHON_CMD} ./scripts/s3manage.py upload --force --url $(S3_BUCKET_URL) ${CODE_DIR} ${DEPLOY_TARGET} ${NAMED_BRANCH} ${DEPLOY_GIT_BRANCH};
+  PROJECT=${PROJECT} ${PYTHON_CMD} ./scripts/s3manage.py upload \
+                                                         --force \
+                                                         --url $(S3_BUCKET_URL) \
+                                                         ${CODE_DIR} \
+                                                         ${S3_BUCKET} \
+                                                         ${NAMED_BRANCH} \
+                                                         ${DEPLOY_GIT_BRANCH};
 
 s3list := $(patsubst %,s3list%,int,prod)
 PHONY: $(s3list)
 s3list%: .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py list $(S3_BUCKET_$(shell echo $*| tr a-z A-Z))
+  ${PYTHON_CMD} ./scripts/s3manage.py list $(S3_BUCKET_$(shell echo $*| tr a-z A-Z))
 
 s3info := $(patsubst %,s3info%,int,prod)
 PHONY: $(s3info)
 s3info%: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
+  ${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
 
 s3activate := $(patsubst %,s3activate%,dev,int,prod)
 PHONY: $(s3activate)
 s3activate%: guard-DEPLOY_GIT_BRANCH \
-		         guard-SNAPSHOT \
-		         guard-S3_BUCKET_INT \
-		         guard-S3_BUCKET_PROD \
-		         guard-VERSION \
-		         .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py activate --branch ${DEPLOY_GIT_BRANCH} --version ${VERSION} $(DEPLOY_TARGET);
+             guard-SNAPSHOT \
+             guard-S3_BUCKET_INT \
+             guard-S3_BUCKET_PROD \
+             guard-VERSION \
+             .build-artefacts/requirements.timestamp
+  ${PYTHON_CMD} ./scripts/s3manage.py activate \
+                                      --branch ${DEPLOY_GIT_BRANCH} \
+                                      --version ${VERSION} \
+                                      --url $(S3_BUCKET_URL) \
+                                      $(S3_BUCKET);
 
 s3delete := $(patsubst %,s3delete%,int,prod)
 PHONY: $(s3delete)
 s3delete%: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
+  ${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
 
 .PHONY: flushvarnish
 flushvarnish: guard-DEPLOY_TARGET
-	source rc_${DEPLOY_TARGET} && make flushvarnishinternal
+  source rc_${DEPLOY_TARGET} && make flushvarnishinternal
 
 # This internal target has been created to have the good global variable values
 # from rc_XXX file.
 flushvarnishinternal: guard-API_URL guard-E2E_TARGETURL
-	@if [ ! $(VARNISH_HOSTS) ] ; then \
-	  echo 'The VARNISH_HOSTS variable in rc_${DEPLOY_TARGET} is empty.';\
-		echo 'Nothing to be done.'; \
-	fi; \
-	for VARNISHHOST in $(VARNISH_HOSTS) ; do \
-		./scripts/flushvarnish.sh $$VARNISHHOST "$(subst //,,$(API_URL))" ;\
-		./scripts/flushvarnish.sh $$VARNISHHOST "$(subst https://,,$(E2E_TARGETURL))" ;\
-		echo "Flushed varnish at: $$VARNISHHOST" ;\
-	done;
+  @if [ ! $(VARNISH_HOSTS) ] ; then \
+    echo 'The VARNISH_HOSTS variable in rc_${DEPLOY_TARGET} is empty.';\
+    echo 'Nothing to be done.'; \
+  fi; \
+  for VARNISHHOST in $(VARNISH_HOSTS) ; do \
+    ./scripts/flushvarnish.sh $$VARNISHHOST "$(subst //,,$(API_URL))" ;\
+    ./scripts/flushvarnish.sh $$VARNISHHOST "$(subst https://,,$(E2E_TARGETURL))" ;\
+    echo "Flushed varnish at: $$VARNISHHOST" ;\
+  done;
 
 apache/app.conf: apache/app.mako-dot-conf \
-	    ${MAKO_CMD} \
-	    .build-artefacts/last-apache-base-path \
-	    .build-artefacts/last-apache-base-directory \
-	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-config-url \
-	    .build-artefacts/last-version
-	${PYTHON_CMD} ${MAKO_CMD} \
-	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
-	    --var "apache_base_directory=$(APACHE_BASE_DIRECTORY)" \
-	    --var "api_url=$(API_URL)" \
-	    --var "s3_bucket_dev=$(S3_BUCKET_DEV)" \
-	    --var "version=$(VERSION)" $< > $@
+                 ${MAKO_CMD} \
+                 .build-artefacts/last-apache-base-path \
+                 .build-artefacts/last-apache-base-directory \
+                 .build-artefacts/last-api-url \
+                 .build-artefacts/last-config-url \
+                 .build-artefacts/last-version
+  ${PYTHON_CMD} ${MAKO_CMD} \
+                --var "apache_base_path=$(APACHE_BASE_PATH)" \
+                --var "apache_base_directory=$(APACHE_BASE_DIRECTORY)" \
+                --var "api_url=$(API_URL)" \
+                --var "s3_bucket_dev=$(S3_BUCKET_DEV)" \
+                --var "version=$(VERSION)" $< > $@
 
 .PHONY: apache
 apache: apache/app.conf
