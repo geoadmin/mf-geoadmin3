@@ -322,13 +322,13 @@ goog.require('ga_styles_service');
           // 'propertychange' event.
           // (ex: using layermanager)
           if (switchTimeDeactive) {
-
             for (var i = 0, ii = olLayers.length; i < ii; i++) {
               olLayer = olLayers[i];
               // We update only time enabled bod layers
               if (olLayer.timeEnabled &&
                   angular.isDefined(olLayer.time) &&
-                  olLayer.time.substr(0, 4) !== oldTime) {
+                  olLayer.time.substr(0, 4) !== oldTime &&
+                  olLayer.time.substr(0, 4) !== '9999') {
                 singleModif = true;
                 break;
               }
@@ -348,6 +348,7 @@ goog.require('ga_styles_service');
             olLayer = olLayers[j];
 
             if (olLayer.timeEnabled && olLayer.visible) {
+
               var layerTimeStr =
                   gaLayers.getLayerTimestampFromYear(olLayer, time);
               if (switchTimeActive) {
@@ -360,7 +361,6 @@ goog.require('ga_styles_service');
                 // (ex: using the time selector toggle)
                 layerTimeStr = savedTimeStr[olLayer.id];
                 savedTimeStr[olLayer.id] = undefined;
-
               }
               olLayer.time = layerTimeStr;
             }
