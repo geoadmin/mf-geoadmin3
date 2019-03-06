@@ -502,10 +502,10 @@ def activate_dist_version(branch_name, version, bucket_name, deploy_target, buck
     print('version', version)
     print('bucket_name', bucket_name)
 
-    # The root for copying the files is different for master and all
-    # other branches
+    # The root for copying the files is different for master and all other branches
     # root: s3://mf-geoadmin3-(int|prod)-dublin/
     # <branch>: s3://mf-geoadmin3-(int|prod)-dublin/<branch>/
+    # special case when branch = mvt_clean : s3://mf-geoadmin4-(int-prod)-dublin/
     if branch_name in MASTER_BRANCHES:
         branch_root = ''
     else:
