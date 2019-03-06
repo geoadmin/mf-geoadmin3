@@ -17,6 +17,10 @@ import mimetypes
 
 TARGETS = ['infra', 'dev', 'int', 'prod']
 
+# These branches are master and may activated to the root
+# directory of the bucket
+MASTER_BRANCHES = ['master', 'mvt_clean']
+
 mimetypes.init()
 mimetypes.add_type('application/x-font-ttf', '.ttf')
 mimetypes.add_type('application/x-font-opentype', '.otf')
@@ -502,7 +506,7 @@ def activate_dist_version(branch_name, version, bucket_name, deploy_target, buck
     # other branches
     # root: s3://mf-geoadmin3-(int|prod)-dublin/
     # <branch>: s3://mf-geoadmin3-(int|prod)-dublin/<branch>/
-    if branch_name == "master":
+    if branch_name in MASTER_BRANCHES:
         branch_root = ''
     else:
         branch_root = "{}/".format(branch_name)
