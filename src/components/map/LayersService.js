@@ -375,7 +375,7 @@ goog.require('ga_urlutils_service');
                     ['paint', 'fill-color', '{color}']
                   ]
                 }, {
-                  id: 'background',
+                  id: 'territory',
                   regex: /territory|background/,
                   props: [
                     ['paint', 'background-color', '{color}']
