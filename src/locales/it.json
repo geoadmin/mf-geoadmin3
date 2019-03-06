@@ -145,6 +145,7 @@
 "edit_file_saved": "Tutte le modifiche salvate",
 "edit_file_saving": "Salvataggio...",
 "edit_fill_color": "Scegliere un colore",
+"edit_background_color": "Scegliere un colore",
 "edit_fill_outline_color": "Scegliere un colore del bordo",
 "edit_glstyle_choose_color": "Scegliere un colore",
 "edit_glstyle_choose_layer": "Scegliere un layer",
@@ -539,5 +540,6 @@
 "yellow": "giallo",
 "zoom_in": "Zoom in avanti",
 "zoom_out": "Zoom indietro",
-"woodland": "Foreste"
+"woodland": "Foreste",
+"territory": "Terreno"
 }

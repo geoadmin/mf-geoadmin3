@@ -119,7 +119,7 @@ goog.require('ga_translation_service');
               scope.styles[styleIdx].url;
 
           }
-          gaMvt.reload(scope.olLayer);
+          gaMvt.reload(scope.olLayer, scope.map);
         };
       }
     };
