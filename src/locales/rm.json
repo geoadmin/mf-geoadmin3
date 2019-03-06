@@ -145,6 +145,7 @@
 "edit_file_saved": "Arcunà tut las midadas",
 "edit_file_saving": "Arcunar ...",
 "edit_fill_color": "Farbe auswählen",
+"edit_background_color": "Farbe auswählen",
 "edit_fill_outline_color": "Randfarbe auswählen",
 "edit_glstyle_choose_color": "Farbe auswählen",
 "edit_glstyle_choose_layer": "Ebene auswählen",
@@ -539,5 +540,6 @@
 "yellow": "mellen",
 "zoom_in": "Engrondir l'extract da la charta",
 "zoom_out": "Empitschnir l'extract da la charta",
-"woodland": "Wälder"
+"woodland": "Wälder",
+"territory": "Gelände"
 }

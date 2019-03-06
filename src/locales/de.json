@@ -145,6 +145,7 @@
 "edit_file_saved": "Alle Änderungen gespeichert",
 "edit_file_saving": "Speichern ....",
 "edit_fill_color": "Farbe auswählen",
+"edit_background_color": "Farbe auswählen",
 "edit_fill_outline_color": "Randfarbe auswählen",
 "edit_glstyle_choose_color": "Farbe auswählen",
 "edit_glstyle_choose_layer": "Ebene auswählen",
@@ -539,5 +540,6 @@
 "yellow": "Gelb",
 "zoom_in": "Vergrössere Kartenausschnitt",
 "zoom_out": "Verkleinere Kartenausschnitt",
-"woodland": "Wälder"
+"woodland": "Wälder",
+"territory": "Gelände"
 }

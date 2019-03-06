@@ -61,6 +61,13 @@ goog.provide('ga_editglstyle_directive');
             if (idx !== 0 && layer[path[0]] && layer[path[0]][path[1]]) {
               layer[path[0]][path[1]] = value;
             }
+            // hack for background / territory
+            // as territory layer needs fill-color
+            // but background layer needs background-color (which is define
+            // as the property to be altered by this directive without hack)
+            if (layer.id === 'territory_' && path[1] === 'background-color') {
+              layer[path[0]]['fill-color'] = value;
+            }
           });
           scope.save();
         }

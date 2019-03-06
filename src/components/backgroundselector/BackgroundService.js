@@ -187,7 +187,7 @@ goog.require('ga_glstylestorage_service');
                   that.set(map, initBg);
 
                   // set default GLStyle background rules
-                  // this is needed because we don't use olms defautl function
+                  // this is needed because we don't use olms default function
                   // but rather apply olms.stylefunction at every layer
                   // we created (instead of letting olms create the layers
                   // for us, and style them correctly for background rules)

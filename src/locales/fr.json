@@ -145,6 +145,7 @@
 "edit_file_saved": "Carte sauvegardée.",
 "edit_file_saving": "Sauvegarde....",
 "edit_fill_color": "Choisissez une couleur",
+"edit_background_color": "Choisissez une couleur",
 "edit_fill_outline_color": "Choisissez une couleur des contours",
 "edit_glstyle_choose_color": "Choisissez une couleur",
 "edit_glstyle_choose_layer": "Choisissez une couche",
@@ -539,5 +540,6 @@
 "yellow": "jaune",
 "zoom_in": "Zoomer plus",
 "zoom_out": "Zoomer moins",
-"woodland": "Forêts"
+"woodland": "Forêts",
+"territory": "Terrain"
 }
