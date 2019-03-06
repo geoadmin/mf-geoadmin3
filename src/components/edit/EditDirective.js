@@ -112,7 +112,7 @@ goog.require('ga_urlutils_service');
           if ($window.confirm(str)) {
             // Delete the file on server ?
             layer.externalStyleUrl = undefined;
-            gaMvt.reload(layer);
+            gaMvt.reload(layer, scope.map);
           }
         };
 
@@ -140,6 +140,7 @@ goog.require('ga_urlutils_service');
           }
 
           gaMapUtils.applyGlStyleToOlLayer(scope.layer, glStyle);
+          gaMapUtils.setGlBackground(scope.map, glStyle);
           scope.saveDebounced({}, scope.layer, glStyle);
         });
       }

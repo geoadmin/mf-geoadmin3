@@ -145,6 +145,7 @@
 "edit_file_saved": "Map saved.",
 "edit_file_saving": "Saving ...",
 "edit_fill_color": "Choose a color",
+"edit_background_color": "Choose a color",
 "edit_fill_outline_color": "Choose a border color",
 "edit_glstyle_choose_color": "Choose a color",
 "edit_glstyle_choose_layer": "Choose a layer",
@@ -539,5 +540,6 @@
 "yellow": "yellow",
 "zoom_in": "Zoom in",
 "zoom_out": "Zoom out",
-"woodland": "Woodland"
+"woodland": "Woodland",
+"territory": "Territory"
 }

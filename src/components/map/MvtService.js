@@ -25,7 +25,7 @@ goog.require('ga_urlutils_service');
       var Mvt = function() {
 
         // This function will apply the gl style associated to a layer.
-        this.reload = function(olLayer) {
+        this.reload = function(olLayer, map) {
           if (!olLayer || (!(olLayer instanceof ol.layer.Group) &&
               !olLayer.sourceId)) {
             return $q.when();
@@ -59,6 +59,10 @@ goog.require('ga_urlutils_service');
 
           return gaStorage.load(styleUrl).then(function(glStyle) {
             gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
+            // re-apply background if map is defined
+            if (map) {
+              gaMapUtils.setGlBackground(map, glStyle);
+            }
             return glStyle;
           });
 
