@@ -37,114 +37,6 @@ NO_COMPRESS = [
 
 project = os.environ.get('PROJECT', 'mf-geoadmin3')
 
-# # # # # # # # # # # # # # # # # # #
-#          public functions         #
-# # # # # # # # # # # # # # # # # # #
-
-@click.group()
-def cli():
-    """Manage map.geo.admin.ch versions in AWS S3 bucket. Please do not use any credentials or profile, as this script
-        relies on aws instance's role.
-
-    A version deployed to S3 is always defined by:\n
-                <s3version> = <branch_name>/<sha>/<version>
-    """
-    for var in ('AWS_PROFILE', 'AWS_ACCESS_KEY_ID'):
-        val = os.environ.get(var)
-        if val is not None:
-            print('Please unset: {}. We use instance roles'.format(var))
-            sys.exit(2)
-
-
-@cli.command('list')
-@click.argument('bucket_name', required=True)
-@click.option('--legacy', is_flag=True)
-@click.option('--branch', required=False, default=None)
-def list_cmd(bucket_name, branch, legacy=False):
-    """List available <version> in a bucket."""
-    global s3, s3client, bucket
-    s3, s3client, bucket = __init_connection__(bucket_name)
-    if legacy:
-        __list_legacy_version__()
-    else:
-        __list_version__(branch)
-
-
-@cli.command('upload')
-@click.option('--force', help='Do not prompt for confirmation', is_flag=True)
-@click.option('--url', 'bucket_url', help='Bucket url to check', required=True)
-@click.argument('snapshotdir', required=True, default=os.getcwd())
-@click.argument('bucket_name', required=True)
-@click.argument('named_branch', required=False, default=False)
-@click.argument('git_branch', required=False)
-def upload_cmd(force, snapshotdir, named_branch, bucket_name, git_branch, bucket_url):
-    """Upload content of /dist directory to a bucket. You may specify a directory (it defaults to current)."""
-    global s3, s3client, bucket
-    s3, s3client, bucket = __init_connection__(bucket_name)
-    named_branch = True if named_branch == 'true' else False
-    base_dir = os.path.abspath(snapshotdir)
-    if not os.path.isdir(base_dir):
-        print('No code found in directory %s' % base_dir)
-        sys.exit(1)
-    if not force and not click.confirm(
-            'You are about to upload {} to {}. Continue?'.format(
-            base_dir, bucket_name)):
-        click.echo('Aborting.')
-        sys.exit()
-    else:
-        __upload__(bucket_name, base_dir, bucket_name, named_branch, git_branch, bucket_url)
-
-
-@cli.command('info')
-@click.argument('s3_path', required=True)
-@click.argument('bucket_name', required=True)
-def info_cmd(s3_path, bucket_name):
-    """Print the info.json file"""
-    global s3, s3client, bucket
-    s3, s3client, bucket = __init_connection__(bucket_name)
-    s3_path = __parse_s3_path__(s3_path, 'info')
-    __print_version_info__(s3_path)
-
-
-@cli.command('activate')
-@click.option('--force', help='Do not prompt for confirmation', is_flag=True)
-@click.option('--url', 'bucket_url', help='Bucket url to check',
-              required=False, default='https://<bucket public url>')
-@click.option('--branch', 'branch_name', required=False, default='master')
-@click.option('--version', 'version', required=False, default=None)
-@click.argument('bucket_name', required=True)
-def activate_cmd(branch_name, version, bucket_name, force, bucket_url):
-    """Activate a version at the root of a bucket (by copying index.html and co to the root)"""
-    global s3, s3client, bucket
-    s3, s3client, bucket = __init_connection__(bucket_name)
-    s3_path = os.path.join(branch_name, version)
-    if __version_exists__(s3_path) is False:
-        print("Version <{}> does not exists in AWS S3 bucket '{}'. Aborting".format(s3_path, bucket_name))
-        sys.exit(1)
-    if not force and not click.confirm(
-        'Are you sure you want to activate version <{}> for branch <{}> in bucket <{}>?'.format(
-            version,
-            branch_name,
-            bucket_name)):
-        click.echo('Aborting activation.')
-        sys.exit()
-    else:
-        __activate_version__(branch_name, version, bucket_name, bucket_url)
-
-
-@cli.command('delete')
-@click.argument('s3_path', required=True)
-@click.argument('bucket_name', required=True)
-def delete_cmd(s3_path, bucket_name):
-    """Delete a s3_path on a give bucket"""
-    global s3, s3client, bucket
-    s3, s3client, bucket = __init_connection__(bucket_name)
-    s3_path = __parse_s3_path__(s3_path, 'delete')
-    print('Trying to delete version \'{}\''.format(s3_path))
-    __delete_version__(s3_path, bucket_name)
-
-if __name__ == '__main__':
-    cli()
 
 
 # # # # # # # # # # # # # # # # # # #
@@ -528,3 +420,112 @@ def __parse_s3_path__(s3_path, cmd_type):
         sys.exit(1)
     return s3_path
 
+
+# # # # # # # # # # # # # # # # # # #
+#          public functions         #
+# # # # # # # # # # # # # # # # # # #
+
+@click.group()
+def cli():
+    """Manage map.geo.admin.ch versions in AWS S3 bucket. Please do not use any credentials or profile, as this script
+        relies on aws instance's role.
+
+    A version deployed to S3 is always defined by:\n
+                <s3version> = <branch_name>/<sha>/<version>
+    """
+    for var in ('AWS_PROFILE', 'AWS_ACCESS_KEY_ID'):
+        val = os.environ.get(var)
+        if val is not None:
+            print('Please unset: {}. We use instance roles'.format(var))
+            sys.exit(2)
+
+
+@cli.command('list')
+@click.argument('bucket_name', required=True)
+@click.option('--legacy', is_flag=True)
+@click.option('--branch', required=False, default=None)
+def list_cmd(bucket_name, branch, legacy=False):
+    """List available <version> in a bucket."""
+    global s3, s3client, bucket
+    s3, s3client, bucket = __init_connection__(bucket_name)
+    if legacy:
+        __list_legacy_version__()
+    else:
+        __list_version__(branch)
+
+
+@cli.command('upload')
+@click.option('--force', help='Do not prompt for confirmation', is_flag=True)
+@click.option('--url', 'bucket_url', help='Bucket url to check', required=True)
+@click.argument('snapshotdir', required=True, default=os.getcwd())
+@click.argument('bucket_name', required=True)
+@click.argument('named_branch', required=False, default=False)
+@click.argument('git_branch', required=False)
+def upload_cmd(force, snapshotdir, named_branch, bucket_name, git_branch, bucket_url):
+    """Upload content of /dist directory to a bucket. You may specify a directory (it defaults to current)."""
+    global s3, s3client, bucket
+    s3, s3client, bucket = __init_connection__(bucket_name)
+    named_branch = True if named_branch == 'true' else False
+    base_dir = os.path.abspath(snapshotdir)
+    if not os.path.isdir(base_dir):
+        print('No code found in directory %s' % base_dir)
+        sys.exit(1)
+    if not force and not click.confirm(
+            'You are about to upload {} to {}. Continue?'.format(
+            base_dir, bucket_name)):
+        click.echo('Aborting.')
+        sys.exit()
+    else:
+        __upload__(bucket_name, base_dir, bucket_name, named_branch, git_branch, bucket_url)
+
+
+@cli.command('info')
+@click.argument('s3_path', required=True)
+@click.argument('bucket_name', required=True)
+def info_cmd(s3_path, bucket_name):
+    """Print the info.json file"""
+    global s3, s3client, bucket
+    s3, s3client, bucket = __init_connection__(bucket_name)
+    s3_path = __parse_s3_path__(s3_path, 'info')
+    __print_version_info__(s3_path)
+
+
+@cli.command('activate')
+@click.option('--force', help='Do not prompt for confirmation', is_flag=True)
+@click.option('--url', 'bucket_url', help='Bucket url to check',
+              required=False, default='https://<bucket public url>')
+@click.option('--branch', 'branch_name', required=False, default='master')
+@click.option('--version', 'version', required=False, default=None)
+@click.argument('bucket_name', required=True)
+def activate_cmd(branch_name, version, bucket_name, force, bucket_url):
+    """Activate a version at the root of a bucket (by copying index.html and co to the root)"""
+    global s3, s3client, bucket
+    s3, s3client, bucket = __init_connection__(bucket_name)
+    s3_path = os.path.join(branch_name, version)
+    if __version_exists__(s3_path) is False:
+        print("Version <{}> does not exists in AWS S3 bucket '{}'. Aborting".format(s3_path, bucket_name))
+        sys.exit(1)
+    if not force and not click.confirm(
+        'Are you sure you want to activate version <{}> for branch <{}> in bucket <{}>?'.format(
+            version,
+            branch_name,
+            bucket_name)):
+        click.echo('Aborting activation.')
+        sys.exit()
+    else:
+        __activate_version__(branch_name, version, bucket_name, bucket_url)
+
+
+@cli.command('delete')
+@click.argument('s3_path', required=True)
+@click.argument('bucket_name', required=True)
+def delete_cmd(s3_path, bucket_name):
+    """Delete a s3_path on a give bucket"""
+    global s3, s3client, bucket
+    s3, s3client, bucket = __init_connection__(bucket_name)
+    s3_path = __parse_s3_path__(s3_path, 'delete')
+    print('Trying to delete version \'{}\''.format(s3_path))
+    __delete_version__(s3_path, bucket_name)
+
+if __name__ == '__main__':
+    cli()
