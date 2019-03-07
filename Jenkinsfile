@@ -173,7 +173,6 @@ node(label: 'jenkins-slave') {
       if (project == 'mf-geoadmin3') {
         targets = ['dev', 'int']
       } else if (project == 'mvt'){
-        // to get a quicker time-to-market deploy, MVT is deployed right away on prod (testviewer)
         targets = ['int']
       }
       for (target in targets) {
