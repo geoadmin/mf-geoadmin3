@@ -7,7 +7,6 @@ import boto3
 import sys
 import os
 import json
-import subprocess
 import click
 
 import StringIO
@@ -15,7 +14,9 @@ import gzip
 from datetime import datetime
 import mimetypes
 
-TARGETS = ['infra', 'dev', 'int', 'prod']
+# These branches are master and may activated to the root
+# directory of the bucket
+MASTER_BRANCHES = ['master', 'mvt_clean']
 
 mimetypes.init()
 mimetypes.add_type('application/x-font-ttf', '.ttf')
@@ -37,46 +38,12 @@ NO_COMPRESS = [
 project = os.environ.get('PROJECT', 'mf-geoadmin3')
 
 
-def _get_bucket_name(deploy_target):
-    if project == 'mf-geoadmin3':
-        return 'mf-geoadmin3-%s-dublin' % deploy_target.lower()
-    else:
-        return 'mf-geoadmin4-%s-dublin' % deploy_target.lower()
 
+# # # # # # # # # # # # # # # # # # #
+#         private functions         #
+# # # # # # # # # # # # # # # # # # #
 
-def get_bucket_name(target):
-    if target in TARGETS:
-        return _get_bucket_name(target)
-    else:
-        return target
-
-
-def local_git_last_commit(basedir):
-    try:
-        output = subprocess.check_output(('git rev-parse HEAD',), cwd=basedir, shell=True)
-        return output.strip()
-    except subprocess.CalledProcessError:
-        print('Not a git directory: %s' % basedir)
-    try:
-        with open(os.path.join(basedir, '.build-artefacts', 'last-commit-ref'), 'r') as f:
-            data = f.read()
-        return data
-    except IOError:
-        print('Error while reading \'last-commit-ref\' from %s' % basedir)
-    return None
-
-
-def local_git_commit_short(basedir):
-    output = subprocess.check_output(('git rev-parse --short HEAD'), cwd=basedir, shell=True)
-    return output.strip()
-
-
-def local_git_branch(basedir):
-    output = subprocess.check_output(('git rev-parse --abbrev-ref HEAD',), cwd=basedir, shell=True)
-    return output.strip()
-
-
-def local_last_version(basedir):
+def __local_last_version__(basedir):
     try:
         with open(os.path.join(basedir, '.build-artefacts', 'last-version'), 'r') as f:
             data = f.read()
@@ -86,7 +53,7 @@ def local_last_version(basedir):
     return None
 
 
-def _gzip_data(data):
+def __gzip_data__(data):
     out = None
     infile = StringIO.StringIO()
     try:
@@ -102,7 +69,7 @@ def _gzip_data(data):
     return out
 
 
-def _unzip_data(compressed):
+def __unzip_data__(compressed):
     inbuffer = StringIO.StringIO(compressed)
     f = gzip.GzipFile(mode='rb', fileobj=inbuffer)
     try:
@@ -113,8 +80,8 @@ def _unzip_data(compressed):
     return data
 
 
-def save_to_s3(src, dest, bucket_name, cached=True, mimetype=None, break_on_error=False):
-    mimetype = get_file_mimetype(src)
+def __save_to_s3__(src, dest, bucket_name, cached=True, compress=True, mimetype=None, break_on_error=False):
+    mimetype = __get_file_mimetype__(src)
     try:
         with open(src, 'r') as f:
             data = f.read()
@@ -126,18 +93,14 @@ def save_to_s3(src, dest, bucket_name, cached=True, mimetype=None, break_on_erro
             sys.exit(1)
         else:
             return False
-    _save_to_s3(data, dest, mimetype, bucket_name, cached=cached)
 
-
-def _save_to_s3(in_data, dest, mimetype, bucket_name, compress=True, cached=True):
-    data = in_data
     compressed = False
     content_encoding = None
     cache_control = 'max-age=31536000, public'
     extra_args = {}
 
     if compress and mimetype not in NO_COMPRESS:
-        data = _gzip_data(in_data)
+        data = __gzip_data__(data)
         content_encoding = 'gzip'
         compressed = True
 
@@ -163,27 +126,7 @@ def _save_to_s3(in_data, dest, mimetype, bucket_name, compress=True, cached=True
         print('Error while uploading %s: %s' % (dest, e))
 
 
-def get_index_version(c):
-    version = None
-    p = re.compile(ur'version: \'(\d+)\'')
-    match = re.findall(p, c)
-    if len(match) > 0:
-        version = int(match[0])
-    return version
-
-
-def create_s3_dir_path(base_dir, named_branch, git_branch):
-    print(base_dir)
-    if git_branch is None:
-        git_branch = local_git_branch(base_dir)
-    version = local_last_version(base_dir).strip()
-    if named_branch:
-        return (git_branch, version)
-    git_short_sha = local_git_last_commit(base_dir)[:7]
-    return (os.path.join(git_branch, git_short_sha, version), version)
-
-
-def is_cached(file_name, legacy=None):
+def __is_cached__(file_name):
     """ Determine which files should receive a cache-control header
 
     Files that are not cached are:
@@ -203,11 +146,10 @@ def is_cached(file_name, legacy=None):
     <bucket_name>/fix_1234/as5a56a/lib/build.js          <= cache header
     """
     _, extension = os.path.splitext(file_name)
-    return os.path.basename(file_name) not in ['info.json'] and \
-        extension not in ['.html', '.txt', '.appcache', '']
+    return os.path.basename(file_name) not in ['info.json'] and extension not in ['.html', '.txt', '.appcache', '']
 
 
-def get_file_mimetype(local_file):
+def __get_file_mimetype__(local_file):
     if local_file.endswith('services'):
         return 'application/json'
     else:
@@ -216,72 +158,10 @@ def get_file_mimetype(local_file):
             return mimetype
         return 'text/plain'
 
-# DEPR: this is the legacy upload method and can be removed in a future
-# release if dist stuff works properly
 
-
-def upload(bucket_name, base_dir, deploy_target, named_branch, git_branch, bucket_url):
-    s3_dir_path, version = create_s3_dir_path(base_dir, named_branch, git_branch)
-    print('Destination folder is:')
-    print('%s' % s3_dir_path)
-    git_short_sha = local_git_last_commit(base_dir)[:7]
-    upload_directories = ['prd', 'src']
-    exclude_filename_patterns = ['.less', '.gitignore', '.mako.']
-    root_files = ('index.html', 'mobile.html', 'embed.html', '404.html',
-                  'robots.txt', 'robots_prod.txt', 'favicon.ico',
-                  'checker', 'geoadmin.%s.appcache' % git_short_sha)
-
-    for directory in upload_directories:
-        for file_path_list in os.walk(os.path.join(base_dir, directory)):
-            file_names = file_path_list[2]
-            if len(file_names) > 0:
-                file_base_path = file_path_list[0]
-                for file_name in file_names:
-                    if len([p for p in exclude_filename_patterns if p in file_name]) == 0:
-                        is_chsdi_cache = bool(file_base_path.endswith('cache'))
-                        local_file = os.path.join(file_base_path, file_name)
-                        relative_file_path = file_base_path.replace('cache', '')
-                        if directory == 'prd':
-                            # Take only files directly in prd/
-                            if file_name in root_files and relative_file_path.endswith('prd'):
-                                relative_file_path = relative_file_path.replace('prd', '')
-                            else:
-                                relative_file_path = relative_file_path.replace('prd', version)
-                        relative_file_path = relative_file_path.replace(base_dir + '/', '')
-                        remote_file = os.path.join(s3_dir_path, relative_file_path, file_name)
-                        # Don't cache some files
-                        cached = is_cached(file_name, named_branch)
-                        mimetype = get_file_mimetype(local_file)
-                        save_to_s3(
-                            local_file,
-                            remote_file,
-                            bucket_name,
-                            cached=cached,
-                            mimetype=mimetype)
-                        # Also upload chsdi metadata file to src folder if available
-                        if is_chsdi_cache:
-                            relative_file_path = relative_file_path.replace(version + '/', '')
-                            remote_file = os.path.join(
-                                s3_dir_path, 'src/', relative_file_path, file_name)
-                            save_to_s3(
-                                local_file,
-                                remote_file,
-                                bucket_name,
-                                cached=cached,
-                                mimetype=mimetype)
-
-    url_to_check = bucket_url if bucket_url.endswith('/') else bucket_url + '/'
-    print('S3 version path: ')
-    # This line is used by jenkins to get the S3_VERSION_PATH
-    print(s3_dir_path)
-    print('Test url: ')
-    # This line is used by jenkins to get the E2E_TARGETURL
-    print('%s%s/index.html' % (url_to_check, s3_dir_path))
-
-
-def upload_dist(bucket_name, base_dir, deploy_target, named_branch, git_branch, bucket_url):
+def __upload__(bucket_name, base_dir, git_branch, bucket_url):
     print("base_dir", base_dir)
-    version = local_last_version(base_dir).strip()
+    version = __local_last_version__(base_dir).strip()
     dist_dir = 'dist'
 
     file_nr = 0
@@ -301,10 +181,10 @@ def upload_dist(bucket_name, base_dir, deploy_target, named_branch, git_branch, 
             file_nr += 1
 
             # determine wheather file should receive the cache-control header
-            cached = is_cached(local_file_path)
+            cached = __is_cached__(local_file_path)
 
             print("{} => s3://{}/{}".format(local_file_path, bucket_name, s3_file_path))
-            save_to_s3(
+            __save_to_s3__(
                 local_file_path,
                 s3_file_path,
                 bucket_name,
@@ -325,7 +205,7 @@ def upload_dist(bucket_name, base_dir, deploy_target, named_branch, git_branch, 
     print('%s%s/index.html' % (url_to_check, s3_dir_path))
 
 
-def list_version():
+def __list_legacy_version__():
     branches = bucket.meta.client.list_objects(Bucket=bucket.name,
                                                Delimiter='/')
     for b in branches.get('CommonPrefixes'):
@@ -360,14 +240,14 @@ def list_version():
                 print('Not a official path for branch %s' % branch)
 
 
-def list_dist_version(branch=None):
+def __list_version__(branch=None):
     # Note: branch-names containing '/' are currently not supported!
     branch_prefix = branch if branch else ''
     try:
-      branches = bucket.meta.client.list_objects(
-          Bucket=bucket.name,
-          Prefix=branch_prefix,
-          Delimiter='/')
+        branches = bucket.meta.client.list_objects(
+            Bucket=bucket.name,
+            Prefix=branch_prefix,
+            Delimiter='/')
     except (botocore.exceptions.ClientError, botocore.exceptions.BotoCoreError) as e:
         print("Error while listing version(s) in bucket <{}>: {}".format(bucket.name, e))
         return None
@@ -397,31 +277,24 @@ def list_dist_version(branch=None):
                 print('{}: (version: {})'.format(branch, version))
 
 
-def get_version_info(s3_path):
+def __print_version_info__(s3_path):
     print('App version is: %s' % s3_path)
     version_target = s3_path.split('/')[2]
     obj = s3.Object(bucket.name, '%s/%s/info.json' % (s3_path, version_target))
     try:
         content = obj.get()["Body"].read()
-        raw = _unzip_data(content)
-        data = json.loads(raw)
-    except botocore.exceptions.ClientError:
-        return None
-    except botocore.exceptions.BotoCoreError:
-        return None
-    return data
-
-
-def version_info(s3_path):
-    info = get_version_info(s3_path)
-    if info is None:
-        print('No info for version %s' % s3_path)
+        raw = __unzip_data__(content)
+        info = json.loads(raw)
+        if info is None:
+            print('No info for version %s' % s3_path)
+            sys.exit(1)
+        for k in info.keys():
+            print('%s: %s' % (k, info[k]))
+    except (botocore.exceptions.ClientError, botocore.exceptions.BotoCoreError), e:
         sys.exit(1)
-    for k in info.keys():
-        print('%s: %s' % (k, info[k]))
 
 
-def version_exists(s3_path):
+def __version_exists__(s3_path):
     try:
         files = bucket.objects.filter(Prefix=str(s3_path)).all()
         return len(list(files)) > 0
@@ -430,8 +303,8 @@ def version_exists(s3_path):
     return False
 
 
-def delete_version(s3_path, bucket_name):
-    if version_exists(s3_path) is False:
+def __delete_version__(s3_path, bucket_name):
+    if __version_exists__(s3_path) is False:
         print("Version <{}> does not exists in AWS S3 bucket '{}'. Aborting".format(s3_path, bucket_name))
         sys.exit(1)
 
@@ -451,58 +324,17 @@ def delete_version(s3_path, bucket_name):
         print('Aborting deletion of <%s>.' % s3_path)
 
 
-def activate_version(s3_path, bucket_name, deploy_target, bucket_url):
-    # Prod files
-    for n in ('index', 'embed', 'mobile', '404'):
-        src_key_name = '{}/{}.html'.format(s3_path, n)
-        print('{} --> {}.html'.format(src_key_name, n))
-        s3client.copy_object(
-            Bucket=bucket_name,
-            CopySource=bucket_name + '/' + src_key_name,
-            Key=n + '.html',
-            ACL='public-read')
-    # Delete older appcache files
-    appcache_versioned_files = list(bucket.objects.filter(Prefix='geoadmin.').all())
-    indexes = [{'Key': k.key} for k in appcache_versioned_files if k.key.endswith('.appcache')]
-    if len(indexes) > 0:
-        s3client.delete_objects(Bucket=bucket_name, Delete={'Objects': indexes})
-
-    appcache = None
-    files = list(bucket.objects.filter(Prefix='{}/no_snapshot_geoadmin.'.format(s3_path)).all())
-    if len(files) > 0:
-        appcache = os.path.basename(sorted(files)[-1].key)
-    for j in ('robots.txt', 'checker', 'favicon.ico', appcache):
-        # In prod move robots prod
-        src_file_name = 'robots_prod.txt' if j == 'robots.txt' and deploy_target == 'prod' else j
-        # When activating, the path in the appcache file must match the path used in the application.
-        # So we use and rename a specially prepared no_snapshot_geoadmin.<version>.appcache file for this.
-        src_file_name = appcache.replace('no_snapshot_geoadmin.', 'geoadmin.') if j == appcache else j
-        src_key_name = '{}/{}'.format(s3_path, src_file_name)
-        print('%s ---> %s' % (src_key_name, j))
-        try:
-            s3client.copy_object(
-                Bucket=bucket_name,
-                CopySource=bucket_name + '/' + src_key_name,
-                Key=j,
-                CopySourceIfModifiedSince=datetime(2015, 1, 1),
-                ACL='public-read')
-        except botocore.exceptions.ClientError as e:
-            print('Cannot copy {}: {}'.format(j, e))
-    print('\nSuccessfuly deployed into bucket {}'.format(bucket_name))
-    print('Check:\n{}/{}'.format(bucket_url, s3_path + '/index.html'))
-
-
-def activate_dist_version(branch_name, version, bucket_name, deploy_target, bucket_url):
+def __activate_version__(branch_name, version, bucket_name, bucket_url):
     # Prod files
     print('branch_name', branch_name)
     print('version', version)
     print('bucket_name', bucket_name)
 
-    # The root for copying the files is different for master and all
-    # other branches
+    # The root for copying the files is different for master and all other branches
     # root: s3://mf-geoadmin3-(int|prod)-dublin/
     # <branch>: s3://mf-geoadmin3-(int|prod)-dublin/<branch>/
-    if branch_name == "master":
+    # special case when branch = mvt_clean : s3://mf-geoadmin4-(int-prod)-dublin/
+    if branch_name in MASTER_BRANCHES:
         branch_root = ''
     else:
         branch_root = "{}/".format(branch_name)
@@ -523,7 +355,7 @@ def activate_dist_version(branch_name, version, bucket_name, deploy_target, buck
                 ""
             )
         )
-        if deploy_target == 'prod':
+        if 'prod' in bucket_name:
             if 'robots.txt' in src_key:
                 continue
             elif 'robots_prod.txt' in src_key:
@@ -553,7 +385,7 @@ def activate_dist_version(branch_name, version, bucket_name, deploy_target, buck
     print('Check:\n{}/{}'.format(bucket_url, branch_root + 'index.html'))
 
 
-def init_connection(bucket_name):
+def __init_connection__(bucket_name):
     try:
         session = boto3.session.Session()
     except botocore.exceptions.BotoCoreError as e:
@@ -568,26 +400,30 @@ def init_connection(bucket_name):
     return (s3, s3client, bucket)
 
 
-def exit_usage(cmd_type):
+def __exit_usage__(cmd_type):
     with click.Context(cmd_type) as ctx:
         click.echo(cmd_type.get_help(ctx))
 
 
-def parse_s3_path(s3_path, cmd_type):
+def __parse_s3_path__(s3_path, cmd_type):
     if s3_path.endswith('/'):
         s3_path = s3_path[:len(s3_path) - 1]
     # Delete named branch as well
     if s3_path.count('/') not in (0, 2):
-        exit_usage(cmd_type)
+        __exit_usage__(cmd_type)
         print('Bad version definition')
         sys.exit(1)
     if s3_path.count('/') == 0 and cmd_type in ('activate', 'info'):
-        exit_usage(eval(cmd_type + '_cmd'))
+        __exit_usage__(eval(cmd_type + '_cmd'))
         print('Cmd activate/info not supported for named branches.')
         print('Please provide a full version path.')
         sys.exit(1)
     return s3_path
 
+
+# # # # # # # # # # # # # # # # # # #
+#          public functions         #
+# # # # # # # # # # # # # # # # # # #
 
 @click.group()
 def cli():
@@ -597,7 +433,6 @@ def cli():
     A version deployed to S3 is always defined by:\n
                 <s3version> = <branch_name>/<sha>/<version>
     """
-
     for var in ('AWS_PROFILE', 'AWS_ACCESS_KEY_ID'):
         val = os.environ.get(var)
         if val is not None:
@@ -606,32 +441,30 @@ def cli():
 
 
 @cli.command('list')
-@click.argument('target', required=True)
+@click.argument('bucket_name', required=True)
 @click.option('--legacy', is_flag=True)
 @click.option('--branch', required=False, default=None)
-def list_cmd(target, branch, legacy=False):
+def list_cmd(bucket_name, branch, legacy=False):
     """List available <version> in a bucket."""
     global s3, s3client, bucket
-    bucket_name = get_bucket_name(target)
-    s3, s3client, bucket = init_connection(bucket_name)
+    s3, s3client, bucket = __init_connection__(bucket_name)
     if legacy:
-        list_version()
+        __list_legacy_version__()
     else:
-        list_dist_version(branch)
+        __list_version__(branch)
 
 
 @cli.command('upload')
 @click.option('--force', help='Do not prompt for confirmation', is_flag=True)
 @click.option('--url', 'bucket_url', help='Bucket url to check', required=True)
 @click.argument('snapshotdir', required=True, default=os.getcwd())
-@click.argument('target', required=True)
+@click.argument('bucket_name', required=True)
 @click.argument('named_branch', required=False, default=False)
 @click.argument('git_branch', required=False)
-def upload_cmd(force, snapshotdir, named_branch, target, git_branch, bucket_url):
+def upload_cmd(force, snapshotdir, named_branch, bucket_name, git_branch, bucket_url):
     """Upload content of /dist directory to a bucket. You may specify a directory (it defaults to current)."""
     global s3, s3client, bucket
-    bucket_name = get_bucket_name(target)
-    s3, s3client, bucket = init_connection(bucket_name)
+    s3, s3client, bucket = __init_connection__(bucket_name)
     named_branch = True if named_branch == 'true' else False
     base_dir = os.path.abspath(snapshotdir)
     if not os.path.isdir(base_dir):
@@ -643,19 +476,18 @@ def upload_cmd(force, snapshotdir, named_branch, target, git_branch, bucket_url)
         click.echo('Aborting.')
         sys.exit()
     else:
-        upload_dist(bucket_name, base_dir, target, named_branch, git_branch, bucket_url)
+        __upload__(bucket_name, base_dir, git_branch, bucket_url)
 
 
 @cli.command('info')
 @click.argument('s3_path', required=True)
-@click.argument('target', required=True)
-def info_cmd(s3_path, target):
+@click.argument('bucket_name', required=True)
+def info_cmd(s3_path, bucket_name):
     """Print the info.json file"""
     global s3, s3client, bucket
-    bucket_name = get_bucket_name(target)
-    s3, s3client, bucket = init_connection(bucket_name)
-    s3_path = parse_s3_path(s3_path, 'info')
-    version_info(s3_path)
+    s3, s3client, bucket = __init_connection__(bucket_name)
+    s3_path = __parse_s3_path__(s3_path, 'info')
+    __print_version_info__(s3_path)
 
 
 @cli.command('activate')
@@ -664,14 +496,13 @@ def info_cmd(s3_path, target):
               required=False, default='https://<bucket public url>')
 @click.option('--branch', 'branch_name', required=False, default='master')
 @click.option('--version', 'version', required=False, default=None)
-@click.argument('target', required=True)
-def activate_cmd(branch_name, version, target, force, bucket_url):
+@click.argument('bucket_name', required=True)
+def activate_cmd(branch_name, version, bucket_name, force, bucket_url):
     """Activate a version at the root of a bucket (by copying index.html and co to the root)"""
     global s3, s3client, bucket
-    bucket_name = get_bucket_name(target)
-    s3, s3client, bucket = init_connection(bucket_name)
+    s3, s3client, bucket = __init_connection__(bucket_name)
     s3_path = os.path.join(branch_name, version)
-    if version_exists(s3_path) is False:
+    if __version_exists__(s3_path) is False:
         print("Version <{}> does not exists in AWS S3 bucket '{}'. Aborting".format(s3_path, bucket_name))
         sys.exit(1)
     if not force and not click.confirm(
@@ -682,49 +513,19 @@ def activate_cmd(branch_name, version, target, force, bucket_url):
         click.echo('Aborting activation.')
         sys.exit()
     else:
-        activate_dist_version(branch_name, version, bucket_name, target, bucket_url)
-
-# DEPR:
-# This is the legacy activate command to activate legacy (i.e. before dist)
-# master branches
-
-
-@cli.command('activate_legacy')
-@click.option('--force', help='Do not prompt for confirmation', is_flag=True)
-@click.option('--url', 'bucket_url', help='Bucket url to check',
-              required=False, default='https://<bucket public url>')
-@click.argument('s3_path', required=True)
-@click.argument('target', required=True)
-def activate_legacy_cmd(s3_path, target, force, bucket_url):
-    """Activate a version at the root of a bucket (by copying index.html and co to the root)"""
-    global s3, s3client, bucket
-    bucket_name = get_bucket_name(target)
-    s3, s3client, bucket = init_connection(bucket_name)
-    s3_path = parse_s3_path(s3_path, 'activate')
-    if version_exists(s3_path) is False:
-        print('Version <%s> does not exists in AWS S3. Aborting' % s3_path)
-        sys.exit(1)
-    if not force and not click.confirm(
-        'Are you sure you want to activate version <{}> in bucket <{}>?'.format(
-            s3_path,
-            bucket_name)):
-        click.echo('Aborting activation.')
-        sys.exit()
-    else:
-        activate_version(s3_path, bucket_name, target, bucket_url)
+        __activate_version__(branch_name, version, bucket_name, bucket_url)
 
 
 @cli.command('delete')
 @click.argument('s3_path', required=True)
-@click.argument('target', required=False)
-def delete_cmd(s3_path, target):
+@click.argument('bucket_name', required=True)
+def delete_cmd(s3_path, bucket_name):
     """Delete a s3_path on a give bucket"""
     global s3, s3client, bucket
-    bucket_name = get_bucket_name(target)
-    s3, s3client, bucket = init_connection(bucket_name)
-    s3_path = parse_s3_path(s3_path, 'delete')
+    s3, s3client, bucket = __init_connection__(bucket_name)
+    s3_path = __parse_s3_path__(s3_path, 'delete')
     print('Trying to delete version \'{}\''.format(s3_path))
-    delete_version(s3_path, bucket_name)
+    __delete_version__(s3_path, bucket_name)
 
 if __name__ == '__main__':
     cli()

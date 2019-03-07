@@ -39,7 +39,7 @@ goog.require('ga_window_service');
       function($timeout, $http, $q, $translate, $sce, $rootScope, gaPopup,
           gaLayers, gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
           gaMapUtils, gaTopic, gaIdentify, gaPermalink, gaIFrameCom, gaUrlUtils,
-          gaLang, gaSanitize, gaEvent, gaWindow) {
+          gaLang, gaSanitize, gaEvent, gaWindow, gaGlobalOptions) {
         var popupContent =
           '<div ng-repeat="html in options.htmls track by $index" ' +
                'ng-mouseenter="options.onMouseEnter($event,' +
@@ -544,6 +544,11 @@ goog.require('ga_window_service');
             // Highlight the features found
             var showFeatures = function(foundFeatures, coordinate,
                 nohighlight) {
+              // if url param disableTooltip is eq to true, no tooltip is to
+              // be shown for this instance of map.
+              if (gaGlobalOptions.disableTooltip) {
+                return;
+              }
               if (foundFeatures && foundFeatures.length > 0) {
                 // Remove the tooltip, if a layer is removed, we don't care
                 // which layer. It worked like that in RE2.
