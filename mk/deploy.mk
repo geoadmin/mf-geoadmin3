@@ -53,7 +53,6 @@ ifeq ($(DEPLOY_TARGET),prod)
 	S3_BUCKET_URL := $(S3_BUCKET_PROD_URL)
 endif
 
-
 .PHONY: deploydev
 deploydev:
 	@ if test $(SNAPSHOT) = true; then \
@@ -113,12 +112,11 @@ PHONY: $(s3activate)
 s3activate%: guard-DEPLOY_GIT_BRANCH \
              guard-VERSION \
              .build-artefacts/requirements.timestamp
-	DEPLOY_TARGET=$(shell echo $*| tr A-Z a-z) \
 	${PYTHON_CMD} ./scripts/s3manage.py activate \
 	                                    --branch ${DEPLOY_GIT_BRANCH} \
 	                                    --version ${VERSION} \
-	                                    --url $(S3_BUCKET_URL) \
-	                                    $(S3_BUCKET);
+	                                    --url $(S3_BUCKET_$(shell echo $*| tr a-z A-Z)_URL) \
+	                                    $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
 
 s3delete := $(patsubst %,s3delete%,int,prod)
 PHONY: $(s3delete)
