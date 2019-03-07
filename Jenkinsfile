@@ -174,7 +174,7 @@ node(label: 'jenkins-slave') {
         targets = ['dev', 'int']
       } else if (project == 'mvt'){
         // to get a quicker time-to-market deploy, MVT is deployed right away on prod (testviewer)
-        targets = ['int', 'prod']
+        targets = ['int']
       }
       for (target in targets) {
         echo 'Activating on ' + target
