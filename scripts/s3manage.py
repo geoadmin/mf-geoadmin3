@@ -100,7 +100,7 @@ def __save_to_s3__(src, dest, bucket_name, cached=True, compress=True, mimetype=
     extra_args = {}
 
     if compress and mimetype not in NO_COMPRESS:
-        data = __gzip_data__(in_data)
+        data = __gzip_data__(data)
         content_encoding = 'gzip'
         compressed = True
 
