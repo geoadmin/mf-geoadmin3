@@ -368,10 +368,10 @@ def list_dist_version(branch=None):
     # Note: branch-names containing '/' are currently not supported!
     branch_prefix = branch if branch else ''
     try:
-      branches = bucket.meta.client.list_objects(
-          Bucket=bucket.name,
-          Prefix=branch_prefix,
-          Delimiter='/')
+        branches = bucket.meta.client.list_objects(
+            Bucket=bucket.name,
+            Prefix=branch_prefix,
+            Delimiter='/')
     except (botocore.exceptions.ClientError, botocore.exceptions.BotoCoreError) as e:
         print("Error while listing version(s) in bucket <{}>: {}".format(bucket.name, e))
         return None
