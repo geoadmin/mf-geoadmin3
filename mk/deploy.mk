@@ -27,9 +27,9 @@ BRANCH_TO_DELETE ?=
 
 # Bucket name
 ifeq ($(PROJECT),mf-geoadmin3)
-	S3_BUCKET_PROD  := mf-geoadmin4-prod-dublin
-	S3_BUCKET_INT   := mf-geoadmin4-int-dublin
-	S3_BUCKET_DEV   := mf-geoadmin4-dev-dublin
+	S3_BUCKET_PROD  := mf-geoadmin3-prod-dublin
+	S3_BUCKET_INT   := mf-geoadmin3-int-dublin
+	S3_BUCKET_DEV   := mf-geoadmin3-dev-dublin
 	S3_BUCKET_PROD_URL   := https://map.geo.admin.ch
 	S3_BUCKET_INT_URL    := https://mf-geoadmin3.int.bgdi.ch
 	S3_BUCKET_DEV_URL    := https://mf-geoadmin3.dev.bgdi.ch
