@@ -19064,7 +19064,12 @@ function fromTemplate(text, properties) {
           var haloColor = colorWithOpacity(getValue(layer, 'paint', 'text-halo-color', zoom, f), opacity);
           if (haloColor) {
             textHalo.setColor(haloColor);
-            textHalo.setWidth(getValue(layer, 'paint', 'text-halo-width', zoom, f) + 0.1 * textSize);
+            // spec here : https://docs.mapbox.com/mapbox-gl-js/style-spec/#paint-symbol-text-halo-width
+            // stroke must be doubled because it is applied around the center of the text outline
+            var textHaloWidth = getValue(layer, 'paint', 'text-halo-width', zoom, f) * 2;
+            // 1/4 of text size (spec) x 2
+            var halfTextSize = 0.5 * textSize;
+            textHalo.setWidth(textHaloWidth <= halfTextSize ? textHaloWidth : halfTextSize);
             text.setStroke(textHalo);
           } else {
             text.setStroke(undefined);
