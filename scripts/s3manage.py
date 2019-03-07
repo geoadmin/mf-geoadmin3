@@ -476,7 +476,7 @@ def upload_cmd(force, snapshotdir, named_branch, bucket_name, git_branch, bucket
         click.echo('Aborting.')
         sys.exit()
     else:
-        __upload__(bucket_name, base_dir, bucket_name, named_branch, git_branch, bucket_url)
+        __upload__(bucket_name, base_dir, git_branch, bucket_url)
 
 
 @cli.command('info')
