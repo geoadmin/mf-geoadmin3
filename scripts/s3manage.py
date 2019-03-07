@@ -80,7 +80,7 @@ def __unzip_data__(compressed):
     return data
 
 
-def __save_to_s3__(src, dest, bucket_name, cached=True, mimetype=None, break_on_error=False):
+def __save_to_s3__(src, dest, bucket_name, cached=True, compress=True, mimetype=None, break_on_error=False):
     mimetype = __get_file_mimetype__(src)
     try:
         with open(src, 'r') as f:
