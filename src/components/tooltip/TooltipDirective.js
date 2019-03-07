@@ -547,7 +547,7 @@ goog.require('ga_window_service');
                 nohighlight) {
               // if url param disableTooltip is eq to true, no tooltip is to
               // be shown for this instance of map.
-              if (!!gaGlobalOptions.disableTooltip) {
+              if (gaGlobalOptions.disableTooltip) {
                 return;
               }
               if (foundFeatures && foundFeatures.length > 0) {
