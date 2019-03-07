@@ -111,11 +111,9 @@ s3info%: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 s3activate := $(patsubst %,s3activate%,dev,int,prod)
 PHONY: $(s3activate)
 s3activate%: guard-DEPLOY_GIT_BRANCH \
-             guard-SNAPSHOT \
-             guard-S3_BUCKET_INT \
-             guard-S3_BUCKET_PROD \
              guard-VERSION \
              .build-artefacts/requirements.timestamp
+	DEPLOY_TARGET=$(shell echo $*| tr A-Z a-z) \
 	${PYTHON_CMD} ./scripts/s3manage.py activate \
 	                                    --branch ${DEPLOY_GIT_BRANCH} \
 	                                    --version ${VERSION} \
