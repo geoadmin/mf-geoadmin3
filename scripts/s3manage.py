@@ -146,8 +146,7 @@ def __is_cached__(file_name):
     <bucket_name>/fix_1234/as5a56a/lib/build.js          <= cache header
     """
     _, extension = os.path.splitext(file_name)
-    return os.path.basename(file_name) not in ['info.json'] and \
-        extension not in ['.html', '.txt', '.appcache', '']
+    return os.path.basename(file_name) not in ['info.json'] and extension not in ['.html', '.txt', '.appcache', '']
 
 
 def __get_file_mimetype__(local_file):
