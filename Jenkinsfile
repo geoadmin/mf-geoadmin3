@@ -178,7 +178,7 @@ node(label: 'jenkins-slave') {
       }
       for (target in targets) {
         echo 'Activating on ' + target
-        sh 'PROJECT=' + project + ' make s3activate' + target + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' VERSION=' + deployedVersion
+        sh 'PROJECT=' + project + ' make s3activate' + target + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' VERSION=' + deployedVersion + ' FORCE=true'
       }
     }
 

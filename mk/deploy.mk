@@ -115,6 +115,7 @@ s3activate%: guard-DEPLOY_GIT_BRANCH \
 	${PYTHON_CMD} ./scripts/s3manage.py activate \
 	                                    --branch ${DEPLOY_GIT_BRANCH} \
 	                                    --version ${VERSION} \
+	                                    $(shell if [ ${FORCE} = "true" ]; then echo "--force"; fi) \
 	                                    --url $(S3_BUCKET_$(shell echo $*| tr a-z A-Z)_URL) \
 	                                    $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
 
