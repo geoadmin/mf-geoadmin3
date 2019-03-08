@@ -359,12 +359,11 @@ function setBackground(map, layer) {
       element.style.backgroundColor = _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_17__["Color"].parse(bg).toString();
     }
     if (paint['background-opacity'] !== undefined) {
-      element.style.backgroundOpacity =
-        Object(_stylefunction__WEBPACK_IMPORTED_MODULE_1__["getValue"])(background, 'paint', 'background-opacity', zoom, emptyObj);
+      element.style.opacity = Object(_stylefunction__WEBPACK_IMPORTED_MODULE_1__["getValue"])(background, 'paint', 'background-opacity', zoom, emptyObj);
     }
     if (layout.visibility == 'none') {
       element.style.backgroundColor = '';
-      element.style.backgroundOpacity = '';
+      element.style.opacity = '';
     }
   }
   if (map.getTargetElement()) {
@@ -488,7 +487,7 @@ function setupRasterLayer(glSource, url) {
       var tileJSONDoc = source.getTileJSON();
       var extent = extentFromTileJSON(tileJSONDoc);
       var tileGrid = source.getTileGrid();
-      var tileSize = tileJSONDoc.tileSize || 512;
+      var tileSize = glSource.tileSize || tileJSONDoc.tileSize || 512;
       var minZoom = tileJSONDoc.minzoom || 0;
       var maxZoom = tileJSONDoc.maxzoom || 22;
       // Only works when using ES modules
@@ -570,7 +569,7 @@ function processStyle(glStyle, map, baseUrl, host, path, accessToken) {
   var glLayers = glStyle.layers;
   var layerIds = [];
 
-  var glLayer, glSource, glSourceId, id, layer, minZoom, maxZoom, url;
+  var glLayer, glSource, glSourceId, id, layer, url;
   for (var i = 0, ii = glLayers.length; i < ii; ++i) {
     glLayer = glLayers[i];
     if (glLayer.type == 'background') {
@@ -580,11 +579,9 @@ function processStyle(glStyle, map, baseUrl, host, path, accessToken) {
       // this technique assumes gl layers will be in a particular order
       if (id != glSourceId) {
         if (layerIds.length) {
-          promises.push(finalizeLayer(layer, layerIds, glStyle, path, map, minZoom, maxZoom));
+          promises.push(finalizeLayer(layer, layerIds, glStyle, path, map));
           layerIds = [];
         }
-        minZoom = 24;
-        maxZoom = 0;
         glSource = glStyle.sources[id];
         url = glSource.url;
         if (url && path && url.startsWith('.')) {
@@ -607,16 +604,9 @@ function processStyle(glStyle, map, baseUrl, host, path, accessToken) {
         }
       }
       layerIds.push(glLayer.id);
-      minZoom = Math.min(
-        'minzoom' in glSource ?
-          // Limit layer minzoom to source minzoom. No underzooming, see https://github.com/mapbox/mapbox-gl-js/issues/7388
-          Math.max(Object(_util__WEBPACK_IMPORTED_MODULE_18__["getZoomForResolution"])(layer.getSource().getTileGrid().getResolutions()[glSource.minzoom], _util__WEBPACK_IMPORTED_MODULE_18__["defaultResolutions"]), glLayer.minzoom || 0) :
-          glLayer.minzoom || 0,
-        minZoom);
-      maxZoom = Math.max(glLayer.maxzoom || 24, maxZoom);
     }
   }
-  promises.push(finalizeLayer(layer, layerIds, glStyle, path, map, minZoom, maxZoom));
+  promises.push(finalizeLayer(layer, layerIds, glStyle, path, map));
   map.set('mapbox-style', glStyle);
   return Promise.all(promises);
 }
@@ -769,21 +759,39 @@ function apply(map, style) {
  * @param {string|undefined} path The path part of the style URL. Only required
  * when a relative path is used with the `"sprite"` property of the style.
  * @param {ol.Map} map OpenLayers Map.
- * @param {number} minZoom Minimum zoom.
- * @param {number} maxZoom Maximum zoom.
  * @return {Promise} Returns a promise that resolves after the source has
  * been set on the specified layer, and the style has been applied.
  */
-function finalizeLayer(layer, layerIds, glStyle, path, map, minZoom, maxZoom) {
-  if (minZoom > 0) {
-    layer.setMaxResolution(_util__WEBPACK_IMPORTED_MODULE_18__["defaultResolutions"][minZoom] + 1e-9);
-  }
-  if (maxZoom < 24) {
-    layer.setMinResolution(_util__WEBPACK_IMPORTED_MODULE_18__["defaultResolutions"][maxZoom] + 1e-9);
+function finalizeLayer(layer, layerIds, glStyle, path, map) {
+  var minZoom = 24;
+  var maxZoom = 0;
+  var glLayers = glStyle.layers;
+  for (var i = 0, ii = glLayers.length; i < ii; ++i) {
+    var glLayer = glLayers[i];
+    if (layerIds.indexOf(glLayer.id) !== -1) {
+      minZoom = Math.min('minzoom' in glLayer ? glLayer.minzoom : 0, minZoom);
+      maxZoom = Math.max('maxzoom' in glLayer ? glLayer.maxzoom : 24, maxZoom);
+    }
   }
   return new Promise(function(resolve, reject) {
     var setStyle = function() {
       var source = layer.getSource();
+      if (!source || source.getState() === 'error') {
+        reject(new Error('Error accessing data for source ' + layer.get('mapbox-source')));
+        return;
+      }
+      if (typeof source.getTileGrid === 'function') {
+        var tileGrid = source.getTileGrid();
+        if (tileGrid) {
+          var sourceMinZoom = tileGrid.getMinZoom();
+          if (minZoom > 0 || sourceMinZoom > 0) {
+            layer.setMaxResolution(Math.min(_util__WEBPACK_IMPORTED_MODULE_18__["defaultResolutions"][minZoom], tileGrid.getResolution(sourceMinZoom)) + 1e-9);
+          }
+          if (maxZoom < 24) {
+            layer.setMinResolution(_util__WEBPACK_IMPORTED_MODULE_18__["defaultResolutions"][maxZoom] + 1e-9);
+          }
+        }
+      }
       if (source instanceof ol_source_Vector__WEBPACK_IMPORTED_MODULE_15___default.a || source instanceof ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_16___default.a) {
         applyStyle(layer, glStyle, layerIds, path).then(function() {
           layer.setVisible(true);
@@ -792,11 +800,7 @@ function finalizeLayer(layer, layerIds, glStyle, path, map, minZoom, maxZoom) {
           reject(e);
         });
       } else {
-        if (!source || source.getState() === 'error') {
-          reject(new Error('Error accessing data for source ' + layer.get('mapbox-source')));
-        } else {
-          resolve();
-        }
+        resolve();
       }
     };
 
@@ -18524,6 +18528,9 @@ function evaluateFilter(layerId, filter, feature, zoom) {
 var colorCache = {};
 function colorWithOpacity(color, opacity) {
   if (color && opacity !== undefined) {
+    if (color.a === 0 || opacity === 0) {
+      return undefined;
+    }
     var colorData = colorCache[color];
     if (!colorData) {
       colorCache[color] = colorData = {
@@ -18533,9 +18540,6 @@ function colorWithOpacity(color, opacity) {
     }
     color = colorData.color;
     color[3] = colorData.opacity * opacity;
-    if (color[3] === 0) {
-      color = undefined;
-    }
   }
   return color;
 }
@@ -19060,7 +19064,12 @@ function fromTemplate(text, properties) {
           var haloColor = colorWithOpacity(getValue(layer, 'paint', 'text-halo-color', zoom, f), opacity);
           if (haloColor) {
             textHalo.setColor(haloColor);
-            textHalo.setWidth(getValue(layer, 'paint', 'text-halo-width', zoom, f));
+            // spec here : https://docs.mapbox.com/mapbox-gl-js/style-spec/#paint-symbol-text-halo-width
+            // stroke must be doubled because it is applied around the center of the text outline
+            var textHaloWidth = getValue(layer, 'paint', 'text-halo-width', zoom, f) * 2;
+            // 1/4 of text size (spec) x 2
+            var halfTextSize = 0.5 * textSize;
+            textHalo.setWidth(textHaloWidth <= halfTextSize ? textHaloWidth : halfTextSize);
             text.setStroke(textHalo);
           } else {
             text.setStroke(undefined);
