@@ -16960,7 +16960,7 @@ var italicRE = /(italic|oblique)$/i;
 
 var fontCache = {};
 
-module.exports = function(fonts, size) {
+module.exports = function(fonts, size, lineHeight) {
   var cssData = fontCache[fonts];
   if (!cssData) {
     if (!Array.isArray(fonts)) {
@@ -16999,10 +16999,10 @@ module.exports = function(fonts, size) {
       }
       fontFamilies.push(fontFamily);
     }
-    // CSS font property: font-style font-weight font-size font-family
+    // CSS font property: font-style font-weight font-size/line-height font-family
     cssData = fontCache[fonts] = [style, weight, fontFamilies];
   }
-  return cssData[0] + sp + cssData[1] + sp + size + 'px' + sp + cssData[2];
+  return cssData[0] + sp + cssData[1] + sp + size + 'px' + (lineHeight ? '/' + lineHeight : '') + sp + cssData[2];
 }
 
 
@@ -17065,6 +17065,54 @@ var AssertionError = /*@__PURE__*/(function (Error) {
 /* harmony default export */ __webpack_exports__["default"] = (AssertionError);
 
 //# sourceMappingURL=AssertionError.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ol/Disposable.js":
+/*!***************************************!*\
+  !*** ./node_modules/ol/Disposable.js ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/**
+ * @module ol/Disposable
+ */
+
+/**
+ * @classdesc
+ * Objects that need to clean up after themselves.
+ */
+var Disposable = function Disposable() {
+  /**
+   * The object has already been disposed.
+   * @type {boolean}
+   * @private
+   */
+  this.disposed_ = false;
+};
+
+/**
+ * Clean up.
+ */
+Disposable.prototype.dispose = function dispose () {
+  if (!this.disposed_) {
+    this.disposed_ = true;
+    this.disposeInternal();
+  }
+};
+
+/**
+ * Extension point for disposable objects.
+ * @protected
+ */
+Disposable.prototype.disposeInternal = function disposeInternal () {};
+
+/* harmony default export */ __webpack_exports__["default"] = (Disposable);
+
+//# sourceMappingURL=Disposable.js.map
 
 /***/ }),
 
@@ -17344,6 +17392,878 @@ function toString(color) {
 
 /***/ }),
 
+/***/ "./node_modules/ol/css.js":
+/*!********************************!*\
+  !*** ./node_modules/ol/css.js ***!
+  \********************************/
+/*! exports provided: CLASS_HIDDEN, CLASS_SELECTABLE, CLASS_UNSELECTABLE, CLASS_UNSUPPORTED, CLASS_CONTROL, CLASS_COLLAPSED, getFontFamilies */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CLASS_HIDDEN", function() { return CLASS_HIDDEN; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CLASS_SELECTABLE", function() { return CLASS_SELECTABLE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CLASS_UNSELECTABLE", function() { return CLASS_UNSELECTABLE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CLASS_UNSUPPORTED", function() { return CLASS_UNSUPPORTED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CLASS_CONTROL", function() { return CLASS_CONTROL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CLASS_COLLAPSED", function() { return CLASS_COLLAPSED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFontFamilies", function() { return getFontFamilies; });
+/**
+ * @module ol/css
+ */
+
+
+/**
+ * The CSS class for hidden feature.
+ *
+ * @const
+ * @type {string}
+ */
+var CLASS_HIDDEN = 'ol-hidden';
+
+
+/**
+ * The CSS class that we'll give the DOM elements to have them selectable.
+ *
+ * @const
+ * @type {string}
+ */
+var CLASS_SELECTABLE = 'ol-selectable';
+
+
+/**
+ * The CSS class that we'll give the DOM elements to have them unselectable.
+ *
+ * @const
+ * @type {string}
+ */
+var CLASS_UNSELECTABLE = 'ol-unselectable';
+
+
+/**
+ * The CSS class for unsupported feature.
+ *
+ * @const
+ * @type {string}
+ */
+var CLASS_UNSUPPORTED = 'ol-unsupported';
+
+
+/**
+ * The CSS class for controls.
+ *
+ * @const
+ * @type {string}
+ */
+var CLASS_CONTROL = 'ol-control';
+
+
+/**
+ * The CSS class that we'll give the DOM elements that are collapsed, i.e.
+ * to those elements which usually can be expanded.
+ *
+ * @const
+ * @type {string}
+ */
+var CLASS_COLLAPSED = 'ol-collapsed';
+
+
+/**
+ * Get the list of font families from a font spec.  Note that this doesn't work
+ * for font families that have commas in them.
+ * @param {string} The CSS font property.
+ * @return {Object<string>} The font families (or null if the input spec is invalid).
+ */
+var getFontFamilies = (function() {
+  var style;
+  var cache = {};
+  return function(font) {
+    if (!style) {
+      style = document.createElement('div').style;
+    }
+    if (!(font in cache)) {
+      style.font = font;
+      var family = style.fontFamily;
+      style.font = '';
+      if (!family) {
+        return null;
+      }
+      cache[font] = family.split(/,\s?/);
+    }
+    return cache[font];
+  };
+})();
+
+//# sourceMappingURL=css.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ol/dom.js":
+/*!********************************!*\
+  !*** ./node_modules/ol/dom.js ***!
+  \********************************/
+/*! exports provided: createCanvasContext2D, outerWidth, outerHeight, replaceNode, removeNode, removeChildren */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createCanvasContext2D", function() { return createCanvasContext2D; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "outerWidth", function() { return outerWidth; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "outerHeight", function() { return outerHeight; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "replaceNode", function() { return replaceNode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeNode", function() { return removeNode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeChildren", function() { return removeChildren; });
+/**
+ * @module ol/dom
+ */
+
+
+/**
+ * Create an html canvas element and returns its 2d context.
+ * @param {number=} opt_width Canvas width.
+ * @param {number=} opt_height Canvas height.
+ * @return {CanvasRenderingContext2D} The context.
+ */
+function createCanvasContext2D(opt_width, opt_height) {
+  var canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+  if (opt_width) {
+    canvas.width = opt_width;
+  }
+  if (opt_height) {
+    canvas.height = opt_height;
+  }
+  return /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
+}
+
+
+/**
+ * Get the current computed width for the given element including margin,
+ * padding and border.
+ * Equivalent to jQuery's `$(el).outerWidth(true)`.
+ * @param {!HTMLElement} element Element.
+ * @return {number} The width.
+ */
+function outerWidth(element) {
+  var width = element.offsetWidth;
+  var style = getComputedStyle(element);
+  width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
+
+  return width;
+}
+
+
+/**
+ * Get the current computed height for the given element including margin,
+ * padding and border.
+ * Equivalent to jQuery's `$(el).outerHeight(true)`.
+ * @param {!HTMLElement} element Element.
+ * @return {number} The height.
+ */
+function outerHeight(element) {
+  var height = element.offsetHeight;
+  var style = getComputedStyle(element);
+  height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
+
+  return height;
+}
+
+/**
+ * @param {Node} newNode Node to replace old node
+ * @param {Node} oldNode The node to be replaced
+ */
+function replaceNode(newNode, oldNode) {
+  var parent = oldNode.parentNode;
+  if (parent) {
+    parent.replaceChild(newNode, oldNode);
+  }
+}
+
+/**
+ * @param {Node} node The node to remove.
+ * @returns {Node} The node that was removed or null.
+ */
+function removeNode(node) {
+  return node && node.parentNode ? node.parentNode.removeChild(node) : null;
+}
+
+/**
+ * @param {Node} node The node to remove the children from.
+ */
+function removeChildren(node) {
+  while (node.lastChild) {
+    node.removeChild(node.lastChild);
+  }
+}
+
+//# sourceMappingURL=dom.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ol/events.js":
+/*!***********************************!*\
+  !*** ./node_modules/ol/events.js ***!
+  \***********************************/
+/*! exports provided: bindListener, findListener, getListeners, listen, listenOnce, unlisten, unlistenByKey, unlistenAll */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bindListener", function() { return bindListener; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findListener", function() { return findListener; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getListeners", function() { return getListeners; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "listen", function() { return listen; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "listenOnce", function() { return listenOnce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unlisten", function() { return unlisten; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unlistenByKey", function() { return unlistenByKey; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unlistenAll", function() { return unlistenAll; });
+/* harmony import */ var _obj_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./obj.js */ "./node_modules/ol/obj.js");
+/**
+ * @module ol/events
+ */
+
+
+
+/**
+ * Key to use with {@link module:ol/Observable~Observable#unByKey}.
+ * @typedef {Object} EventsKey
+ * @property {Object} [bindTo]
+ * @property {ListenerFunction} [boundListener]
+ * @property {boolean} callOnce
+ * @property {number} [deleteIndex]
+ * @property {ListenerFunction} listener
+ * @property {import("./events/Target.js").EventTargetLike} target
+ * @property {string} type
+ * @api
+ */
+
+
+/**
+ * Listener function. This function is called with an event object as argument.
+ * When the function returns `false`, event propagation will stop.
+ *
+ * @typedef {function((Event|import("./events/Event.js").default)): (void|boolean)} ListenerFunction
+ * @api
+ */
+
+
+/**
+ * @param {EventsKey} listenerObj Listener object.
+ * @return {ListenerFunction} Bound listener.
+ */
+function bindListener(listenerObj) {
+  var boundListener = function(evt) {
+    var listener = listenerObj.listener;
+    var bindTo = listenerObj.bindTo || listenerObj.target;
+    if (listenerObj.callOnce) {
+      unlistenByKey(listenerObj);
+    }
+    return listener.call(bindTo, evt);
+  };
+  listenerObj.boundListener = boundListener;
+  return boundListener;
+}
+
+
+/**
+ * Finds the matching {@link module:ol/events~EventsKey} in the given listener
+ * array.
+ *
+ * @param {!Array<!EventsKey>} listeners Array of listeners.
+ * @param {!Function} listener The listener function.
+ * @param {Object=} opt_this The `this` value inside the listener.
+ * @param {boolean=} opt_setDeleteIndex Set the deleteIndex on the matching
+ *     listener, for {@link module:ol/events~unlistenByKey}.
+ * @return {EventsKey|undefined} The matching listener object.
+ */
+function findListener(listeners, listener, opt_this, opt_setDeleteIndex) {
+  var listenerObj;
+  for (var i = 0, ii = listeners.length; i < ii; ++i) {
+    listenerObj = listeners[i];
+    if (listenerObj.listener === listener &&
+        listenerObj.bindTo === opt_this) {
+      if (opt_setDeleteIndex) {
+        listenerObj.deleteIndex = i;
+      }
+      return listenerObj;
+    }
+  }
+  return undefined;
+}
+
+
+/**
+ * @param {import("./events/Target.js").EventTargetLike} target Target.
+ * @param {string} type Type.
+ * @return {Array<EventsKey>|undefined} Listeners.
+ */
+function getListeners(target, type) {
+  var listenerMap = getListenerMap(target);
+  return listenerMap ? listenerMap[type] : undefined;
+}
+
+
+/**
+ * Get the lookup of listeners.
+ * @param {Object} target Target.
+ * @param {boolean=} opt_create If a map should be created if it doesn't exist.
+ * @return {!Object<string, Array<EventsKey>>} Map of
+ *     listeners by event type.
+ */
+function getListenerMap(target, opt_create) {
+  var listenerMap = target.ol_lm;
+  if (!listenerMap && opt_create) {
+    listenerMap = target.ol_lm = {};
+  }
+  return listenerMap;
+}
+
+
+/**
+ * Remove the listener map from a target.
+ * @param {Object} target Target.
+ */
+function removeListenerMap(target) {
+  delete target.ol_lm;
+}
+
+
+/**
+ * Clean up all listener objects of the given type.  All properties on the
+ * listener objects will be removed, and if no listeners remain in the listener
+ * map, it will be removed from the target.
+ * @param {import("./events/Target.js").EventTargetLike} target Target.
+ * @param {string} type Type.
+ */
+function removeListeners(target, type) {
+  var listeners = getListeners(target, type);
+  if (listeners) {
+    for (var i = 0, ii = listeners.length; i < ii; ++i) {
+      /** @type {import("./events/Target.js").default} */ (target).
+        removeEventListener(type, listeners[i].boundListener);
+      Object(_obj_js__WEBPACK_IMPORTED_MODULE_0__["clear"])(listeners[i]);
+    }
+    listeners.length = 0;
+    var listenerMap = getListenerMap(target);
+    if (listenerMap) {
+      delete listenerMap[type];
+      if (Object.keys(listenerMap).length === 0) {
+        removeListenerMap(target);
+      }
+    }
+  }
+}
+
+
+/**
+ * Registers an event listener on an event target. Inspired by
+ * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
+ *
+ * This function efficiently binds a `listener` to a `this` object, and returns
+ * a key for use with {@link module:ol/events~unlistenByKey}.
+ *
+ * @param {import("./events/Target.js").EventTargetLike} target Event target.
+ * @param {string} type Event type.
+ * @param {ListenerFunction} listener Listener.
+ * @param {Object=} opt_this Object referenced by the `this` keyword in the
+ *     listener. Default is the `target`.
+ * @param {boolean=} opt_once If true, add the listener as one-off listener.
+ * @return {EventsKey} Unique key for the listener.
+ */
+function listen(target, type, listener, opt_this, opt_once) {
+  var listenerMap = getListenerMap(target, true);
+  var listeners = listenerMap[type];
+  if (!listeners) {
+    listeners = listenerMap[type] = [];
+  }
+  var listenerObj = findListener(listeners, listener, opt_this, false);
+  if (listenerObj) {
+    if (!opt_once) {
+      // Turn one-off listener into a permanent one.
+      listenerObj.callOnce = false;
+    }
+  } else {
+    listenerObj = /** @type {EventsKey} */ ({
+      bindTo: opt_this,
+      callOnce: !!opt_once,
+      listener: listener,
+      target: target,
+      type: type
+    });
+    /** @type {import("./events/Target.js").default} */ (target).
+      addEventListener(type, bindListener(listenerObj));
+    listeners.push(listenerObj);
+  }
+
+  return listenerObj;
+}
+
+
+/**
+ * Registers a one-off event listener on an event target. Inspired by
+ * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
+ *
+ * This function efficiently binds a `listener` as self-unregistering listener
+ * to a `this` object, and returns a key for use with
+ * {@link module:ol/events~unlistenByKey} in case the listener needs to be
+ * unregistered before it is called.
+ *
+ * When {@link module:ol/events~listen} is called with the same arguments after this
+ * function, the self-unregistering listener will be turned into a permanent
+ * listener.
+ *
+ * @param {import("./events/Target.js").EventTargetLike} target Event target.
+ * @param {string} type Event type.
+ * @param {ListenerFunction} listener Listener.
+ * @param {Object=} opt_this Object referenced by the `this` keyword in the
+ *     listener. Default is the `target`.
+ * @return {EventsKey} Key for unlistenByKey.
+ */
+function listenOnce(target, type, listener, opt_this) {
+  return listen(target, type, listener, opt_this, true);
+}
+
+
+/**
+ * Unregisters an event listener on an event target. Inspired by
+ * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
+ *
+ * To return a listener, this function needs to be called with the exact same
+ * arguments that were used for a previous {@link module:ol/events~listen} call.
+ *
+ * @param {import("./events/Target.js").EventTargetLike} target Event target.
+ * @param {string} type Event type.
+ * @param {ListenerFunction} listener Listener.
+ * @param {Object=} opt_this Object referenced by the `this` keyword in the
+ *     listener. Default is the `target`.
+ */
+function unlisten(target, type, listener, opt_this) {
+  var listeners = getListeners(target, type);
+  if (listeners) {
+    var listenerObj = findListener(listeners, listener, opt_this, true);
+    if (listenerObj) {
+      unlistenByKey(listenerObj);
+    }
+  }
+}
+
+
+/**
+ * Unregisters event listeners on an event target. Inspired by
+ * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
+ *
+ * The argument passed to this function is the key returned from
+ * {@link module:ol/events~listen} or {@link module:ol/events~listenOnce}.
+ *
+ * @param {EventsKey} key The key.
+ */
+function unlistenByKey(key) {
+  if (key && key.target) {
+    /** @type {import("./events/Target.js").default} */ (key.target).
+      removeEventListener(key.type, key.boundListener);
+    var listeners = getListeners(key.target, key.type);
+    if (listeners) {
+      var i = 'deleteIndex' in key ? key.deleteIndex : listeners.indexOf(key);
+      if (i !== -1) {
+        listeners.splice(i, 1);
+      }
+      if (listeners.length === 0) {
+        removeListeners(key.target, key.type);
+      }
+    }
+    Object(_obj_js__WEBPACK_IMPORTED_MODULE_0__["clear"])(key);
+  }
+}
+
+
+/**
+ * Unregisters all event listeners on an event target. Inspired by
+ * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
+ *
+ * @param {import("./events/Target.js").EventTargetLike} target Target.
+ */
+function unlistenAll(target) {
+  var listenerMap = getListenerMap(target);
+  if (listenerMap) {
+    for (var type in listenerMap) {
+      removeListeners(target, type);
+    }
+  }
+}
+
+//# sourceMappingURL=events.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ol/events/Event.js":
+/*!*****************************************!*\
+  !*** ./node_modules/ol/events/Event.js ***!
+  \*****************************************/
+/*! exports provided: stopPropagation, preventDefault, default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "stopPropagation", function() { return stopPropagation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "preventDefault", function() { return preventDefault; });
+/**
+ * @module ol/events/Event
+ */
+
+/**
+ * @classdesc
+ * Stripped down implementation of the W3C DOM Level 2 Event interface.
+ * See https://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-interface.
+ *
+ * This implementation only provides `type` and `target` properties, and
+ * `stopPropagation` and `preventDefault` methods. It is meant as base class
+ * for higher level events defined in the library, and works with
+ * {@link module:ol/events/Target~Target}.
+ */
+var Event = function Event(type) {
+
+  /**
+   * @type {boolean}
+   */
+  this.propagationStopped;
+
+  /**
+   * The event type.
+   * @type {string}
+   * @api
+   */
+  this.type = type;
+
+  /**
+   * The event target.
+   * @type {Object}
+   * @api
+   */
+  this.target = null;
+};
+
+/**
+ * Stop event propagation.
+ * @api
+ */
+Event.prototype.preventDefault = function preventDefault () {
+  this.propagationStopped = true;
+};
+
+/**
+ * Stop event propagation.
+ * @api
+ */
+Event.prototype.stopPropagation = function stopPropagation () {
+  this.propagationStopped = true;
+};
+
+
+/**
+ * @param {Event|import("./Event.js").default} evt Event
+ */
+function stopPropagation(evt) {
+  evt.stopPropagation();
+}
+
+
+/**
+ * @param {Event|import("./Event.js").default} evt Event
+ */
+function preventDefault(evt) {
+  evt.preventDefault();
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Event);
+
+//# sourceMappingURL=Event.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ol/events/EventType.js":
+/*!*********************************************!*\
+  !*** ./node_modules/ol/events/EventType.js ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/**
+ * @module ol/events/EventType
+ */
+
+/**
+ * @enum {string}
+ * @const
+ */
+/* harmony default export */ __webpack_exports__["default"] = ({
+  /**
+   * Generic change event. Triggered when the revision counter is increased.
+   * @event module:ol/events/Event~Event#change
+   * @api
+   */
+  CHANGE: 'change',
+
+  CLEAR: 'clear',
+  CONTEXTMENU: 'contextmenu',
+  CLICK: 'click',
+  DBLCLICK: 'dblclick',
+  DRAGENTER: 'dragenter',
+  DRAGOVER: 'dragover',
+  DROP: 'drop',
+  ERROR: 'error',
+  KEYDOWN: 'keydown',
+  KEYPRESS: 'keypress',
+  LOAD: 'load',
+  MOUSEDOWN: 'mousedown',
+  MOUSEMOVE: 'mousemove',
+  MOUSEOUT: 'mouseout',
+  MOUSEUP: 'mouseup',
+  MOUSEWHEEL: 'mousewheel',
+  MSPOINTERDOWN: 'MSPointerDown',
+  RESIZE: 'resize',
+  TOUCHSTART: 'touchstart',
+  TOUCHMOVE: 'touchmove',
+  TOUCHEND: 'touchend',
+  WHEEL: 'wheel'
+});
+
+//# sourceMappingURL=EventType.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ol/events/Target.js":
+/*!******************************************!*\
+  !*** ./node_modules/ol/events/Target.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Disposable_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Disposable.js */ "./node_modules/ol/Disposable.js");
+/* harmony import */ var _events_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../events.js */ "./node_modules/ol/events.js");
+/* harmony import */ var _functions_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../functions.js */ "./node_modules/ol/functions.js");
+/* harmony import */ var _Event_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Event.js */ "./node_modules/ol/events/Event.js");
+/**
+ * @module ol/events/Target
+ */
+
+
+
+
+
+
+/**
+ * @typedef {EventTarget|Target} EventTargetLike
+ */
+
+
+/**
+ * @classdesc
+ * A simplified implementation of the W3C DOM Level 2 EventTarget interface.
+ * See https://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113/events.html#Events-EventTarget.
+ *
+ * There are two important simplifications compared to the specification:
+ *
+ * 1. The handling of `useCapture` in `addEventListener` and
+ *    `removeEventListener`. There is no real capture model.
+ * 2. The handling of `stopPropagation` and `preventDefault` on `dispatchEvent`.
+ *    There is no event target hierarchy. When a listener calls
+ *    `stopPropagation` or `preventDefault` on an event object, it means that no
+ *    more listeners after this one will be called. Same as when the listener
+ *    returns false.
+ */
+var Target = /*@__PURE__*/(function (Disposable) {
+  function Target() {
+
+    Disposable.call(this);
+
+    /**
+     * @private
+     * @type {!Object<string, number>}
+     */
+    this.pendingRemovals_ = {};
+
+    /**
+     * @private
+     * @type {!Object<string, number>}
+     */
+    this.dispatching_ = {};
+
+    /**
+     * @private
+     * @type {!Object<string, Array<import("../events.js").ListenerFunction>>}
+     */
+    this.listeners_ = {};
+
+  }
+
+  if ( Disposable ) { Target.__proto__ = Disposable; }
+  Target.prototype = Object.create( Disposable && Disposable.prototype );
+  Target.prototype.constructor = Target;
+
+  /**
+   * @param {string} type Type.
+   * @param {import("../events.js").ListenerFunction} listener Listener.
+   */
+  Target.prototype.addEventListener = function addEventListener (type, listener) {
+    var listeners = this.listeners_[type];
+    if (!listeners) {
+      listeners = this.listeners_[type] = [];
+    }
+    if (listeners.indexOf(listener) === -1) {
+      listeners.push(listener);
+    }
+  };
+
+  /**
+   * Dispatches an event and calls all listeners listening for events
+   * of this type. The event parameter can either be a string or an
+   * Object with a `type` property.
+   *
+   * @param {{type: string,
+   *     target: (EventTargetLike|undefined),
+   *     propagationStopped: (boolean|undefined)}|
+   *     import("./Event.js").default|string} event Event object.
+   * @return {boolean|undefined} `false` if anyone called preventDefault on the
+   *     event object or if any of the listeners returned false.
+   * @api
+   */
+  Target.prototype.dispatchEvent = function dispatchEvent (event) {
+    var evt = typeof event === 'string' ? new _Event_js__WEBPACK_IMPORTED_MODULE_3__["default"](event) : event;
+    var type = evt.type;
+    evt.target = this;
+    var listeners = this.listeners_[type];
+    var propagate;
+    if (listeners) {
+      if (!(type in this.dispatching_)) {
+        this.dispatching_[type] = 0;
+        this.pendingRemovals_[type] = 0;
+      }
+      ++this.dispatching_[type];
+      for (var i = 0, ii = listeners.length; i < ii; ++i) {
+        if (listeners[i].call(this, evt) === false || evt.propagationStopped) {
+          propagate = false;
+          break;
+        }
+      }
+      --this.dispatching_[type];
+      if (this.dispatching_[type] === 0) {
+        var pendingRemovals = this.pendingRemovals_[type];
+        delete this.pendingRemovals_[type];
+        while (pendingRemovals--) {
+          this.removeEventListener(type, _functions_js__WEBPACK_IMPORTED_MODULE_2__["VOID"]);
+        }
+        delete this.dispatching_[type];
+      }
+      return propagate;
+    }
+  };
+
+  /**
+   * @inheritDoc
+   */
+  Target.prototype.disposeInternal = function disposeInternal () {
+    Object(_events_js__WEBPACK_IMPORTED_MODULE_1__["unlistenAll"])(this);
+  };
+
+  /**
+   * Get the listeners for a specified event type. Listeners are returned in the
+   * order that they will be called in.
+   *
+   * @param {string} type Type.
+   * @return {Array<import("../events.js").ListenerFunction>} Listeners.
+   */
+  Target.prototype.getListeners = function getListeners (type) {
+    return this.listeners_[type];
+  };
+
+  /**
+   * @param {string=} opt_type Type. If not provided,
+   *     `true` will be returned if this event target has any listeners.
+   * @return {boolean} Has listeners.
+   */
+  Target.prototype.hasListener = function hasListener (opt_type) {
+    return opt_type ?
+      opt_type in this.listeners_ :
+      Object.keys(this.listeners_).length > 0;
+  };
+
+  /**
+   * @param {string} type Type.
+   * @param {import("../events.js").ListenerFunction} listener Listener.
+   */
+  Target.prototype.removeEventListener = function removeEventListener (type, listener) {
+    var listeners = this.listeners_[type];
+    if (listeners) {
+      var index = listeners.indexOf(listener);
+      if (type in this.pendingRemovals_) {
+        // make listener a no-op, and remove later in #dispatchEvent()
+        listeners[index] = _functions_js__WEBPACK_IMPORTED_MODULE_2__["VOID"];
+        ++this.pendingRemovals_[type];
+      } else {
+        listeners.splice(index, 1);
+        if (listeners.length === 0) {
+          delete this.listeners_[type];
+        }
+      }
+    }
+  };
+
+  return Target;
+}(_Disposable_js__WEBPACK_IMPORTED_MODULE_0__["default"]));
+
+
+/* harmony default export */ __webpack_exports__["default"] = (Target);
+
+//# sourceMappingURL=Target.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ol/functions.js":
+/*!**************************************!*\
+  !*** ./node_modules/ol/functions.js ***!
+  \**************************************/
+/*! exports provided: TRUE, FALSE, VOID */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TRUE", function() { return TRUE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FALSE", function() { return FALSE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VOID", function() { return VOID; });
+/**
+ * @module ol/functions
+ */
+
+/**
+ * Always returns true.
+ * @returns {boolean} true.
+ */
+function TRUE() {
+  return true;
+}
+
+/**
+ * Always returns false.
+ * @returns {boolean} false.
+ */
+function FALSE() {
+  return false;
+}
+
+/**
+ * A reusable function, used e.g. as a default for callbacks.
+ *
+ * @return {void} Nothing.
+ */
+function VOID() {}
+
+//# sourceMappingURL=functions.js.map
+
+/***/ }),
+
 /***/ "./node_modules/ol/math.js":
 /*!*********************************!*\
   !*** ./node_modules/ol/math.js ***!
@@ -17564,6 +18484,835 @@ function lerp(a, b, x) {
 }
 
 //# sourceMappingURL=math.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ol/obj.js":
+/*!********************************!*\
+  !*** ./node_modules/ol/obj.js ***!
+  \********************************/
+/*! exports provided: assign, clear, getValues, isEmpty */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assign", function() { return assign; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clear", function() { return clear; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getValues", function() { return getValues; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isEmpty", function() { return isEmpty; });
+/**
+ * @module ol/obj
+ */
+
+
+/**
+ * Polyfill for Object.assign().  Assigns enumerable and own properties from
+ * one or more source objects to a target object.
+ * See https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign.
+ *
+ * @param {!Object} target The target object.
+ * @param {...Object} var_sources The source object(s).
+ * @return {!Object} The modified target object.
+ */
+var assign = (typeof Object.assign === 'function') ? Object.assign : function(target, var_sources) {
+  var arguments$1 = arguments;
+
+  if (target === undefined || target === null) {
+    throw new TypeError('Cannot convert undefined or null to object');
+  }
+
+  var output = Object(target);
+  for (var i = 1, ii = arguments.length; i < ii; ++i) {
+    var source = arguments$1[i];
+    if (source !== undefined && source !== null) {
+      for (var key in source) {
+        if (source.hasOwnProperty(key)) {
+          output[key] = source[key];
+        }
+      }
+    }
+  }
+  return output;
+};
+
+
+/**
+ * Removes all properties from an object.
+ * @param {Object} object The object to clear.
+ */
+function clear(object) {
+  for (var property in object) {
+    delete object[property];
+  }
+}
+
+
+/**
+ * Get an array of property values from an object.
+ * @param {Object<K,V>} object The object from which to get the values.
+ * @return {!Array<V>} The property values.
+ * @template K,V
+ */
+function getValues(object) {
+  var values = [];
+  for (var property in object) {
+    values.push(object[property]);
+  }
+  return values;
+}
+
+
+/**
+ * Determine if an object has any properties.
+ * @param {Object} object The object to check.
+ * @return {boolean} The object is empty.
+ */
+function isEmpty(object) {
+  var property;
+  for (property in object) {
+    return false;
+  }
+  return !property;
+}
+
+//# sourceMappingURL=obj.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ol/render/canvas.js":
+/*!******************************************!*\
+  !*** ./node_modules/ol/render/canvas.js ***!
+  \******************************************/
+/*! exports provided: defaultFont, defaultFillStyle, defaultLineCap, defaultLineDash, defaultLineDashOffset, defaultLineJoin, defaultMiterLimit, defaultStrokeStyle, defaultTextAlign, defaultTextBaseline, defaultPadding, defaultLineWidth, labelCache, checkedFonts, textHeights, checkFont, measureTextHeight, measureTextWidth, rotateAtOffset, resetTransform, drawImage */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultFont", function() { return defaultFont; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultFillStyle", function() { return defaultFillStyle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultLineCap", function() { return defaultLineCap; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultLineDash", function() { return defaultLineDash; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultLineDashOffset", function() { return defaultLineDashOffset; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultLineJoin", function() { return defaultLineJoin; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultMiterLimit", function() { return defaultMiterLimit; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultStrokeStyle", function() { return defaultStrokeStyle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultTextAlign", function() { return defaultTextAlign; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultTextBaseline", function() { return defaultTextBaseline; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultPadding", function() { return defaultPadding; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultLineWidth", function() { return defaultLineWidth; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "labelCache", function() { return labelCache; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkedFonts", function() { return checkedFonts; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "textHeights", function() { return textHeights; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkFont", function() { return checkFont; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "measureTextHeight", function() { return measureTextHeight; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "measureTextWidth", function() { return measureTextWidth; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "rotateAtOffset", function() { return rotateAtOffset; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resetTransform", function() { return resetTransform; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "drawImage", function() { return drawImage; });
+/* harmony import */ var _css_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../css.js */ "./node_modules/ol/css.js");
+/* harmony import */ var _dom_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../dom.js */ "./node_modules/ol/dom.js");
+/* harmony import */ var _obj_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../obj.js */ "./node_modules/ol/obj.js");
+/* harmony import */ var _structs_LRUCache_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../structs/LRUCache.js */ "./node_modules/ol/structs/LRUCache.js");
+/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../transform.js */ "./node_modules/ol/transform.js");
+/**
+ * @module ol/render/canvas
+ */
+
+
+
+
+
+
+
+/**
+ * @typedef {Object} FillState
+ * @property {import("../colorlike.js").ColorLike} fillStyle
+ */
+
+
+/**
+ * @typedef {Object} FillStrokeState
+ * @property {import("../colorlike.js").ColorLike} [currentFillStyle]
+ * @property {import("../colorlike.js").ColorLike} [currentStrokeStyle]
+ * @property {string} [currentLineCap]
+ * @property {Array<number>} currentLineDash
+ * @property {number} [currentLineDashOffset]
+ * @property {string} [currentLineJoin]
+ * @property {number} [currentLineWidth]
+ * @property {number} [currentMiterLimit]
+ * @property {number} [lastStroke]
+ * @property {import("../colorlike.js").ColorLike} [fillStyle]
+ * @property {import("../colorlike.js").ColorLike} [strokeStyle]
+ * @property {string} [lineCap]
+ * @property {Array<number>} lineDash
+ * @property {number} [lineDashOffset]
+ * @property {string} [lineJoin]
+ * @property {number} [lineWidth]
+ * @property {number} [miterLimit]
+ */
+
+
+/**
+ * @typedef {Object} StrokeState
+ * @property {string} lineCap
+ * @property {Array<number>} lineDash
+ * @property {number} lineDashOffset
+ * @property {string} lineJoin
+ * @property {number} lineWidth
+ * @property {number} miterLimit
+ * @property {import("../colorlike.js").ColorLike} strokeStyle
+ */
+
+
+/**
+ * @typedef {Object} TextState
+ * @property {string} font
+ * @property {string} [textAlign]
+ * @property {string} textBaseline
+ * @property {string} [placement]
+ * @property {number} [maxAngle]
+ * @property {boolean} [overflow]
+ * @property {import("../style/Fill.js").default} [backgroundFill]
+ * @property {import("../style/Stroke.js").default} [backgroundStroke]
+ * @property {number} [scale]
+ * @property {Array<number>} [padding]
+ */
+
+
+/**
+ * Container for decluttered replay instructions that need to be rendered or
+ * omitted together, i.e. when styles render both an image and text, or for the
+ * characters that form text along lines. The basic elements of this array are
+ * `[minX, minY, maxX, maxY, count]`, where the first four entries are the
+ * rendered extent of the group in pixel space. `count` is the number of styles
+ * in the group, i.e. 2 when an image and a text are grouped, or 1 otherwise.
+ * In addition to these four elements, declutter instruction arrays (i.e. the
+ * arguments to {@link module:ol/render/canvas~drawImage} are appended to the array.
+ * @typedef {Array<*>} DeclutterGroup
+ */
+
+
+/**
+ * @const
+ * @type {string}
+ */
+var defaultFont = '10px sans-serif';
+
+
+/**
+ * @const
+ * @type {import("../color.js").Color}
+ */
+var defaultFillStyle = [0, 0, 0, 1];
+
+
+/**
+ * @const
+ * @type {string}
+ */
+var defaultLineCap = 'round';
+
+
+/**
+ * @const
+ * @type {Array<number>}
+ */
+var defaultLineDash = [];
+
+
+/**
+ * @const
+ * @type {number}
+ */
+var defaultLineDashOffset = 0;
+
+
+/**
+ * @const
+ * @type {string}
+ */
+var defaultLineJoin = 'round';
+
+
+/**
+ * @const
+ * @type {number}
+ */
+var defaultMiterLimit = 10;
+
+
+/**
+ * @const
+ * @type {import("../color.js").Color}
+ */
+var defaultStrokeStyle = [0, 0, 0, 1];
+
+
+/**
+ * @const
+ * @type {string}
+ */
+var defaultTextAlign = 'center';
+
+
+/**
+ * @const
+ * @type {string}
+ */
+var defaultTextBaseline = 'middle';
+
+
+/**
+ * @const
+ * @type {Array<number>}
+ */
+var defaultPadding = [0, 0, 0, 0];
+
+
+/**
+ * @const
+ * @type {number}
+ */
+var defaultLineWidth = 1;
+
+
+/**
+ * The label cache for text rendering. To change the default cache size of 2048
+ * entries, use {@link module:ol/structs/LRUCache#setSize}.
+ * @type {LRUCache<HTMLCanvasElement>}
+ * @api
+ */
+var labelCache = new _structs_LRUCache_js__WEBPACK_IMPORTED_MODULE_3__["default"]();
+
+
+/**
+ * @type {!Object<string, number>}
+ */
+var checkedFonts = {};
+
+
+/**
+ * @type {CanvasRenderingContext2D}
+ */
+var measureContext = null;
+
+
+/**
+ * @type {!Object<string, number>}
+ */
+var textHeights = {};
+
+
+/**
+ * Clears the label cache when a font becomes available.
+ * @param {string} fontSpec CSS font spec.
+ */
+var checkFont = (function() {
+  var retries = 60;
+  var checked = checkedFonts;
+  var size = '32px ';
+  var referenceFonts = ['monospace', 'serif'];
+  var len = referenceFonts.length;
+  var text = 'wmytzilWMYTZIL@#/&?$%10\uF013';
+  var interval, referenceWidth;
+
+  function isAvailable(font) {
+    var context = getMeasureContext();
+    // Check weight ranges according to
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights
+    for (var weight = 100; weight <= 700; weight += 300) {
+      var fontWeight = weight + ' ';
+      var available = true;
+      for (var i = 0; i < len; ++i) {
+        var referenceFont = referenceFonts[i];
+        context.font = fontWeight + size + referenceFont;
+        referenceWidth = context.measureText(text).width;
+        if (font != referenceFont) {
+          context.font = fontWeight + size + font + ',' + referenceFont;
+          var width = context.measureText(text).width;
+          // If width and referenceWidth are the same, then the fallback was used
+          // instead of the font we wanted, so the font is not available.
+          available = available && width != referenceWidth;
+        }
+      }
+      if (available) {
+        // Consider font available when it is available in one weight range.
+        //FIXME With this we miss rare corner cases, so we should consider
+        //FIXME checking availability for each requested weight range.
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function check() {
+    var done = true;
+    for (var font in checked) {
+      if (checked[font] < retries) {
+        if (isAvailable(font)) {
+          checked[font] = retries;
+          Object(_obj_js__WEBPACK_IMPORTED_MODULE_2__["clear"])(textHeights);
+          // Make sure that loaded fonts are picked up by Safari
+          measureContext = null;
+          labelCache.clear();
+        } else {
+          ++checked[font];
+          done = false;
+        }
+      }
+    }
+    if (done) {
+      clearInterval(interval);
+      interval = undefined;
+    }
+  }
+
+  return function(fontSpec) {
+    var fontFamilies = Object(_css_js__WEBPACK_IMPORTED_MODULE_0__["getFontFamilies"])(fontSpec);
+    if (!fontFamilies) {
+      return;
+    }
+    for (var i = 0, ii = fontFamilies.length; i < ii; ++i) {
+      var fontFamily = fontFamilies[i];
+      if (!(fontFamily in checked)) {
+        checked[fontFamily] = retries;
+        if (!isAvailable(fontFamily)) {
+          checked[fontFamily] = 0;
+          if (interval === undefined) {
+            interval = setInterval(check, 32);
+          }
+        }
+      }
+    }
+  };
+})();
+
+
+/**
+ * @return {CanvasRenderingContext2D} Measure context.
+ */
+function getMeasureContext() {
+  if (!measureContext) {
+    measureContext = Object(_dom_js__WEBPACK_IMPORTED_MODULE_1__["createCanvasContext2D"])(1, 1);
+  }
+  return measureContext;
+}
+
+
+/**
+ * @param {string} font Font to use for measuring.
+ * @return {import("../size.js").Size} Measurement.
+ */
+var measureTextHeight = (function() {
+  var span;
+  var heights = textHeights;
+  return function(font) {
+    var height = heights[font];
+    if (height == undefined) {
+      if (!span) {
+        span = document.createElement('span');
+        span.textContent = 'M';
+        span.style.margin = span.style.padding = '0 !important';
+        span.style.position = 'absolute !important';
+        span.style.left = '-99999px !important';
+      }
+      span.style.font = font;
+      document.body.appendChild(span);
+      height = heights[font] = span.offsetHeight;
+      document.body.removeChild(span);
+    }
+    return height;
+  };
+})();
+
+
+/**
+ * @param {string} font Font.
+ * @param {string} text Text.
+ * @return {number} Width.
+ */
+function measureTextWidth(font, text) {
+  var measureContext = getMeasureContext();
+  if (font != measureContext.font) {
+    measureContext.font = font;
+  }
+  return measureContext.measureText(text).width;
+}
+
+
+/**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {number} rotation Rotation.
+ * @param {number} offsetX X offset.
+ * @param {number} offsetY Y offset.
+ */
+function rotateAtOffset(context, rotation, offsetX, offsetY) {
+  if (rotation !== 0) {
+    context.translate(offsetX, offsetY);
+    context.rotate(rotation);
+    context.translate(-offsetX, -offsetY);
+  }
+}
+
+
+var resetTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_4__["create"])();
+
+
+/**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {import("../transform.js").Transform|null} transform Transform.
+ * @param {number} opacity Opacity.
+ * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
+ * @param {number} originX Origin X.
+ * @param {number} originY Origin Y.
+ * @param {number} w Width.
+ * @param {number} h Height.
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @param {number} scale Scale.
+ */
+function drawImage(context,
+  transform, opacity, image, originX, originY, w, h, x, y, scale) {
+  var alpha;
+  if (opacity != 1) {
+    alpha = context.globalAlpha;
+    context.globalAlpha = alpha * opacity;
+  }
+  if (transform) {
+    context.setTransform.apply(context, transform);
+  }
+
+  context.drawImage(image, originX, originY, w, h, x, y, w * scale, h * scale);
+
+  if (alpha) {
+    context.globalAlpha = alpha;
+  }
+  if (transform) {
+    context.setTransform.apply(context, resetTransform);
+  }
+}
+
+//# sourceMappingURL=canvas.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ol/structs/LRUCache.js":
+/*!*********************************************!*\
+  !*** ./node_modules/ol/structs/LRUCache.js ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _asserts_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../asserts.js */ "./node_modules/ol/asserts.js");
+/* harmony import */ var _events_Target_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../events/Target.js */ "./node_modules/ol/events/Target.js");
+/* harmony import */ var _events_EventType_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../events/EventType.js */ "./node_modules/ol/events/EventType.js");
+/**
+ * @module ol/structs/LRUCache
+ */
+
+
+
+
+
+
+/**
+ * @typedef {Object} Entry
+ * @property {string} key_
+ * @property {Object} newer
+ * @property {Object} older
+ * @property {*} value_
+ */
+
+
+/**
+ * @classdesc
+ * Implements a Least-Recently-Used cache where the keys do not conflict with
+ * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
+ * items from the cache is the responsibility of the user.
+ *
+ * @fires import("../events/Event.js").Event
+ * @template T
+ */
+var LRUCache = /*@__PURE__*/(function (EventTarget) {
+  function LRUCache(opt_highWaterMark) {
+
+    EventTarget.call(this);
+
+    /**
+     * @type {number}
+     */
+    this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.count_ = 0;
+
+    /**
+     * @private
+     * @type {!Object<string, Entry>}
+     */
+    this.entries_ = {};
+
+    /**
+     * @private
+     * @type {?Entry}
+     */
+    this.oldest_ = null;
+
+    /**
+     * @private
+     * @type {?Entry}
+     */
+    this.newest_ = null;
+
+  }
+
+  if ( EventTarget ) { LRUCache.__proto__ = EventTarget; }
+  LRUCache.prototype = Object.create( EventTarget && EventTarget.prototype );
+  LRUCache.prototype.constructor = LRUCache;
+
+
+  /**
+   * @return {boolean} Can expire cache.
+   */
+  LRUCache.prototype.canExpireCache = function canExpireCache () {
+    return this.getCount() > this.highWaterMark;
+  };
+
+
+  /**
+   * FIXME empty description for jsdoc
+   */
+  LRUCache.prototype.clear = function clear () {
+    this.count_ = 0;
+    this.entries_ = {};
+    this.oldest_ = null;
+    this.newest_ = null;
+    this.dispatchEvent(_events_EventType_js__WEBPACK_IMPORTED_MODULE_2__["default"].CLEAR);
+  };
+
+
+  /**
+   * @param {string} key Key.
+   * @return {boolean} Contains key.
+   */
+  LRUCache.prototype.containsKey = function containsKey (key) {
+    return this.entries_.hasOwnProperty(key);
+  };
+
+
+  /**
+   * @param {function(this: S, T, string, LRUCache): ?} f The function
+   *     to call for every entry from the oldest to the newer. This function takes
+   *     3 arguments (the entry value, the entry key and the LRUCache object).
+   *     The return value is ignored.
+   * @param {S=} opt_this The object to use as `this` in `f`.
+   * @template S
+   */
+  LRUCache.prototype.forEach = function forEach (f, opt_this) {
+    var entry = this.oldest_;
+    while (entry) {
+      f.call(opt_this, entry.value_, entry.key_, this);
+      entry = entry.newer;
+    }
+  };
+
+
+  /**
+   * @param {string} key Key.
+   * @return {T} Value.
+   */
+  LRUCache.prototype.get = function get (key) {
+    var entry = this.entries_[key];
+    Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(entry !== undefined,
+      15); // Tried to get a value for a key that does not exist in the cache
+    if (entry === this.newest_) {
+      return entry.value_;
+    } else if (entry === this.oldest_) {
+      this.oldest_ = /** @type {Entry} */ (this.oldest_.newer);
+      this.oldest_.older = null;
+    } else {
+      entry.newer.older = entry.older;
+      entry.older.newer = entry.newer;
+    }
+    entry.newer = null;
+    entry.older = this.newest_;
+    this.newest_.newer = entry;
+    this.newest_ = entry;
+    return entry.value_;
+  };
+
+
+  /**
+   * Remove an entry from the cache.
+   * @param {string} key The entry key.
+   * @return {T} The removed entry.
+   */
+  LRUCache.prototype.remove = function remove (key) {
+    var entry = this.entries_[key];
+    Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
+    if (entry === this.newest_) {
+      this.newest_ = /** @type {Entry} */ (entry.older);
+      if (this.newest_) {
+        this.newest_.newer = null;
+      }
+    } else if (entry === this.oldest_) {
+      this.oldest_ = /** @type {Entry} */ (entry.newer);
+      if (this.oldest_) {
+        this.oldest_.older = null;
+      }
+    } else {
+      entry.newer.older = entry.older;
+      entry.older.newer = entry.newer;
+    }
+    delete this.entries_[key];
+    --this.count_;
+    return entry.value_;
+  };
+
+
+  /**
+   * @return {number} Count.
+   */
+  LRUCache.prototype.getCount = function getCount () {
+    return this.count_;
+  };
+
+
+  /**
+   * @return {Array<string>} Keys.
+   */
+  LRUCache.prototype.getKeys = function getKeys () {
+    var keys = new Array(this.count_);
+    var i = 0;
+    var entry;
+    for (entry = this.newest_; entry; entry = entry.older) {
+      keys[i++] = entry.key_;
+    }
+    return keys;
+  };
+
+
+  /**
+   * @return {Array<T>} Values.
+   */
+  LRUCache.prototype.getValues = function getValues () {
+    var values = new Array(this.count_);
+    var i = 0;
+    var entry;
+    for (entry = this.newest_; entry; entry = entry.older) {
+      values[i++] = entry.value_;
+    }
+    return values;
+  };
+
+
+  /**
+   * @return {T} Last value.
+   */
+  LRUCache.prototype.peekLast = function peekLast () {
+    return this.oldest_.value_;
+  };
+
+
+  /**
+   * @return {string} Last key.
+   */
+  LRUCache.prototype.peekLastKey = function peekLastKey () {
+    return this.oldest_.key_;
+  };
+
+
+  /**
+   * Get the key of the newest item in the cache.  Throws if the cache is empty.
+   * @return {string} The newest key.
+   */
+  LRUCache.prototype.peekFirstKey = function peekFirstKey () {
+    return this.newest_.key_;
+  };
+
+
+  /**
+   * @return {T} value Value.
+   */
+  LRUCache.prototype.pop = function pop () {
+    var entry = this.oldest_;
+    delete this.entries_[entry.key_];
+    if (entry.newer) {
+      entry.newer.older = null;
+    }
+    this.oldest_ = /** @type {Entry} */ (entry.newer);
+    if (!this.oldest_) {
+      this.newest_ = null;
+    }
+    --this.count_;
+    return entry.value_;
+  };
+
+
+  /**
+   * @param {string} key Key.
+   * @param {T} value Value.
+   */
+  LRUCache.prototype.replace = function replace (key, value) {
+    this.get(key); // update `newest_`
+    this.entries_[key].value_ = value;
+  };
+
+
+  /**
+   * @param {string} key Key.
+   * @param {T} value Value.
+   */
+  LRUCache.prototype.set = function set (key, value) {
+    Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(!(key in this.entries_),
+      16); // Tried to set a value for a key that is used already
+    var entry = /** @type {Entry} */ ({
+      key_: key,
+      newer: null,
+      older: this.newest_,
+      value_: value
+    });
+    if (!this.newest_) {
+      this.oldest_ = entry;
+    } else {
+      this.newest_.newer = entry;
+    }
+    this.newest_ = entry;
+    this.entries_[key] = entry;
+    ++this.count_;
+  };
+
+
+  /**
+   * Set a maximum number of entries for the cache.
+   * @param {number} size Cache size.
+   * @api
+   */
+  LRUCache.prototype.setSize = function setSize (size) {
+    this.highWaterMark = size;
+  };
+
+
+  /**
+   * Prune the cache.
+   */
+  LRUCache.prototype.prune = function prune () {
+    while (this.canExpireCache()) {
+      this.pop();
+    }
+  };
+
+  return LRUCache;
+}(_events_Target_js__WEBPACK_IMPORTED_MODULE_1__["default"]));
+
+/* harmony default export */ __webpack_exports__["default"] = (LRUCache);
+
+//# sourceMappingURL=LRUCache.js.map
 
 /***/ }),
 
@@ -18218,6 +19967,271 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/ol/transform.js":
+/*!**************************************!*\
+  !*** ./node_modules/ol/transform.js ***!
+  \**************************************/
+/*! exports provided: create, reset, multiply, set, setFromArray, apply, rotate, scale, translate, compose, invert, determinant */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create", function() { return create; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reset", function() { return reset; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "multiply", function() { return multiply; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set", function() { return set; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setFromArray", function() { return setFromArray; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "apply", function() { return apply; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "rotate", function() { return rotate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "scale", function() { return scale; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "translate", function() { return translate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compose", function() { return compose; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "invert", function() { return invert; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "determinant", function() { return determinant; });
+/* harmony import */ var _asserts_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./asserts.js */ "./node_modules/ol/asserts.js");
+/**
+ * @module ol/transform
+ */
+
+
+
+/**
+ * An array representing an affine 2d transformation for use with
+ * {@link module:ol/transform} functions. The array has 6 elements.
+ * @typedef {!Array<number>} Transform
+ */
+
+
+/**
+ * Collection of affine 2d transformation functions. The functions work on an
+ * array of 6 elements. The element order is compatible with the [SVGMatrix
+ * interface](https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix) and is
+ * a subset (elements a to f) of a 3×3 matrix:
+ * ```
+ * [ a c e ]
+ * [ b d f ]
+ * [ 0 0 1 ]
+ * ```
+ */
+
+
+/**
+ * @private
+ * @type {Transform}
+ */
+var tmp_ = new Array(6);
+
+
+/**
+ * Create an identity transform.
+ * @return {!Transform} Identity transform.
+ */
+function create() {
+  return [1, 0, 0, 1, 0, 0];
+}
+
+
+/**
+ * Resets the given transform to an identity transform.
+ * @param {!Transform} transform Transform.
+ * @return {!Transform} Transform.
+ */
+function reset(transform) {
+  return set(transform, 1, 0, 0, 1, 0, 0);
+}
+
+
+/**
+ * Multiply the underlying matrices of two transforms and return the result in
+ * the first transform.
+ * @param {!Transform} transform1 Transform parameters of matrix 1.
+ * @param {!Transform} transform2 Transform parameters of matrix 2.
+ * @return {!Transform} transform1 multiplied with transform2.
+ */
+function multiply(transform1, transform2) {
+  var a1 = transform1[0];
+  var b1 = transform1[1];
+  var c1 = transform1[2];
+  var d1 = transform1[3];
+  var e1 = transform1[4];
+  var f1 = transform1[5];
+  var a2 = transform2[0];
+  var b2 = transform2[1];
+  var c2 = transform2[2];
+  var d2 = transform2[3];
+  var e2 = transform2[4];
+  var f2 = transform2[5];
+
+  transform1[0] = a1 * a2 + c1 * b2;
+  transform1[1] = b1 * a2 + d1 * b2;
+  transform1[2] = a1 * c2 + c1 * d2;
+  transform1[3] = b1 * c2 + d1 * d2;
+  transform1[4] = a1 * e2 + c1 * f2 + e1;
+  transform1[5] = b1 * e2 + d1 * f2 + f1;
+
+  return transform1;
+}
+
+/**
+ * Set the transform components a-f on a given transform.
+ * @param {!Transform} transform Transform.
+ * @param {number} a The a component of the transform.
+ * @param {number} b The b component of the transform.
+ * @param {number} c The c component of the transform.
+ * @param {number} d The d component of the transform.
+ * @param {number} e The e component of the transform.
+ * @param {number} f The f component of the transform.
+ * @return {!Transform} Matrix with transform applied.
+ */
+function set(transform, a, b, c, d, e, f) {
+  transform[0] = a;
+  transform[1] = b;
+  transform[2] = c;
+  transform[3] = d;
+  transform[4] = e;
+  transform[5] = f;
+  return transform;
+}
+
+
+/**
+ * Set transform on one matrix from another matrix.
+ * @param {!Transform} transform1 Matrix to set transform to.
+ * @param {!Transform} transform2 Matrix to set transform from.
+ * @return {!Transform} transform1 with transform from transform2 applied.
+ */
+function setFromArray(transform1, transform2) {
+  transform1[0] = transform2[0];
+  transform1[1] = transform2[1];
+  transform1[2] = transform2[2];
+  transform1[3] = transform2[3];
+  transform1[4] = transform2[4];
+  transform1[5] = transform2[5];
+  return transform1;
+}
+
+
+/**
+ * Transforms the given coordinate with the given transform returning the
+ * resulting, transformed coordinate. The coordinate will be modified in-place.
+ *
+ * @param {Transform} transform The transformation.
+ * @param {import("./coordinate.js").Coordinate|import("./pixel.js").Pixel} coordinate The coordinate to transform.
+ * @return {import("./coordinate.js").Coordinate|import("./pixel.js").Pixel} return coordinate so that operations can be
+ *     chained together.
+ */
+function apply(transform, coordinate) {
+  var x = coordinate[0];
+  var y = coordinate[1];
+  coordinate[0] = transform[0] * x + transform[2] * y + transform[4];
+  coordinate[1] = transform[1] * x + transform[3] * y + transform[5];
+  return coordinate;
+}
+
+
+/**
+ * Applies rotation to the given transform.
+ * @param {!Transform} transform Transform.
+ * @param {number} angle Angle in radians.
+ * @return {!Transform} The rotated transform.
+ */
+function rotate(transform, angle) {
+  var cos = Math.cos(angle);
+  var sin = Math.sin(angle);
+  return multiply(transform, set(tmp_, cos, sin, -sin, cos, 0, 0));
+}
+
+
+/**
+ * Applies scale to a given transform.
+ * @param {!Transform} transform Transform.
+ * @param {number} x Scale factor x.
+ * @param {number} y Scale factor y.
+ * @return {!Transform} The scaled transform.
+ */
+function scale(transform, x, y) {
+  return multiply(transform, set(tmp_, x, 0, 0, y, 0, 0));
+}
+
+
+/**
+ * Applies translation to the given transform.
+ * @param {!Transform} transform Transform.
+ * @param {number} dx Translation x.
+ * @param {number} dy Translation y.
+ * @return {!Transform} The translated transform.
+ */
+function translate(transform, dx, dy) {
+  return multiply(transform, set(tmp_, 1, 0, 0, 1, dx, dy));
+}
+
+
+/**
+ * Creates a composite transform given an initial translation, scale, rotation, and
+ * final translation (in that order only, not commutative).
+ * @param {!Transform} transform The transform (will be modified in place).
+ * @param {number} dx1 Initial translation x.
+ * @param {number} dy1 Initial translation y.
+ * @param {number} sx Scale factor x.
+ * @param {number} sy Scale factor y.
+ * @param {number} angle Rotation (in counter-clockwise radians).
+ * @param {number} dx2 Final translation x.
+ * @param {number} dy2 Final translation y.
+ * @return {!Transform} The composite transform.
+ */
+function compose(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
+  var sin = Math.sin(angle);
+  var cos = Math.cos(angle);
+  transform[0] = sx * cos;
+  transform[1] = sy * sin;
+  transform[2] = -sx * sin;
+  transform[3] = sy * cos;
+  transform[4] = dx2 * sx * cos - dy2 * sx * sin + dx1;
+  transform[5] = dx2 * sy * sin + dy2 * sy * cos + dy1;
+  return transform;
+}
+
+
+/**
+ * Invert the given transform.
+ * @param {!Transform} transform Transform.
+ * @return {!Transform} Inverse of the transform.
+ */
+function invert(transform) {
+  var det = determinant(transform);
+  Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(det !== 0, 32); // Transformation matrix cannot be inverted
+
+  var a = transform[0];
+  var b = transform[1];
+  var c = transform[2];
+  var d = transform[3];
+  var e = transform[4];
+  var f = transform[5];
+
+  transform[0] = d / det;
+  transform[1] = -b / det;
+  transform[2] = -c / det;
+  transform[3] = a / det;
+  transform[4] = (c * f - d * e) / det;
+  transform[5] = -(a * f - b * e) / det;
+
+  return transform;
+}
+
+
+/**
+ * Returns the determinant of the given matrix.
+ * @param {!Transform} mat Matrix.
+ * @return {number} Determinant.
+ */
+function determinant(mat) {
+  return mat[0] * mat[3] - mat[1] * mat[2];
+}
+
+//# sourceMappingURL=transform.js.map
+
+/***/ }),
+
 /***/ "./node_modules/ol/util.js":
 /*!*********************************!*\
   !*** ./node_modules/ol/util.js ***!
@@ -18451,7 +20465,6 @@ var isFunction = _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_9__["func
 var convertFunction = _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_9__["function"].convertFunction;
 var isExpression = _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_9__["expression"].isExpression;
 var createPropertyExpression = _mapbox_mapbox_gl_style_spec__WEBPACK_IMPORTED_MODULE_9__["expression"].createPropertyExpression;
-var hairSpacePool = Array(256).join('\u200A');
 
 var types = {
   'Point': 1,
@@ -18628,41 +20641,6 @@ function fromTemplate(text, properties) {
     img.src = spriteImageUrl;
   }
 
-  var ctx = document.createElement('CANVAS').getContext('2d');
-  var measureCache = {};
-  function wrapText(text, font, em) {
-    var key = em + ',' + font + ',' + text;
-    var wrappedText = measureCache[key];
-    if (!wrappedText) {
-      var words = text.split(' ');
-      if (words.length > 1) {
-        ctx.font = font;
-        var oneEm = ctx.measureText('M').width;
-        var width = oneEm * em;
-        var line = '';
-        var lines = [];
-        for (var i = 0, ii = words.length; i < ii; ++i) {
-          var word = words[i];
-          if ((ctx.measureText(line + word).width <= width)) {
-            line += (line ? ' ' : '') + word;
-          } else {
-            if (line) {
-              lines.push(line);
-            }
-            line = word;
-          }
-        }
-        if (line) {
-          lines.push(line);
-        }
-        wrappedText = lines.join('\n');
-      } else {
-        wrappedText = text;
-      }
-      measureCache[key] = wrappedText;
-    }
-    return wrappedText;
-  }
 
   var allLayers = Object(_mapbox_mapbox_gl_style_spec_deref__WEBPACK_IMPORTED_MODULE_7__["default"])(glStyle.layers);
 
@@ -19010,40 +20988,36 @@ function fromTemplate(text, properties) {
           text = style.getText();
           var textSize = getValue(layer, 'layout', 'text-size', zoom, f);
           var fontArray = getValue(layer, 'layout', 'text-font', zoom, f);
-          var font = mapbox_to_css_font__WEBPACK_IMPORTED_MODULE_10___default()(getFonts ? getFonts(fontArray) : fontArray, textSize);
+          var textLineHeight = getValue(layer, 'layout', 'text-line-height', zoom, f);
+          var font = mapbox_to_css_font__WEBPACK_IMPORTED_MODULE_10___default()(getFonts ? getFonts(fontArray) : fontArray, textSize, textLineHeight);
           var textTransform = layout['text-transform'];
           if (textTransform == 'uppercase') {
             label = label.toUpperCase();
           } else if (textTransform == 'lowercase') {
             label = label.toLowerCase();
           }
-          var wrappedLabel = type == 2 ? label : wrapText(label, font, getValue(layer, 'layout', 'text-max-width', zoom, f));
+          var maxTextWidth = getValue(layer, 'layout', 'text-max-width', zoom, f);
           var letterSpacing = getValue(layer, 'layout', 'text-letter-spacing', zoom, f);
-          if (letterSpacing >= 0.05) {
-            var wrappedLabelWithLetterSpacing = '';
-            var wrappedLabelLines = wrappedLabel.split('\n');
-            var joinSpaceString = hairSpacePool.slice(0, Math.round(letterSpacing / 0.1));
-            for (var l = 0, ll = wrappedLabelLines.length; l < ll; ++l) {
-              if (l > 0) {
-                wrappedLabelWithLetterSpacing += '\n';
-              }
-              wrappedLabelWithLetterSpacing += wrappedLabelLines[l].split('').join(joinSpaceString);
-            }
-            text.setText(wrappedLabelWithLetterSpacing);
-          } else {
-            text.setText(wrappedLabel);
-          }
+          var wrappedLabel = type == 2 ? Object(_util__WEBPACK_IMPORTED_MODULE_11__["applyLetterSpacing"])(label, letterSpacing) : Object(_util__WEBPACK_IMPORTED_MODULE_11__["wrapText"])(label, font, maxTextWidth, letterSpacing);
+          text.setText(wrappedLabel);
           text.setFont(font);
           text.setRotation(Object(_util__WEBPACK_IMPORTED_MODULE_11__["deg2rad"])(getValue(layer, 'layout', 'text-rotate', zoom, f)));
           var textAnchor = getValue(layer, 'layout', 'text-anchor', zoom, f);
           var placement$1 = (hasImage || type == 1) ? 'point' : getValue(layer, 'layout', 'symbol-placement', zoom, f);
           text.setPlacement(placement$1);
+          var textHaloWidth = getValue(layer, 'paint', 'text-halo-width', zoom, f);
+          var textOffset = getValue(layer, 'layout', 'text-offset', zoom, f);
+          // Text offset has to take halo width and line height into account
+          var vOffset = 0;
+          var hOffset = 0;
           if (placement$1 == 'point') {
             var textAlign = 'center';
             if (textAnchor.indexOf('left') !== -1) {
               textAlign = 'left';
+              hOffset = textHaloWidth;
             } else if (textAnchor.indexOf('right') !== -1) {
               textAlign = 'right';
+              hOffset = -textHaloWidth;
             }
             text.setTextAlign(textAlign);
           } else {
@@ -19052,21 +21026,22 @@ function fromTemplate(text, properties) {
           var textBaseline = 'middle';
           if (textAnchor.indexOf('bottom') == 0) {
             textBaseline = 'bottom';
+            vOffset = -textHaloWidth - (0.5 * (textLineHeight - 1)) * textSize;
           } else if (textAnchor.indexOf('top') == 0) {
             textBaseline = 'top';
+            vOffset = textHaloWidth + (0.5 * (textLineHeight - 1)) * textSize;
           }
           text.setTextBaseline(textBaseline);
-          var textOffset = getValue(layer, 'layout', 'text-offset', zoom, f);
-          text.setOffsetX(textOffset[0] * textSize);
-          text.setOffsetY(textOffset[1] * textSize);
+          text.setOffsetX(textOffset[0] * textSize + hOffset);
+          text.setOffsetY(textOffset[1] * textSize + vOffset);
           textColor.setColor(colorWithOpacity(getValue(layer, 'paint', 'text-color', zoom, f), opacity));
           text.setFill(textColor);
           var haloColor = colorWithOpacity(getValue(layer, 'paint', 'text-halo-color', zoom, f), opacity);
           if (haloColor) {
             textHalo.setColor(haloColor);
             // spec here : https://docs.mapbox.com/mapbox-gl-js/style-spec/#paint-symbol-text-halo-width
-            // stroke must be doubled because it is applied around the center of the text outline
-            var textHaloWidth = getValue(layer, 'paint', 'text-halo-width', zoom, f) * 2;
+            // Halo width must be doubled because it is applied around the center of the text outline
+            textHaloWidth *= 2;
             // 1/4 of text size (spec) x 2
             var halfTextSize = 0.5 * textSize;
             textHalo.setWidth(textHaloWidth <= halfTextSize ? textHaloWidth : halfTextSize);
@@ -19105,7 +21080,7 @@ function fromTemplate(text, properties) {
 /*!*****************!*\
   !*** ./util.js ***!
   \*****************/
-/*! exports provided: deg2rad, defaultResolutions, getZoomForResolution */
+/*! exports provided: deg2rad, defaultResolutions, getZoomForResolution, applyLetterSpacing, wrapText */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -19113,6 +21088,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deg2rad", function() { return deg2rad; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultResolutions", function() { return defaultResolutions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getZoomForResolution", function() { return getZoomForResolution; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "applyLetterSpacing", function() { return applyLetterSpacing; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "wrapText", function() { return wrapText; });
+/* harmony import */ var ol_events__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ol/events */ "./node_modules/ol/events.js");
+/* harmony import */ var ol_events_EventType__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ol/events/EventType */ "./node_modules/ol/events/EventType.js");
+/* harmony import */ var ol_render_canvas__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ol/render/canvas */ "./node_modules/ol/render/canvas.js");
+
+
+
+
 function deg2rad(degrees) {
   return degrees * Math.PI / 180;
 }
@@ -19137,6 +21121,104 @@ function getZoomForResolution(resolution, resolutions) {
   }
   return ii - 1;
 }
+
+var hairSpacePool = Array(256).join('\u200A');
+function applyLetterSpacing(text, letterSpacing) {
+  if (letterSpacing >= 0.05) {
+    var textWithLetterSpacing = '';
+    var lines = text.split('\n');
+    var joinSpaceString = hairSpacePool.slice(0, Math.round(letterSpacing / 0.1));
+    for (var l = 0, ll = lines.length; l < ll; ++l) {
+      if (l > 0) {
+        textWithLetterSpacing += '\n';
+      }
+      textWithLetterSpacing += lines[l].split('').join(joinSpaceString);
+    }
+    return textWithLetterSpacing;
+  }
+  return text;
+}
+
+var ctx = document.createElement('CANVAS').getContext('2d');
+function measureText(text, letterSpacing) {
+  return ctx.measureText(text).width + (text.length - 1) * letterSpacing;
+}
+
+var measureCache = {};
+if (ol_render_canvas__WEBPACK_IMPORTED_MODULE_2__["labelCache"]) {
+  // Only available when using ES modules
+  Object(ol_events__WEBPACK_IMPORTED_MODULE_0__["listen"])(ol_render_canvas__WEBPACK_IMPORTED_MODULE_2__["labelCache"], ol_events_EventType__WEBPACK_IMPORTED_MODULE_1__["default"].CLEAR, function() {
+    measureCache = {};
+  });
+}
+function wrapText(text, font, em, letterSpacing) {
+  var key = em + ',' + font + ',' + text + ',' + letterSpacing;
+  var wrappedText = measureCache[key];
+  if (!wrappedText) {
+    var words = text.split(' ');
+    if (words.length > 1) {
+      ctx.font = font;
+      var oneEm = ctx.measureText('M').width;
+      var maxWidth = oneEm * em;
+      var line = '';
+      var lines = [];
+      // Pass 1 - wrap lines to not exceed maxWidth
+      for (var i = 0, ii = words.length; i < ii; ++i) {
+        var word = words[i];
+        var testLine = line + (line ? ' ' : '') + word;
+        if (measureText(testLine, letterSpacing) <= maxWidth) {
+          line = testLine;
+        } else {
+          if (line) {
+            lines.push(line);
+          }
+          line = word;
+        }
+      }
+      if (line) {
+        lines.push(line);
+      }
+      // Pass 2 - add lines with a width of less than 30% of maxWidth to the previous or next line
+      for (var i$1 = 0, ii$1 = lines.length; i$1 < ii$1; ++i$1) {
+        var line$1 = lines[i$1];
+        if (measureText(line$1, letterSpacing) < maxWidth * 0.3) {
+          var prevWidth = i$1 > 0 ? measureText(lines[i$1 - 1], letterSpacing) : Infinity;
+          var nextWidth = i$1 < ii$1 - 1 ? measureText(lines[i$1 + 1], letterSpacing) : Infinity;
+          lines.splice(i$1, 1);
+          if (prevWidth < nextWidth) {
+            lines[i$1 - 1] += ' ' + line$1;
+            i$1 -= 1;
+          } else {
+            lines[i$1] = line$1 + ' ' + lines[i$1];
+          }
+          ii$1 -= 1;
+        }
+      }
+      // Pass 3 - try to fill 80% of maxWidth for each line
+      for (var i$2 = 0, ii$2 = lines.length - 1; i$2 < ii$2; ++i$2) {
+        var line$2 = lines[i$2];
+        var next = lines[i$2 + 1];
+        if (measureText(line$2, letterSpacing) > maxWidth * 0.7 &&
+            measureText(next, letterSpacing) < maxWidth * 0.6) {
+          var lineWords = line$2.split(' ');
+          var lastWord = lineWords.pop();
+          if (measureText(lastWord, letterSpacing) < maxWidth * 0.2) {
+            lines[i$2] = lineWords.join(' ');
+            lines[i$2 + 1] = lastWord + ' ' + next;
+          }
+          ii$2 -= 1;
+        }
+      }
+      wrappedText = lines.join('\n');
+    } else {
+      wrappedText = text;
+    }
+    wrappedText = applyLetterSpacing(wrappedText, letterSpacing);
+    measureCache[key] = wrappedText;
+  }
+  return wrappedText;
+}
+
 
 
 /***/ }),
