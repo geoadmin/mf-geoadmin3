@@ -89,13 +89,13 @@ lintpy: .build-artefacts/requirements.timestamp ${FLAKE8_CMD} ${PYTHON_FILES}
 
 .PHONY: testdebug
 testdebug: .build-artefacts/app-whitespace.js test/karma-conf-debug.js
-	PHANTOMJS_BIN="${PHANTOMJS}" ${KARMA} start test/karma-conf-debug.js;
+	PHANTOMJS_BIN="$(subst ",\",${PHANTOMJS})" ${KARMA} start test/karma-conf-debug.js;
 	cat .build-artefacts/coverage/coverage.txt; echo;
 	echo "A complete report is available at ${E2E_TARGETURL}${APACHE_BASE_PATH}/src/coverage/index.html"
 
 .PHONY: testrelease
 testrelease: prd/lib/build.js test/karma-conf-release.js .build-artefacts/devlibs
-	PHANTOMJS_BIN="${PHANTOMJS}" ${KARMA} start test/karma-conf-release.js;
+	PHANTOMJS_BIN="$(subst ",\",${PHANTOMJS})" ${KARMA} start test/karma-conf-release.js;
 
 .PHONY: teste2e
 teste2e: saucelabs
@@ -155,6 +155,55 @@ test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.j
 	mkdir -p $(dir $@)
 	touch $@
 
+.PHONY: build-olcesium
+build-olcesiums:
+	$(MAKE) -C libs build-ol-cesium
+
+.PHONY: build-olms
+build-olms:
+	$(MAKE) -C libs build-ol-mapbox-style
+
+.PHONY: clean-libs
+clean-libs:
+	$(MAKE) -C libs clean
+
+.PHONY: build-libs
+build-libs:
+	$(MAKE) -C libs all
+
+.PHONY: install-libs
+install-libs: 
+	cp libs/ol-mapbox-style/dist/olms-debug.js src/lib/olms.js
+
+# This should be run once when starting to work on mvt_clean
+# or any descendant branch
+.PHONY: init-submodules
+init-submodules:
+	git config --global status.submoduleSummary true
+	git config --global submodule.recurse true
+	git submodule init
+	git submodule update
+
+.PHONY: build-olcesium
+build-olcesiums:
+	$(MAKE) -C libs build-ol-cesium
+
+.PHONY: build-olms
+build-olms:
+	$(MAKE) -C libs build-ol-mapbox-style
+
+.PHONY: clean-libs
+clean-libs:
+	$(MAKE) -C libs clean
+
+.PHONY: build-libs
+build-libs:
+	$(MAKE) -C libs all
+
+.PHONY: install-libs
+install-libs: build-libs
+	cp libs/ol-mapbox-style/dist/olms-debug.js src/lib/olms.js
+
 .build-artefacts/app.js: .build-artefacts/js-files
 	mkdir -p $(dir $@)
 	java -jar ${CLOSURE_COMPILER} $(SRC_JS_FILES_FOR_COMPILER) \
@@ -162,6 +211,7 @@ test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.j
 	    --jscomp_error checkVars \
 	    --externs externs/ol.js \
 	    --externs externs/olcesium.js \
+	    --externs externs/olms.js \
 	    --externs externs/Cesium.externs.js \
 	    --externs externs/slip.js \
 	    --externs externs/angular.js \
