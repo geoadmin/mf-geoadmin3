@@ -149,7 +149,7 @@ NAMED_BRANCH ?= true
 DEEP_CLEAN ?= false
 NVM_VERSION ?= v0.33.8
 LAST_NVM_VERSION := $(call lastvalue,nvm-version)
-NODE_VERSION ?= 6.13.1
+NODE_VERSION ?= 10.15.3
 LAST_NODE_VERSION := $(call lastvalue,node-version)
 
 
