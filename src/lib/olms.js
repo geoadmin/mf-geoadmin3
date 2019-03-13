@@ -202,13 +202,15 @@ function getFonts(fonts) {
   if (fontsKey in processedFontFamilies) {
     return fonts;
   }
-  var families = fonts.map(function(font) {
-    return mapbox_to_css_font__WEBPACK_IMPORTED_MODULE_0___default()(font, 1).split(' 1px ')[1].replace(/"/g, '');
+  var googleFontDescriptions = fonts.map(function(font) {
+    var parts = mapbox_to_css_font__WEBPACK_IMPORTED_MODULE_0___default()(font, 1).split(' ');
+    return [parts.slice(3, 5).join(' ').replace(/"/g, ''), parts[1] + parts[0]];
   });
-  for (var i = 0, ii = families.length; i < ii; ++i) {
-    var family = families[i];
+  for (var i = 0, ii = googleFontDescriptions.length; i < ii; ++i) {
+    var googleFontDescription = googleFontDescriptions[i];
+    var family = googleFontDescription[0];
     if (!hasFontFamily(family) && googleFamilies.indexOf(family) !== -1) {
-      var fontUrl = 'https://fonts.googleapis.com/css?family=' + family.replace(/ /g, '+');
+      var fontUrl = 'https://fonts.googleapis.com/css?family=' + family.replace(/ /g, '+') + ':' + googleFontDescription[1];
       if (!document.querySelector('link[href="' + fontUrl + '"]')) {
         var markup = document.createElement('link');
         markup.href = fontUrl;
