@@ -38,14 +38,15 @@
   }
 
   @media (max-width: @screen-tablet) {
-    max-height: 300px;
+    /* Why are we more restrictiv for tablet than phone?*/
+    max-height: none;
   }
 
   /* !important is used to override (and so deactivate) draggable styles
   applied */
   @media (max-width: @screen-phone) {
-    top: 50% !important;
-    max-height: none;
+    top: 20% !important;
+    max-height: 300px;
 
     &[style] {
       z-index: 1800!important; /* under the menu*/
