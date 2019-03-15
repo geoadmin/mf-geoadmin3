@@ -16,6 +16,11 @@
   > .arrow {
     display: none;
   }
+  // for mobile, we cover the whole screen with the popup
+  // otherwise it might leak over the top of the viewport
+  @media (max-width: @screen-phone) {
+    top: 0!important;
+  }
 }
 
 /* full screen */
