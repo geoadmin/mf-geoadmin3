@@ -97,7 +97,8 @@ goog.require('ga_window_service');
           }
         }),
         // if embedded, use custom interaction, otherwise extends default
-        interactions: gaBrowserSniffer.embed ?
+        interactions: gaBrowserSniffer.embed &&
+                      !gaGlobalOptions.embeddedWithInteractions ?
           interactionsForEmbed : ol.interaction.defaults({
             altShiftDragRotate: true,
             touchRotate: false,
