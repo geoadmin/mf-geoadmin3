@@ -9,10 +9,16 @@ goog.provide('ga_embedded_scroll_directive');
   // embedded maps, à la GoogleMaps)
   // see : https://developers.google.com/maps/documentation/embed/guide
   module.directive('gaEmbeddedScrollEventHandler',
-      function($rootScope, $translate, $timeout, $window) {
+      function($rootScope, $translate, $timeout, $window, gaGlobalOptions) {
         return {
           restrict: 'A',
           link: function(scope, element, attrs) {
+            // if embedded but gaGlobalOptions.embeddedWithInteractions is true
+            // we don't attach listeners
+            if (gaGlobalOptions.embeddedWithInteractions) {
+              return;
+            }
+
             var datetimeLastAction = null;
             var hideAfterAWhileIfSameDatetime = function(datetime) {
               // check after 2.5 sec if no other action occured, hide overlay
