@@ -91,12 +91,11 @@ olms =
 /*!******************!*\
   !*** ./index.js ***!
   \******************/
-/*! exports provided: getFonts, applyStyle, applyBackground, default, apply, getLayer, getLayers, getSource, _finalizeLayer, _getFonts */
+/*! exports provided: applyStyle, applyBackground, default, apply, getLayer, getLayers, getSource, _finalizeLayer, _getFonts */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFonts", function() { return getFonts; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "applyStyle", function() { return applyStyle; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "applyBackground", function() { return applyBackground; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return olms; });
