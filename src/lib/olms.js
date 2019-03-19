@@ -91,11 +91,12 @@ olms =
 /*!******************!*\
   !*** ./index.js ***!
   \******************/
-/*! exports provided: applyStyle, applyBackground, default, apply, getLayer, getLayers, getSource, _finalizeLayer, _getFonts */
+/*! exports provided: getFonts, applyStyle, applyBackground, default, apply, getLayer, getLayers, getSource, _finalizeLayer, _getFonts */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFonts", function() { return getFonts; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "applyStyle", function() { return applyStyle; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "applyBackground", function() { return applyBackground; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return olms; });
@@ -21023,6 +21024,7 @@ function fromTemplate(text, properties) {
             }
             text.setTextAlign(textAlign);
           } else {
+            text.setMaxAngle(Object(_util__WEBPACK_IMPORTED_MODULE_11__["deg2rad"])(getValue(layer, 'layout', 'text-max-angle', zoom, f)));
             text.setTextAlign();
           }
           var textBaseline = 'middle';
