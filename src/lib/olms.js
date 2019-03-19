@@ -21023,6 +21023,7 @@ function fromTemplate(text, properties) {
             }
             text.setTextAlign(textAlign);
           } else {
+            text.setMaxAngle(Object(_util__WEBPACK_IMPORTED_MODULE_11__["deg2rad"])(getValue(layer, 'layout', 'text-max-angle', zoom, f)));
             text.setTextAlign();
           }
           var textBaseline = 'middle';
