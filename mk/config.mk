@@ -17,9 +17,9 @@ USER_SOURCE ?= rc_user
 PROJECT ?= mf-geoadmin3
 
 # Map libs variables
-OL_VERSION ?= be12573# September 25 2018 (mind the absence of a space character after the version)
-OL_CESIUM_VERSION ?= 695253277d66a8917fa456f3346c049b88f88eb7 # October 12 2018
-CESIUM_VERSION ?= 54d850855346610fde9b7aa8262a03d27e71c663 # c2c/c2c_patches (Cesium 1.44), April 23 2018
+OL_VERSION ?= 84bf801# 2019-03-19 (mind the absence of a space character after the version)
+OL_CESIUM_VERSION ?= b78d0fef90049136a833d969e8e49e5a81a3dd56 # 2019-03-19
+CESIUM_VERSION ?= f3caa601ec64eae100e0cd4dc0b3667f2a71b85e # Cesium 1.55, 2019-03-01
 GEOBLOCKS_LEGACYLIB_VERSION ?= 0101a217be1b7525be8d590910fb8f70295194be # September 24 2018
 
 
