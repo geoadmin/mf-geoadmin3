@@ -91,7 +91,9 @@ goog.provide('ga_urlutils_service');
           var that = this;
           var deferred = $q.defer();
           if (!this.isBlob(url) && this.isHttps(url) &&
-              !this.isAdminValid(url) && !/.*kmz$/.test(url)) {
+              // It's 2019, but we still to check for CORS within *.geo.admin.ch
+              // !this.isAdminValid(url) && 
+              !/.*kmz$/.test(url)) {
             this.isCorsEnabled(url).then(function(enabled) {
               deferred.resolve(url);
             }, function() {
