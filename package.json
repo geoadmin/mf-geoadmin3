@@ -31,7 +31,7 @@
     "angular": "1.7.8",
     "angular-translate": "2.18.1",
     "corejs-typeahead": "v1.2.1",
-    "d3": "5.9.1",
+    "d3": "5.9.2",
     "fastclick": "1.0.6",
     "gyronorm": "2.0.6",
     "jquery-ajax-transport-xdomainrequest": "1.0.4",
@@ -41,14 +41,13 @@
     "tinycolor2": "1.4.1"
   },
   "devDependencies": {
-    "caniuse-db": "1.0.30000943",
     "angular-mocks": "1.7.8",
-    "autoprefixer": "9.4.10",
+    "autoprefixer": "9.5.0",
     "babel-cli": "^6.24.1",
     "babel-preset-env": "^1.4.0",
     "bootstrap": "3.4.1",
     "commander": "2.19.0",
-    "eslint": "5.15.1",
+    "eslint": "5.15.3",
     "eslint-config-standard": "12.0.0",
     "eslint-plugin-import": "2.14.0",
     "eslint-plugin-node": "8.0.0",
@@ -69,6 +68,6 @@
     "ng-annotate": "1.2.2",
     "postcss-cli": "6.1.2",
     "phantomjs-prebuilt": "2.1.16",
-    "sinon": "7.2.7"
+    "sinon": "7.3.0"
   }
 }
