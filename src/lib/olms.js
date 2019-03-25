@@ -548,6 +548,13 @@ function updateRasterLayerProperties(glLayer, layer, view) {
 function processStyle(glStyle, map, baseUrl, host, path, accessToken) {
   var promises = [];
   var view = map.getView();
+  if (!view.isDef() && !view.getRotation() && !view.getResolutions()) {
+    view = new ol_View__WEBPACK_IMPORTED_MODULE_7___default.a({
+      resolutions: _util__WEBPACK_IMPORTED_MODULE_18__["defaultResolutions"]
+    });
+    map.setView(view);
+  }
+
   if ('center' in glStyle && !view.getCenter()) {
     view.setCenter(Object(ol_proj__WEBPACK_IMPORTED_MODULE_3__["fromLonLat"])(glStyle.center));
   }
@@ -663,10 +670,7 @@ function olms(map, style) {
 
   if (!(map instanceof ol_Map__WEBPACK_IMPORTED_MODULE_6___default.a)) {
     map = new ol_Map__WEBPACK_IMPORTED_MODULE_6___default.a({
-      target: map,
-      view: new ol_View__WEBPACK_IMPORTED_MODULE_7___default.a({
-        resolutions: _util__WEBPACK_IMPORTED_MODULE_18__["defaultResolutions"]
-      })
+      target: map
     });
   }
 
@@ -20540,21 +20544,15 @@ function evaluateFilter(layerId, filter, feature, zoom) {
   return filterCache[layerId](zoomObj, feature);
 }
 
-var colorCache = {};
 function colorWithOpacity(color, opacity) {
-  if (color && opacity !== undefined) {
+  if (color) {
     if (color.a === 0 || opacity === 0) {
       return undefined;
     }
-    var colorData = colorCache[color];
-    if (!colorData) {
-      colorCache[color] = colorData = {
-        color: color.toArray(),
-        opacity: color.a
-      };
-    }
-    color = colorData.color;
-    color[3] = colorData.opacity * opacity;
+    var a = color.a;
+    opacity = opacity === undefined ? 1 : opacity;
+    return 'rgba(' + Math.round(color.r * 255 / a) + ',' + Math.round(color.g * 255 / a) +
+      ',' + Math.round(color.b * 255 / a) + ',' + (a * opacity) + ')';
   }
   return color;
 }
@@ -21184,7 +21182,7 @@ function wrapText(text, font, em, letterSpacing) {
       // Pass 2 - add lines with a width of less than 30% of maxWidth to the previous or next line
       for (var i$1 = 0, ii$1 = lines.length; i$1 < ii$1; ++i$1) {
         var line$1 = lines[i$1];
-        if (measureText(line$1, letterSpacing) < maxWidth * 0.3) {
+        if (measureText(line$1, letterSpacing) < maxWidth * 0.35) {
           var prevWidth = i$1 > 0 ? measureText(lines[i$1 - 1], letterSpacing) : Infinity;
           var nextWidth = i$1 < ii$1 - 1 ? measureText(lines[i$1 + 1], letterSpacing) : Infinity;
           lines.splice(i$1, 1);
