@@ -155,27 +155,6 @@ test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.j
 	mkdir -p $(dir $@)
 	touch $@
 
-.PHONY: build-olcesium
-build-olcesiums:
-	$(MAKE) -C libs build-ol-cesium
-	$(MAKE) olcesium
-
-.PHONY: build-olms
-build-olms:
-	$(MAKE) -C libs build-ol-mapbox-style
-
-.PHONY: clean-libs
-clean-libs:
-	$(MAKE) -C libs clean
-
-.PHONY: build-libs
-build-libs:
-	$(MAKE) -C libs all
-
-.PHONY: install-libs
-install-libs: 
-	cp libs/ol-mapbox-style/dist/olms-debug.js src/lib/olms.js
-
 # This should be run once when starting to work on mvt_clean
 # or any descendant branch
 .PHONY: init-submodules
@@ -185,13 +164,21 @@ init-submodules:
 	git submodule init
 	git submodule update
 
+.PHONY: build-cesium
+build-cesium:
+	$(MAKE) -C libs build-cesium;
+
 .PHONY: build-olcesium
-build-olcesiums:
-	$(MAKE) -C libs build-ol-cesium
+build-olcesiums: build-openlayers
+	$(MAKE) -C libs build-ol-cesium; \
 
 .PHONY: build-olms
 build-olms:
-	$(MAKE) -C libs build-ol-mapbox-style
+	$(MAKE) -C libs build-ol-mapbox-style; \
+
+.PHONY: build-openlayers
+build-openlayers:
+	$(MAKE) -C libs build-openlayers
 
 .PHONY: clean-libs
 clean-libs:
@@ -203,6 +190,16 @@ build-libs:
 
 .PHONY: install-libs
 install-libs: build-libs
+	# Cesium
+	rm -r src/lib/Cesium; \
+	cp -r libs/cesium/Build/CesiumUnminified src/lib/Cesium; \
+	cp libs/cesium/Build/Cesium/Cesium.js src/lib/Cesium.min.js; \
+	$(call moveto,libs/cesium/Build/Cesium/Workers/*.js,src/lib/Cesium/Workers/,'.js','.min.js') \
+	$(call moveto,libs/cesium/Build/Cesium/ThirdParty/Workers/*.js,src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js') \
+	# OL-Cesium (incorporate OpenLayers)
+	cat libs/openlayers/build/legacy/ol.js libs/ol-cesium/dist/olcesium.js > src/lib/olcesium.js; \
+	cat libs/openlayers/build/legacy/ol.js libs/ol-cesium/dist/olcesium-debug.js > src/lib/olcesium-debug.js; \
+	# OL-mapbox-style
 	cp libs/ol-mapbox-style/dist/olms-debug.js src/lib/olms.js
 
 .build-artefacts/app.js: .build-artefacts/js-files

@@ -19,7 +19,7 @@ ol-mapbox-style/dist/olms-debug.js: ol-mapbox-style/node_modules/
 
 .PHONY: build-ol-mapbox-style
 build-ol-mapbox-style: ol-mapbox-style/dist/olms.js \
-	ol-mapbox-style/dist/olms-debug.js
+                       ol-mapbox-style/dist/olms-debug.js
 
 .PHONY: clean-ol-mapbox-style
 clean-ol-mapbox-style:
@@ -37,17 +37,23 @@ clean-ol-mapbox-style:
 cesium/.git:
 	git submodule init && git submodule update
 
-.PHONY: build-cesium
-build-cesium: cesium/.git
-	cd cesium; \
-	npm install; \
+cesium/node_modules: cesium/.git
+	cd cesium/; \
+	npm install;
+
+cesium/Build/Cesium/Cesium.js: cesium/node_modules
+	cd cesium/; \
 	npm run combineRelease; \
 	npm run minifyRelease; \
-	rm -r ../../src/lib/Cesium; \
-	cp -r Build/CesiumUnminified ../../src/lib/Cesium; \
-	cp Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js; \
-	$(call moveto,Build/Cesium/Workers/*.js,../../src/lib/Cesium/Workers/,'.js','.min.js') \
-	$(call moveto,Build/Cesium/ThirdParty/Workers/*.js,../../src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js')
+
+.PHONY: build-cesium
+build-cesium: cesium/Build/Cesium/Cesium.js
+
+.PHONY: clean-cesium
+clean-cesium:
+	@echo "Cleaning Cesium..."
+	rm -rf cesium/node_modules/ && \
+	rm -rf cesium/Build/ 
 
 ###################################################
 #                OpenLayers
@@ -58,16 +64,38 @@ build-cesium: cesium/.git
 openlayers/.git:
 	git submodule init && git submodule update
 
-build-openlayers: openlayers/.git
+openlayers/node_modules: openlayers/.git
 	cd openlayers/; \
-	npm install; \
-	npm run build-legacy # having tons of jsdoc parsing errors is normal
-	webpack --mode=development --config config/webpack-config-legacy-build.js -o build/legacy/ol-debug.js
+	npm install;
 
+openlayers/build/legacy/ol.js: openlayers/node_modules
+	cd openlayers/; \
+	npm run build-legacy;
+
+openlayers/build/legacy/ol-debug.js: openlayers/node_modules
+	cd openlayers/; \
+	webpack-cli --mode=development --config config/webpack-config-legacy-build.js --output-filename ol-debug.js
+
+.PHONY: build-openlayers
+build-openlayers: openlayers/build/legacy/ol.js \
+                  openlayers/build/legacy/ol-debug.js
+	# cleanup after build, otherwise repo is modified
+	rm openlayers/package-lock.json
+
+.PHONY: clean-openlayers
+clean-openlayers:
+	@echo "Cleaning openlayers..."
+	rm -rf openlayers/node_modules; \
+	rm -rf openlayers/build;
 
 ###################################################
 #                 OL-Cesium
 ###################################################
+
+.PHONY: copy-olcesium-plugins
+copy-olcesium-plugins:
+	cp -r olcesium-plugin/Ga* ol-cesium/src/olcs/; \
+	cp olcesium-plugin/index.library.js ol-cesium/src/; \
 
 # This has just to be done if the submodule
 # has never been checked out before
@@ -76,29 +104,24 @@ ol-cesium/.git:
 
 # Steps to build olcesium.js and olcesium-debug.js
 ol-cesium/node_modules/: ol-cesium/.git
-	cd ol-cesium && npm install;
+	cd ol-cesium && npm install
 
-ol-cesium/dist/olcesium.js: ol-cesium/node_modules/
+ol-cesium/dist/olcesium.js: ol-cesium/node_modules/ \
+                            copy-olcesium-plugins
 	cd ol-cesium && npm run build-library
 
-ol-cesium/dist/olcesium-debug.js: ol-cesium/node_modules/
+ol-cesium/dist/olcesium-debug.js: ol-cesium/node_modules/ \
+                                  copy-olcesium-plugins
 	cd ol-cesium && npm run build-library-debug
 
 .PHONY: build-ol-cesium
 build-ol-cesium: ol-cesium/dist/olcesium.js \
-                 ol-cesium/dist/olcesium-debug.js
-olcesium:  openlayers libs/olcesium/dist/
-	if ! [ -f "cesium/Build/Cesium/Cesium.js" ]; then $(MAKE) build-cesium; else echo 'Cesium already built'; fi; \
-	cd ol-cesium/; \
-	cp -r ../../olcesium-plugin/Ga* src/olcs/; \
-	cp ../../olcesium-plugin/index.library.js src/; \
-	npm install; \
-	npm run build-library; \
-	cat ../openlayers/build/legacy/ol.js dist/olcesium.js > ../../src/lib/olcesium.js; \
-	npm run build-library-debug; \
-	cat ../openlayers/build/legacy/ol-debug.js dist/olcesium-debug.js > ../../src/lib/olcesium-debug.js; \
-
-
+                 ol-cesium/dist/olcesium-debug.js \
+                 openlayers/build/legacy/ol.js
+	# cleanup after build, otherwise repo is modified
+	cd ol-cesium; \
+	rm src/olcs/Ga*; \
+	git reset --hard;
 
 .PHONY: clean-ol-cesium
 clean-ol-cesium:
@@ -107,16 +130,22 @@ clean-ol-cesium:
 	rm -rf ol-cesium/dist/ 
 
 
+###################################################
+#                 Globals
+###################################################
+
 # Build all libraries
 .PHONY: all
-all: ol-mapbox-style/dist/olms.js \
-	ol-mapbox-style/dist/olms-debug.js \
-	ol-cesium/dist/olcesium.js \
-	ol-cesium/dist/olcesium-debug.js
+all: build-openlayers \
+     build-ol-mapbox-style \
+     build-cesium \
+     build-ol-cesium
 
-
-clean: clean-ol-mapbox-style \
-	clean-ol-cesium
+.PHONY: clean
+clean: clean-openlayers \
+       clean-ol-mapbox-style \
+       clean-cesium \
+       clean-ol-cesium
 	@echo "Cleanup finished!"
 
 
