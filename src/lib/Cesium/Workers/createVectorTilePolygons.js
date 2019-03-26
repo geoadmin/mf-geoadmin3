@@ -4024,78 +4024,6 @@ define('Core/Fullscreen',[
     return Fullscreen;
 });
 
-define('Core/RuntimeError',[
-        './defined'
-    ], function(
-        defined) {
-    'use strict';
-
-    /**
-     * Constructs an exception object that is thrown due to an error that can occur at runtime, e.g.,
-     * out of memory, could not compile shader, etc.  If a function may throw this
-     * exception, the calling code should be prepared to catch it.
-     * <br /><br />
-     * On the other hand, a {@link DeveloperError} indicates an exception due
-     * to a developer error, e.g., invalid argument, that usually indicates a bug in the
-     * calling code.
-     *
-     * @alias RuntimeError
-     * @constructor
-     * @extends Error
-     *
-     * @param {String} [message] The error message for this exception.
-     *
-     * @see DeveloperError
-     */
-    function RuntimeError(message) {
-        /**
-         * 'RuntimeError' indicating that this exception was thrown due to a runtime error.
-         * @type {String}
-         * @readonly
-         */
-        this.name = 'RuntimeError';
-
-        /**
-         * The explanation for why this exception was thrown.
-         * @type {String}
-         * @readonly
-         */
-        this.message = message;
-
-        //Browsers such as IE don't have a stack property until you actually throw the error.
-        var stack;
-        try {
-            throw new Error();
-        } catch (e) {
-            stack = e.stack;
-        }
-
-        /**
-         * The stack trace of this exception, if available.
-         * @type {String}
-         * @readonly
-         */
-        this.stack = stack;
-    }
-
-    if (defined(Object.create)) {
-        RuntimeError.prototype = Object.create(Error.prototype);
-        RuntimeError.prototype.constructor = RuntimeError;
-    }
-
-    RuntimeError.prototype.toString = function() {
-        var str = this.name + ': ' + this.message;
-
-        if (defined(this.stack)) {
-            str += '\n' + this.stack.toString();
-        }
-
-        return str;
-    };
-
-    return RuntimeError;
-});
-
 /**
   @license
   when.js - https://github.com/cujojs/when
@@ -4851,7 +4779,6 @@ define('Core/FeatureDetection',[
         './defineProperties',
         './DeveloperError',
         './Fullscreen',
-        './RuntimeError',
         '../ThirdParty/when'
     ], function(
         defaultValue,
@@ -4859,7 +4786,6 @@ define('Core/FeatureDetection',[
         defineProperties,
         DeveloperError,
         Fullscreen,
-        RuntimeError,
         when) {
     'use strict';
     /*global CanvasPixelArray*/
@@ -11031,6 +10957,78 @@ define('Core/Cartesian4',[
     };
 
     return Cartesian4;
+});
+
+define('Core/RuntimeError',[
+        './defined'
+    ], function(
+        defined) {
+    'use strict';
+
+    /**
+     * Constructs an exception object that is thrown due to an error that can occur at runtime, e.g.,
+     * out of memory, could not compile shader, etc.  If a function may throw this
+     * exception, the calling code should be prepared to catch it.
+     * <br /><br />
+     * On the other hand, a {@link DeveloperError} indicates an exception due
+     * to a developer error, e.g., invalid argument, that usually indicates a bug in the
+     * calling code.
+     *
+     * @alias RuntimeError
+     * @constructor
+     * @extends Error
+     *
+     * @param {String} [message] The error message for this exception.
+     *
+     * @see DeveloperError
+     */
+    function RuntimeError(message) {
+        /**
+         * 'RuntimeError' indicating that this exception was thrown due to a runtime error.
+         * @type {String}
+         * @readonly
+         */
+        this.name = 'RuntimeError';
+
+        /**
+         * The explanation for why this exception was thrown.
+         * @type {String}
+         * @readonly
+         */
+        this.message = message;
+
+        //Browsers such as IE don't have a stack property until you actually throw the error.
+        var stack;
+        try {
+            throw new Error();
+        } catch (e) {
+            stack = e.stack;
+        }
+
+        /**
+         * The stack trace of this exception, if available.
+         * @type {String}
+         * @readonly
+         */
+        this.stack = stack;
+    }
+
+    if (defined(Object.create)) {
+        RuntimeError.prototype = Object.create(Error.prototype);
+        RuntimeError.prototype.constructor = RuntimeError;
+    }
+
+    RuntimeError.prototype.toString = function() {
+        var str = this.name + ': ' + this.message;
+
+        if (defined(this.stack)) {
+            str += '\n' + this.stack.toString();
+        }
+
+        return str;
+    };
+
+    return RuntimeError;
 });
 
 define('Core/Matrix4',[
@@ -21415,6 +21413,7 @@ define('Core/Resource',[
         './deprecationWarning',
         './DeveloperError',
         './freezeObject',
+        './FeatureDetection',
         './getAbsoluteUri',
         './getBaseUri',
         './getExtensionFromUri',
@@ -21443,6 +21442,7 @@ define('Core/Resource',[
         deprecationWarning,
         DeveloperError,
         freezeObject,
+        FeatureDetection,
         getAbsoluteUri,
         getBaseUri,
         getExtensionFromUri,
@@ -21773,6 +21773,47 @@ define('Core/Resource',[
         return new Resource({
             url: resource
         });
+    };
+
+    var supportsImageBitmapOptionsPromise;
+    /**
+     * A helper function to check whether createImageBitmap supports passing ImageBitmapOptions.
+     *
+     * @returns {Promise<Boolean>} A promise that resolves to true if this browser supports creating an ImageBitmap with options.
+     *
+     * @private
+     */
+    Resource.supportsImageBitmapOptions = function() {
+        // Until the HTML folks figure out what to do about this, we need to actually try loading an image to
+        // know if this browser supports passing options to the createImageBitmap function.
+        // https://github.com/whatwg/html/pull/4248
+        if (defined(supportsImageBitmapOptionsPromise)) {
+            return supportsImageBitmapOptionsPromise;
+        }
+
+        if (typeof createImageBitmap !== 'function') {
+            supportsImageBitmapOptionsPromise = when.resolve(false);
+            return supportsImageBitmapOptionsPromise;
+        }
+
+        var imageDataUri = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWP4////fwAJ+wP9CNHoHgAAAABJRU5ErkJggg==';
+
+        supportsImageBitmapOptionsPromise = Resource.fetchBlob({
+            url : imageDataUri
+        })
+            .then(function(blob) {
+                return createImageBitmap(blob, {
+                    imageOrientation: 'flipY'
+                });
+            })
+            .then(function(imageBitmap) {
+                return true;
+            })
+            .otherwise(function() {
+                return false;
+            });
+
+        return supportsImageBitmapOptionsPromise;
     };
 
     defineProperties(Resource, {
@@ -22228,10 +22269,13 @@ define('Core/Resource',[
 
     /**
      * Asynchronously loads the given image resource.  Returns a promise that will resolve to
-     * an {@link Image} once loaded, or reject if the image failed to load.
+     * an {@link https://developer.mozilla.org/en-US/docs/Web/API/ImageBitmap|ImageBitmap} if the browser supports `createImageBitmap` or otherwise an
+     * {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement|Image} once loaded, or reject if the image failed to load.
      *
-     * @param {Boolean} [preferBlob = false]  If true, we will load the image via a blob.
-     * @returns {Promise.<Image>|undefined} a promise that will resolve to the requested data when loaded. Returns undefined if <code>request.throttle</code> is true and the request does not have high enough priority.
+     * @param {Object} [options] An object with the following properties.
+     * @param {Boolean} [options.preferBlob=false] If true, we will load the image via a blob.
+     * @param {Boolean} [options.flipY=true] If true, image will be vertially flipped during decode. Only applies if the browser supports `createImageBitmap`.
+     * @returns {Promise.<ImageBitmap>|Promise.<Image>|undefined} a promise that will resolve to the requested data when loaded. Returns undefined if <code>request.throttle</code> is true and the request does not have high enough priority.
      *
      *
      * @example
@@ -22250,8 +22294,16 @@ define('Core/Resource',[
      * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
      * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
-    Resource.prototype.fetchImage = function (preferBlob) {
-        preferBlob = defaultValue(preferBlob, false);
+    Resource.prototype.fetchImage = function (options) {
+        if (typeof options === 'boolean') {
+            deprecationWarning('fetchImage-parameter-change', 'fetchImage now takes an options object in CesiumJS 1.56. Use resource.fetchImage({ preferBlob: true }) instead of resource.fetchImage(true).');
+            options = {
+                preferBlob : options
+            };
+        }
+        options = defaultValue(options, defaultValue.EMPTY_OBJECT);
+        var preferBlob = defaultValue(options.preferBlob, false);
+        var flipY = defaultValue(options.flipY, true);
 
         checkAndResetRequest(this.request);
 
@@ -22261,7 +22313,7 @@ define('Core/Resource',[
         // 3. It's a blob URI
         // 4. It doesn't have request headers and we preferBlob is false
         if (!xhrBlobSupported || this.isDataUri || this.isBlobUri || (!this.hasHeaders && !preferBlob)) {
-            return fetchImage(this, true);
+            return fetchImage(this, flipY);
         }
 
         var blobPromise = this.fetchBlob();
@@ -22269,12 +22321,20 @@ define('Core/Resource',[
             return;
         }
 
+        var supportsImageBitmap;
         var generatedBlobResource;
         var generatedBlob;
-        return blobPromise
+        return Resource.supportsImageBitmapOptions()
+            .then(function(result) {
+                supportsImageBitmap = result;
+                return blobPromise;
+            })
             .then(function(blob) {
                 if (!defined(blob)) {
                     return;
+                }
+                if (supportsImageBitmap) {
+                    return Resource._Implementations.createImageBitmapFromBlob(blob, flipY);
                 }
                 generatedBlob = blob;
                 var blobUrl = window.URL.createObjectURL(blob);
@@ -22282,11 +22342,14 @@ define('Core/Resource',[
                     url: blobUrl
                 });
 
-                return fetchImage(generatedBlobResource);
+                return fetchImage(generatedBlobResource, flipY);
             })
             .then(function(image) {
                 if (!defined(image)) {
                     return;
+                }
+                if (supportsImageBitmap) {
+                    return image;
                 }
                 window.URL.revokeObjectURL(generatedBlobResource.url);
 
@@ -22304,7 +22367,7 @@ define('Core/Resource',[
             });
     };
 
-    function fetchImage(resource) {
+    function fetchImage(resource, flipY) {
         var request = resource.request;
         request.url = resource.url;
         request.requestFunction = function() {
@@ -22318,7 +22381,7 @@ define('Core/Resource',[
 
             var deferred = when.defer();
 
-            Resource._Implementations.createImage(url, crossOrigin, deferred);
+            Resource._Implementations.createImage(url, crossOrigin, deferred, flipY);
 
             return deferred.promise;
         };
@@ -22342,7 +22405,7 @@ define('Core/Resource',[
                             request.state = RequestState.UNISSUED;
                             request.deferred = undefined;
 
-                            return fetchImage(resource);
+                            return fetchImage(resource, flipY);
                         }
 
                         return when.reject(e);
@@ -22359,15 +22422,19 @@ define('Core/Resource',[
      * @param {Object} [options.templateValues] Key/Value pairs that are used to replace template values (eg. {x}).
      * @param {Object} [options.headers={}] Additional HTTP headers that will be sent.
      * @param {DefaultProxy} [options.proxy] A proxy to be used when loading the resource.
+     * @param {Boolean} [options.flipY = true] Whether to vertically flip the image during fetch and decode. Only applies when requesting an image and the browser supports createImageBitmap.
      * @param {Resource~RetryCallback} [options.retryCallback] The Function to call when a request for this resource fails. If it returns true, the request will be retried.
      * @param {Number} [options.retryAttempts=0] The number of times the retryCallback should be called before giving up.
      * @param {Request} [options.request] A Request object that will be used. Intended for internal use only.
      * @param {Boolean} [options.preferBlob = false]  If true, we will load the image via a blob.
-     * @returns {Promise.<Image>|undefined} a promise that will resolve to the requested data when loaded. Returns undefined if <code>request.throttle</code> is true and the request does not have high enough priority.
+     * @returns {Promise.<ImageBitmap>|Promise.<Image>|undefined} a promise that will resolve to the requested data when loaded. Returns undefined if <code>request.throttle</code> is true and the request does not have high enough priority.
      */
     Resource.fetchImage = function (options) {
         var resource = new Resource(options);
-        return resource.fetchImage(options.preferBlob);
+        return resource.fetchImage({
+            flipY: options.flipY,
+            preferBlob: options.preferBlob
+        });
     };
 
     /**
@@ -23153,7 +23220,7 @@ define('Core/Resource',[
      */
     Resource._Implementations = {};
 
-    Resource._Implementations.createImage = function(url, crossOrigin, deferred) {
+    function loadImageElement(url, crossOrigin, deferred) {
         var image = new Image();
 
         image.onload = function() {
@@ -23173,6 +23240,55 @@ define('Core/Resource',[
         }
 
         image.src = url;
+    }
+
+    Resource._Implementations.createImage = function(url, crossOrigin, deferred, flipY) {
+        // Passing an Image to createImageBitmap will force it to run on the main thread
+        // since DOM elements don't exist on workers. We convert it to a blob so it's non-blocking.
+        // See:
+        //    https://bugzilla.mozilla.org/show_bug.cgi?id=1044102#c38
+        //    https://bugs.chromium.org/p/chromium/issues/detail?id=580202#c10
+        Resource.supportsImageBitmapOptions()
+            .then(function(result) {
+                // We can only use ImageBitmap if we can flip on decode.
+                // See: https://github.com/AnalyticalGraphicsInc/cesium/pull/7579#issuecomment-466146898
+                if (!result) {
+                    loadImageElement(url, crossOrigin, deferred);
+                    return;
+                }
+
+                return Resource.fetchBlob({
+                    url: url
+                });
+            })
+            .then(function(blob) {
+                if (!defined(blob)) {
+                    return;
+                }
+
+                return Resource._Implementations.createImageBitmapFromBlob(blob, flipY);
+            })
+            .then(function(imageBitmap) {
+                if (!defined(imageBitmap)) {
+                    return;
+                }
+
+                deferred.resolve(imageBitmap);
+            })
+            .otherwise(deferred.reject);
+    };
+
+    Resource._Implementations.createImageBitmapFromBlob = function(blob, flipY) {
+        return Resource.supportsImageBitmapOptions()
+            .then(function(result) {
+                if (!result) {
+                    return createImageBitmap(blob);
+                }
+
+                return createImageBitmap(blob, {
+                    imageOrientation: flipY ? 'flipY' : 'none'
+                });
+            });
     };
 
     function decodeResponse(loadWithHttpResponse, responseType) {
@@ -23804,7 +23920,7 @@ define('Core/HeadingPitchRoll',[
         var numeratorHeading = 2 * (quaternion.w * quaternion.z + quaternion.x * quaternion.y);
         result.heading = -Math.atan2(numeratorHeading, denominatorHeading);
         result.roll = Math.atan2(numeratorRoll, denominatorRoll);
-        result.pitch = -Math.asin(test);
+        result.pitch = -CesiumMath.asinClamped(test);
         return result;
     };
 
