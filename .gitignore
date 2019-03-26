@@ -48,5 +48,8 @@ rc_user_*
 *.swp
 *.pyc
 
+# Sublime
+*.sublime-*
+
 # Git patch failed
 *.rej
