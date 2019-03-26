@@ -191,7 +191,11 @@ install-ol-cesium: build-ol-cesium
 
 .PHONY: build-olms
 build-olms:
-	$(MAKE) -C libs build-ol-mapbox-style
+	$(MAKE) -C libs build-ol-mapbox-style; \
+
+.PHONY: build-openlayers
+build-openlayers:
+	$(MAKE) -C libs build-openlayers
 
 .PHONY: install-olms
 install-olms: build-olms
