@@ -1,3 +1,7 @@
+###################################################
+#                 OL-Mapbox style
+###################################################
+
 # This has just to be done if the submodule
 # has never been checked out before
 ol-mapbox-style/.git:
@@ -24,6 +28,47 @@ clean-ol-mapbox-style:
 	rm -rf ol-mapbox-style/dist/ 
 
 
+###################################################
+#                CesiumJS
+###################################################
+
+# This has just to be done if the submodule
+# has never been checked out before
+cesium/.git:
+	git submodule init && git submodule update
+
+.PHONY: build-cesium
+build-cesium: cesium/.git
+	cd cesium; \
+	npm install; \
+	npm run combineRelease; \
+	npm run minifyRelease; \
+	rm -r ../../src/lib/Cesium; \
+	cp -r Build/CesiumUnminified ../../src/lib/Cesium; \
+	cp Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js; \
+	$(call moveto,Build/Cesium/Workers/*.js,../../src/lib/Cesium/Workers/,'.js','.min.js') \
+	$(call moveto,Build/Cesium/ThirdParty/Workers/*.js,../../src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js')
+
+###################################################
+#                OpenLayers
+###################################################
+
+# This has just to be done if the submodule
+# has never been checked out before
+openlayers/.git:
+	git submodule init && git submodule update
+
+build-openlayers: openlayers/.git
+	cd openlayers/; \
+	npm install; \
+	npm run build-legacy # having tons of jsdoc parsing errors is normal
+	webpack --mode=development --config config/webpack-config-legacy-build.js -o build/legacy/ol-debug.js
+
+
+###################################################
+#                 OL-Cesium
+###################################################
+
 # This has just to be done if the submodule
 # has never been checked out before
 ol-cesium/.git:
@@ -41,7 +86,19 @@ ol-cesium/dist/olcesium-debug.js: ol-cesium/node_modules/
 
 .PHONY: build-ol-cesium
 build-ol-cesium: ol-cesium/dist/olcesium.js \
-	ol-cesium/dist/olcesium-debug.js
+                 ol-cesium/dist/olcesium-debug.js
+olcesium:  openlayers libs/olcesium/dist/
+	if ! [ -f "cesium/Build/Cesium/Cesium.js" ]; then $(MAKE) build-cesium; else echo 'Cesium already built'; fi; \
+	cd ol-cesium/; \
+	cp -r ../../olcesium-plugin/Ga* src/olcs/; \
+	cp ../../olcesium-plugin/index.library.js src/; \
+	npm install; \
+	npm run build-library; \
+	cat ../openlayers/build/legacy/ol.js dist/olcesium.js > ../../src/lib/olcesium.js; \
+	npm run build-library-debug; \
+	cat ../openlayers/build/legacy/ol-debug.js dist/olcesium-debug.js > ../../src/lib/olcesium-debug.js; \
+
+
 
 .PHONY: clean-ol-cesium
 clean-ol-cesium:

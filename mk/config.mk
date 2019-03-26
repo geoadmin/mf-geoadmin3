@@ -16,13 +16,6 @@ USER_SOURCE ?= rc_user
 # mf-geoadmin3 or mvt_clean
 PROJECT ?= mf-geoadmin3
 
-# Map libs variables
-OL_VERSION ?= 84bf801# 2019-03-19 (mind the absence of a space character after the version)
-OL_CESIUM_VERSION ?= b78d0fef90049136a833d969e8e49e5a81a3dd56 # 2019-03-19
-CESIUM_VERSION ?= f3caa601ec64eae100e0cd4dc0b3667f2a71b85e # Cesium 1.55, 2019-03-01
-GEOBLOCKS_LEGACYLIB_VERSION ?= 0101a217be1b7525be8d590910fb8f70295194be # September 24 2018
-
-
 # Info variables
 USER_NAME ?= $(shell id -un)
 GIT_COMMIT_HASH ?= $(shell git rev-parse --verify HEAD)

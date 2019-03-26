@@ -158,6 +158,7 @@ test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.j
 .PHONY: build-olcesium
 build-olcesiums:
 	$(MAKE) -C libs build-ol-cesium
+	$(MAKE) olcesium
 
 .PHONY: build-olms
 build-olms:
