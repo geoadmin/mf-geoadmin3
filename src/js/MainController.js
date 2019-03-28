@@ -54,10 +54,9 @@ goog.require('ga_window_service');
         '<i class="fa fa-ga-circle"></i>' +
         '<i class="fa fa-ga-zoom-minus"></i>' +
       '</span>';
-
       var map = new ol.Map({
         moveTolerance: 5,
-        controls: ol.control.util.defaults({
+        controls: ol.control.defaults({
           attribution: false,
           rotate: false,
           zoomOptions: {

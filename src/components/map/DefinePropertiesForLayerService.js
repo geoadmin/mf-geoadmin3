@@ -121,7 +121,9 @@ goog.provide('ga_definepropertiesforlayer_service');
           },
           time: {
             get: function() {
-              if (this instanceof ol.layer.Layer) {
+              if (this instanceof ol.layer.Tile ||
+                  this instanceof ol.layer.Image ||
+                  this instanceof ol.layer.Vector) {
                 var src = this.getSource();
                 if (src instanceof ol.source.WMTS) {
                   return src.getDimensions().Time;
@@ -138,7 +140,9 @@ goog.provide('ga_definepropertiesforlayer_service');
                 // event.
                 return;
               }
-              if (this instanceof ol.layer.Layer) {
+              if (this instanceof ol.layer.Tile ||
+                  this instanceof ol.layer.Image ||
+                  this instanceof ol.layer.Vector) {
                 var src = this.getSource();
                 if (src instanceof ol.source.WMTS) {
                   src.updateDimensions({'Time': val});

@@ -166,15 +166,15 @@ init-submodules:
 
 .PHONY: build-cesium
 build-cesium:
-	$(MAKE) -C libs build-cesium;
+	$(MAKE) -C libs build-cesium
 
 .PHONY: build-olcesium
 build-olcesiums: build-openlayers
-	$(MAKE) -C libs build-ol-cesium; \
+	$(MAKE) -C libs build-ol-cesium
 
 .PHONY: build-olms
 build-olms:
-	$(MAKE) -C libs build-ol-mapbox-style; \
+	$(MAKE) -C libs build-ol-mapbox-style
 
 .PHONY: build-openlayers
 build-openlayers:
