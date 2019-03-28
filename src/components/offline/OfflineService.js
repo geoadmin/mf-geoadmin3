@@ -76,7 +76,8 @@ goog.require('ga_window_service');
 
       // Defines if a layer is cacheable at a specific data zoom level.
       var isCacheableLayer = function(layer, z) {
-        if (layer.getSource() instanceof ol.source.UrlTile &&
+        if ((layer.getSource() instanceof ol.source.VectorTile ||
+              layer.getSource() instanceof ol.source.TileImage) &&
             layer.getSource().getTileGrid()) {
           var resolutions = layer.getSource().getTileGrid().getResolutions();
           var max = layer.getMaxResolution() || resolutions[0];

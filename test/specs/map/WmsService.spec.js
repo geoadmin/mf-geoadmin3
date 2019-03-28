@@ -199,11 +199,11 @@ describe('ga_wms_service', function() {
         var idx = 2;
         var params = {LAYERS: 'some'};
         var options = {label: 'somelabel', url: 'https://wms.ch'};
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
+        map.addLayer(new ol.layer.Tile({}));
+        map.addLayer(new ol.layer.Tile({}));
+        map.addLayer(new ol.layer.Tile({}));
+        map.addLayer(new ol.layer.Tile({}));
+        map.addLayer(new ol.layer.Tile({}));
         gaWms.addWmsToMap(map, params, options, idx);
         expect(map.getLayers().getLength()).to.be(6);
 

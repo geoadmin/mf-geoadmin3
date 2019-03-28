@@ -281,9 +281,9 @@ goog.require('ga_urlutils_service');
           if (!olLayerOrId) {
             return false;
           }
-          if (olLayerOrId instanceof ol.layer.Tile
-              || olLayerOrId instanceof ol.layer.Image
-              || olLayerOrId instanceof ol.layer.Vector) {
+          if (olLayerOrId instanceof ol.layer.Tile ||
+              olLayerOrId instanceof ol.layer.Image ||
+              olLayerOrId instanceof ol.layer.Vector) {
             olLayerOrId = olLayerOrId.id;
           }
           if (angular.isString(olLayerOrId)) {
@@ -305,9 +305,9 @@ goog.require('ga_urlutils_service');
           if (!olLayerOrId) {
             return false;
           }
-          if (olLayerOrId instanceof ol.layer.Tile
-              || olLayerOrId instanceof ol.layer.Image
-              || olLayerOrId instanceof ol.layer.Vector) {
+          if (olLayerOrId instanceof ol.layer.Tile ||
+              olLayerOrId instanceof ol.layer.Image ||
+              olLayerOrId instanceof ol.layer.Vector) {
             olLayerOrId = olLayerOrId.id;
           }
           if (angular.isString(olLayerOrId)) {
@@ -353,9 +353,9 @@ goog.require('ga_urlutils_service');
           if (!olLayerOrId) {
             return false;
           }
-          if (olLayerOrId instanceof ol.layer.Tile
-              || olLayerOrId instanceof ol.layer.Image
-              || olLayerOrId instanceof ol.layer.Vector) {
+          if (olLayerOrId instanceof ol.layer.Tile ||
+              olLayerOrId instanceof ol.layer.Image ||
+              olLayerOrId instanceof ol.layer.Vector) {
             olLayerOrId = olLayerOrId.id;
           }
           if (angular.isString(olLayerOrId)) {

@@ -57,7 +57,7 @@ describe('ga_background_service', function() {
             return 'label';
           },
           getOlLayerById: function(id, opts) {
-            var l = new ol.layer.Layer({});
+            var l = new ol.layer.Tile({});
             l.id = id;
             l.externalStyleUrl = opts && opts.externalStyleUrl;
             return l;

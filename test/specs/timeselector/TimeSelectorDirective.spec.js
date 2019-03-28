@@ -100,7 +100,7 @@ describe('ga_timeselector_directive', function() {
       loadDirective(map);
       scope.$broadcast('gaTimeChange');
       expect(elt.hasClass('ga-time-selector-enabled')).to.be(false);
-      var l = new ol.layer.Layer({});
+      var l = new ol.layer.Tile({});
       l.timeEnabled = true;
       l.visible = true;
       scope.map.addLayer(l);
@@ -113,10 +113,10 @@ describe('ga_timeselector_directive', function() {
       loadDirective(map);
       expect(scope.layers.length).to.be(0);
 
-      var l = new ol.layer.Layer({});
+      var l = new ol.layer.Tile({});
       l.timeEnabled = true;
       l.visible = true;
-      var l2 = new ol.layer.Layer({});
+      var l2 = new ol.layer.Tile({});
       scope.map.addLayer(l2);
       $rootScope.$digest();
       expect(scope.layers.length).to.be(1);
@@ -203,7 +203,7 @@ describe('ga_timeselector_directive', function() {
         injectServices($injector);
       });
 
-      l = new ol.layer.Layer({});
+      l = new ol.layer.Tile({});
       l.visible = true;
       l.timeEnabled = true;
       l.timestamps = ['2018', '19001231', '1850'];

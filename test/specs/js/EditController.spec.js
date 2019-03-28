@@ -63,7 +63,7 @@ describe('ga_edit_controller', function() {
       });
 
       it('set scope values on gaToggleEdit event', function() {
-        var layer = new ol.layer.Layer({});
+        var layer = new ol.layer.Tile({});
         $rootScope.$broadcast('gaToggleEdit', layer);
         $rootScope.$digest();
         expect(scope.layer).to.be(layer);
@@ -83,7 +83,7 @@ describe('ga_edit_controller', function() {
       });
 
       it('set scope values on gaBgChange event', function() {
-        var layer = new ol.layer.Layer({});
+        var layer = new ol.layer.Tile({});
         expect(scope.layer).to.be(undefined);
         $rootScope.$broadcast('gaBgChange', {olLayer: layer});
         $rootScope.$digest();

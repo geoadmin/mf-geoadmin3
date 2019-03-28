@@ -134,7 +134,7 @@ describe('ga_main_controller', function() {
 
       it('set map properties', function() {
         var spy = sinon.spy(ol, 'Map');
-        var spy2 = sinon.spy(ol.control.util, 'defaults');
+        var spy2 = sinon.spy(ol.control, 'defaults');
         var spy3 = sinon.spy(ol.interaction, 'defaults');
         loadController();
         expect(scope.map).to.be.an(ol.Map);
@@ -160,7 +160,6 @@ describe('ga_main_controller', function() {
         expect(scope.map).to.be.an(ol.Map);
         var view = scope.map.getView();
         expect(view.getProjection().getCode()).to.be(gaGlobalOptions.defaultEpsg);
-        expect(view.constrainCenter([0, 0])).to.eql([420000, 30000]);
         expect(view.getResolution()).to.be(gaMapUtils.defaultResolution);
         expect(view.getResolutions()).to.be(gaMapUtils.viewResolutions);
       });

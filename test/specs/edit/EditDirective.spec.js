@@ -142,7 +142,7 @@ describe('ga_edit_directive', function() {
       var sublayer, layer;
 
       beforeEach(function() {
-        sublayer = new ol.layer.Layer({});
+        sublayer = new ol.layer.Tile({});
         sublayer.id = 'subfoo';
         sublayer.sourceId = 'fooSource';
         layer = new ol.layer.Group({
@@ -167,7 +167,7 @@ describe('ga_edit_directive', function() {
       var dataStr = '{data: "value"}';
 
       beforeEach(function() {
-        sublayer = new ol.layer.Layer({});
+        sublayer = new ol.layer.Tile({});
         sublayer.id = 'subfoo';
         sublayer.sourceId = 'fooSource';
         layer = new ol.layer.Group({

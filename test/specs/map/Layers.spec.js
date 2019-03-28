@@ -1170,7 +1170,7 @@ describe('ga_layers_service', function() {
       });
 
       it('returns a boolean', function() {
-        var layer = new ol.layer.Layer({});
+        var layer = new ol.layer.Tile({});
         expect(gaLayers.isBodLayer(layer)).to.be(false);
         layer.bodId = 'foo';
         expect(gaLayers.isBodLayer(layer)).to.be(true);

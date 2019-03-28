@@ -264,21 +264,21 @@ describe('ga_map_directive', function() {
       var layer, layer2, layer3;
 
       beforeEach(function() {
-        layer = new ol.layer.Layer({});
+        layer = new ol.layer.Tile({});
         layer.id = 'id';
         layer.timeEnabled = true;
         layer.visible = true;
         layer.time = 't0';
 
         // Simulate a WMTS with the special timestamp for all data
-        layer2 = new ol.layer.Layer({});
+        layer2 = new ol.layer.Tile({});
         layer2.id = 'id2';
         layer2.timeEnabled = true;
         layer2.visible = true;
         layer2.time = '99991231';
 
         // Simulate a WMS with undefined timestamp for all data
-        layer3 = new ol.layer.Layer({});
+        layer3 = new ol.layer.Tile({});
         layer3.id = 'id3';
         layer3.timeEnabled = true;
         layer3.visible = true;
@@ -466,7 +466,7 @@ describe('ga_map_directive', function() {
         });
 
         it('shows/hides default layers for 3d', function() {
-          var l = new ol.layer.Layer({});
+          var l = new ol.layer.Tile({});
           l.bodId = 'ch.default';
           sinon.stub(gaLayers, 'loadConfig').returns($q.when(layersConfig));
           sinon.stub(gaLayers, 'getOlLayerById').withArgs('ch.default').returns(l);
@@ -487,7 +487,7 @@ describe('ga_map_directive', function() {
             heading: '300',
             pitch: '-41'
           });
-          var l = new ol.layer.Layer({});
+          var l = new ol.layer.Tile({});
           l.bodId = 'ch.default';
           sinon.stub(gaLayers, 'loadConfig').returns($q.when(layersConfig));
           sinon.stub(gaLayers, 'getOlLayerById').withArgs('ch.default').returns(l);
@@ -501,7 +501,7 @@ describe('ga_map_directive', function() {
         });
 
         it('shows/shows default layers for 3d if they are already on the map', function() {
-          var l = new ol.layer.Layer({});
+          var l = new ol.layer.Tile({});
           l.bodId = 'ch.default';
           l.displayIn3d = true;
           map.addLayer(l);
@@ -517,7 +517,7 @@ describe('ga_map_directive', function() {
         });
 
         it('show alert message for layer which are not available for 3d', function() {
-          var l = new ol.layer.Layer({});
+          var l = new ol.layer.Tile({});
           l.displayIn3d = false;
           l.label = 'label';
           map.addLayer(l);

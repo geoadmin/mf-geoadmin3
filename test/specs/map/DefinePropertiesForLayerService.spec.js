@@ -217,7 +217,7 @@ describe('ga_definepropertiesforlayer_service', function() {
       });
 
       // Base layer
-      layer = new ol.layer.Layer({});
+      layer = new ol.layer.Tile({});
       gaDefine(layer);
       expect(layer.get(prop)).to.be(undefined);
       expect(layer[prop]).to.be(undefined);

@@ -10,7 +10,7 @@ describe('ga_previewlayers_service', function() {
         $provide.value('gaLayers', {
           loadConfig: function() {},
           getOlLayerById: function(bodId) {
-            var layer = new ol.layer.Layer({});
+            var layer = new ol.layer.Tile({});
             layer.bodId = bodId;
             layer.id = bodId;
             layer.timeEnabled = true;
@@ -30,7 +30,7 @@ describe('ga_previewlayers_service', function() {
 
         $provide.value('gaWms', {
           getOlLayerFromGetCapLayer: function(getCapLayer) {
-            var layer = new ol.layer.Layer({});
+            var layer = new ol.layer.Tile({});
             layer.id = getCapLayer.id;
             return layer;
           }
@@ -38,7 +38,7 @@ describe('ga_previewlayers_service', function() {
 
         $provide.value('gaWmts', {
           getOlLayerFromGetCap: function(map, getCap, id) {
-            var layer = new ol.layer.Layer({});
+            var layer = new ol.layer.Tile({});
             layer.id = id;
             return layer;
           }
@@ -218,7 +218,7 @@ describe('ga_previewlayers_service', function() {
 
       it('remove only preview layers', function() {
         map.addLayer(previewFeaturesLayer);
-        map.addLayer(new ol.layer.Layer({}));
+        map.addLayer(new ol.layer.Tile({}));
         gaPreviewLayers.addBodLayer(map, 'some');
         gaPreviewLayers.addGetCapLayer(map, {}, {id: 'some1', wmsUrl: 'URL'});
 
