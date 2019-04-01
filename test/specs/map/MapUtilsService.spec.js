@@ -506,11 +506,13 @@ describe('ga_maputils_service', function() {
       it('move map to a coordinate and a zoom', function(done) {
         map.getView().setCenter([1, 2]);
         map.getView().setZoom(6);
-        gaMapUtils.moveTo(map, null, 3, [0, 1]).then(function() {
+        var promise = gaMapUtils.moveTo(map, null, 3, [0, 1]);
+        var checkMoveTo = function() {
           expect(map.getView().getCenter()).to.eql([0, 1]);
           expect(map.getView().getZoom()).to.eql(3);
           done();
-        });
+        };
+        promise ? promise.then(checkMoveTo) : checkMoveTo();
         $rootScope.$digest();
       });
     });
@@ -520,10 +522,12 @@ describe('ga_maputils_service', function() {
         map.setSize([600, 600]);
         map.getView().setCenter([1, 2]);
         map.getView().setZoom(6);
-        gaMapUtils.zoomToExtent(map, null, [-40, -40, 40, 40]).then(function() {
+        var promise = gaMapUtils.zoomToExtent(map, null, [-40, -40, 40, 40]);
+        var checkZoomToExtent = function() {
           expect(map.getView().calculateExtent(map.getSize())).to.eql([-44.78732126084546, -44.78732126084546, 44.78732126084546, 44.78732126084546]);
           done();
-        });
+        };
+        promise ? promise.then(checkZoomToExtent) : checkZoomToExtent();
         $rootScope.$digest();
       });
     });
@@ -531,10 +535,12 @@ describe('ga_maputils_service', function() {
     describe('#panTo()', function() {
       it('pan map to a coordinate', function(done) {
         map.getView().setCenter([1, 2]);
-        gaMapUtils.panTo(map, null, [0, 1]).then(function() {
+        var promise = gaMapUtils.panTo(map, null, [0, 1]);
+        var checkPanTo = function() {
           expect(map.getView().getCenter()).to.eql([0, 1]);
           done();
-        });
+        };
+        promise ? promise.then(checkPanTo) : checkPanTo();
       });
     });
 

@@ -200,7 +200,6 @@ goog.require('ga_urlutils_service');
           var view = map.getView();
           view.setZoom(zoom);
           view.setCenter(center);
-          return $q.when();
         },
 
         zoomToExtent: function(map, ol3d, extent) {
@@ -210,7 +209,6 @@ goog.require('ga_urlutils_service');
           map.getView().fit(extent, {
             size: map.getSize()
           });
-          return $q.when();
         },
 
         // This function differs from moveTo because it adds panning effect in

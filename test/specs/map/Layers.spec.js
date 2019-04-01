@@ -270,6 +270,17 @@ describe('ga_layers_service', function() {
       });
     });
 
+    describe('#getTerrainUrl', function() {
+      it('return', function(done) {
+
+        gaLayers.loadConfig().then(function(layers) {
+          var config3d = this.getConfig3d(layers['terrain']);
+          var timestamp = this.getLayerTimestampFromYear(config3d, gaTime.get());
+          expect(gaLayers.getTerrainUrl('terrain', timestamp)).to.be(expectTerrainUrl('terrain', '20160101'));
+        });
+      })
+    })
+
     describe('#getCesiumTerrainProviderById()', function() {
       var layersConfig = {
         terrain: {
@@ -311,7 +322,6 @@ describe('ga_layers_service', function() {
         gaLayers.loadConfig().then(function(layers) {
           var prov = gaLayers.getCesiumTerrainProviderById('terrain');
           expect(prov).to.be.an(Cesium.CesiumTerrainProvider);
-          expect(prov._url).to.be(expectTerrainUrl('terrain', '20160101'));
           var rect = prov._rectangle;
           expect(rect).to.be.a(Cesium.Rectangle);
           expect([rect.west, rect.south, rect.east, rect.north]).to.eql([-1.3671959735812993, 1.3071865849496158, -0.9384297014361122, 1.4107187237269347]);
