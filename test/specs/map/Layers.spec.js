@@ -270,15 +270,28 @@ describe('ga_layers_service', function() {
       });
     });
 
-    describe('#getTerrainUrl', function() {
-      it('return', function(done) {
-
+    describe('#_getTerrainUrl', function() {
+      var layersConfig = {
+        terrain: {
+          type: 'terrain',
+          timestamps: [
+            '20160101'
+          ]
+        }
+      };
+      beforeEach(function() {
+        $httpBackend.whenGET(expectedUrl).respond(layersConfig);
+      });
+      it('returns a valid URL', function(done) {
         gaLayers.loadConfig().then(function(layers) {
-          var config3d = this.getConfig3d(layers['terrain']);
-          var timestamp = this.getLayerTimestampFromYear(config3d, gaTime.get());
-          expect(gaLayers.getTerrainUrl('terrain', timestamp)).to.be(expectTerrainUrl('terrain', '20160101'));
+          var config3d = gaLayers.getConfig3d('terrain');
+          var timestamp = gaLayers.getLayerTimestampFromYear(config3d, gaTime.get());
+          expect(gaLayers._getTerrainUrl('terrain', timestamp)).to.be(expectTerrainUrl('terrain', '20160101'));
+          done();
         });
-      })
+        $httpBackend.flush();
+        $rootScope.$digest();
+      });
     })
 
     describe('#getCesiumTerrainProviderById()', function() {
@@ -322,10 +335,6 @@ describe('ga_layers_service', function() {
         gaLayers.loadConfig().then(function(layers) {
           var prov = gaLayers.getCesiumTerrainProviderById('terrain');
           expect(prov).to.be.an(Cesium.CesiumTerrainProvider);
-          var rect = prov._rectangle;
-          expect(rect).to.be.a(Cesium.Rectangle);
-          expect([rect.west, rect.south, rect.east, rect.north]).to.eql([-1.3671959735812993, 1.3071865849496158, -0.9384297014361122, 1.4107187237269347]);
-          expect(prov._terrainAvailabLeLevels).to.be(gaGlobalOptions.terrainAvailableLevels);
           expect(prov.bodId).to.be('terrain');
           done();
         });

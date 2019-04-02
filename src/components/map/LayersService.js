@@ -104,12 +104,6 @@ goog.require('ga_urlutils_service');
           return url;
         };
 
-        var getTerrainUrl = function(layer, time) {
-          return terrainUrl.
-              replace('{Layer}', layer).
-              replace('{Time}', time);
-        };
-
         var cpt;
         var getVectorTilesUrl = function(layer, time, subdomains) {
           if (cpt === undefined || cpt >= subdomains.length) {
@@ -410,6 +404,12 @@ goog.require('ga_urlutils_service');
           return configP;
         };
 
+        this._getTerrainUrl = function(layer, time) {
+          return terrainUrl.
+              replace('{Layer}', layer).
+              replace('{Time}', time);
+        };
+
         /**
          * Returns an Cesium terrain provider.
          */
@@ -422,7 +422,7 @@ goog.require('ga_urlutils_service');
               gaTime.get());
           var requestedLayer = config3d.serverLayerName || bodId;
           var provider = new Cesium.CesiumTerrainProvider({
-            url: getTerrainUrl(requestedLayer, timestamp),
+            url: this._getTerrainUrl(requestedLayer, timestamp),
             availableLevels: gaGlobalOptions.terrainAvailableLevels,
             rectangle: gaMapUtils.extentToRectangle(
                 gaGlobalOptions.swissExtent)
