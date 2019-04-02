@@ -7,7 +7,6 @@
 [submodule "libs/openlayers"]
 	path = libs/openlayers
 	url = git@github.com:openlayers/openlayers.git
- 
 [submodule "libs/cesium"]
 	path = libs/cesium
-	url = git@github.com:AnalyticalGraphicsInc/cesium.git
+	url = git@github.com:camptocamp/cesium.git
