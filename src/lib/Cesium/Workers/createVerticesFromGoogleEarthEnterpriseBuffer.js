@@ -27,7 +27,7 @@ define('Core/defined',[],function() {
     /**
      * @exports defined
      *
-     * @param {*} value The object.
+     * @param {Object} value The object.
      * @returns {Boolean} Returns true if the object is defined, returns false otherwise.
      *
      * @example
@@ -364,7 +364,6 @@ define('Core/defaultValue',[
     /**
      * A frozen empty object that can be used as the default value for options passed as
      * an object literal.
-     * @type {Object}
      */
     defaultValue.EMPTY_OBJECT = freezeObject({});
 
@@ -577,13 +576,11 @@ return MersenneTwister;
 
 define('Core/Math',[
         '../ThirdParty/mersenne-twister',
-        './Check',
         './defaultValue',
         './defined',
         './DeveloperError'
     ], function(
         MersenneTwister,
-        Check,
         defaultValue,
         defined,
         DeveloperError) {
@@ -738,15 +735,7 @@ define('Core/Math',[
     CesiumMath.EPSILON20 = 0.00000000000000000001;
 
     /**
-     * 0.000000000000000000001
-     * @type {Number}
-     * @constant
-     */
-    CesiumMath.EPSILON21 = 0.000000000000000000001;
-
-    /**
-     * The gravitational parameter of the Earth in meters cubed
-     * per second squared as defined by the WGS84 model: 3.986004418e14
+     * 3.986004418e14
      * @type {Number}
      * @constant
      */
@@ -779,7 +768,6 @@ define('Core/Math',[
      * Returns the sign of the value; 1 if the value is positive, -1 if the value is
      * negative, or 0 if the value is 0.
      *
-     * @function
      * @param {Number} value The value to return the sign of.
      * @returns {Number} The sign of value.
      */
@@ -847,7 +835,6 @@ define('Core/Math',[
      *   </ul>
      *</p>
      *
-     * @function
      * @param {Number} value The number whose hyperbolic sine is to be returned.
      * @returns {Number} The hyperbolic sine of <code>value</code>.
      */
@@ -871,7 +858,6 @@ define('Core/Math',[
      *   </ul>
      *</p>
      *
-     * @function
      * @param {Number} value The number whose hyperbolic cosine is to be returned.
      * @returns {Number} The hyperbolic cosine of <code>value</code>.
      */
@@ -1111,64 +1097,6 @@ define('Core/Math',[
         return absDiff <= absoluteEpsilon || absDiff <= relativeEpsilon * Math.max(Math.abs(left), Math.abs(right));
     };
 
-    /**
-     * Determines if the left value is less than the right value. If the two values are within
-     * <code>absoluteEpsilon</code> of each other, they are considered equal and this function returns false.
-     *
-     * @param {Number} left The first number to compare.
-     * @param {Number} right The second number to compare.
-     * @param {Number} absoluteEpsilon The absolute epsilon to use in comparison.
-     * @returns {Boolean} <code>true</code> if <code>left</code> is less than <code>right</code> by more than
-     *          <code>absoluteEpsilon<code>. <code>false</code> if <code>left</code> is greater or if the two
-     *          values are nearly equal.
-     */
-    CesiumMath.lessThan = function(left, right, absoluteEpsilon) {
-                return left - right < -absoluteEpsilon;
-    };
-
-    /**
-     * Determines if the left value is less than or equal to the right value. If the two values are within
-     * <code>absoluteEpsilon</code> of each other, they are considered equal and this function returns true.
-     *
-     * @param {Number} left The first number to compare.
-     * @param {Number} right The second number to compare.
-     * @param {Number} absoluteEpsilon The absolute epsilon to use in comparison.
-     * @returns {Boolean} <code>true</code> if <code>left</code> is less than <code>right</code> or if the
-     *          the values are nearly equal.
-     */
-    CesiumMath.lessThanOrEquals = function(left, right, absoluteEpsilon) {
-                return left - right < absoluteEpsilon;
-    };
-
-    /**
-     * Determines if the left value is greater the right value. If the two values are within
-     * <code>absoluteEpsilon</code> of each other, they are considered equal and this function returns false.
-     *
-     * @param {Number} left The first number to compare.
-     * @param {Number} right The second number to compare.
-     * @param {Number} absoluteEpsilon The absolute epsilon to use in comparison.
-     * @returns {Boolean} <code>true</code> if <code>left</code> is greater than <code>right</code> by more than
-     *          <code>absoluteEpsilon<code>. <code>false</code> if <code>left</code> is less or if the two
-     *          values are nearly equal.
-     */
-    CesiumMath.greaterThan = function(left, right, absoluteEpsilon) {
-                return left - right > absoluteEpsilon;
-    };
-
-    /**
-     * Determines if the left value is greater than or equal to the right value. If the two values are within
-     * <code>absoluteEpsilon</code> of each other, they are considered equal and this function returns true.
-     *
-     * @param {Number} left The first number to compare.
-     * @param {Number} right The second number to compare.
-     * @param {Number} absoluteEpsilon The absolute epsilon to use in comparison.
-     * @returns {Boolean} <code>true</code> if <code>left</code> is greater than <code>right</code> or if the
-     *          the values are nearly equal.
-     */
-    CesiumMath.greaterThanOrEquals = function(left, right, absoluteEpsilon) {
-                return left - right > -absoluteEpsilon;
-    };
-
     var factorials = [1];
 
     /**
@@ -1365,7 +1293,6 @@ define('Core/Math',[
      * Finds the cube root of a number.
      * Returns NaN if <code>number</code> is not provided.
      *
-     * @function
      * @param {Number} [number] The number.
      * @returns {Number} The result.
      */
@@ -1377,7 +1304,6 @@ define('Core/Math',[
     /**
      * Finds the base 2 logarithm of a number.
      *
-     * @function
      * @param {Number} number The number.
      * @returns {Number} The result.
      */
@@ -1391,52 +1317,6 @@ define('Core/Math',[
     CesiumMath.fog = function(distanceToCamera, density) {
         var scalar = distanceToCamera * density;
         return 1.0 - Math.exp(-(scalar * scalar));
-    };
-
-    /**
-     * Computes a fast approximation of Atan for input in the range [-1, 1].
-     *
-     * Based on Michal Drobot's approximation from ShaderFastLibs,
-     * which in turn is based on "Efficient approximations for the arctangent function,"
-     * Rajan, S. Sichun Wang Inkol, R. Joyal, A., May 2006.
-     * Adapted from ShaderFastLibs under MIT License.
-     *
-     * @param {Number} x An input number in the range [-1, 1]
-     * @returns {Number} An approximation of atan(x)
-     */
-    CesiumMath.fastApproximateAtan = function(x) {
-        
-        return x * (-0.1784 * Math.abs(x) - 0.0663 * x * x + 1.0301);
-    };
-
-    /**
-     * Computes a fast approximation of Atan2(x, y) for arbitrary input scalars.
-     *
-     * Range reduction math based on nvidia's cg reference implementation: http://developer.download.nvidia.com/cg/atan2.html
-     *
-     * @param {Number} x An input number that isn't zero if y is zero.
-     * @param {Number} y An input number that isn't zero if x is zero.
-     * @returns {Number} An approximation of atan2(x, y)
-     */
-    CesiumMath.fastApproximateAtan2 = function(x, y) {
-        
-        // atan approximations are usually only reliable over [-1, 1]
-        // So reduce the range by flipping whether x or y is on top based on which is bigger.
-        var opposite;
-        var adjacent;
-        var t = Math.abs(x); // t used as swap and atan result.
-        opposite = Math.abs(y);
-        adjacent = Math.max(t, opposite);
-        opposite = Math.min(t, opposite);
-
-        var oppositeOverAdjacent = opposite / adjacent;
-                t = CesiumMath.fastApproximateAtan(oppositeOverAdjacent);
-
-        // Undo range reduction
-        t = Math.abs(y) > Math.abs(x) ? CesiumMath.PI_OVER_TWO - t : t;
-        t = x < 0.0 ?  CesiumMath.PI - t : t;
-        t = y < 0.0 ? -t : t;
-        return t;
     };
 
     return CesiumMath;
@@ -2101,22 +1981,6 @@ define('Core/Cartesian3',[
     };
 
     /**
-     * Computes the midpoint between the right and left Cartesian.
-     * @param {Cartesian3} left The first Cartesian.
-     * @param {Cartesian3} right The second Cartesian.
-     * @param {Cartesian3} result The object onto which to store the result.
-     * @returns {Cartesian3} The midpoint.
-     */
-    Cartesian3.midpoint = function(left, right, result) {
-        
-        result.x = (left.x + right.x) * 0.5;
-        result.y = (left.y + right.y) * 0.5;
-        result.z = (left.z + right.z) * 0.5;
-
-        return result;
-    };
-
-    /**
      * Returns a Cartesian3 position from longitude and latitude values given in degrees.
      *
      * @param {Number} longitude The longitude, in degrees
@@ -2462,7 +2326,8 @@ define('Core/AxisAlignedBoundingBox',[
 
         //If center was not defined, compute it.
         if (!defined(center)) {
-            center = Cartesian3.midpoint(this.minimum, this.maximum, new Cartesian3());
+            center = Cartesian3.add(this.minimum, this.maximum, new Cartesian3());
+            Cartesian3.multiplyByScalar(center, 0.5, center);
         } else {
             center = Cartesian3.clone(center);
         }
@@ -2531,7 +2396,8 @@ define('Core/AxisAlignedBoundingBox',[
         maximum.y = maximumY;
         maximum.z = maximumZ;
 
-        result.center = Cartesian3.midpoint(minimum, maximum, result.center);
+        var center = Cartesian3.add(minimum, maximum, result.center);
+        Cartesian3.multiplyByScalar(center, 0.5, center);
 
         return result;
     };
@@ -7043,7 +6909,7 @@ define('Core/Matrix4',[
      *
      * @param {Matrix4} matrix The matrix to use.
      * @param {Cartesian3} translation The translation that replaces the translation of the provided matrix.
-     * @param {Matrix4} result The object onto which to store the result.
+     * @param {Cartesian4} result The object onto which to store the result.
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.setTranslation = function(matrix, translation, result) {
@@ -7069,22 +6935,6 @@ define('Core/Matrix4',[
         result[15] = matrix[15];
 
         return result;
-    };
-
-    var scaleScratch = new Cartesian3();
-    /**
-     * Computes a new matrix that replaces the scale with the provided scale.  This assumes the matrix is an affine transformation
-     *
-     * @param {Matrix4} matrix The matrix to use.
-     * @param {Cartesian3} scale The scale that replaces the scale of the provided matrix.
-     * @param {Matrix4} result The object onto which to store the result.
-     * @returns {Matrix4} The modified result parameter.
-     */
-    Matrix4.setScale = function(matrix, scale, result) {
-        
-        var existingScale = Matrix4.getScale(matrix, scaleScratch);
-        var newScale = Cartesian3.divideComponents(scale, existingScale, scaleScratch);
-        return Matrix4.multiplyByScale(matrix, newScale, result);
     };
 
     /**
@@ -8046,7 +7896,32 @@ define('Core/Matrix4',[
       * @exception {RuntimeError} matrix is not invertible because its determinate is zero.
       */
     Matrix4.inverse = function(matrix, result) {
-                //
+        
+        // Special case for a zero scale matrix that can occur, for example,
+        // when a model's node has a [0, 0, 0] scale.
+        if (Matrix3.equalsEpsilon(Matrix4.getRotation(matrix, scratchInverseRotation), scratchMatrix3Zero, CesiumMath.EPSILON7) &&
+            Cartesian4.equals(Matrix4.getRow(matrix, 3, scratchBottomRow), scratchExpectedBottomRow)) {
+
+            result[0] = 0.0;
+            result[1] = 0.0;
+            result[2] = 0.0;
+            result[3] = 0.0;
+            result[4] = 0.0;
+            result[5] = 0.0;
+            result[6] = 0.0;
+            result[7] = 0.0;
+            result[8] = 0.0;
+            result[9] = 0.0;
+            result[10] = 0.0;
+            result[11] = 0.0;
+            result[12] = -matrix[12];
+            result[13] = -matrix[13];
+            result[14] = -matrix[14];
+            result[15] = 1.0;
+            return result;
+        }
+
+        //
         // Ported from:
         //   ftp://download.intel.com/design/PentiumIII/sml/24504301.pdf
         //
@@ -8118,31 +7993,7 @@ define('Core/Matrix4',[
         // calculate determinant
         var det = src0 * dst0 + src1 * dst1 + src2 * dst2 + src3 * dst3;
 
-        if (Math.abs(det) < CesiumMath.EPSILON21) {
-                // Special case for a zero scale matrix that can occur, for example,
-                // when a model's node has a [0, 0, 0] scale.
-                if (Matrix3.equalsEpsilon(Matrix4.getRotation(matrix, scratchInverseRotation), scratchMatrix3Zero, CesiumMath.EPSILON7) &&
-                Cartesian4.equals(Matrix4.getRow(matrix, 3, scratchBottomRow), scratchExpectedBottomRow)) {
-
-                result[0] = 0.0;
-                result[1] = 0.0;
-                result[2] = 0.0;
-                result[3] = 0.0;
-                result[4] = 0.0;
-                result[5] = 0.0;
-                result[6] = 0.0;
-                result[7] = 0.0;
-                result[8] = 0.0;
-                result[9] = 0.0;
-                result[10] = 0.0;
-                result[11] = 0.0;
-                result[12] = -matrix[12];
-                result[13] = -matrix[13];
-                result[14] = -matrix[14];
-                result[15] = 1.0;
-                return result;
-            }
-
+        if (Math.abs(det) < CesiumMath.EPSILON20) {
             throw new RuntimeError('matrix is not invertible because its determinate is zero.');
         }
 
@@ -8811,27 +8662,6 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Compares the provided Rectangles componentwise and returns
-     * <code>true</code> if they pass an absolute or relative tolerance test,
-     * <code>false</code> otherwise.
-     *
-     * @param {Rectangle} [left] The first Rectangle.
-     * @param {Rectangle} [right] The second Rectangle.
-     * @param {Number} absoluteEpsilon The absolute epsilon tolerance to use for equality testing.
-     * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
-     */
-    Rectangle.equalsEpsilon = function(left, right, absoluteEpsilon) {
-        
-        return (left === right) ||
-               (defined(left) &&
-                defined(right) &&
-                (Math.abs(left.west - right.west) <= absoluteEpsilon) &&
-                (Math.abs(left.south - right.south) <= absoluteEpsilon) &&
-                (Math.abs(left.east - right.east) <= absoluteEpsilon) &&
-                (Math.abs(left.north - right.north) <= absoluteEpsilon));
-    };
-
-    /**
      * Duplicates this Rectangle.
      *
      * @param {Rectangle} [result] The object onto which to store the result.
@@ -8881,7 +8711,11 @@ define('Core/Rectangle',[
      */
     Rectangle.prototype.equalsEpsilon = function(other, epsilon) {
         
-        return Rectangle.equalsEpsilon(this, other, epsilon);
+        return defined(other) &&
+               (Math.abs(this.west - other.west) <= epsilon) &&
+               (Math.abs(this.south - other.south) <= epsilon) &&
+               (Math.abs(this.east - other.east) <= epsilon) &&
+               (Math.abs(this.north - other.north) <= epsilon);
     };
 
     /**
@@ -9445,7 +9279,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -9715,7 +9549,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -9873,7 +9707,7 @@ define('Core/BoundingSphere',[
         maxBoxPt.y = yMax.y;
         maxBoxPt.z = zMax.z;
 
-        var naiveCenter = Cartesian3.midpoint(minBoxPt, maxBoxPt, fromPointsNaiveCenterScratch);
+        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
 
         // Begin 2nd pass to find naive radius and modify the ritter sphere.
         var naiveRadius = 0;
@@ -9933,7 +9767,9 @@ define('Core/BoundingSphere',[
             result = new BoundingSphere();
         }
 
-        var center = Cartesian3.midpoint(corner, oppositeCorner, result.center);
+        var center = result.center;
+        Cartesian3.add(corner, oppositeCorner, center);
+        Cartesian3.multiplyByScalar(center, 0.5, center);
         result.radius = Cartesian3.distance(center, oppositeCorner);
         return result;
     };
@@ -12080,14 +11916,14 @@ define('Core/QuarticRealPolynomial',[
 
 define('Core/Ray',[
         './Cartesian3',
-        './Check',
         './defaultValue',
-        './defined'
+        './defined',
+        './DeveloperError'
     ], function(
         Cartesian3,
-        Check,
         defaultValue,
-        defined) {
+        defined,
+        DeveloperError) {
     'use strict';
 
     /**
@@ -12117,25 +11953,6 @@ define('Core/Ray',[
          */
         this.direction = direction;
     }
-
-    /**
-     * Duplicates a Ray instance.
-     *
-     * @param {Ray} ray The ray to duplicate.
-     * @param {Ray} [result] The object onto which to store the result.
-     * @returns {Ray} The modified result parameter or a new Ray instance if one was not provided. (Returns undefined if ray is undefined)
-     */
-    Ray.clone = function(ray, result) {
-        if (!defined(ray)) {
-            return undefined;
-        }
-        if (!defined(result)) {
-            return new Ray(ray.origin, ray.direction);
-        }
-        result.origin = Cartesian3.clone(ray.origin);
-        result.direction = Cartesian3.clone(ray.direction);
-        return result;
-    };
 
     /**
      * Computes the point along the ray given by r(t) = o + t*d,
@@ -12194,7 +12011,6 @@ define('Core/IntersectionTests',[
      * Functions for computing the intersection between geometries such as rays, planes, triangles, and ellipsoids.
      *
      * @exports IntersectionTests
-     * @namespace
      */
     var IntersectionTests = {};
 
@@ -13971,8 +13787,9 @@ define('Core/binarySearch',[
      * Finds an item in a sorted array.
      *
      * @exports binarySearch
+     *
      * @param {Array} array The sorted array to search.
-     * @param {*} itemToFind The item to find in the array.
+     * @param {Object} itemToFind The item to find in the array.
      * @param {binarySearch~Comparator} comparator The function to use to compare the item to
      *        elements in the array.
      * @returns {Number} The index of <code>itemToFind</code> in the array, if it exists.  If <code>itemToFind</code>
@@ -14015,8 +13832,8 @@ define('Core/binarySearch',[
      * A function used to compare two items while performing a binary search.
      * @callback binarySearch~Comparator
      *
-     * @param {*} a An item in the array.
-     * @param {*} b The item being searched for.
+     * @param {Object} a An item in the array.
+     * @param {Object} b The item being searched for.
      * @returns {Number} Returns a negative value if <code>a</code> is less than <code>b</code>,
      *          a positive value if <code>a</code> is greater than <code>b</code>, or
      *          0 if <code>a</code> is equal to <code>b</code>.
@@ -15220,39 +15037,22 @@ define('Core/JulianDate',[
     JulianDate.toIso8601 = function(julianDate, precision) {
         
         var gDate = JulianDate.toGregorianDate(julianDate, gregorianDateScratch);
-        var year = gDate.year;
-        var month = gDate.month;
-        var day = gDate.day;
-        var hour = gDate.hour;
-        var minute = gDate.minute;
-        var second = gDate.second;
-        var millisecond = gDate.millisecond;
-
-        // special case - Iso8601.MAXIMUM_VALUE produces a string which we can't parse unless we adjust.
-        // 10000-01-01T00:00:00 is the same instant as 9999-12-31T24:00:00
-        if (year === 10000 && month === 1 && day === 1 && hour === 0 && minute === 0 && second === 0 && millisecond === 0) {
-            year = 9999;
-            month = 12;
-            day = 31;
-            hour = 24;
-        }
-
         var millisecondStr;
 
-        if (!defined(precision) && millisecond !== 0) {
+        if (!defined(precision) && gDate.millisecond !== 0) {
             //Forces milliseconds into a number with at least 3 digits to whatever the default toString() precision is.
-            millisecondStr = (millisecond * 0.01).toString().replace('.', '');
-            return sprintf('%04d-%02d-%02dT%02d:%02d:%02d.%sZ', year, month, day, hour, minute, second, millisecondStr);
+            millisecondStr = (gDate.millisecond * 0.01).toString().replace('.', '');
+            return sprintf('%04d-%02d-%02dT%02d:%02d:%02d.%sZ', gDate.year, gDate.month, gDate.day, gDate.hour, gDate.minute, gDate.second, millisecondStr);
         }
 
         //Precision is either 0 or milliseconds is 0 with undefined precision, in either case, leave off milliseconds entirely
         if (!defined(precision) || precision === 0) {
-            return sprintf('%04d-%02d-%02dT%02d:%02d:%02dZ', year, month, day, hour, minute, second);
+            return sprintf('%04d-%02d-%02dT%02d:%02d:%02dZ', gDate.year, gDate.month, gDate.day, gDate.hour, gDate.minute, gDate.second);
         }
 
         //Forces milliseconds into a number with at least 3 digits to whatever the specified precision is.
-        millisecondStr = (millisecond * 0.01).toFixed(precision).replace('.', '').slice(0, precision);
-        return sprintf('%04d-%02d-%02dT%02d:%02d:%02d.%sZ', year, month, day, hour, minute, second, millisecondStr);
+        millisecondStr = (gDate.millisecond * 0.01).toFixed(precision).replace('.', '').slice(0, precision);
+        return sprintf('%04d-%02d-%02dT%02d:%02d:%02d.%sZ', gDate.year, gDate.month, gDate.day, gDate.hour, gDate.minute, gDate.second, millisecondStr);
     };
 
     /**
@@ -16017,11 +15817,6 @@ define('Core/oneTimeWarning',[
 
     oneTimeWarning.geometryOutlines = 'Entity geometry outlines are unsupported on terrain. Outlines will be disabled. To enable outlines, disable geometry terrain clamping by explicitly setting height to 0.';
 
-    oneTimeWarning.geometryZIndex = 'Entity geometry with zIndex are unsupported when height or extrudedHeight are defined.  zIndex will be ignored';
-
-    oneTimeWarning.geometryHeightReference = 'Entity corridor, ellipse, polygon or rectangle with heightReference must also have a defined height.  heightReference will be ignored';
-    oneTimeWarning.geometryExtrudedHeightReference = 'Entity corridor, ellipse, polygon or rectangle with extrudedHeightReference must also have a defined extrudedHeight.  extrudedHeightReference will be ignored';
-
     return oneTimeWarning;
 });
 
@@ -16104,7 +15899,6 @@ define('Core/Fullscreen',[
      * Browser-independent functions for working with the standard fullscreen API.
      *
      * @exports Fullscreen
-     * @namespace
      *
      * @see {@link http://dvcs.w3.org/hg/fullscreen/raw-file/tip/Overview.html|W3C Fullscreen Living Specification}
      */
@@ -16341,17 +16135,11 @@ define('Core/Fullscreen',[
 define('Core/FeatureDetection',[
         './defaultValue',
         './defined',
-        './defineProperties',
-        './DeveloperError',
-        './Fullscreen',
-        '../ThirdParty/when'
+        './Fullscreen'
     ], function(
         defaultValue,
         defined,
-        defineProperties,
-        DeveloperError,
-        Fullscreen,
-        when) {
+        Fullscreen) {
     'use strict';
     /*global CanvasPixelArray*/
 
@@ -16509,6 +16297,14 @@ define('Core/FeatureDetection',[
         return isFirefox() && firefoxVersionResult;
     }
 
+    var isNodeJsResult;
+    function isNodeJs() {
+        if (!defined(isNodeJsResult)) {
+            isNodeJsResult = typeof process === 'object' && Object.prototype.toString.call(process) === '[object process]'; // eslint-disable-line
+        }
+        return isNodeJsResult;
+    }
+
     var hasPointerEvents;
     function supportsPointerEvents() {
         if (!defined(hasPointerEvents)) {
@@ -16516,9 +16312,7 @@ define('Core/FeatureDetection',[
             //we still need to use it if it exists in order to support browsers
             //that rely on it, such as the Windows WebBrowser control which defines
             //PointerEvent but sets navigator.pointerEnabled to false.
-
-            //Firefox disabled because of https://github.com/AnalyticalGraphicsInc/cesium/issues/6372
-            hasPointerEvents = !isFirefox() && typeof PointerEvent !== 'undefined' && (!defined(theNavigator.pointerEnabled) || theNavigator.pointerEnabled);
+            hasPointerEvents = typeof PointerEvent !== 'undefined' && (!defined(theNavigator.pointerEnabled) || theNavigator.pointerEnabled);
         }
         return hasPointerEvents;
     }
@@ -16544,50 +16338,6 @@ define('Core/FeatureDetection',[
     function imageRenderingValue() {
         return supportsImageRenderingPixelated() ? imageRenderingValueResult : undefined;
     }
-
-    function supportsWebP() {
-                return supportsWebP._result;
-    }
-    supportsWebP._promise = undefined;
-    supportsWebP._result = undefined;
-    supportsWebP.initialize = function() {
-        // From https://developers.google.com/speed/webp/faq#how_can_i_detect_browser_support_for_webp
-        if (defined(supportsWebP._promise)) {
-            return supportsWebP._promise;
-        }
-
-        var supportsWebPDeferred = when.defer();
-        supportsWebP._promise = supportsWebPDeferred.promise;
-        if (isEdge()) {
-            // Edge's WebP support with WebGL is incomplete.
-            // See bug report: https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/19221241/
-            supportsWebP._result = false;
-            supportsWebPDeferred.resolve(supportsWebP._result);
-            return supportsWebPDeferred.promise;
-        }
-
-        var image = new Image();
-        image.onload = function () {
-            supportsWebP._result = (image.width > 0) && (image.height > 0);
-            supportsWebPDeferred.resolve(supportsWebP._result);
-        };
-
-        image.onerror = function () {
-            supportsWebP._result = false;
-            supportsWebPDeferred.resolve(supportsWebP._result);
-        };
-
-        image.src = 'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA';
-
-        return supportsWebPDeferred.promise;
-    };
-    defineProperties(supportsWebP, {
-        initialized: {
-            get: function() {
-                return defined(supportsWebP._result);
-            }
-        }
-    });
 
     var typedArrayTypes = [];
     if (typeof ArrayBuffer !== 'undefined') {
@@ -16622,10 +16372,10 @@ define('Core/FeatureDetection',[
         isFirefox : isFirefox,
         firefoxVersion : firefoxVersion,
         isWindows : isWindows,
+        isNodeJs: isNodeJs,
         hardwareConcurrency : defaultValue(theNavigator.hardwareConcurrency, 3),
         supportsPointerEvents : supportsPointerEvents,
         supportsImageRenderingPixelated: supportsImageRenderingPixelated,
-        supportsWebP: supportsWebP,
         imageRenderingValue: imageRenderingValue,
         typedArrayTypes: typedArrayTypes
     };
@@ -16662,17 +16412,6 @@ define('Core/FeatureDetection',[
      */
     FeatureDetection.supportsWebWorkers = function() {
         return typeof Worker !== 'undefined';
-    };
-
-    /**
-     * Detects whether the current browser supports Web Assembly.
-     *
-     * @returns {Boolean} true if the browsers supports Web Assembly, false if not.
-     *
-     * @see {@link https://developer.mozilla.org/en-US/docs/WebAssembly}
-     */
-    FeatureDetection.supportsWebAssembly = function() {
-        return typeof WebAssembly !== 'undefined' && !FeatureDetection.isEdge();
     };
 
     return FeatureDetection;
@@ -16874,8 +16613,7 @@ define('Core/isCrossOriginUrl',[
         var protocol = a.protocol;
 
         a.href = url;
-        // IE only absolutizes href on get, not set
-        a.href = a.href; // eslint-disable-line no-self-assign
+        a.href = a.href; // IE only absolutizes href on get, not set
 
         return protocol !== a.protocol || host !== a.host;
     }
@@ -16909,39 +16647,6 @@ define('Core/isDataUri',[
     return isDataUri;
 });
 
-define('Core/loadAndExecuteScript',[
-    '../ThirdParty/when'
-], function(
-    when) {
-        'use strict';
-
-    /**
-     * @private
-     */
-    function loadAndExecuteScript(url) {
-        var deferred = when.defer();
-        var script = document.createElement('script');
-        script.async = true;
-        script.src = url;
-
-        var head = document.getElementsByTagName('head')[0];
-        script.onload = function() {
-            script.onload = undefined;
-            head.removeChild(script);
-            deferred.resolve();
-        };
-        script.onerror = function(e) {
-            deferred.reject(e);
-        };
-
-        head.appendChild(script);
-
-        return deferred.promise;
-    }
-
-    return loadAndExecuteScript;
-});
-
 define('Core/isArray',[
         './defined'
     ], function(
@@ -16952,7 +16657,7 @@ define('Core/isArray',[
      * Tests an object to see if it is an array.
      * @exports isArray
      *
-     * @param {*} value The value to test.
+     * @param {Object} value The value to test.
      * @returns {Boolean} true if the value is an array, false otherwise.
      */
     var isArray = Array.isArray;
@@ -17221,10 +16926,9 @@ define('Core/Request',[
      *
      * @alias Request
      * @constructor
-     * @namespace
-     * @exports Request
+     *
      * @param {Object} [options] An object with the following properties:
-     * @param {String} [options.url] The url to request.
+     * @param {Boolean} [options.url] The url to request.
      * @param {Request~RequestCallback} [options.requestFunction] The function that makes the actual data request.
      * @param {Request~CancelCallback} [options.cancelFunction] The function that is called when the request is cancelled.
      * @param {Request~PriorityCallback} [options.priorityFunction] The function that is called to update the request's priority, which occurs once per frame.
@@ -17237,7 +16941,7 @@ define('Core/Request',[
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
         var throttleByServer = defaultValue(options.throttleByServer, false);
-        var throttle = defaultValue(options.throttle, false);
+        var throttle = throttleByServer || defaultValue(options.throttle, false);
 
         /**
          * The URL to request.
@@ -17533,6 +17237,7 @@ define('Core/Event',[
      *
      * @alias Event
      * @constructor
+     *
      * @example
      * MyObject.prototype.myListener = function(arg1, arg2) {
      *     this.myArg1Copy = arg1;
@@ -17911,7 +17616,6 @@ define('Core/RequestScheduler',[
         '../ThirdParty/Uri',
         '../ThirdParty/when',
         './Check',
-        './defaultValue',
         './defined',
         './defineProperties',
         './Event',
@@ -17923,7 +17627,6 @@ define('Core/RequestScheduler',[
         Uri,
         when,
         Check,
-        defaultValue,
         defined,
         defineProperties,
         Event,
@@ -17978,20 +17681,11 @@ define('Core/RequestScheduler',[
     RequestScheduler.maximumRequests = 50;
 
     /**
-     * The maximum number of simultaneous active requests per server. Un-throttled requests or servers specifically
-     * listed in requestsByServer do not observe this limit.
+     * The maximum number of simultaneous active requests per server. Un-throttled requests do not observe this limit.
      * @type {Number}
      * @default 6
      */
     RequestScheduler.maximumRequestsPerServer = 6;
-
-    /**
-     * A per serverKey list of overrides to use for throttling instead of maximumRequestsPerServer
-     */
-    RequestScheduler.requestsByServer = {
-        'api.cesium.com:443': 18,
-        'assets.cesium.com:443': 18
-    };
 
     /**
      * Specifies if the request scheduler should throttle incoming requests, or let the browser queue requests under its control.
@@ -18066,8 +17760,7 @@ define('Core/RequestScheduler',[
     }
 
     function serverHasOpenSlots(serverKey) {
-        var maxRequests = defaultValue(RequestScheduler.requestsByServer[serverKey], RequestScheduler.maximumRequestsPerServer);
-        return numberOfActiveRequestsByServer[serverKey] < maxRequests;
+        return numberOfActiveRequestsByServer[serverKey] < RequestScheduler.maximumRequestsPerServer;
     }
 
     function issueRequest(request) {
@@ -18243,17 +17936,17 @@ define('Core/RequestScheduler',[
             request.serverKey = RequestScheduler.getServerKey(request.url);
         }
 
-        if (request.throttleByServer && !serverHasOpenSlots(request.serverKey)) {
-            // Server is saturated. Try again later.
-            return undefined;
-        }
-
         if (!RequestScheduler.throttleRequests || !request.throttle) {
             return startRequest(request);
         }
 
         if (activeRequests.length >= RequestScheduler.maximumRequests) {
             // Active requests are saturated. Try again later.
+            return undefined;
+        }
+
+        if (request.throttleByServer && !serverHasOpenSlots(request.serverKey)) {
+            // Server is saturated. Try again later.
             return undefined;
         }
 
@@ -18494,15 +18187,14 @@ define('Core/Resource',[
         './defineProperties',
         './deprecationWarning',
         './DeveloperError',
-        './freezeObject',
         './FeatureDetection',
+        './freezeObject',
         './getAbsoluteUri',
         './getBaseUri',
         './getExtensionFromUri',
         './isBlobUri',
         './isCrossOriginUrl',
         './isDataUri',
-        './loadAndExecuteScript',
         './objectToQuery',
         './queryToObject',
         './Request',
@@ -18523,15 +18215,14 @@ define('Core/Resource',[
         defineProperties,
         deprecationWarning,
         DeveloperError,
-        freezeObject,
         FeatureDetection,
+        freezeObject,
         getAbsoluteUri,
         getBaseUri,
         getExtensionFromUri,
         isBlobUri,
         isCrossOriginUrl,
         isDataUri,
-        loadAndExecuteScript,
         objectToQuery,
         queryToObject,
         Request,
@@ -18857,47 +18548,6 @@ define('Core/Resource',[
         });
     };
 
-    var supportsImageBitmapOptionsPromise;
-    /**
-     * A helper function to check whether createImageBitmap supports passing ImageBitmapOptions.
-     *
-     * @returns {Promise<Boolean>} A promise that resolves to true if this browser supports creating an ImageBitmap with options.
-     *
-     * @private
-     */
-    Resource.supportsImageBitmapOptions = function() {
-        // Until the HTML folks figure out what to do about this, we need to actually try loading an image to
-        // know if this browser supports passing options to the createImageBitmap function.
-        // https://github.com/whatwg/html/pull/4248
-        if (defined(supportsImageBitmapOptionsPromise)) {
-            return supportsImageBitmapOptionsPromise;
-        }
-
-        if (typeof createImageBitmap !== 'function') {
-            supportsImageBitmapOptionsPromise = when.resolve(false);
-            return supportsImageBitmapOptionsPromise;
-        }
-
-        var imageDataUri = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWP4////fwAJ+wP9CNHoHgAAAABJRU5ErkJggg==';
-
-        supportsImageBitmapOptionsPromise = Resource.fetchBlob({
-            url : imageDataUri
-        })
-            .then(function(blob) {
-                return createImageBitmap(blob, {
-                    imageOrientation: 'flipY'
-                });
-            })
-            .then(function(imageBitmap) {
-                return true;
-            })
-            .otherwise(function() {
-                return false;
-            });
-
-        return supportsImageBitmapOptionsPromise;
-    };
-
     defineProperties(Resource, {
         /**
          * Returns true if blobs are supported.
@@ -19050,17 +18700,15 @@ define('Core/Resource',[
         // objectToQuery escapes the placeholders.  Undo that.
         var url = uri.toString().replace(/%7B/g, '{').replace(/%7D/g, '}');
 
-        var templateValues = this._templateValues;
-        url = url.replace(/{(.*?)}/g, function(match, key) {
-            var replacement = templateValues[key];
-            if (defined(replacement)) {
-                // use the replacement value from templateValues if there is one...
-                return encodeURIComponent(replacement);
+        var template = this._templateValues;
+        var keys = Object.keys(template);
+        if (keys.length > 0) {
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                var value = template[key];
+                url = url.replace(new RegExp('{' + key + '}', 'g'), encodeURIComponent(value));
             }
-            // otherwise leave it unchanged
-            return match;
-        });
-
+        }
         if (proxy && defined(this.proxy)) {
             url = this.proxy.getURL(url);
         }
@@ -19353,13 +19001,10 @@ define('Core/Resource',[
 
     /**
      * Asynchronously loads the given image resource.  Returns a promise that will resolve to
-     * an {@link https://developer.mozilla.org/en-US/docs/Web/API/ImageBitmap|ImageBitmap} if the browser supports `createImageBitmap` or otherwise an
-     * {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement|Image} once loaded, or reject if the image failed to load.
+     * an {@link Image} once loaded, or reject if the image failed to load.
      *
-     * @param {Object} [options] An object with the following properties.
-     * @param {Boolean} [options.preferBlob=false] If true, we will load the image via a blob.
-     * @param {Boolean} [options.flipY=true] If true, image will be vertially flipped during decode. Only applies if the browser supports `createImageBitmap`.
-     * @returns {Promise.<ImageBitmap>|Promise.<Image>|undefined} a promise that will resolve to the requested data when loaded. Returns undefined if <code>request.throttle</code> is true and the request does not have high enough priority.
+     * @param {Boolean} [preferBlob = false]  If true, we will load the image via a blob.
+     * @returns {Promise.<Image>|undefined} a promise that will resolve to the requested data when loaded. Returns undefined if <code>request.throttle</code> is true and the request does not have high enough priority.
      *
      *
      * @example
@@ -19378,16 +19023,8 @@ define('Core/Resource',[
      * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
      * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
-    Resource.prototype.fetchImage = function (options) {
-        if (typeof options === 'boolean') {
-            deprecationWarning('fetchImage-parameter-change', 'fetchImage now takes an options object in CesiumJS 1.56. Use resource.fetchImage({ preferBlob: true }) instead of resource.fetchImage(true).');
-            options = {
-                preferBlob : options
-            };
-        }
-        options = defaultValue(options, defaultValue.EMPTY_OBJECT);
-        var preferBlob = defaultValue(options.preferBlob, false);
-        var flipY = defaultValue(options.flipY, true);
+    Resource.prototype.fetchImage = function (preferBlob) {
+        preferBlob = defaultValue(preferBlob, false);
 
         checkAndResetRequest(this.request);
 
@@ -19397,7 +19034,7 @@ define('Core/Resource',[
         // 3. It's a blob URI
         // 4. It doesn't have request headers and we preferBlob is false
         if (!xhrBlobSupported || this.isDataUri || this.isBlobUri || (!this.hasHeaders && !preferBlob)) {
-            return fetchImage(this, flipY);
+            return fetchImage(this, true);
         }
 
         var blobPromise = this.fetchBlob();
@@ -19405,20 +19042,12 @@ define('Core/Resource',[
             return;
         }
 
-        var supportsImageBitmap;
         var generatedBlobResource;
         var generatedBlob;
-        return Resource.supportsImageBitmapOptions()
-            .then(function(result) {
-                supportsImageBitmap = result;
-                return blobPromise;
-            })
+        return blobPromise
             .then(function(blob) {
                 if (!defined(blob)) {
                     return;
-                }
-                if (supportsImageBitmap) {
-                    return Resource._Implementations.createImageBitmapFromBlob(blob, flipY);
                 }
                 generatedBlob = blob;
                 var blobUrl = window.URL.createObjectURL(blob);
@@ -19426,14 +19055,11 @@ define('Core/Resource',[
                     url: blobUrl
                 });
 
-                return fetchImage(generatedBlobResource, flipY);
+                return fetchImage(generatedBlobResource);
             })
             .then(function(image) {
                 if (!defined(image)) {
                     return;
-                }
-                if (supportsImageBitmap) {
-                    return image;
                 }
                 window.URL.revokeObjectURL(generatedBlobResource.url);
 
@@ -19451,7 +19077,7 @@ define('Core/Resource',[
             });
     };
 
-    function fetchImage(resource, flipY) {
+    function fetchImage(resource) {
         var request = resource.request;
         request.url = resource.url;
         request.requestFunction = function() {
@@ -19465,7 +19091,7 @@ define('Core/Resource',[
 
             var deferred = when.defer();
 
-            Resource._Implementations.createImage(url, crossOrigin, deferred, flipY);
+            Resource._Implementations.createImage(url, crossOrigin, deferred);
 
             return deferred.promise;
         };
@@ -19489,7 +19115,7 @@ define('Core/Resource',[
                             request.state = RequestState.UNISSUED;
                             request.deferred = undefined;
 
-                            return fetchImage(resource, flipY);
+                            return fetchImage(resource);
                         }
 
                         return when.reject(e);
@@ -19506,19 +19132,15 @@ define('Core/Resource',[
      * @param {Object} [options.templateValues] Key/Value pairs that are used to replace template values (eg. {x}).
      * @param {Object} [options.headers={}] Additional HTTP headers that will be sent.
      * @param {DefaultProxy} [options.proxy] A proxy to be used when loading the resource.
-     * @param {Boolean} [options.flipY = true] Whether to vertically flip the image during fetch and decode. Only applies when requesting an image and the browser supports createImageBitmap.
      * @param {Resource~RetryCallback} [options.retryCallback] The Function to call when a request for this resource fails. If it returns true, the request will be retried.
      * @param {Number} [options.retryAttempts=0] The number of times the retryCallback should be called before giving up.
      * @param {Request} [options.request] A Request object that will be used. Intended for internal use only.
      * @param {Boolean} [options.preferBlob = false]  If true, we will load the image via a blob.
-     * @returns {Promise.<ImageBitmap>|Promise.<Image>|undefined} a promise that will resolve to the requested data when loaded. Returns undefined if <code>request.throttle</code> is true and the request does not have high enough priority.
+     * @returns {Promise.<Image>|undefined} a promise that will resolve to the requested data when loaded. Returns undefined if <code>request.throttle</code> is true and the request does not have high enough priority.
      */
     Resource.fetchImage = function (options) {
         var resource = new Resource(options);
-        return resource.fetchImage({
-            flipY: options.flipY,
-            preferBlob: options.preferBlob
-        });
+        return resource.fetchImage(options.preferBlob);
     };
 
     /**
@@ -20304,7 +19926,7 @@ define('Core/Resource',[
      */
     Resource._Implementations = {};
 
-    function loadImageElement(url, crossOrigin, deferred) {
+    Resource._Implementations.createImage = function(url, crossOrigin, deferred) {
         var image = new Image();
 
         image.onload = function() {
@@ -20324,55 +19946,6 @@ define('Core/Resource',[
         }
 
         image.src = url;
-    }
-
-    Resource._Implementations.createImage = function(url, crossOrigin, deferred, flipY) {
-        // Passing an Image to createImageBitmap will force it to run on the main thread
-        // since DOM elements don't exist on workers. We convert it to a blob so it's non-blocking.
-        // See:
-        //    https://bugzilla.mozilla.org/show_bug.cgi?id=1044102#c38
-        //    https://bugs.chromium.org/p/chromium/issues/detail?id=580202#c10
-        Resource.supportsImageBitmapOptions()
-            .then(function(result) {
-                // We can only use ImageBitmap if we can flip on decode.
-                // See: https://github.com/AnalyticalGraphicsInc/cesium/pull/7579#issuecomment-466146898
-                if (!result) {
-                    loadImageElement(url, crossOrigin, deferred);
-                    return;
-                }
-
-                return Resource.fetchBlob({
-                    url: url
-                });
-            })
-            .then(function(blob) {
-                if (!defined(blob)) {
-                    return;
-                }
-
-                return Resource._Implementations.createImageBitmapFromBlob(blob, flipY);
-            })
-            .then(function(imageBitmap) {
-                if (!defined(imageBitmap)) {
-                    return;
-                }
-
-                deferred.resolve(imageBitmap);
-            })
-            .otherwise(deferred.reject);
-    };
-
-    Resource._Implementations.createImageBitmapFromBlob = function(blob, flipY) {
-        return Resource.supportsImageBitmapOptions()
-            .then(function(result) {
-                if (!result) {
-                    return createImageBitmap(blob);
-                }
-
-                return createImageBitmap(blob, {
-                    imageOrientation: flipY ? 'flipY' : 'none'
-                });
-            });
     };
 
     function decodeResponse(loadWithHttpResponse, responseType) {
@@ -20387,15 +19960,10 @@ define('Core/Resource',[
     }
 
     function loadWithHttpRequest(url, responseType, method, data, headers, deferred, overrideMimeType) {
-
-        // Specifically use the Node version of require to avoid conflicts with the global
-        // require defined in the built version of Cesium.
-        var nodeRequire = global.require; // eslint-disable-line
-
         // Note: only the 'json' and 'text' responseTypes transforms the loaded buffer
-        var URL = nodeRequire('url').parse(url);
-        var http = URL.protocol === 'https:' ? nodeRequire('https') : nodeRequire('http');
-        var zlib = nodeRequire('zlib');
+        var URL = require('url').parse(url);
+        var http = URL.protocol === 'https:' ? require('https') : require('http');
+        var zlib = require('zlib');
         var options = {
             protocol : URL.protocol,
             hostname : URL.hostname,
@@ -20437,7 +20005,6 @@ define('Core/Resource',[
             }).end();
     }
 
-    var noXMLHttpRequest = typeof XMLHttpRequest === 'undefined';
     Resource._Implementations.loadWithXhr = function(url, responseType, method, data, headers, deferred, overrideMimeType) {
         var dataUriRegexResult = dataUriRegex.exec(url);
         if (dataUriRegexResult !== null) {
@@ -20445,7 +20012,7 @@ define('Core/Resource',[
             return;
         }
 
-        if (noXMLHttpRequest) {
+        if (FeatureDetection.isNodeJs()) {
             loadWithHttpRequest(url, responseType, method, data, headers, deferred, overrideMimeType);
             return;
         }
@@ -20456,11 +20023,11 @@ define('Core/Resource',[
             xhr.withCredentials = true;
         }
 
-        xhr.open(method, url, true);
-
         if (defined(overrideMimeType) && defined(xhr.overrideMimeType)) {
             xhr.overrideMimeType(overrideMimeType);
         }
+
+        xhr.open(method, url, true);
 
         if (defined(headers)) {
             for (var key in headers) {
@@ -20537,7 +20104,20 @@ define('Core/Resource',[
     };
 
     Resource._Implementations.loadAndExecuteScript = function(url, functionName, deferred) {
-        return loadAndExecuteScript(url, functionName).otherwise(deferred.reject);
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = url;
+
+        var head = document.getElementsByTagName('head')[0];
+        script.onload = function() {
+            script.onload = undefined;
+            head.removeChild(script);
+        };
+        script.onerror = function(e) {
+            deferred.reject(e);
+        };
+
+        head.appendChild(script);
     };
 
     /**
@@ -20710,7 +20290,7 @@ define('Core/EarthOrientationParameters',[
      * Gets a promise that, when resolved, indicates that the EOP data has been loaded and is
      * ready to use.
      *
-     * @returns {Promise} The promise.
+     * @returns {Promise.<undefined>} The promise.
      *
      * @see when
      */
@@ -20957,190 +20537,14 @@ define('Core/EarthOrientationParameters',[
     return EarthOrientationParameters;
 });
 
-define('Core/HeadingPitchRoll',[
-        './defaultValue',
-        './defined',
-        './DeveloperError',
-        './Math'
-    ], function(
-        defaultValue,
-        defined,
-        DeveloperError,
-        CesiumMath) {
-    'use strict';
-
-    /**
-     * A rotation expressed as a heading, pitch, and roll. Heading is the rotation about the
-     * negative z axis. Pitch is the rotation about the negative y axis. Roll is the rotation about
-     * the positive x axis.
-     * @alias HeadingPitchRoll
-     * @constructor
-     *
-     * @param {Number} [heading=0.0] The heading component in radians.
-     * @param {Number} [pitch=0.0] The pitch component in radians.
-     * @param {Number} [roll=0.0] The roll component in radians.
-     */
-    function HeadingPitchRoll(heading, pitch, roll) {
-        this.heading = defaultValue(heading, 0.0);
-        this.pitch = defaultValue(pitch, 0.0);
-        this.roll = defaultValue(roll, 0.0);
-    }
-
-    /**
-     * Computes the heading, pitch and roll from a quaternion (see http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles )
-     *
-     * @param {Quaternion} quaternion The quaternion from which to retrieve heading, pitch, and roll, all expressed in radians.
-     * @param {HeadingPitchRoll} [result] The object in which to store the result. If not provided, a new instance is created and returned.
-     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided.
-     */
-    HeadingPitchRoll.fromQuaternion = function(quaternion, result) {
-                if (!defined(result)) {
-            result = new HeadingPitchRoll();
-        }
-        var test = 2 * (quaternion.w * quaternion.y - quaternion.z * quaternion.x);
-        var denominatorRoll = 1 - 2 * (quaternion.x * quaternion.x + quaternion.y * quaternion.y);
-        var numeratorRoll = 2 * (quaternion.w * quaternion.x + quaternion.y * quaternion.z);
-        var denominatorHeading = 1 - 2 * (quaternion.y * quaternion.y + quaternion.z * quaternion.z);
-        var numeratorHeading = 2 * (quaternion.w * quaternion.z + quaternion.x * quaternion.y);
-        result.heading = -Math.atan2(numeratorHeading, denominatorHeading);
-        result.roll = Math.atan2(numeratorRoll, denominatorRoll);
-        result.pitch = -CesiumMath.asinClamped(test);
-        return result;
-    };
-
-    /**
-     * Returns a new HeadingPitchRoll instance from angles given in degrees.
-     *
-     * @param {Number} heading the heading in degrees
-     * @param {Number} pitch the pitch in degrees
-     * @param {Number} roll the heading in degrees
-     * @param {HeadingPitchRoll} [result] The object in which to store the result. If not provided, a new instance is created and returned.
-     * @returns {HeadingPitchRoll} A new HeadingPitchRoll instance
-     */
-    HeadingPitchRoll.fromDegrees = function(heading, pitch, roll, result) {
-                if (!defined(result)) {
-            result = new HeadingPitchRoll();
-        }
-        result.heading = heading * CesiumMath.RADIANS_PER_DEGREE;
-        result.pitch = pitch * CesiumMath.RADIANS_PER_DEGREE;
-        result.roll = roll * CesiumMath.RADIANS_PER_DEGREE;
-        return result;
-    };
-
-    /**
-     * Duplicates a HeadingPitchRoll instance.
-     *
-     * @param {HeadingPitchRoll} headingPitchRoll The HeadingPitchRoll to duplicate.
-     * @param {HeadingPitchRoll} [result] The object onto which to store the result.
-     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided. (Returns undefined if headingPitchRoll is undefined)
-     */
-    HeadingPitchRoll.clone = function(headingPitchRoll, result) {
-        if (!defined(headingPitchRoll)) {
-            return undefined;
-        }
-        if (!defined(result)) {
-            return new HeadingPitchRoll(headingPitchRoll.heading, headingPitchRoll.pitch, headingPitchRoll.roll);
-        }
-        result.heading = headingPitchRoll.heading;
-        result.pitch = headingPitchRoll.pitch;
-        result.roll = headingPitchRoll.roll;
-        return result;
-    };
-
-    /**
-     * Compares the provided HeadingPitchRolls componentwise and returns
-     * <code>true</code> if they are equal, <code>false</code> otherwise.
-     *
-     * @param {HeadingPitchRoll} [left] The first HeadingPitchRoll.
-     * @param {HeadingPitchRoll} [right] The second HeadingPitchRoll.
-     * @returns {Boolean} <code>true</code> if left and right are equal, <code>false</code> otherwise.
-     */
-    HeadingPitchRoll.equals = function(left, right) {
-        return (left === right) ||
-            ((defined(left)) &&
-                (defined(right)) &&
-                (left.heading === right.heading) &&
-                (left.pitch === right.pitch) &&
-                (left.roll === right.roll));
-    };
-
-    /**
-     * Compares the provided HeadingPitchRolls componentwise and returns
-     * <code>true</code> if they pass an absolute or relative tolerance test,
-     * <code>false</code> otherwise.
-     *
-     * @param {HeadingPitchRoll} [left] The first HeadingPitchRoll.
-     * @param {HeadingPitchRoll} [right] The second HeadingPitchRoll.
-     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
-     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
-     * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
-     */
-    HeadingPitchRoll.equalsEpsilon = function(left, right, relativeEpsilon, absoluteEpsilon) {
-        return (left === right) ||
-            (defined(left) &&
-                defined(right) &&
-                CesiumMath.equalsEpsilon(left.heading, right.heading, relativeEpsilon, absoluteEpsilon) &&
-                CesiumMath.equalsEpsilon(left.pitch, right.pitch, relativeEpsilon, absoluteEpsilon) &&
-                CesiumMath.equalsEpsilon(left.roll, right.roll, relativeEpsilon, absoluteEpsilon));
-    };
-
-    /**
-     * Duplicates this HeadingPitchRoll instance.
-     *
-     * @param {HeadingPitchRoll} [result] The object onto which to store the result.
-     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided.
-     */
-    HeadingPitchRoll.prototype.clone = function(result) {
-        return HeadingPitchRoll.clone(this, result);
-    };
-
-    /**
-     * Compares this HeadingPitchRoll against the provided HeadingPitchRoll componentwise and returns
-     * <code>true</code> if they are equal, <code>false</code> otherwise.
-     *
-     * @param {HeadingPitchRoll} [right] The right hand side HeadingPitchRoll.
-     * @returns {Boolean} <code>true</code> if they are equal, <code>false</code> otherwise.
-     */
-    HeadingPitchRoll.prototype.equals = function(right) {
-        return HeadingPitchRoll.equals(this, right);
-    };
-
-    /**
-     * Compares this HeadingPitchRoll against the provided HeadingPitchRoll componentwise and returns
-     * <code>true</code> if they pass an absolute or relative tolerance test,
-     * <code>false</code> otherwise.
-     *
-     * @param {HeadingPitchRoll} [right] The right hand side HeadingPitchRoll.
-     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
-     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
-     * @returns {Boolean} <code>true</code> if they are within the provided epsilon, <code>false</code> otherwise.
-     */
-    HeadingPitchRoll.prototype.equalsEpsilon = function(right, relativeEpsilon, absoluteEpsilon) {
-        return HeadingPitchRoll.equalsEpsilon(this, right, relativeEpsilon, absoluteEpsilon);
-    };
-
-    /**
-     * Creates a string representing this HeadingPitchRoll in the format '(heading, pitch, roll)' in radians.
-     *
-     * @returns {String} A string representing the provided HeadingPitchRoll in the format '(heading, pitch, roll)'.
-     */
-    HeadingPitchRoll.prototype.toString = function() {
-        return '(' + this.heading + ', ' + this.pitch + ', ' + this.roll + ')';
-    };
-
-    return HeadingPitchRoll;
-});
-
 define('Core/buildModuleUrl',[
         './defined',
         './DeveloperError',
-        './getAbsoluteUri',
         './Resource',
         'require'
     ], function(
         defined,
         DeveloperError,
-        getAbsoluteUri,
         Resource,
         require) {
     'use strict';
@@ -21159,23 +20563,6 @@ define('Core/buildModuleUrl',[
         return undefined;
     }
 
-    var a;
-    function tryMakeAbsolute(url) {
-        if (typeof document === 'undefined') {
-            //Node.js and Web Workers. In both cases, the URL will already be absolute.
-            return url;
-        }
-
-        if (!defined(a)) {
-            a = document.createElement('a');
-        }
-        a.href = url;
-
-        // IE only absolutizes href on get, not set
-        a.href = a.href; // eslint-disable-line no-self-assign
-        return a.href;
-    }
-
     var baseResource;
     function getCesiumBaseUrl() {
         if (defined(baseResource)) {
@@ -21185,15 +20572,13 @@ define('Core/buildModuleUrl',[
         var baseUrlString;
         if (typeof CESIUM_BASE_URL !== 'undefined') {
             baseUrlString = CESIUM_BASE_URL;
-        } else if (defined(define.amd) && !define.amd.toUrlUndefined && defined(require.toUrl)) {
-            baseUrlString = getAbsoluteUri('..', buildModuleUrl('Core/buildModuleUrl.js'));
         } else {
             baseUrlString = getBaseUrlFromCesiumScript();
         }
 
         
         baseResource = new Resource({
-            url: tryMakeAbsolute(baseUrlString)
+            url: baseUrlString
         });
         baseResource.appendForwardSlash();
 
@@ -21202,7 +20587,7 @@ define('Core/buildModuleUrl',[
 
     function buildModuleUrlFromRequireToUrl(moduleID) {
         //moduleID will be non-relative, so require it relative to this module, in Core.
-        return tryMakeAbsolute(require.toUrl('../' + moduleID));
+        return require.toUrl('../' + moduleID);
     }
 
     function buildModuleUrlFromBaseUrl(moduleID) {
@@ -21213,6 +20598,7 @@ define('Core/buildModuleUrl',[
     }
 
     var implementation;
+    var a;
 
     /**
      * Given a non-relative moduleID, returns an absolute URL to the file represented by that module ID,
@@ -21222,6 +20608,10 @@ define('Core/buildModuleUrl',[
      * @private
      */
     function buildModuleUrl(moduleID) {
+        if (typeof document === 'undefined') {
+            //document is undefined in node
+            return moduleID;
+        }
         if (!defined(implementation)) {
             //select implementation
             if (defined(define.amd) && !define.amd.toUrlUndefined && defined(require.toUrl)) {
@@ -21231,8 +20621,16 @@ define('Core/buildModuleUrl',[
             }
         }
 
+        if (!defined(a)) {
+            a = document.createElement('a');
+        }
+
         var url = implementation(moduleID);
-        return url;
+
+        a.href = url;
+        a.href = a.href; // IE only absolutizes href on get, not set
+
+        return a.href;
     }
 
     // exposed for testing
@@ -21251,11 +20649,6 @@ define('Core/buildModuleUrl',[
             url: value
         });
     };
-
-    /**
-     * Gets the base URL for resolving modules.
-     */
-    buildModuleUrl.getCesiumBaseUrl = getCesiumBaseUrl;
 
     return buildModuleUrl;
 });
@@ -21396,7 +20789,7 @@ define('Core/Iau2006XysData',[
      *                 the Terrestrial Time (TT) time standard.
      * @param {Number} stopSecondTT The seconds past noon of the end of the interval to preload, expressed in
      *                 the Terrestrial Time (TT) time standard.
-     * @returns {Promise} A promise that, when resolved, indicates that the requested interval has been
+     * @returns {Promise.<undefined>} A promise that, when resolved, indicates that the requested interval has been
      *                    preloaded.
      */
     Iau2006XysData.prototype.preload = function(startDayTT, startSecondTT, stopDayTT, stopSecondTT) {
@@ -22497,7 +21890,6 @@ define('Core/Transforms',[
         './EarthOrientationParameters',
         './EarthOrientationParametersSample',
         './Ellipsoid',
-        './HeadingPitchRoll',
         './Iau2006XysData',
         './Iau2006XysSample',
         './JulianDate',
@@ -22519,7 +21911,6 @@ define('Core/Transforms',[
         EarthOrientationParameters,
         EarthOrientationParametersSample,
         Ellipsoid,
-        HeadingPitchRoll,
         Iau2006XysData,
         Iau2006XysSample,
         JulianDate,
@@ -22534,7 +21925,6 @@ define('Core/Transforms',[
      * Contains functions for transforming positions to various reference frames.
      *
      * @exports Transforms
-     * @namespace
      */
     var Transforms = {};
 
@@ -22609,89 +21999,89 @@ define('Core/Transforms',[
     * @return {localFrameToFixedFrameGenerator~resultat} The function that will computes a
     * 4x4 transformation matrix from a reference frame, with first axis and second axis compliant with the parameters,
     */
-    Transforms.localFrameToFixedFrameGenerator = function (firstAxis, secondAxis) {
-        if (!vectorProductLocalFrame.hasOwnProperty(firstAxis) || !vectorProductLocalFrame[firstAxis].hasOwnProperty(secondAxis)) {
-            throw new DeveloperError('firstAxis and secondAxis must be east, north, up, west, south or down.');
-        }
-        var thirdAxis = vectorProductLocalFrame[firstAxis][secondAxis];
+    Transforms.localFrameToFixedFrameGenerator = function( firstAxis, secondAxis) {
+      if (!vectorProductLocalFrame.hasOwnProperty(firstAxis) || !vectorProductLocalFrame[firstAxis].hasOwnProperty(secondAxis)) {
+          throw new DeveloperError('firstAxis and secondAxis must be east, north, up, west, south or down.');
+      }
+      var thirdAxis = vectorProductLocalFrame[firstAxis][secondAxis];
 
-        /**
-         * Computes a 4x4 transformation matrix from a reference frame
-         * centered at the provided origin to the provided ellipsoid's fixed reference frame.
-         * @callback Transforms~LocalFrameToFixedFrame
-         * @param {Cartesian3} origin The center point of the local reference frame.
-         * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
-         * @param {Matrix4} [result] The object onto which to store the result.
-         * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if none was provided.
-         */
-        var resultat;
-        var hashAxis = firstAxis + secondAxis;
-        if (defined(localFrameToFixedFrameCache[hashAxis])) {
-            resultat = localFrameToFixedFrameCache[hashAxis];
-        } else {
-            resultat = function (origin, ellipsoid, result) {
-                                if (!defined(result)) {
-                    result = new Matrix4();
-                }
-                // If x and y are zero, assume origin is at a pole, which is a special case.
-                if (CesiumMath.equalsEpsilon(origin.x, 0.0, CesiumMath.EPSILON14) && CesiumMath.equalsEpsilon(origin.y, 0.0, CesiumMath.EPSILON14)) {
-                    var sign = CesiumMath.sign(origin.z);
+      /**
+       * Computes a 4x4 transformation matrix from a reference frame
+       * centered at the provided origin to the provided ellipsoid's fixed reference frame.
+       * @callback Transforms~LocalFrameToFixedFrame
+       * @param {Cartesian3} origin The center point of the local reference frame.
+       * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
+       * @param {Matrix4} [result] The object onto which to store the result.
+       * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if none was provided.
+       */
+      var resultat;
+      var hashAxis = firstAxis + secondAxis;
+      if (defined(localFrameToFixedFrameCache[hashAxis])) {
+          resultat = localFrameToFixedFrameCache[hashAxis];
+      } else {
+          resultat = function(origin, ellipsoid, result) {
+                            if (!defined(result)) {
+                  result = new Matrix4();
+              }
+              // If x and y are zero, assume origin is at a pole, which is a special case.
+              if (CesiumMath.equalsEpsilon(origin.x, 0.0, CesiumMath.EPSILON14) && CesiumMath.equalsEpsilon(origin.y, 0.0, CesiumMath.EPSILON14)) {
+                  var sign = CesiumMath.sign(origin.z);
 
-                    Cartesian3.unpack(degeneratePositionLocalFrame[firstAxis], 0, scratchFirstCartesian);
-                    if (firstAxis !== 'east' && firstAxis !== 'west') {
-                        Cartesian3.multiplyByScalar(scratchFirstCartesian, sign, scratchFirstCartesian);
-                    }
+                  Cartesian3.unpack(degeneratePositionLocalFrame[firstAxis], 0, scratchFirstCartesian);
+                  if (firstAxis !== 'east' && firstAxis !== 'west') {
+                      Cartesian3.multiplyByScalar(scratchFirstCartesian, sign, scratchFirstCartesian);
+                  }
 
-                    Cartesian3.unpack(degeneratePositionLocalFrame[secondAxis], 0, scratchSecondCartesian);
-                    if (secondAxis !== 'east' && secondAxis !== 'west') {
-                        Cartesian3.multiplyByScalar(scratchSecondCartesian, sign, scratchSecondCartesian);
-                    }
+                  Cartesian3.unpack(degeneratePositionLocalFrame[secondAxis], 0, scratchSecondCartesian);
+                  if (secondAxis !== 'east' && secondAxis !== 'west') {
+                      Cartesian3.multiplyByScalar(scratchSecondCartesian, sign, scratchSecondCartesian);
+                  }
 
-                    Cartesian3.unpack(degeneratePositionLocalFrame[thirdAxis], 0, scratchThirdCartesian);
-                    if (thirdAxis !== 'east' && thirdAxis !== 'west') {
-                        Cartesian3.multiplyByScalar(scratchThirdCartesian, sign, scratchThirdCartesian);
-                    }
-                } else {
-                    ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
-                    ellipsoid.geodeticSurfaceNormal(origin, scratchCalculateCartesian.up);
+                  Cartesian3.unpack(degeneratePositionLocalFrame[thirdAxis], 0, scratchThirdCartesian);
+                  if (thirdAxis !== 'east' && thirdAxis !== 'west') {
+                      Cartesian3.multiplyByScalar(scratchThirdCartesian, sign, scratchThirdCartesian);
+                  }
+              } else {
+                  ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
+                  ellipsoid.geodeticSurfaceNormal(origin, scratchCalculateCartesian.up);
 
-                    var up = scratchCalculateCartesian.up;
-                    var east = scratchCalculateCartesian.east;
-                    east.x = -origin.y;
-                    east.y = origin.x;
-                    east.z = 0.0;
-                    Cartesian3.normalize(east, scratchCalculateCartesian.east);
-                    Cartesian3.cross(up, east, scratchCalculateCartesian.north);
+                  var up = scratchCalculateCartesian.up;
+                  var east = scratchCalculateCartesian.east;
+                  east.x = -origin.y;
+                  east.y = origin.x;
+                  east.z = 0.0;
+                  Cartesian3.normalize(east, scratchCalculateCartesian.east);
+                  Cartesian3.cross(up, east, scratchCalculateCartesian.north);
 
-                    Cartesian3.multiplyByScalar(scratchCalculateCartesian.up, -1, scratchCalculateCartesian.down);
-                    Cartesian3.multiplyByScalar(scratchCalculateCartesian.east, -1, scratchCalculateCartesian.west);
-                    Cartesian3.multiplyByScalar(scratchCalculateCartesian.north, -1, scratchCalculateCartesian.south);
+                  Cartesian3.multiplyByScalar(scratchCalculateCartesian.up, -1, scratchCalculateCartesian.down);
+                  Cartesian3.multiplyByScalar(scratchCalculateCartesian.east, -1, scratchCalculateCartesian.west);
+                  Cartesian3.multiplyByScalar(scratchCalculateCartesian.north, -1, scratchCalculateCartesian.south);
 
-                    scratchFirstCartesian = scratchCalculateCartesian[firstAxis];
-                    scratchSecondCartesian = scratchCalculateCartesian[secondAxis];
-                    scratchThirdCartesian = scratchCalculateCartesian[thirdAxis];
-                }
-                result[0] = scratchFirstCartesian.x;
-                result[1] = scratchFirstCartesian.y;
-                result[2] = scratchFirstCartesian.z;
-                result[3] = 0.0;
-                result[4] = scratchSecondCartesian.x;
-                result[5] = scratchSecondCartesian.y;
-                result[6] = scratchSecondCartesian.z;
-                result[7] = 0.0;
-                result[8] = scratchThirdCartesian.x;
-                result[9] = scratchThirdCartesian.y;
-                result[10] = scratchThirdCartesian.z;
-                result[11] = 0.0;
-                result[12] = origin.x;
-                result[13] = origin.y;
-                result[14] = origin.z;
-                result[15] = 1.0;
-                return result;
-            };
-            localFrameToFixedFrameCache[hashAxis] = resultat;
-        }
-        return resultat;
+                  scratchFirstCartesian = scratchCalculateCartesian[firstAxis];
+                  scratchSecondCartesian = scratchCalculateCartesian[secondAxis];
+                  scratchThirdCartesian = scratchCalculateCartesian[thirdAxis];
+              }
+              result[0] = scratchFirstCartesian.x;
+              result[1] = scratchFirstCartesian.y;
+              result[2] = scratchFirstCartesian.z;
+              result[3] = 0.0;
+              result[4] = scratchSecondCartesian.x;
+              result[5] = scratchSecondCartesian.y;
+              result[6] = scratchSecondCartesian.z;
+              result[7] = 0.0;
+              result[8] = scratchThirdCartesian.x;
+              result[9] = scratchThirdCartesian.y;
+              result[10] = scratchThirdCartesian.z;
+              result[11] = 0.0;
+              result[12] = origin.x;
+              result[13] = origin.y;
+              result[14] = origin.z;
+              result[15] = 1.0;
+              return result;
+          };
+          localFrameToFixedFrameCache[hashAxis] = resultat;
+      }
+      return resultat;
     };
 
     /**
@@ -22855,50 +22245,6 @@ define('Core/Transforms',[
         return Quaternion.fromRotationMatrix(rotation, result);
     };
 
-    var noScale = new Cartesian3(1.0, 1.0, 1.0);
-    var hprCenterScratch = new Cartesian3();
-    var ffScratch = new Matrix4();
-    var hprTransformScratch = new Matrix4();
-    var hprRotationScratch = new Matrix3();
-    var hprQuaternionScratch = new Quaternion();
-    /**
-     * Computes heading-pitch-roll angles from a transform in a particular reference frame. Heading is the rotation from the local north
-     * direction where a positive angle is increasing eastward. Pitch is the rotation from the local east-north plane. Positive pitch angles
-     * are above the plane. Negative pitch angles are below the plane. Roll is the first rotation applied about the local east axis.
-     *
-     * @param {Matrix4} transform The transform
-     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
-     * @param {Transforms~LocalFrameToFixedFrame} [fixedFrameTransform=Transforms.eastNorthUpToFixedFrame] A 4x4 transformation
-     *  matrix from a reference frame to the provided ellipsoid's fixed reference frame
-     * @param {HeadingPitchRoll} [result] The object onto which to store the result.
-     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if none was provided.
-     */
-    Transforms.fixedFrameToHeadingPitchRoll = function(transform, ellipsoid, fixedFrameTransform, result) {
-        
-        ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
-        fixedFrameTransform = defaultValue(fixedFrameTransform, Transforms.eastNorthUpToFixedFrame);
-        if (!defined(result)) {
-            result = new HeadingPitchRoll();
-        }
-
-        var center = Matrix4.getTranslation(transform, hprCenterScratch);
-        if (Cartesian3.equals(center, Cartesian3.ZERO)) {
-            result.heading = 0;
-            result.pitch = 0;
-            result.roll = 0;
-            return result;
-        }
-        var toFixedFrame = Matrix4.inverseTransformation(fixedFrameTransform(center, ellipsoid, ffScratch), ffScratch);
-        var transformCopy = Matrix4.setScale(transform, noScale, hprTransformScratch);
-        transformCopy = Matrix4.setTranslation(transformCopy, Cartesian3.ZERO, transformCopy);
-
-        toFixedFrame = Matrix4.multiply(toFixedFrame, transformCopy, toFixedFrame);
-        var quaternionRotation = Quaternion.fromRotationMatrix(Matrix4.getRotation(toFixedFrame, hprRotationScratch), hprQuaternionScratch);
-        quaternionRotation = Quaternion.normalize(quaternionRotation, quaternionRotation);
-
-        return HeadingPitchRoll.fromQuaternion(quaternionRotation, result);
-    };
-
     var gmstConstant0 = 6 * 3600 + 41 * 60 + 50.54841;
     var gmstConstant1 = 8640184.812866;
     var gmstConstant2 = 0.093104;
@@ -22917,7 +22263,7 @@ define('Core/Transforms',[
      * @returns {Matrix3} The modified result parameter or a new Matrix3 instance if none was provided.
      *
      * @example
-     * //Set the view to the inertial frame.
+     * //Set the view to in the inertial frame.
      * scene.postUpdate.addEventListener(function(scene, time) {
      *    var now = Cesium.JulianDate.now();
      *    var offset = Cesium.Matrix4.multiplyByPoint(camera.transform, camera.position, new Cesium.Cartesian3());
@@ -23004,7 +22350,7 @@ define('Core/Transforms',[
      * indicates that the preload has completed.
      *
      * @param {TimeInterval} timeInterval The interval to preload.
-     * @returns {Promise} A promise that, when resolved, indicates that the preload has completed
+     * @returns {Promise.<undefined>} A promise that, when resolved, indicates that the preload has completed
      *          and evaluation of the transformation between the fixed and ICRF axes will
      *          no longer return undefined for a time inside the interval.
      *
@@ -23046,11 +22392,12 @@ define('Core/Transforms',[
      *
      * @example
      * scene.postUpdate.addEventListener(function(scene, time) {
-     *   // View in ICRF.
      *   var icrfToFixed = Cesium.Transforms.computeIcrfToFixedMatrix(time);
      *   if (Cesium.defined(icrfToFixed)) {
-     *     var offset = Cesium.Cartesian3.clone(camera.position);
-     *     var transform = Cesium.Matrix4.fromRotationTranslation(icrfToFixed);
+     *     var offset = Cesium.Matrix4.multiplyByPoint(camera.transform, camera.position, new Cesium.Cartesian3());
+     *     var transform = Cesium.Matrix4.fromRotationTranslation(icrfToFixed)
+     *     var inverseTransform = Cesium.Matrix4.inverseTransformation(transform, new Cesium.Matrix4());
+     *     Cesium.Matrix4.multiplyByPoint(inverseTransform, offset, offset);
      *     camera.lookAtTransform(transform, offset);
      *   }
      * });
@@ -23244,16 +22591,13 @@ define('Core/Transforms',[
         
         var normal = defaultValue(ellipsoid, Ellipsoid.WGS84).geodeticSurfaceNormal(position, normalScratch);
         var right = Cartesian3.cross(velocity, normal, rightScratch);
-
         if (Cartesian3.equalsEpsilon(right, Cartesian3.ZERO, CesiumMath.EPSILON6)) {
             right = Cartesian3.clone(Cartesian3.UNIT_X, right);
         }
 
         var up = Cartesian3.cross(right, velocity, upScratch);
-        Cartesian3.normalize(up, up);
         Cartesian3.cross(velocity, up, right);
         Cartesian3.negate(right, right);
-        Cartesian3.normalize(right, right);
 
         if (!defined(result)) {
             result = new Matrix3();
@@ -23339,7 +22683,6 @@ define('Core/EllipsoidTangentPlane',[
         './Cartesian2',
         './Cartesian3',
         './Cartesian4',
-        './Check',
         './defaultValue',
         './defined',
         './defineProperties',
@@ -23355,7 +22698,6 @@ define('Core/EllipsoidTangentPlane',[
         Cartesian2,
         Cartesian3,
         Cartesian4,
-        Check,
         defaultValue,
         defined,
         defineProperties,
@@ -23474,8 +22816,8 @@ define('Core/EllipsoidTangentPlane',[
      * Creates a new instance from the provided ellipsoid and the center
      * point of the provided Cartesians.
      *
+     * @param {Ellipsoid} ellipsoid The ellipsoid to use.
      * @param {Cartesian3} cartesians The list of positions surrounding the center point.
-     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid to use.
      */
     EllipsoidTangentPlane.fromPoints = function(cartesians, ellipsoid) {
         
@@ -23606,34 +22948,6 @@ define('Core/EllipsoidTangentPlane',[
 
     var projectPointsOntoEllipsoidScratch = new Cartesian3();
     /**
-     * Computes the projection of the provided 2D position onto the 3D ellipsoid.
-     *
-     * @param {Cartesian2} cartesian The points to project.
-     * @param {Cartesian3} [result] The Cartesian3 instance to store result.
-     * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if none was provided.
-     */
-    EllipsoidTangentPlane.prototype.projectPointOntoEllipsoid = function(cartesian, result) {
-        
-        if (!defined(result)) {
-            result = new Cartesian3();
-        }
-
-        var ellipsoid = this._ellipsoid;
-        var origin = this._origin;
-        var xAxis = this._xAxis;
-        var yAxis = this._yAxis;
-        var tmp = projectPointsOntoEllipsoidScratch;
-
-        Cartesian3.multiplyByScalar(xAxis, cartesian.x, tmp);
-        result = Cartesian3.add(origin, tmp, result);
-        Cartesian3.multiplyByScalar(yAxis, cartesian.y, tmp);
-        Cartesian3.add(result, tmp, result);
-        ellipsoid.scaleToGeocentricSurface(result, result);
-
-        return result;
-    };
-
-    /**
      * Computes the projection of the provided 2D positions onto the 3D ellipsoid.
      *
      * @param {Cartesian2[]} cartesians The array of points to project.
@@ -23649,8 +22963,22 @@ define('Core/EllipsoidTangentPlane',[
             result.length = length;
         }
 
+        var ellipsoid = this._ellipsoid;
+        var origin = this._origin;
+        var xAxis = this._xAxis;
+        var yAxis = this._yAxis;
+        var tmp = projectPointsOntoEllipsoidScratch;
+
         for ( var i = 0; i < length; ++i) {
-            result[i] = this.projectPointOntoEllipsoid(cartesians[i], result[i]);
+            var position = cartesians[i];
+            Cartesian3.multiplyByScalar(xAxis, position.x, tmp);
+            if (!defined(result[i])) {
+                result[i] = new Cartesian3();
+            }
+            var point = Cartesian3.add(origin, tmp, result[i]);
+            Cartesian3.multiplyByScalar(yAxis, position.y, tmp);
+            Cartesian3.add(point, tmp, point);
+            ellipsoid.scaleToGeocentricSurface(point, point);
         }
 
         return result;
@@ -23904,6 +23232,19 @@ define('Core/OrientedBoundingBox',[
 
     var scratchOffset = new Cartesian3();
     var scratchScale = new Cartesian3();
+    /**
+     * Computes an OrientedBoundingBox given extents in the east-north-up space of the tangent plane.
+     *
+     * @param {Plane} tangentPlane The tangent place corresponding to east-north-up.
+     * @param {Number} minimumX Minimum X extent in tangent plane space.
+     * @param {Number} maximumX Maximum X extent in tangent plane space.
+     * @param {Number} minimumY Minimum Y extent in tangent plane space.
+     * @param {Number} maximumY Maximum Y extent in tangent plane space.
+     * @param {Number} minimumZ Minimum Z extent in tangent plane space.
+     * @param {Number} maximumZ Maximum Z extent in tangent plane space.
+     * @param {OrientedBoundingBox} [result] The object onto which to store the result.
+     * @returns {OrientedBoundingBox} The modified result parameter or a new OrientedBoundingBox instance if one was not provided.
+     */
     function fromTangentPlaneExtents(tangentPlane, minimumX, maximumX, minimumY, maximumY, minimumZ, maximumZ, result) {
         
         if (!defined(result)) {
@@ -25034,9 +24375,6 @@ define('Core/WebGLConstants',[
         // WEBGL_compressed_texture_etc1
         COMPRESSED_RGB_ETC1_WEBGL : 0x8D64,
 
-        // EXT_color_buffer_half_float
-        HALF_FLOAT_OES : 0x8D61,
-
         // Desktop OpenGL
         DOUBLE : 0x140A,
 
@@ -25704,7 +25042,7 @@ define('Core/TerrainEncoding',[
      * @private
      */
     function TerrainEncoding(axisAlignedBoundingBox, minimumHeight, maximumHeight, fromENU, hasVertexNormals, hasWebMercatorT) {
-        var quantization = TerrainQuantization.NONE;
+        var quantization;
         var center;
         var toENU;
         var matrix;
@@ -25905,16 +25243,6 @@ define('Core/TerrainEncoding',[
         }
 
         return buffer[index + 3];
-    };
-
-    TerrainEncoding.prototype.decodeWebMercatorT = function(buffer, index) {
-        index *= this.getStride();
-
-        if (this.quantization === TerrainQuantization.BITS12) {
-            return AttributeCompression.decompressTextureCoordinates(buffer[index + 3], cartesian2Scratch).x;
-        }
-
-        return buffer[index + 6];
     };
 
     TerrainEncoding.prototype.getOctEncodedNormal = function(buffer, index, result) {
@@ -26225,7 +25553,7 @@ define('Core/formatError',[
      *
      * @exports formatError
      *
-     * @param {*} object The item to find in the array.
+     * @param {Object} object The item to find in the array.
      * @returns {String} A string containing the formatted error.
      */
     function formatError(object) {
@@ -26251,30 +25579,14 @@ define('Core/formatError',[
 });
 
 define('Workers/createTaskProcessorWorker',[
-        '../ThirdParty/when',
         '../Core/defaultValue',
         '../Core/defined',
         '../Core/formatError'
     ], function(
-        when,
         defaultValue,
         defined,
         formatError) {
     'use strict';
-
-    // createXXXGeometry functions may return Geometry or a Promise that resolves to Geometry
-    // if the function requires access to ApproximateTerrainHeights.
-    // For fully synchronous functions, just wrapping the function call in a `when` Promise doesn't
-    // handle errors correctly, hence try-catch
-    function callAndWrap(workerFunction, parameters, transferableObjects) {
-        var resultOrPromise;
-        try {
-            resultOrPromise = workerFunction(parameters, transferableObjects);
-            return resultOrPromise; // errors handled by Promise
-        } catch (e) {
-            return when.reject(e);
-        }
-    }
 
     /**
      * Creates an adapter function to allow a calculation function to operate as a Web Worker,
@@ -26303,53 +25615,54 @@ define('Workers/createTaskProcessorWorker',[
      */
     function createTaskProcessorWorker(workerFunction) {
         var postMessage;
+        var transferableObjects = [];
+        var responseMessage = {
+            id : undefined,
+            result : undefined,
+            error : undefined
+        };
 
         return function(event) {
             /*global self*/
             var data = event.data;
 
-            var transferableObjects = [];
-            var responseMessage = {
-                id : data.id,
-                result : undefined,
-                error : undefined
-            };
+            transferableObjects.length = 0;
+            responseMessage.id = data.id;
+            responseMessage.error = undefined;
+            responseMessage.result = undefined;
 
-            return when(callAndWrap(workerFunction, data.parameters, transferableObjects))
-                .then(function(result) {
-                    responseMessage.result = result;
-                })
-                .otherwise(function(e) {
-                    if (e instanceof Error) {
-                        // Errors can't be posted in a message, copy the properties
-                        responseMessage.error = {
-                            name : e.name,
-                            message : e.message,
-                            stack : e.stack
-                        };
-                    } else {
-                        responseMessage.error = e;
-                    }
-                })
-                .always(function() {
-                    if (!defined(postMessage)) {
-                        postMessage = defaultValue(self.webkitPostMessage, self.postMessage);
-                    }
+            try {
+                responseMessage.result = workerFunction(data.parameters, transferableObjects);
+            } catch (e) {
+                if (e instanceof Error) {
+                    // Errors can't be posted in a message, copy the properties
+                    responseMessage.error = {
+                        name : e.name,
+                        message : e.message,
+                        stack : e.stack
+                    };
+                } else {
+                    responseMessage.error = e;
+                }
+            }
 
-                    if (!data.canTransferArrayBuffer) {
-                        transferableObjects.length = 0;
-                    }
+            if (!defined(postMessage)) {
+                postMessage = defaultValue(self.webkitPostMessage, self.postMessage);
+            }
 
-                    try {
-                        postMessage(responseMessage, transferableObjects);
-                    } catch (e) {
-                        // something went wrong trying to post the message, post a simpler
-                        // error that we can be sure will be cloneable
-                        responseMessage.result = undefined;
-                        responseMessage.error = 'postMessage failed with error: ' + formatError(e) + '\n  with responseMessage: ' + JSON.stringify(responseMessage);
-                        postMessage(responseMessage);
-                    }
-                });
+            if (!data.canTransferArrayBuffer) {
+                transferableObjects.length = 0;
+            }
+
+            try {
+                postMessage(responseMessage, transferableObjects);
+            } catch (e) {
+                // something went wrong trying to post the message, post a simpler
+                // error that we can be sure will be cloneable
+                responseMessage.result = undefined;
+                responseMessage.error = 'postMessage failed with error: ' + formatError(e) + '\n  with responseMessage: ' + JSON.stringify(responseMessage);
+                postMessage(responseMessage);
+            }
         };
     }
 
@@ -26468,11 +25781,7 @@ define('Workers/createVerticesFromGoogleEarthEnterpriseBuffer',[
             occludeePointInScaledSpace : statistics.occludeePointInScaledSpace,
             encoding : statistics.encoding,
             vertexCountWithoutSkirts : statistics.vertexCountWithoutSkirts,
-            skirtIndex : statistics.skirtIndex,
-            westIndicesSouthToNorth : statistics.westIndicesSouthToNorth,
-            southIndicesEastToWest : statistics.southIndicesEastToWest,
-            eastIndicesNorthToSouth : statistics.eastIndicesNorthToSouth,
-            northIndicesWestToEast : statistics.northIndicesWestToEast
+            skirtIndex : statistics.skirtIndex
         };
     }
 
@@ -26791,17 +26100,6 @@ define('Workers/createVerticesFromGoogleEarthEnterpriseBuffer',[
             bufferIndex = encoding.encode(vertices, bufferIndex, positions[k], uvs[k], heights[k], undefined, webMercatorTs[k]);
         }
 
-        var westIndicesSouthToNorth = westBorder.map(function(vertex) { return vertex.index; }).reverse();
-        var southIndicesEastToWest = southBorder.map(function(vertex) { return vertex.index; }).reverse();
-        var eastIndicesNorthToSouth = eastBorder.map(function(vertex) { return vertex.index; }).reverse();
-        var northIndicesWestToEast = northBorder.map(function(vertex) { return vertex.index; }).reverse();
-
-        southIndicesEastToWest.unshift(eastIndicesNorthToSouth[eastIndicesNorthToSouth.length - 1]);
-        southIndicesEastToWest.push(westIndicesSouthToNorth[0]);
-
-        northIndicesWestToEast.unshift(westIndicesSouthToNorth[westIndicesSouthToNorth.length - 1]);
-        northIndicesWestToEast.push(eastIndicesNorthToSouth[0]);
-
         return {
             vertices : vertices,
             indices : new Uint16Array(indices),
@@ -26812,11 +26110,7 @@ define('Workers/createVerticesFromGoogleEarthEnterpriseBuffer',[
             orientedBoundingBox : orientedBoundingBox,
             occludeePointInScaledSpace : occludeePointInScaledSpace,
             vertexCountWithoutSkirts : vertexCountWithoutSkirts,
-            skirtIndex : skirtIndex,
-            westIndicesSouthToNorth : westIndicesSouthToNorth,
-            southIndicesEastToWest : southIndicesEastToWest,
-            eastIndicesNorthToSouth : eastIndicesNorthToSouth,
-            northIndicesWestToEast : northIndicesWestToEast
+            skirtIndex : skirtIndex
         };
     }
 
