@@ -51,7 +51,7 @@
     "expect.js": "0.3.1",
     "google-closure-compiler": "20170423.0.0",
     "google-closure-library": "20190325.0.0",
-    "html-minifier": "3.5.21",
+    "html-minifier": "4.0.0",
     "jquery": "3.3.1",
     "karma": "4.0.1",
     "karma-coverage": "~v1.1.1",
