@@ -771,14 +771,16 @@ define('Core/Math',[
      * @param {Number} value The value to return the sign of.
      * @returns {Number} The sign of value.
      */
-    CesiumMath.sign = defaultValue(Math.sign, function sign(value) {
-        value = +value; // coerce to number
-        if (value === 0 || value !== value) {
-            // zero or NaN
-            return value;
+    CesiumMath.sign = function(value) {
+        if (value > 0) {
+            return 1;
         }
-        return value > 0 ? 1 : -1;
-    });
+        if (value < 0) {
+            return -1;
+        }
+
+        return 0;
+    };
 
     /**
      * Returns 1.0 if the given value is positive or zero, and -1.0 if it is negative.
@@ -838,9 +840,12 @@ define('Core/Math',[
      * @param {Number} value The number whose hyperbolic sine is to be returned.
      * @returns {Number} The hyperbolic sine of <code>value</code>.
      */
-    CesiumMath.sinh = defaultValue(Math.sinh, function sinh(value) {
-        return (Math.exp(value) - Math.exp(-value)) / 2.0;
-    });
+    CesiumMath.sinh = function(value) {
+        var part1 = Math.pow(Math.E, value);
+        var part2 = Math.pow(Math.E, -1.0 * value);
+
+        return (part1 - part2) * 0.5;
+    };
 
     /**
      * Returns the hyperbolic cosine of a number.
@@ -861,9 +866,12 @@ define('Core/Math',[
      * @param {Number} value The number whose hyperbolic cosine is to be returned.
      * @returns {Number} The hyperbolic cosine of <code>value</code>.
      */
-    CesiumMath.cosh = defaultValue(Math.cosh, function cosh(value) {
-        return (Math.exp(value) + Math.exp(-value)) / 2.0;
-    });
+    CesiumMath.cosh = function(value) {
+        var part1 = Math.pow(Math.E, value);
+        var part2 = Math.pow(Math.E, -1.0 * value);
+
+        return (part1 + part2) * 0.5;
+    };
 
     /**
      * Computes the linear interpolation of two values.
@@ -902,7 +910,7 @@ define('Core/Math',[
      * @type {Number}
      * @constant
      */
-    CesiumMath.PI_OVER_TWO = Math.PI / 2.0;
+    CesiumMath.PI_OVER_TWO = Math.PI * 0.5;
 
     /**
      * pi/3
@@ -934,7 +942,7 @@ define('Core/Math',[
      * @type {Number}
      * @constant
      */
-    CesiumMath.THREE_PI_OVER_TWO = 3.0 * Math.PI / 2.0;
+    CesiumMath.THREE_PI_OVER_TWO = (3.0 * Math.PI) * 0.5;
 
     /**
      * 2pi
@@ -1289,6 +1297,11 @@ define('Core/Math',[
                 return Math.log(number) / Math.log(base);
     };
 
+    function cbrt(number) {
+        var result = Math.pow(Math.abs(number), 1.0 / 3.0);
+        return number < 0.0 ? -result : result;
+    }
+
     /**
      * Finds the cube root of a number.
      * Returns NaN if <code>number</code> is not provided.
@@ -1296,20 +1309,7 @@ define('Core/Math',[
      * @param {Number} [number] The number.
      * @returns {Number} The result.
      */
-    CesiumMath.cbrt = defaultValue(Math.cbrt, function cbrt(number) {
-        var result = Math.pow(Math.abs(number), 1.0 / 3.0);
-        return number < 0.0 ? -result : result;
-    });
-
-    /**
-     * Finds the base 2 logarithm of a number.
-     *
-     * @param {Number} number The number.
-     * @returns {Number} The result.
-     */
-    CesiumMath.log2 = defaultValue(Math.log2, function log2(number) {
-        return Math.log(number) * Math.LOG2E;
-    });
+    CesiumMath.cbrt = defined(Math.cbrt) ? Math.cbrt : cbrt;
 
     /**
      * @private
@@ -10400,7 +10400,6 @@ define('Core/FeatureDetection',[
         defined,
         Fullscreen) {
     'use strict';
-    /*global CanvasPixelArray*/
 
     var theNavigator;
     if (typeof navigator !== 'undefined') {
@@ -10556,14 +10555,6 @@ define('Core/FeatureDetection',[
         return isFirefox() && firefoxVersionResult;
     }
 
-    var isNodeJsResult;
-    function isNodeJs() {
-        if (!defined(isNodeJsResult)) {
-            isNodeJsResult = typeof process === 'object' && Object.prototype.toString.call(process) === '[object process]'; // eslint-disable-line
-        }
-        return isNodeJsResult;
-    }
-
     var hasPointerEvents;
     function supportsPointerEvents() {
         if (!defined(hasPointerEvents)) {
@@ -10598,19 +10589,6 @@ define('Core/FeatureDetection',[
         return supportsImageRenderingPixelated() ? imageRenderingValueResult : undefined;
     }
 
-    var typedArrayTypes = [];
-    if (typeof ArrayBuffer !== 'undefined') {
-        typedArrayTypes.push(Int8Array, Uint8Array, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array);
-
-        if (typeof Uint8ClampedArray !== 'undefined') {
-            typedArrayTypes.push(Uint8ClampedArray);
-        }
-
-        if (typeof CanvasPixelArray !== 'undefined') {
-            typedArrayTypes.push(CanvasPixelArray);
-        }
-    }
-
     /**
      * A set of functions to detect whether the current browser supports
      * various features.
@@ -10631,12 +10609,10 @@ define('Core/FeatureDetection',[
         isFirefox : isFirefox,
         firefoxVersion : firefoxVersion,
         isWindows : isWindows,
-        isNodeJs: isNodeJs,
         hardwareConcurrency : defaultValue(theNavigator.hardwareConcurrency, 3),
         supportsPointerEvents : supportsPointerEvents,
         supportsImageRenderingPixelated: supportsImageRenderingPixelated,
-        imageRenderingValue: imageRenderingValue,
-        typedArrayTypes: typedArrayTypes
+        imageRenderingValue: imageRenderingValue
     };
 
     /**
@@ -14946,10 +14922,12 @@ define('Core/RectangleOutlineGeometry',[
         var surfaceHeight = options.surfaceHeight;
         var extrudedHeight = options.extrudedHeight;
         var ellipsoid = options.ellipsoid;
-        var minHeight = extrudedHeight;
-        var maxHeight = surfaceHeight;
+        var minHeight = Math.min(extrudedHeight, surfaceHeight);
+        var maxHeight = Math.max(extrudedHeight, surfaceHeight);
         var geo = constructRectangle(options);
-
+        if (CesiumMath.equalsEpsilon(minHeight, maxHeight, CesiumMath.EPSILON10)) {
+            return geo;
+        }
         var height = options.height;
         var width = options.width;
 
@@ -15026,18 +15004,17 @@ define('Core/RectangleOutlineGeometry',[
         var rectangle = options.rectangle;
         var granularity = defaultValue(options.granularity, CesiumMath.RADIANS_PER_DEGREE);
         var ellipsoid = defaultValue(options.ellipsoid, Ellipsoid.WGS84);
+        var surfaceHeight = defaultValue(options.height, 0.0);
         var rotation = defaultValue(options.rotation, 0.0);
+        var extrudedHeight = options.extrudedHeight;
 
         
-        var height = defaultValue(options.height, 0.0);
-        var extrudedHeight = defaultValue(options.extrudedHeight, height);
-
         this._rectangle = rectangle;
         this._granularity = granularity;
         this._ellipsoid = ellipsoid;
-        this._surfaceHeight = Math.max(height, extrudedHeight);
+        this._surfaceHeight = surfaceHeight;
         this._rotation = rotation;
-        this._extrudedHeight = Math.min(height, extrudedHeight);
+        this._extrudedHeight = extrudedHeight;
         this._workerName = 'createRectangleOutlineGeometry';
     }
 
@@ -15045,7 +15022,7 @@ define('Core/RectangleOutlineGeometry',[
      * The number of elements used to pack the object into an array.
      * @type {Number}
      */
-    RectangleOutlineGeometry.packedLength = Rectangle.packedLength + Ellipsoid.packedLength + 4;
+    RectangleOutlineGeometry.packedLength = Rectangle.packedLength + Ellipsoid.packedLength + 5;
 
     /**
      * Stores the provided instance into the provided array.
@@ -15069,7 +15046,8 @@ define('Core/RectangleOutlineGeometry',[
         array[startingIndex++] = value._granularity;
         array[startingIndex++] = value._surfaceHeight;
         array[startingIndex++] = value._rotation;
-        array[startingIndex] = value._extrudedHeight;
+        array[startingIndex++] = defined(value._extrudedHeight) ? 1.0 : 0.0;
+        array[startingIndex] = defaultValue(value._extrudedHeight, 0.0);
 
         return array;
     };
@@ -15106,13 +15084,14 @@ define('Core/RectangleOutlineGeometry',[
         var granularity = array[startingIndex++];
         var height = array[startingIndex++];
         var rotation = array[startingIndex++];
+        var hasExtrudedHeight = array[startingIndex++];
         var extrudedHeight = array[startingIndex];
 
         if (!defined(result)) {
             scratchOptions.granularity = granularity;
             scratchOptions.height = height;
             scratchOptions.rotation = rotation;
-            scratchOptions.extrudedHeight = extrudedHeight;
+            scratchOptions.extrudedHeight = hasExtrudedHeight ? extrudedHeight : undefined;
             return new RectangleOutlineGeometry(scratchOptions);
         }
 
@@ -15120,7 +15099,7 @@ define('Core/RectangleOutlineGeometry',[
         result._ellipsoid = Ellipsoid.clone(ellipsoid, result._ellipsoid);
         result._surfaceHeight = height;
         result._rotation = rotation;
-        result._extrudedHeight = extrudedHeight;
+        result._extrudedHeight = hasExtrudedHeight ? extrudedHeight : undefined;
 
         return result;
     };
@@ -15137,6 +15116,9 @@ define('Core/RectangleOutlineGeometry',[
     RectangleOutlineGeometry.createGeometry = function(rectangleGeometry) {
         var rectangle = Rectangle.clone(rectangleGeometry._rectangle, rectangleScratch);
         var ellipsoid = rectangleGeometry._ellipsoid;
+        var surfaceHeight = rectangleGeometry._surfaceHeight;
+        var extrudedHeight = rectangleGeometry._extrudedHeight;
+
         var options = RectangleGeometryLibrary.computeOptions(rectangleGeometry, rectangle, nwScratch);
         options.size =  2*options.width + 2*options.height - 4;
 
@@ -15148,12 +15130,7 @@ define('Core/RectangleOutlineGeometry',[
              (CesiumMath.equalsEpsilon(rectangle.east, rectangle.west, CesiumMath.EPSILON10)))) {
             return undefined;
         }
-
-        var surfaceHeight = rectangleGeometry._surfaceHeight;
-        var extrudedHeight = rectangleGeometry._extrudedHeight;
-        var extrude = !CesiumMath.equalsEpsilon(surfaceHeight, extrudedHeight, CesiumMath.EPSILON2);
-
-        if (extrude) {
+        if (defined(extrudedHeight)) {
             geometry = constructExtrudedRectangle(options);
             var topBS = BoundingSphere.fromRectangle3D(rectangle, ellipsoid, surfaceHeight, topBoundingSphere);
             var bottomBS = BoundingSphere.fromRectangle3D(rectangle, ellipsoid, extrudedHeight, bottomBoundingSphere);

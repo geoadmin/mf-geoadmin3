@@ -482,7 +482,6 @@ define('Core/FeatureDetection',[
         defined,
         Fullscreen) {
     'use strict';
-    /*global CanvasPixelArray*/
 
     var theNavigator;
     if (typeof navigator !== 'undefined') {
@@ -638,14 +637,6 @@ define('Core/FeatureDetection',[
         return isFirefox() && firefoxVersionResult;
     }
 
-    var isNodeJsResult;
-    function isNodeJs() {
-        if (!defined(isNodeJsResult)) {
-            isNodeJsResult = typeof process === 'object' && Object.prototype.toString.call(process) === '[object process]'; // eslint-disable-line
-        }
-        return isNodeJsResult;
-    }
-
     var hasPointerEvents;
     function supportsPointerEvents() {
         if (!defined(hasPointerEvents)) {
@@ -680,19 +671,6 @@ define('Core/FeatureDetection',[
         return supportsImageRenderingPixelated() ? imageRenderingValueResult : undefined;
     }
 
-    var typedArrayTypes = [];
-    if (typeof ArrayBuffer !== 'undefined') {
-        typedArrayTypes.push(Int8Array, Uint8Array, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array);
-
-        if (typeof Uint8ClampedArray !== 'undefined') {
-            typedArrayTypes.push(Uint8ClampedArray);
-        }
-
-        if (typeof CanvasPixelArray !== 'undefined') {
-            typedArrayTypes.push(CanvasPixelArray);
-        }
-    }
-
     /**
      * A set of functions to detect whether the current browser supports
      * various features.
@@ -713,12 +691,10 @@ define('Core/FeatureDetection',[
         isFirefox : isFirefox,
         firefoxVersion : firefoxVersion,
         isWindows : isWindows,
-        isNodeJs: isNodeJs,
         hardwareConcurrency : defaultValue(theNavigator.hardwareConcurrency, 3),
         supportsPointerEvents : supportsPointerEvents,
         supportsImageRenderingPixelated: supportsImageRenderingPixelated,
-        imageRenderingValue: imageRenderingValue,
-        typedArrayTypes: typedArrayTypes
+        imageRenderingValue: imageRenderingValue
     };
 
     /**
@@ -2076,14 +2052,16 @@ define('Core/Math',[
      * @param {Number} value The value to return the sign of.
      * @returns {Number} The sign of value.
      */
-    CesiumMath.sign = defaultValue(Math.sign, function sign(value) {
-        value = +value; // coerce to number
-        if (value === 0 || value !== value) {
-            // zero or NaN
-            return value;
+    CesiumMath.sign = function(value) {
+        if (value > 0) {
+            return 1;
         }
-        return value > 0 ? 1 : -1;
-    });
+        if (value < 0) {
+            return -1;
+        }
+
+        return 0;
+    };
 
     /**
      * Returns 1.0 if the given value is positive or zero, and -1.0 if it is negative.
@@ -2143,9 +2121,12 @@ define('Core/Math',[
      * @param {Number} value The number whose hyperbolic sine is to be returned.
      * @returns {Number} The hyperbolic sine of <code>value</code>.
      */
-    CesiumMath.sinh = defaultValue(Math.sinh, function sinh(value) {
-        return (Math.exp(value) - Math.exp(-value)) / 2.0;
-    });
+    CesiumMath.sinh = function(value) {
+        var part1 = Math.pow(Math.E, value);
+        var part2 = Math.pow(Math.E, -1.0 * value);
+
+        return (part1 - part2) * 0.5;
+    };
 
     /**
      * Returns the hyperbolic cosine of a number.
@@ -2166,9 +2147,12 @@ define('Core/Math',[
      * @param {Number} value The number whose hyperbolic cosine is to be returned.
      * @returns {Number} The hyperbolic cosine of <code>value</code>.
      */
-    CesiumMath.cosh = defaultValue(Math.cosh, function cosh(value) {
-        return (Math.exp(value) + Math.exp(-value)) / 2.0;
-    });
+    CesiumMath.cosh = function(value) {
+        var part1 = Math.pow(Math.E, value);
+        var part2 = Math.pow(Math.E, -1.0 * value);
+
+        return (part1 + part2) * 0.5;
+    };
 
     /**
      * Computes the linear interpolation of two values.
@@ -2207,7 +2191,7 @@ define('Core/Math',[
      * @type {Number}
      * @constant
      */
-    CesiumMath.PI_OVER_TWO = Math.PI / 2.0;
+    CesiumMath.PI_OVER_TWO = Math.PI * 0.5;
 
     /**
      * pi/3
@@ -2239,7 +2223,7 @@ define('Core/Math',[
      * @type {Number}
      * @constant
      */
-    CesiumMath.THREE_PI_OVER_TWO = 3.0 * Math.PI / 2.0;
+    CesiumMath.THREE_PI_OVER_TWO = (3.0 * Math.PI) * 0.5;
 
     /**
      * 2pi
@@ -2594,6 +2578,11 @@ define('Core/Math',[
                 return Math.log(number) / Math.log(base);
     };
 
+    function cbrt(number) {
+        var result = Math.pow(Math.abs(number), 1.0 / 3.0);
+        return number < 0.0 ? -result : result;
+    }
+
     /**
      * Finds the cube root of a number.
      * Returns NaN if <code>number</code> is not provided.
@@ -2601,20 +2590,7 @@ define('Core/Math',[
      * @param {Number} [number] The number.
      * @returns {Number} The result.
      */
-    CesiumMath.cbrt = defaultValue(Math.cbrt, function cbrt(number) {
-        var result = Math.pow(Math.abs(number), 1.0 / 3.0);
-        return number < 0.0 ? -result : result;
-    });
-
-    /**
-     * Finds the base 2 logarithm of a number.
-     *
-     * @param {Number} number The number.
-     * @returns {Number} The result.
-     */
-    CesiumMath.log2 = defaultValue(Math.log2, function log2(number) {
-        return Math.log(number) * Math.LOG2E;
-    });
+    CesiumMath.cbrt = defined(Math.cbrt) ? Math.cbrt : cbrt;
 
     /**
      * @private

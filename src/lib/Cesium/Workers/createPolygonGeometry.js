@@ -771,14 +771,16 @@ define('Core/Math',[
      * @param {Number} value The value to return the sign of.
      * @returns {Number} The sign of value.
      */
-    CesiumMath.sign = defaultValue(Math.sign, function sign(value) {
-        value = +value; // coerce to number
-        if (value === 0 || value !== value) {
-            // zero or NaN
-            return value;
+    CesiumMath.sign = function(value) {
+        if (value > 0) {
+            return 1;
         }
-        return value > 0 ? 1 : -1;
-    });
+        if (value < 0) {
+            return -1;
+        }
+
+        return 0;
+    };
 
     /**
      * Returns 1.0 if the given value is positive or zero, and -1.0 if it is negative.
@@ -838,9 +840,12 @@ define('Core/Math',[
      * @param {Number} value The number whose hyperbolic sine is to be returned.
      * @returns {Number} The hyperbolic sine of <code>value</code>.
      */
-    CesiumMath.sinh = defaultValue(Math.sinh, function sinh(value) {
-        return (Math.exp(value) - Math.exp(-value)) / 2.0;
-    });
+    CesiumMath.sinh = function(value) {
+        var part1 = Math.pow(Math.E, value);
+        var part2 = Math.pow(Math.E, -1.0 * value);
+
+        return (part1 - part2) * 0.5;
+    };
 
     /**
      * Returns the hyperbolic cosine of a number.
@@ -861,9 +866,12 @@ define('Core/Math',[
      * @param {Number} value The number whose hyperbolic cosine is to be returned.
      * @returns {Number} The hyperbolic cosine of <code>value</code>.
      */
-    CesiumMath.cosh = defaultValue(Math.cosh, function cosh(value) {
-        return (Math.exp(value) + Math.exp(-value)) / 2.0;
-    });
+    CesiumMath.cosh = function(value) {
+        var part1 = Math.pow(Math.E, value);
+        var part2 = Math.pow(Math.E, -1.0 * value);
+
+        return (part1 + part2) * 0.5;
+    };
 
     /**
      * Computes the linear interpolation of two values.
@@ -902,7 +910,7 @@ define('Core/Math',[
      * @type {Number}
      * @constant
      */
-    CesiumMath.PI_OVER_TWO = Math.PI / 2.0;
+    CesiumMath.PI_OVER_TWO = Math.PI * 0.5;
 
     /**
      * pi/3
@@ -934,7 +942,7 @@ define('Core/Math',[
      * @type {Number}
      * @constant
      */
-    CesiumMath.THREE_PI_OVER_TWO = 3.0 * Math.PI / 2.0;
+    CesiumMath.THREE_PI_OVER_TWO = (3.0 * Math.PI) * 0.5;
 
     /**
      * 2pi
@@ -1289,6 +1297,11 @@ define('Core/Math',[
                 return Math.log(number) / Math.log(base);
     };
 
+    function cbrt(number) {
+        var result = Math.pow(Math.abs(number), 1.0 / 3.0);
+        return number < 0.0 ? -result : result;
+    }
+
     /**
      * Finds the cube root of a number.
      * Returns NaN if <code>number</code> is not provided.
@@ -1296,20 +1309,7 @@ define('Core/Math',[
      * @param {Number} [number] The number.
      * @returns {Number} The result.
      */
-    CesiumMath.cbrt = defaultValue(Math.cbrt, function cbrt(number) {
-        var result = Math.pow(Math.abs(number), 1.0 / 3.0);
-        return number < 0.0 ? -result : result;
-    });
-
-    /**
-     * Finds the base 2 logarithm of a number.
-     *
-     * @param {Number} number The number.
-     * @returns {Number} The result.
-     */
-    CesiumMath.log2 = defaultValue(Math.log2, function log2(number) {
-        return Math.log(number) * Math.LOG2E;
-    });
+    CesiumMath.cbrt = defined(Math.cbrt) ? Math.cbrt : cbrt;
 
     /**
      * @private
@@ -11395,7 +11395,6 @@ define('Core/FeatureDetection',[
         defined,
         Fullscreen) {
     'use strict';
-    /*global CanvasPixelArray*/
 
     var theNavigator;
     if (typeof navigator !== 'undefined') {
@@ -11551,14 +11550,6 @@ define('Core/FeatureDetection',[
         return isFirefox() && firefoxVersionResult;
     }
 
-    var isNodeJsResult;
-    function isNodeJs() {
-        if (!defined(isNodeJsResult)) {
-            isNodeJsResult = typeof process === 'object' && Object.prototype.toString.call(process) === '[object process]'; // eslint-disable-line
-        }
-        return isNodeJsResult;
-    }
-
     var hasPointerEvents;
     function supportsPointerEvents() {
         if (!defined(hasPointerEvents)) {
@@ -11593,19 +11584,6 @@ define('Core/FeatureDetection',[
         return supportsImageRenderingPixelated() ? imageRenderingValueResult : undefined;
     }
 
-    var typedArrayTypes = [];
-    if (typeof ArrayBuffer !== 'undefined') {
-        typedArrayTypes.push(Int8Array, Uint8Array, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array);
-
-        if (typeof Uint8ClampedArray !== 'undefined') {
-            typedArrayTypes.push(Uint8ClampedArray);
-        }
-
-        if (typeof CanvasPixelArray !== 'undefined') {
-            typedArrayTypes.push(CanvasPixelArray);
-        }
-    }
-
     /**
      * A set of functions to detect whether the current browser supports
      * various features.
@@ -11626,12 +11604,10 @@ define('Core/FeatureDetection',[
         isFirefox : isFirefox,
         firefoxVersion : firefoxVersion,
         isWindows : isWindows,
-        isNodeJs: isNodeJs,
         hardwareConcurrency : defaultValue(theNavigator.hardwareConcurrency, 3),
         supportsPointerEvents : supportsPointerEvents,
         supportsImageRenderingPixelated: supportsImageRenderingPixelated,
-        imageRenderingValue: imageRenderingValue,
-        typedArrayTypes: typedArrayTypes
+        imageRenderingValue: imageRenderingValue
     };
 
     /**
@@ -17424,23 +17400,11 @@ define('Core/getAbsoluteUri',[
      * var absoluteUri = Cesium.getAbsoluteUri('awesome.png', 'https://test.com');
      */
     function getAbsoluteUri(relative, base) {
-        var documentObject;
-        if (typeof document !== 'undefined') {
-            documentObject = document;
-        }
-
-        return getAbsoluteUri._implementation(relative, base, documentObject);
+        return getAbsoluteUri._implementation(relative, base, document);
     }
 
     getAbsoluteUri._implementation = function(relative, base, documentObject) {
-        
-        if (!defined(base)) {
-            if (typeof documentObject === 'undefined') {
-                return relative;
-            }
-            base = defaultValue(documentObject.baseURI, documentObject.location.href);
-        }
-
+                base = defaultValue(base, defaultValue(documentObject.baseURI, documentObject.location.href));
         var baseUri = new Uri(base);
         var relativeUri = new Uri(relative);
         return relativeUri.resolve(baseUri).toString();
@@ -19169,7 +19133,6 @@ define('Core/Resource',[
         './defineProperties',
         './deprecationWarning',
         './DeveloperError',
-        './FeatureDetection',
         './freezeObject',
         './getAbsoluteUri',
         './getBaseUri',
@@ -19197,7 +19160,6 @@ define('Core/Resource',[
         defineProperties,
         deprecationWarning,
         DeveloperError,
-        FeatureDetection,
         freezeObject,
         getAbsoluteUri,
         getBaseUri,
@@ -20583,7 +20545,6 @@ define('Core/Resource',[
      *
      * @param {String|Object} options A url or an object with the following properties
      * @param {String} options.url The url of the resource.
-     * @param {Object} [options.data] Data that is posted with the resource.
      * @param {Object} [options.queryParameters] An object containing query parameters that will be sent when retrieving the resource.
      * @param {Object} [options.templateValues] Key/Value pairs that are used to replace template values (eg. {x}).
      * @param {Object} [options.headers={}] Additional HTTP headers that will be sent.
@@ -20600,8 +20561,7 @@ define('Core/Resource',[
         return resource.delete({
             // Make copy of just the needed fields because headers can be passed to both the constructor and to fetch
             responseType: options.responseType,
-            overrideMimeType: options.overrideMimeType,
-            data: options.data
+            overrideMimeType: options.overrideMimeType
         });
     };
 
@@ -20725,7 +20685,6 @@ define('Core/Resource',[
      *
      * @param {Object} data Data that is posted with the resource.
      * @param {Object} [options] Object with the following properties:
-     * @param {Object} [options.data] Data that is posted with the resource.
      * @param {String} [options.responseType] The type of response.  This controls the type of item returned.
      * @param {Object} [options.headers] Additional HTTP headers to send with the request, if any.
      * @param {String} [options.overrideMimeType] Overrides the MIME type returned by the server.
@@ -20930,72 +20889,10 @@ define('Core/Resource',[
         image.src = url;
     };
 
-    function decodeResponse(loadWithHttpResponse, responseType) {
-        switch (responseType) {
-          case 'text':
-              return loadWithHttpResponse.toString('utf8');
-          case 'json':
-              return JSON.parse(loadWithHttpResponse.toString('utf8'));
-          default:
-              return new Uint8Array(loadWithHttpResponse).buffer;
-        }
-    }
-
-    function loadWithHttpRequest(url, responseType, method, data, headers, deferred, overrideMimeType) {
-        // Note: only the 'json' and 'text' responseTypes transforms the loaded buffer
-        var URL = require('url').parse(url);
-        var http = URL.protocol === 'https:' ? require('https') : require('http');
-        var zlib = require('zlib');
-        var options = {
-            protocol : URL.protocol,
-            hostname : URL.hostname,
-            port : URL.port,
-            path : URL.path,
-            query : URL.query,
-            method : method,
-            headers : headers
-        };
-
-        http.request(options)
-            .on('response', function(res) {
-                if (res.statusCode < 200 || res.statusCode >= 300) {
-                    deferred.reject(new RequestErrorEvent(res.statusCode, res, res.headers));
-                    return;
-                }
-
-                var chunkArray = [];
-                res.on('data', function(chunk) {
-                    chunkArray.push(chunk);
-                });
-
-                res.on('end', function() {
-                    var result = Buffer.concat(chunkArray); // eslint-disable-line
-                    if (res.headers['content-encoding'] === 'gzip') {
-                        zlib.gunzip(result, function(error, resultUnzipped) {
-                            if (error) {
-                                deferred.reject(new RuntimeError('Error decompressing response.'));
-                            } else {
-                                deferred.resolve(decodeResponse(resultUnzipped, responseType));
-                            }
-                        });
-                    } else {
-                        deferred.resolve(decodeResponse(result, responseType));
-                    }
-                });
-            }).on('error', function(e) {
-                deferred.reject(new RequestErrorEvent());
-            }).end();
-    }
-
     Resource._Implementations.loadWithXhr = function(url, responseType, method, data, headers, deferred, overrideMimeType) {
         var dataUriRegexResult = dataUriRegex.exec(url);
         if (dataUriRegexResult !== null) {
             deferred.resolve(decodeDataUri(dataUriRegexResult, responseType));
-            return;
-        }
-
-        if (FeatureDetection.isNodeJs()) {
-            loadWithHttpRequest(url, responseType, method, data, headers, deferred, overrideMimeType);
             return;
         }
 
@@ -21026,7 +20923,7 @@ define('Core/Resource',[
         // While non-standard, file protocol always returns a status of 0 on success
         var localFile = false;
         if (typeof url === 'string') {
-            localFile = (url.indexOf('file://') === 0) || (typeof window !== 'undefined' && window.location.origin === 'file://');
+            localFile = (url.indexOf('file://') === 0) || window.location.origin === 'file://';
         }
 
         xhr.onload = function() {
@@ -21520,11 +21417,13 @@ define('Core/EarthOrientationParameters',[
 });
 
 define('Core/buildModuleUrl',[
+        '../ThirdParty/Uri',
         './defined',
         './DeveloperError',
         './Resource',
         'require'
     ], function(
+        Uri,
         defined,
         DeveloperError,
         Resource,
@@ -24853,14 +24752,12 @@ define('Core/barycentricCoordinates',[
         './Cartesian2',
         './Cartesian3',
         './Check',
-        './defined',
-        './Math'
+        './defined'
     ], function(
         Cartesian2,
         Cartesian3,
         Check,
-        defined,
-        CesiumMath) {
+        defined) {
     'use strict';
 
     var scratchCartesian1 = new Cartesian3();
@@ -24894,61 +24791,34 @@ define('Core/barycentricCoordinates',[
         }
 
         // Implementation based on http://www.blackpawn.com/texts/pointinpoly/default.html.
-        var v0;
-        var v1;
-        var v2;
-        var dot00;
-        var dot01;
-        var dot02;
-        var dot11;
-        var dot12;
+        var v0, v1, v2;
+        var dot00, dot01, dot02, dot11, dot12;
 
         if(!defined(p0.z)) {
-            if (Cartesian2.equalsEpsilon(point, p0, CesiumMath.EPSILON14)) {
-                return Cartesian3.clone(Cartesian3.UNIT_X, result);
-            }
-            if (Cartesian2.equalsEpsilon(point, p1, CesiumMath.EPSILON14)) {
-                return Cartesian3.clone(Cartesian3.UNIT_Y, result);
-            }
-            if (Cartesian2.equalsEpsilon(point, p2, CesiumMath.EPSILON14)) {
-                return Cartesian3.clone(Cartesian3.UNIT_Z, result);
-            }
+          v0 = Cartesian2.subtract(p1, p0, scratchCartesian1);
+          v1 = Cartesian2.subtract(p2, p0, scratchCartesian2);
+          v2 = Cartesian2.subtract(point, p0, scratchCartesian3);
 
-            v0 = Cartesian2.subtract(p1, p0, scratchCartesian1);
-            v1 = Cartesian2.subtract(p2, p0, scratchCartesian2);
-            v2 = Cartesian2.subtract(point, p0, scratchCartesian3);
-
-            dot00 = Cartesian2.dot(v0, v0);
-            dot01 = Cartesian2.dot(v0, v1);
-            dot02 = Cartesian2.dot(v0, v2);
-            dot11 = Cartesian2.dot(v1, v1);
-            dot12 = Cartesian2.dot(v1, v2);
+          dot00 = Cartesian2.dot(v0, v0);
+          dot01 = Cartesian2.dot(v0, v1);
+          dot02 = Cartesian2.dot(v0, v2);
+          dot11 = Cartesian2.dot(v1, v1);
+          dot12 = Cartesian2.dot(v1, v2);
         } else {
-            if (Cartesian3.equalsEpsilon(point, p0, CesiumMath.EPSILON14)) {
-                return Cartesian3.clone(Cartesian3.UNIT_X, result);
-            }
-            if (Cartesian3.equalsEpsilon(point, p1, CesiumMath.EPSILON14)) {
-                return Cartesian3.clone(Cartesian3.UNIT_Y, result);
-            }
-            if (Cartesian3.equalsEpsilon(point, p2, CesiumMath.EPSILON14)) {
-                return Cartesian3.clone(Cartesian3.UNIT_Z, result);
-            }
+          v0 = Cartesian3.subtract(p1, p0, scratchCartesian1);
+          v1 = Cartesian3.subtract(p2, p0, scratchCartesian2);
+          v2 = Cartesian3.subtract(point, p0, scratchCartesian3);
 
-            v0 = Cartesian3.subtract(p1, p0, scratchCartesian1);
-            v1 = Cartesian3.subtract(p2, p0, scratchCartesian2);
-            v2 = Cartesian3.subtract(point, p0, scratchCartesian3);
-
-            dot00 = Cartesian3.dot(v0, v0);
-            dot01 = Cartesian3.dot(v0, v1);
-            dot02 = Cartesian3.dot(v0, v2);
-            dot11 = Cartesian3.dot(v1, v1);
-            dot12 = Cartesian3.dot(v1, v2);
+          dot00 = Cartesian3.dot(v0, v0);
+          dot01 = Cartesian3.dot(v0, v1);
+          dot02 = Cartesian3.dot(v0, v2);
+          dot11 = Cartesian3.dot(v1, v1);
+          dot12 = Cartesian3.dot(v1, v2);
         }
 
-        var q = dot00 * dot11 - dot01 * dot01;
-        var invQ = 1.0 / q;
-        result.y = (dot11 * dot02 - dot01 * dot12) * invQ;
-        result.z = (dot00 * dot12 - dot01 * dot02) * invQ;
+        var q = 1.0 / (dot00 * dot11 - dot01 * dot01);
+        result.y = (dot11 * dot02 - dot01 * dot12) * q;
+        result.z = (dot00 * dot12 - dot01 * dot02) * q;
         result.x = 1.0 - result.y - result.z;
         return result;
     }
@@ -30473,15 +30343,22 @@ define('Core/PolygonGeometry',[
         var ellipsoid = defaultValue(options.ellipsoid, Ellipsoid.WGS84);
         var granularity = defaultValue(options.granularity, CesiumMath.RADIANS_PER_DEGREE);
         var stRotation = defaultValue(options.stRotation, 0.0);
-        var perPositionHeight = defaultValue(options.perPositionHeight, false);
-        var perPositionHeightExtrude = perPositionHeight && defined(options.extrudedHeight);
         var height = defaultValue(options.height, 0.0);
-        var extrudedHeight = defaultValue(options.extrudedHeight, height);
+        var perPositionHeight = defaultValue(options.perPositionHeight, false);
 
-        if (!perPositionHeightExtrude) {
-            var h = Math.max(height, extrudedHeight);
-            extrudedHeight = Math.min(height, extrudedHeight);
-            height = h;
+        var extrudedHeight = options.extrudedHeight;
+        var extrude = defined(extrudedHeight);
+
+        if (!perPositionHeight && extrude) {
+            //Ignore extrudedHeight if it matches height
+            if (CesiumMath.equalsEpsilon(height, extrudedHeight, CesiumMath.EPSILON10)) {
+                extrudedHeight = undefined;
+                extrude = false;
+            } else {
+                var h = extrudedHeight;
+                extrudedHeight = Math.min(h, height);
+                height = Math.max(h, height);
+            }
         }
 
         this._vertexFormat = VertexFormat.clone(vertexFormat);
@@ -30489,12 +30366,12 @@ define('Core/PolygonGeometry',[
         this._granularity = granularity;
         this._stRotation = stRotation;
         this._height = height;
-        this._extrudedHeight = extrudedHeight;
+        this._extrudedHeight = defaultValue(extrudedHeight, 0.0);
+        this._extrude = extrude;
         this._closeTop = defaultValue(options.closeTop, true);
         this._closeBottom = defaultValue(options.closeBottom, true);
         this._polygonHierarchy = polygonHierarchy;
         this._perPositionHeight = perPositionHeight;
-        this._perPositionHeightExtrude = perPositionHeightExtrude;
         this._shadowVolume = defaultValue(options.shadowVolume, false);
         this._workerName = 'createPolygonGeometry';
 
@@ -30585,7 +30462,7 @@ define('Core/PolygonGeometry',[
         array[startingIndex++] = value._extrudedHeight;
         array[startingIndex++] = value._granularity;
         array[startingIndex++] = value._stRotation;
-        array[startingIndex++] = value._perPositionHeightExtrude ? 1.0 : 0.0;
+        array[startingIndex++] = value._extrude ? 1.0 : 0.0;
         array[startingIndex++] = value._perPositionHeight ? 1.0 : 0.0;
         array[startingIndex++] = value._closeTop ? 1.0 : 0.0;
         array[startingIndex++] = value._closeBottom ? 1.0 : 0.0;
@@ -30628,7 +30505,7 @@ define('Core/PolygonGeometry',[
         var extrudedHeight = array[startingIndex++];
         var granularity = array[startingIndex++];
         var stRotation = array[startingIndex++];
-        var perPositionHeightExtrude = array[startingIndex++] === 1.0;
+        var extrude = array[startingIndex++] === 1.0;
         var perPositionHeight = array[startingIndex++] === 1.0;
         var closeTop = array[startingIndex++] === 1.0;
         var closeBottom = array[startingIndex++] === 1.0;
@@ -30646,7 +30523,7 @@ define('Core/PolygonGeometry',[
         result._extrudedHeight = extrudedHeight;
         result._granularity = granularity;
         result._stRotation = stRotation;
-        result._perPositionHeightExtrude = perPositionHeightExtrude;
+        result._extrude = extrude;
         result._perPositionHeight = perPositionHeight;
         result._closeTop = closeTop;
         result._closeBottom = closeBottom;
@@ -30666,6 +30543,9 @@ define('Core/PolygonGeometry',[
         var ellipsoid = polygonGeometry._ellipsoid;
         var granularity = polygonGeometry._granularity;
         var stRotation = polygonGeometry._stRotation;
+        var height = polygonGeometry._height;
+        var extrudedHeight = polygonGeometry._extrudedHeight;
+        var extrude = polygonGeometry._extrude;
         var polygonHierarchy = polygonGeometry._polygonHierarchy;
         var perPositionHeight = polygonGeometry._perPositionHeight;
         var closeTop = polygonGeometry._closeTop;
@@ -30692,10 +30572,6 @@ define('Core/PolygonGeometry',[
         var geometry;
         var geometries = [];
 
-        var height = polygonGeometry._height;
-        var extrudedHeight = polygonGeometry._extrudedHeight;
-        var extrude = polygonGeometry._perPositionHeightExtrude || !CesiumMath.equalsEpsilon(height, extrudedHeight, CesiumMath.EPSILON2);
-
         var options = {
             perPositionHeight: perPositionHeight,
             vertexFormat: vertexFormat,
@@ -30715,7 +30591,6 @@ define('Core/PolygonGeometry',[
             options.top = closeTop;
             options.bottom = closeBottom;
             options.shadowVolume = polygonGeometry._shadowVolume;
-
             for (i = 0; i < polygons.length; i++) {
                 geometry = createGeometryFromPositionsExtruded(ellipsoid, polygons[i], granularity, hierarchy[i], perPositionHeight, closeTop, closeBottom, vertexFormat);
 
