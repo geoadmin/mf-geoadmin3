@@ -1,17 +1,17 @@
-goog.provide('ga_vector_feedback_modal_directive');
+goog.provide('ga_vector_tile_feedback_modal_directive');
 
 goog.require('ga_translation_service');
 
 (function() {
-  var module = angular.module('ga_vector_feedback_modal_directive', [
+  var module = angular.module('ga_vector_tile_feedback_modal_directive', [
     'ga_translation_service'
   ]);
 
-  module.directive('gaVectorFeedbackModal', function($rootScope, gaLang) {
+  module.directive('gaVectorTileFeedbackModal', function($rootScope, gaLang) {
     return {
       restrict: 'A',
       replace: true,
-      templateUrl: 'components/vectorfeedback/partials' +
+      templateUrl: 'components/vectortile/feedback/partials' +
           '/vectorfeedbackmodal.html',
       scope: {},
       link: function(scope, elt) {

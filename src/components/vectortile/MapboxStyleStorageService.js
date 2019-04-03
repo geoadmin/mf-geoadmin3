@@ -1,22 +1,22 @@
-goog.provide('ga_glstylestorage_service');
+goog.provide('ga_mapbox_style_storage_service');
 
 goog.require('ga_publicstorage_service');
 
 (function() {
 
-  var module = angular.module('ga_glstylestorage_service', [
+  var module = angular.module('ga_mapbox_style_storage_service', [
     'ga_publicstorage_service'
   ]);
 
   /**
    * This service can create/read/write/delete a glStyle on public s3 bucket.
    */
-  module.provider('gaGlStyleStorage', function() {
+  module.provider('gaMapboxStyleStorage', function() {
     this.$get = function($http, $q, gaPublicStorage) {
       var endPoint = '/gl-styles';
       var contentType = 'application/json';
 
-      var GlStyleStorage = function() {
+      var MapboxStyleStorage = function() {
 
         this.get = function(fileId) {
           return gaPublicStorage.get(endPoint, fileId);
@@ -41,7 +41,7 @@ goog.require('ga_publicstorage_service');
         };
 
       };
-      return new GlStyleStorage();
+      return new MapboxStyleStorage();
     };
   });
 })();

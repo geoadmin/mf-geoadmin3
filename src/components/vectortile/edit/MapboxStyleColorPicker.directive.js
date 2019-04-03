@@ -1,18 +1,18 @@
-goog.provide('ga_color_directive');
+goog.provide('ga_mapbox_style_color_picker_directive');
 
 (function() {
 
-  var module = angular.module('ga_color_directive', []);
+  var module = angular.module('ga_mapbox_style_color_picker_directive', []);
 
   /**
    * This directive adds an interface where you can pick a color
    * (e.g. to modify a glStyle.)
    */
-  module.directive('gaColor', function($window) {
+  module.directive('gaMapboxStyleColorPicker', function($window) {
     return {
       require: 'ngModel',
       restrict: 'A',
-      templateUrl: 'components/edit/partials/color.html',
+      templateUrl: 'components/vectortile/edit/partials/color-picker.html',
       scope: {
         ngModel: '=',
         ngChange: '&'

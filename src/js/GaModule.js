@@ -65,7 +65,7 @@ goog.require('ga_tooltip_controller');
 goog.require('ga_topic');
 goog.require('ga_translation');
 goog.require('ga_translation_controller');
-goog.require('ga_vector_feedback');
+goog.require('ga_vector_tile');
 goog.require('ga_vector_feedback_controller');
 goog.require('ga_waitcursor_service');
 (function() {

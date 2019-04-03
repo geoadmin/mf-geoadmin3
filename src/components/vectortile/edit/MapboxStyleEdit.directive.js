@@ -1,4 +1,4 @@
-goog.provide('ga_edit_directive');
+goog.provide('ga_mapbox_stye_edit_directive');
 
 goog.require('ga_background_service');
 goog.require('ga_debounce_service');
@@ -11,7 +11,7 @@ goog.require('ga_urlutils_service');
 
 (function() {
 
-  var module = angular.module('ga_edit_directive', [
+  var module = angular.module('ga_mapbox_stye_edit_directive', [
     'ga_exportglstyle_service',
     'ga_glstylestorage_service',
     'ga_debounce_service',
@@ -25,12 +25,12 @@ goog.require('ga_urlutils_service');
   /**
    * This directive add an interface where you can modify a glStyle.
    */
-  module.directive('gaEdit', function($rootScope, $window, $translate, gaMvt,
-      gaDebounce, gaGlStyleStorage, gaExportGlStyle, gaMapUtils,
-      gaBackground, gaUrlUtils, gaLayers) {
+  module.directive('gaMapboxStyleEdit', function($rootScope, $window,
+      $translate, gaMvt, gaDebounce, gaGlStyleStorage, gaExportGlStyle,
+      gaMapUtils, gaBackground, gaUrlUtils, gaLayers) {
     return {
       restrict: 'A',
-      templateUrl: 'components/edit/partials/edit.html',
+      templateUrl: 'components/vectortile/edit/partials/edit-style.html',
       scope: {
         map: '=gaEditMap',
         options: '=gaEditOptions',

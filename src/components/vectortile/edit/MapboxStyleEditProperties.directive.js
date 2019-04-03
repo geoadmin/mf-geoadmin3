@@ -1,18 +1,19 @@
-goog.provide('ga_editglstyle_directive');
+goog.provide('ga_mapbox_style_edit_properties_directive');
 
 (function() {
 
-  var module = angular.module('ga_editglstyle_directive', [
+  var module = angular.module('ga_mapbox_style_edit_properties_directive', [
     'ga_background_service'
   ]);
 
   /**
    * This directive add an interface where you can modify a glStyle.
    */
-  module.directive('gaEditGlStyle', function($rootScope) {
+  module.directive('gaMapboxStyleEditProperties', function($rootScope) {
     return {
       restrict: 'A',
-      templateUrl: 'components/edit/partials/edit-glstyle.html',
+      templateUrl:
+        'components/vectortile/edit/partials/edit-style-properties.html',
       scope: {
         glStyle: '=gaEditGlStyle',
         config: '=gaEditGlStyleConfig'

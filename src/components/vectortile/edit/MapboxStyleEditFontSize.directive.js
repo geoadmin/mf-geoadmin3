@@ -1,17 +1,17 @@
-goog.provide('ga_size_directive');
+goog.provide('ga_mapbox_style_edit_font_size_directive');
 
 (function() {
 
-  var module = angular.module('ga_size_directive', []);
+  var module = angular.module('ga_mapbox_style_edit_font_size_directive', []);
 
   /**
    * This directive add an interface where you can modify a glStyle.
    */
-  module.directive('gaSize', function($window) {
+  module.directive('gaMapboxStyleEditFontSize', function($window) {
     return {
       require: 'ngModel',
       restrict: 'A',
-      templateUrl: 'components/edit/partials/size.html',
+      templateUrl: 'components/edit/partials/fontsize.html',
       scope: {
         ngModel: '=',
         ngChange: '&'

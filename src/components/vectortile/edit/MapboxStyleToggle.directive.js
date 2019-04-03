@@ -1,17 +1,17 @@
-goog.provide('ga_toggle_directive');
+goog.provide('ga_mapbox_toggle_directive');
 
 (function() {
 
-  var module = angular.module('ga_toggle_directive', []);
+  var module = angular.module('ga_mapbox_toggle_directive', []);
 
   /**
    * This directive add an interface where you can modify a glStyle.
    */
-  module.directive('gaToggle', function($window) {
+  module.directive('gaMapboxStyleToggle', function($window) {
     return {
       require: 'ngModel',
       restrict: 'A',
-      templateUrl: 'components/edit/partials/toggle.html',
+      templateUrl: 'components/vectortile/edit/partials/toggle.html',
       scope: {
         ngModel: '=',
         ngChange: '&',

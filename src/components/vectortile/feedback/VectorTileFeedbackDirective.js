@@ -1,4 +1,4 @@
-goog.provide('ga_vector_feedback_directive');
+goog.provide('ga_vector_tile_feedback_directive');
 
 goog.require('ga_background_service');
 goog.require('ga_browsersniffer_service');
@@ -7,7 +7,7 @@ goog.require('ga_mvt_service');
 goog.require('ga_translation_service');
 
 (function() {
-  var module = angular.module('ga_vector_feedback_directive', [
+  var module = angular.module('ga_vector_tile_feedback_directive', [
     'ga_browsersniffer_service',
     'ga_background_service',
     'ga_translation_service',
@@ -15,7 +15,7 @@ goog.require('ga_translation_service');
     'ga_mvt_service'
   ]);
 
-  module.directive('gaVectorFeedback', function(
+  module.directive('gaVectorTileFeedback', function(
       $rootScope,
       gaBackground,
       gaBrowserSniffer,
@@ -26,7 +26,8 @@ goog.require('ga_translation_service');
     return {
       restrict: 'A',
       replace: true,
-      templateUrl: 'components/vectorfeedback/partials/vectorfeedback.html',
+      templateUrl: 'components/vectortile/feedback/partials/' + 
+        'vectorfeedback.html',
       scope: {
         map: '=gaVectorFeedbackMap',
         options: '=gaVectorFeedbackOptions',
