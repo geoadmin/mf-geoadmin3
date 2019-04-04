@@ -2,7 +2,7 @@
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
 
-node(label: 'jenkins-slave') {
+node(label: '!master') {
   def stdout
   def s3VersionPath
   def e2eTargetUrl
