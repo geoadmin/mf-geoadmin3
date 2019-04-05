@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - AWS_DEFAULT_REGION=eu-west-1
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      - REPOSITORY_URI=050475232797.dkr.ecr.eu-west-1.amazonaws.com/swisstopo-test/code-build-docker
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - make env
+      - make lint
+      - make libs
+      - make build
+      - make test
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing to S3...
+      - echo OK, not really doing anything
