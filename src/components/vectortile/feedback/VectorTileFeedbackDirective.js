@@ -26,7 +26,7 @@ goog.require('ga_translation_service');
     return {
       restrict: 'A',
       replace: true,
-      templateUrl: 'components/vectortile/feedback/partials/' + 
+      templateUrl: 'components/vectortile/feedback/partials/' +
         'vectorfeedback.html',
       scope: {
         map: '=gaVectorTileFeedbackMap',

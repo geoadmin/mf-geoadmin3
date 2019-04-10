@@ -1,11 +1,11 @@
-(function () {
-  
+(function() {
+
   angular.module('ga_vector_tile_layer_service', [
     'ga_maputils_service'
-  ])
-  .factory('gaVectorTileLayerService', ['gaLang', VectorTileLayerService]);
+  ]).
+      factory('gaVectorTileLayerService', ['gaLang', VectorTileLayerService]);
 
-  function VectorTileLayerService (gaLang) {
+  function VectorTileLayerService(gaLang) {
     var vectortileLayer = {
       type: 'aggregate',
       background: true,
@@ -79,7 +79,7 @@
       }]
     };
     var currentStyleIndex = 0;
-    function getCurrentStyleUrl () {
+    function getCurrentStyleUrl() {
       return vectortileLayer.styles[currentStyleIndex].url;
     }
     return {

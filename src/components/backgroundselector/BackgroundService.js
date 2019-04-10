@@ -23,8 +23,8 @@ goog.require('ga_mapbox_style_storage_service');
    */
   module.provider('gaBackground', function() {
     this.$get = function($rootScope, $q, gaTopic, gaLayers, gaPermalink,
-     gaUrlUtils, gaLayerFilters, gaMapboxStyleStorage, gaStorage,
-     gaMapUtils) {
+        gaUrlUtils, gaLayerFilters, gaMapboxStyleStorage, gaStorage,
+        gaMapUtils) {
       var bg; // The current background
       var bgs = []; // The list of backgrounds available
       var bgsP; // Promise resolved when the background service is initialized.
