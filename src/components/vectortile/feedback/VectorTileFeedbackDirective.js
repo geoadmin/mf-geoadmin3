@@ -28,11 +28,7 @@ goog.require('ga_translation_service');
     return {
       restrict: 'A',
       replace: true,
-<<<<<<< HEAD:src/components/vectortile/feedback/VectorTileFeedback.directive.js
       templateUrl: 'components/vectortile/feedback/partials/' +
-=======
-      templateUrl: 'components/vectortile/feedback/partials/' + 
->>>>>>> move MVT stuff into a single module:src/components/vectortile/feedback/VectorTileFeedbackDirective.js
         'vectorfeedback.html',
       scope: {
         map: '=gaVectorTileFeedbackMap',
