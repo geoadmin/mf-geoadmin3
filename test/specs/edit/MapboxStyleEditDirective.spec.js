@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
-describe('ga_edit_directive', function() {
+describe('ga_mapbox_style_edit_directive', function() {
 
-  describe('gaEdit', function() {
+  describe('gaMapboxStyleEdit', function() {
     var map, elt, parentScope, $timeout, $httpBackend, $rootScope,
-      $compile, gaDebounce, gaExportGlStyle, gaGlStyleStorage, gaStorage, gaLayers,
+      $compile, gaDebounce, gaExportGlStyle, gaMapboxStyleStorage, gaStorage, gaLayers,
       $window, scope, $q, gaMapUtils;
 
     var loadDirective = function(map, layer, active) {
@@ -11,7 +11,7 @@ describe('ga_edit_directive', function() {
       parentScope.map = map;
       parentScope.layer = layer;
       parentScope.active = active;
-      var tpl = '<div ga-edit ga-edit-map="map" ga-edit-options="options" ' +
+      var tpl = '<div ga-mapbox-style-edit ga-edit-map="map" ga-edit-options="options" ' +
                     'ga-edit-layer="layer" ga-edit-is-active="active"></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
@@ -58,7 +58,7 @@ describe('ga_edit_directive', function() {
       $httpBackend = $injector.get('$httpBackend');
       $window = $injector.get('$window');
       gaDebounce = $injector.get('gaDebounce');
-      gaGlStyleStorage = $injector.get('gaGlStyleStorage');
+      gaMapboxStyleStorage = $injector.get('gaMapboxStyleStorage');
       gaExportGlStyle = $injector.get('gaExportGlStyle');
       gaStorage = $injector.get('gaStorage');
       gaLayers = $injector.get('gaLayers');
@@ -227,7 +227,7 @@ describe('ga_edit_directive', function() {
 
           var stub = sinon.stub(gaExportGlStyle, 'create').withArgs(glStyle).
               returns($q.when(dataStr));
-          var stub2 = sinon.stub(gaGlStyleStorage, 'save').withArgs(layer.adminId, dataStr).
+          var stub2 = sinon.stub(gaMapboxStyleStorage, 'save').withArgs(layer.adminId, dataStr).
               returns($q.when({
                 adminId: 'bar',
                 fileUrl: 'groot'
@@ -246,7 +246,7 @@ describe('ga_edit_directive', function() {
           layer.externalStyleUrl = undefined;
           var stub = sinon.stub(gaExportGlStyle, 'create').withArgs(glStyle).
               returns($q.when(dataStr));
-          var stub2 = sinon.stub(gaGlStyleStorage, 'save').withArgs(undefined, dataStr).
+          var stub2 = sinon.stub(gaMapboxStyleStorage, 'save').withArgs(undefined, dataStr).
               returns($q.when({
                 adminId: 'bar',
                 fileUrl: 'groot'

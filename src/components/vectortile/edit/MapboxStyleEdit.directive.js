@@ -1,6 +1,6 @@
 goog.provide('ga_mapbox_style_edit_directive');
 
-goog.require('ga_exportglstyle_service');
+goog.require('ga_export_mapbox_style_service');
 goog.require('ga_mapbox_style_storage_service');
 goog.require('ga_debounce_service');
 goog.require('ga_maputils_service');
@@ -12,7 +12,7 @@ goog.require('ga_layers_service');
 (function() {
 
   var module = angular.module('ga_mapbox_style_edit_directive', [
-    'ga_exportglstyle_service',
+    'ga_export_mapbox_style_service',
     'ga_mapbox_style_storage_service',
     'ga_debounce_service',
     'ga_maputils_service',
@@ -26,7 +26,7 @@ goog.require('ga_layers_service');
    * This directive add an interface where you can modify a glStyle.
    */
   module.directive('gaMapboxStyleEdit', function($rootScope, $window,
-      $translate, gaMvt, gaDebounce, gaGlStyleStorage, gaExportGlStyle,
+      $translate, gaMvt, gaDebounce, gaMapboxStyleStorage, gaExportGlStyle,
       gaMapUtils, gaBackground, gaUrlUtils, gaLayers) {
     return {
       restrict: 'A',
@@ -70,7 +70,7 @@ goog.require('ga_layers_service');
             // Get the id to use by the glStyleStorage, if no id
             // the service will create a new one.
             var id = layer.adminId;
-            gaGlStyleStorage.save(id, dataString).then(function(data) {
+            gaMapboxStyleStorage.save(id, dataString).then(function(data) {
               scope.statusMsgId = 'edit_file_saved';
 
               // If a file has been created we set the correct id to the

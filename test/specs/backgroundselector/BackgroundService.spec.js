@@ -3,7 +3,7 @@ describe('ga_background_service', function() {
 
   describe('gaBackground', function() {
     var gaBg, gaPermalink, gaTopic, deferGaLayers, deferGaTopic, map, $rootScope,
-      gaPermalinkMock, $rootScopeMock, $q, gaGlStyleStorage;
+      gaPermalinkMock, $rootScopeMock, $q, gaMapboxStyleStorage;
 
     // Only vector bg and void layer are always added to the map
     var nbBgs = 2;
@@ -89,7 +89,7 @@ describe('ga_background_service', function() {
         gaBg = $injector.get('gaBackground');
         gaTopic = $injector.get('gaTopic');
         gaPermalink = $injector.get('gaPermalink');
-        gaGlStyleStorage = $injector.get('gaGlStyleStorage');
+        gaMapboxStyleStorage = $injector.get('gaMapboxStyleStorage');
         gaPermalinkMock = sinon.mock(gaPermalink);
         $rootScopeMock = sinon.mock($rootScope);
       });
@@ -256,7 +256,7 @@ describe('ga_background_service', function() {
             glStylesAdminId: 'myId'
           });
           var p2 = gaPermalinkMock.expects('deleteParam').withArgs('glStylesAdminId');
-          var stub = sinon.stub(gaGlStyleStorage, 'getFileUrlFromAdminId').
+          var stub = sinon.stub(gaMapboxStyleStorage, 'getFileUrlFromAdminId').
               withArgs('myId').returns($q.when('http://myStyleBario'));
           gaBg.init(map);
           deferGaTopic.resolve();

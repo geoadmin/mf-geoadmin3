@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 describe('ga_toggle_directive', function() {
 
-  describe('gaToggle', function() {
+  describe('gaMapboxStyleToggle', function() {
 
     var elt, parentScope, $timeout, $httpBackend, $rootScope,
       $compile, scope;
@@ -13,7 +13,7 @@ describe('ga_toggle_directive', function() {
       parentScope.gaToggleOn = gaToggleOn;
       parentScope.gaToggleOff = gaToggleOff;
       var tpl = '<div ng-model="ngModel" ng-change="ngChange()" ' +
-                     'ga-toggle ga-toggle-on="gaToggleOn" ' +
+                     'ga-mapbox-style-toggle ga-toggle-on="gaToggleOn" ' +
                      'ga-toggle-off="gaToggleOff"></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();

@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-describe('ga_color_directive', function() {
+describe('ga_mapbox_style_color_picker_directive', function() {
 
-  describe('gaColor', function() {
+  describe('gaMapboxStyleColorPicker', function() {
 
     var elt, parentScope, $timeout, $httpBackend, $rootScope,
       $compile, scope;
@@ -10,7 +10,8 @@ describe('ga_color_directive', function() {
       parentScope = $rootScope.$new();
       parentScope.ngModel = ngModel;
       parentScope.ngChange = ngChange;
-      var tpl = '<div ng-model="ngModel" ng-change="ngChange()" ga-color></div>';
+      var tpl = '<div ng-model="ngModel" ng-change="ngChange()" ' +
+        'ga-mapbox-style-color-picker></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
       scope = elt.isolateScope();

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-describe('ga_size_directive', function() {
+describe('ga_mapbox_style_edit_font_size_directive', function() {
 
   describe('gaSize', function() {
 
@@ -14,8 +14,8 @@ describe('ga_size_directive', function() {
       parentScope.max = max;
       parentScope.step = step;
       var tpl = '<div ng-model="ngModel" ng-change="ngChange()" ' +
-                     'ga-size ga-size-min="{{min}}" ga-size-max="{{max}}" ' +
-                     'ga-size-step="{{step}}"></div>';
+                     'ga-mapbox-style-edit-font-size ga-size-min="{{min}}" ' +
+                     ' ga-size-max="{{max}}" ga-size-step="{{step}}"></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
       scope = elt.isolateScope();

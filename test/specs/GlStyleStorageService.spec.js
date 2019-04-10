@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 describe('ga_glstylestorage_service', function() {
 
-  describe('gaGlStyleStorage', function() {
-    var gaGlStyleStorage, $httpBackend,
+  describe('gaMapboxStyleStorage', function() {
+    var gaMapboxStyleStorage, $httpBackend,
       adminId = 'aaaaaaaaaaaaaaaaaaaaa', // length must > 20
       fileId = 'fffffffffffffffffffff', // length must > 20
       fileContent = '<kml></kml>',
@@ -20,7 +20,7 @@ describe('ga_glstylestorage_service', function() {
 
     beforeEach(function() {
       inject(function($injector, gaGlobalOptions) {
-        gaGlStyleStorage = $injector.get('gaGlStyleStorage');
+        gaMapboxStyleStorage = $injector.get('gaMapboxStyleStorage');
         $httpBackend = $injector.get('$httpBackend');
         serviceUrl = gaGlobalOptions.apiUrl;
         publicUrl = gaGlobalOptions.publicUrl;
@@ -34,9 +34,9 @@ describe('ga_glstylestorage_service', function() {
 
     describe('#getFilIdFromFileUrl', function() {
       it('gets file\'s id from file\'s url', inject(function() {
-        var res = gaGlStyleStorage.getFileIdFromFileUrl(fileInfo.fileUrl);
+        var res = gaMapboxStyleStorage.getFileIdFromFileUrl(fileInfo.fileUrl);
         expect(res).to.equal(fileId);
-        res = gaGlStyleStorage.getFileIdFromFileUrl(fileInfoHttps.fileUrl);
+        res = gaMapboxStyleStorage.getFileIdFromFileUrl(fileInfoHttps.fileUrl);
         expect(res).to.equal(fileId);
       }));
     });
@@ -45,7 +45,7 @@ describe('ga_glstylestorage_service', function() {
       it('gets a file', function() {
         var expectedUrl = publicUrl + '/gl-styles/' + fileId;
         $httpBackend.expectGET(expectedUrl).respond(fileContent);
-        gaGlStyleStorage.get(fileId);
+        gaMapboxStyleStorage.get(fileId);
         $httpBackend.flush();
       });
     });
@@ -53,7 +53,7 @@ describe('ga_glstylestorage_service', function() {
     describe('#save()', function() {
       it('creates a file', inject(function($timeout, gaGlobalOptions) {
         $httpBackend.expectPOST(serviceUrl + '/gl-styles', fileContent).respond(fileInfo);
-        gaGlStyleStorage.save(null, fileContent);
+        gaMapboxStyleStorage.save(null, fileContent);
         $httpBackend.flush();
       }));
 
@@ -62,7 +62,7 @@ describe('ga_glstylestorage_service', function() {
         $httpBackend.expectPOST(expectedUrl, fileContent, function(headers) {
           return headers['Content-Type'] === 'application/json';
         }).respond(fileInfo);
-        gaGlStyleStorage.save(adminId, fileContent);
+        gaMapboxStyleStorage.save(adminId, fileContent);
         $httpBackend.flush();
       }));
     });
@@ -71,7 +71,7 @@ describe('ga_glstylestorage_service', function() {
       it('deletes a file', inject(function($timeout) {
         var expectedUrl = serviceUrl + '/gl-styles/' + adminId;
         $httpBackend.expectDELETE(expectedUrl).respond({success: true});
-        gaGlStyleStorage.del(adminId);
+        gaMapboxStyleStorage.del(adminId);
         $httpBackend.flush();
       }));
     });

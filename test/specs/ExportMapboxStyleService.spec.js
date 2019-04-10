@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-describe('ga_exportglstyle_service', function() {
+describe('ga_export_mapbox_style_service', function() {
 
-  describe('gaExportGlStyle', function() {
-    var $window, $httpBackend, gaBrowserSniffer, gaExportGlStyle,
+  describe('gaExportMapboxStyle', function() {
+    var $window, $httpBackend, gaBrowserSniffer, gaExportMapboxStyle,
       gaGlobalOptions, clock, $rootScope;
     var $windowMock;
     var t = new Date('2016-01-15T10:00:00.000Z').getTime();
@@ -35,7 +35,7 @@ describe('ga_exportglstyle_service', function() {
         gaBrowserSniffer = $injector.get('gaBrowserSniffer');
         gaGlobalOptions = $injector.get('gaGlobalOptions');
         $windowMock = sinon.mock($window);
-        gaExportGlStyle = $injector.get('gaExportGlStyle');
+        gaExportMapboxStyle = $injector.get('gaExportMapboxStyle');
       });
       clock = sinon.useFakeTimers(t);
     });
@@ -48,7 +48,7 @@ describe('ga_exportglstyle_service', function() {
     describe('#create()', function() {
 
       it('does nothing if glStyle is udnefined', function(done) {
-        gaExportGlStyle.create().then(function(str) {
+        gaExportMapboxStyle.create().then(function(str) {
           expect(str).to.be(undefined);
           done();
         });
@@ -56,7 +56,7 @@ describe('ga_exportglstyle_service', function() {
       });
 
       it('creates a string from a glStyle', function(done) {
-        gaExportGlStyle.create(glStyle).then(function(str) {
+        gaExportMapboxStyle.create(glStyle).then(function(str) {
           expect(str).to.be('{"property":"value"}');
           done();
         });
@@ -67,7 +67,7 @@ describe('ga_exportglstyle_service', function() {
     describe('#createAndDownload()', function() {
 
       it('does nothing if glStyle is udnefined', function() {
-        gaExportGlStyle.createAndDownload();
+        gaExportMapboxStyle.createAndDownload();
         $rootScope.$digest();
       });
 
@@ -81,7 +81,7 @@ describe('ga_exportglstyle_service', function() {
             filename: fileName
           });
 
-          gaExportGlStyle.createAndDownload(glStyle);
+          gaExportMapboxStyle.createAndDownload(glStyle);
           $rootScope.$digest();
           $httpBackend.flush();
           open.verify();
@@ -128,7 +128,7 @@ describe('ga_exportglstyle_service', function() {
         gaBrowserSniffer.safari = false;
         gaBrowserSniffer.blob = true;
         var spySaveAs = sinon.spy($window, 'saveAs');
-        gaExportGlStyle.createAndDownload(glStyle);
+        gaExportMapboxStyle.createAndDownload(glStyle);
         $rootScope.$digest();
         expect(spySaveAs.calledOnce).to.be.ok();
         expect(spySaveAs.args[0][1]).to.be(fileName);

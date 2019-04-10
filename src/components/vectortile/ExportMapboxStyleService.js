@@ -1,10 +1,10 @@
-goog.provide('ga_exportglstyle_service');
+goog.provide('ga_export_mapbox_style_service');
 
 goog.require('ga_browsersniffer_service');
 
 (function() {
 
-  var module = angular.module('ga_exportglstyle_service', [
+  var module = angular.module('ga_export_mapbox_style_service', [
     'ga_browsersniffer_service',
     'pascalprecht.translate'
   ]);
@@ -12,7 +12,7 @@ goog.require('ga_browsersniffer_service');
   /**
    * This service can be used to export a mapbox-gl style file.
    */
-  module.provider('gaExportGlStyle', function() {
+  module.provider('gaExportMapboxStyle', function() {
     this.$get = function($translate, $window, $document, $http, $q,
         gaBrowserSniffer) {
 

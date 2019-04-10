@@ -208,8 +208,8 @@ goog.require('ga_waitcursor_service');
     gaFileStorageProvider.fileStorageUrl = gaGlobalOptions.apiUrl + '/files';
     gaFileStorageProvider.publicUrl = gaGlobalOptions.publicUrl;
   }); */
-  module.config(function(gaExportGlStyleProvider, gaGlobalOptions) {
-    gaExportGlStyleProvider.downloadUrl = gaGlobalOptions.apiUrl +
+  module.config(function(gaExportMapboxStyleProvider, gaGlobalOptions) {
+    gaExportMapboxStyleProvider.downloadUrl = gaGlobalOptions.apiUrl +
         '/downloadkml';
   });
 

@@ -23,7 +23,8 @@ goog.require('ga_mapbox_style_storage_service');
    */
   module.provider('gaBackground', function() {
     this.$get = function($rootScope, $q, gaTopic, gaLayers, gaPermalink,
-        gaUrlUtils, gaLayerFilters, gaGlStyleStorage, gaStorage, gaMapUtils) {
+     gaUrlUtils, gaLayerFilters, gaMapboxStyleStorage, gaStorage,
+     gaMapUtils) {
       var bg; // The current background
       var bgs = []; // The list of backgrounds available
       var bgsP; // Promise resolved when the background service is initialized.
@@ -174,7 +175,7 @@ goog.require('ga_mapbox_style_storage_service');
                 // We create the olLayer with the correct style from permalink
                 var adminId = params.glStylesAdminId;
                 if (adminId) {
-                  gaGlStyleStorage.getFileUrlFromAdminId(adminId).then(
+                  gaMapboxStyleStorage.getFileUrlFromAdminId(adminId).then(
                       function(styleUrl) {
                         initBg.adminId = adminId;
                         initBg.externalStyleUrl = styleUrl;
