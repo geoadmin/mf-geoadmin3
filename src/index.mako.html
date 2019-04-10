@@ -191,13 +191,13 @@ itemscope itemtype="http://schema.org/WebApplication"
 
 % endif
     <div id="loader"></div>
-    <!-- Vector feedback -->
-    <div ng-controller="GaVectorFeedbackController">
-      <div ga-vector-feedback
-           ga-vector-feedback-map="::map"
-           ga-vector-feedback-options="::options"
-           ga-vector-feedback-toggle="!globals.isEditActive"
-           ga-vector-feedback-ol3d="::ol3d">
+    <!-- Vector Tile feedback -->
+    <div ng-controller="gaVectorTileFeedbackController">
+      <div ga-vector-tile-feedback
+           ga-vector-tile-feedback-map="::map"
+           ga-vector-tile-feedback-options="::options"
+           ga-vector-tile-feedback-toggle="!globals.isEditActive"
+           ga-vector-tile-feedback-ol3d="::ol3d">
       </div>
     </div>
     <div tabindex="1" ga-map ga-map-map="map" ga-map-ol3d="::ol3d">
@@ -518,7 +518,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div> <!-- #pulldown -->
 
     <!-- Modal: vector tiles survey -->
-    <div ng-cloak translate-cloak ga-vector-feedback-modal></div>
+    <div ng-cloak translate-cloak ga-vector-tile-feedback-modal></div>
 
     <!-- Modal: offline menu -->
     <div ng-cloak translate-cloak ga-offline-menu ga-offline-menu-map="map"></div>

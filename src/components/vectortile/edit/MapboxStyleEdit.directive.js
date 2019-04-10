@@ -1,19 +1,19 @@
-goog.provide('ga_mapbox_stye_edit_directive');
+goog.provide('ga_mapbox_style_edit_directive');
 
-goog.require('ga_background_service');
-goog.require('ga_debounce_service');
 goog.require('ga_exportglstyle_service');
-goog.require('ga_filestorage_service');
-goog.require('ga_layers_service');
+goog.require('ga_mapbox_style_storage_service');
+goog.require('ga_debounce_service');
 goog.require('ga_maputils_service');
 goog.require('ga_mvt_service');
+goog.require('ga_background_service');
 goog.require('ga_urlutils_service');
+goog.require('ga_layers_service');
 
 (function() {
 
-  var module = angular.module('ga_mapbox_stye_edit_directive', [
+  var module = angular.module('ga_mapbox_style_edit_directive', [
     'ga_exportglstyle_service',
-    'ga_glstylestorage_service',
+    'ga_mapbox_style_storage_service',
     'ga_debounce_service',
     'ga_maputils_service',
     'ga_mvt_service',

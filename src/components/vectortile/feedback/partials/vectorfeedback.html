@@ -1,18 +1,18 @@
-<div class="ga-vector-feedback-panel" aria-expanded="true" ng-show="!ol3d">
-    <a class="ga-vector-feedback-header" data-toggle="collapse"
+<div class="ga-vector-tile-feedback-panel" aria-expanded="true" ng-show="!ol3d">
+    <a class="ga-vector-tile-feedback-header" data-toggle="collapse"
        data-target="#ga-feedback-vector-body" aria-expanded="true"
        ng-click="applyVectorBackground()">
-        <div class="ga-vector-feedback-title ga-no-select pull-left" translate>
+        <div class="ga-vector-tile-feedback-title ga-no-select pull-left" translate>
           {{!isVectorTileLayer() ? 'vector_feedback_tryit_title' : 'vector_feedback_description_title' }}
         </div>
         <i class="fa fa-caret-down"></i>
     </a>
     <div id="ga-feedback-vector-body" class="collapse in">
-        <p class="ga-vector-feedback-text" translate>vector_feedback_description_text</p>
+        <p class="ga-vector-tile-feedback-text" translate>vector_feedback_description_text</p>
         <hr>
-        <div class="ga-vector-feedback-item">
-            <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_choose_style</h4>
-            <div class="ga-vector-feedback-item-select-wrapper ga-select-style">
+        <div class="ga-vector-tile-feedback-item">
+            <h4 class="ga-vector-tile-feedback-item-title pull-left" translate>vector_feedback_choose_style</h4>
+            <div class="ga-vector-tile-feedback-item-select-wrapper ga-select-style">
                 <a class="ga-feedback-survey-link btn btn-default form-control"
                    ng-repeat="style in styles"
                    ng-click="applyNextStyle(style, $index)"
@@ -23,27 +23,27 @@
             </div>
         </div>
         <hr>
-        <div class="ga-vector-feedback-item">
-            <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_create_your_own</h4>
-            <div class="ga-vector-feedback-item-select-wrapper">
+        <div class="ga-vector-tile-feedback-item">
+            <h4 class="ga-vector-tile-feedback-item-title pull-left" translate>vector_feedback_create_your_own</h4>
+            <div class="ga-vector-tile-feedback-item-select-wrapper">
                 <a class="ga-feedback-survey-link btn btn-default form-control" ng-click="openAdvanceEdit()" href="" translate>
                     vector_feedback_edit_map
                 </a>
             </div>
         </div>
         <hr>
-        <div class="ga-vector-feedback-item">
-            <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_getting_started_title</h4>
-            <div class="ga-vector-feedback-item-text-wrapper">
+        <div class="ga-vector-tile-feedback-item">
+            <h4 class="ga-vector-tile-feedback-item-title pull-left" translate>vector_feedback_getting_started_title</h4>
+            <div class="ga-vector-tile-feedback-item-text-wrapper">
                 <span translate>vector_feedback_getting_started_1</span>
                 <a class="ga-vector-feeback-service-link" href="{{options.serviceDocUrl}}" target="_blank" translate>vector_feedback_getting_started_2</a>
                 <span translate>vector_feedback_getting_started_3</span>
             </div>
         </div>
         <hr>
-        <div class="ga-vector-feedback-item ga-vector-feedback-item-last">
-            <h4 class="ga-vector-feedback-item-title pull-left" translate>vector_feedback_survey_title</h4>
-            <div class="ga-vector-feedback-item-select-wrapper">
+        <div class="ga-vector-tile-feedback-item ga-vector-tile-feedback-item-last">
+            <h4 class="ga-vector-tile-feedback-item-title pull-left" translate>vector_feedback_survey_title</h4>
+            <div class="ga-vector-tile-feedback-item-select-wrapper">
                 <a ng-if="!msie" class="ga-feedback-survey-link btn btn-default form-control" data-toggle="modal" data-target="#vectorFeedbackSurvey.modal" href="#" translate>
                     vector_feedback_survey_btn_text
                 </a>

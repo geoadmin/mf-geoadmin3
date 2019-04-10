@@ -14,7 +14,6 @@ goog.require('ga_draw');
 goog.require('ga_draw_controller');
 goog.require('ga_drawstyle_controller');
 goog.require('ga_drawstylepopup_controller');
-goog.require('ga_edit');
 goog.require('ga_edit_controller');
 goog.require('ga_featuretree');
 goog.require('ga_featuretree_controller');
@@ -65,7 +64,8 @@ goog.require('ga_tooltip_controller');
 goog.require('ga_topic');
 goog.require('ga_translation');
 goog.require('ga_translation_controller');
-goog.require('ga_vector_tile');
+goog.require('ga_vector_tile_feedback');
+goog.require('ga_mapbox_style');
 goog.require('ga_vector_feedback_controller');
 goog.require('ga_waitcursor_service');
 (function() {
@@ -101,14 +101,12 @@ goog.require('ga_waitcursor_service');
     'ga_stylesfromliterals_service',
     'ga_seo',
     'ga_draw',
-    'ga_edit',
     'ga_query',
     'ga_query_vector',
     'ga_print',
     'ga_shop',
     'ga_tabs',
     'ga_tilt3d',
-    'ga_vector_feedback',
     'ga_modal_directive',
     'ga_draggable_directive',
     'ga_placeholder_directive',
@@ -138,7 +136,9 @@ goog.require('ga_waitcursor_service');
     'ga_draw_controller',
     'ga_drawstyle_controller',
     'ga_drawstylepopup_controller',
-    'ga_vector_feedback_controller'
+    'ga_vector_feedback_controller',
+    'ga_mapbox_style',
+    'ga_vector_tile_feedback'
   ]);
 
   module.config(function($translateProvider, gaGlobalOptions) {

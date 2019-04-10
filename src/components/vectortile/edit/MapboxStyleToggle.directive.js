@@ -1,8 +1,8 @@
-goog.provide('ga_mapbox_toggle_directive');
+goog.provide('ga_mapbox_style_toggle_directive');
 
 (function() {
 
-  var module = angular.module('ga_mapbox_toggle_directive', []);
+  var module = angular.module('ga_mapbox_style_toggle_directive', []);
 
   /**
    * This directive add an interface where you can modify a glStyle.

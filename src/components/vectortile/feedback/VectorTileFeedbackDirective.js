@@ -29,10 +29,10 @@ goog.require('ga_translation_service');
       templateUrl: 'components/vectortile/feedback/partials/' + 
         'vectorfeedback.html',
       scope: {
-        map: '=gaVectorFeedbackMap',
-        options: '=gaVectorFeedbackOptions',
-        toggle: '=gaVectorFeedbackToggle',
-        ol3d: '=gaVectorFeedbackOl3d'
+        map: '=gaVectorTileFeedbackMap',
+        options: '=gaVectorTileFeedbackOptions',
+        toggle: '=gaVectorTileFeedbackToggle',
+        ol3d: '=gaVectorTileFeedbackOl3d'
       },
       link: function(scope, element) {
         var styleIdx;

@@ -3,9 +3,9 @@
   angular.module('ga_vector_tile_layer_service', [
     'ga_maputils_service'
   ])
-  .factory('gaVectorTileLayerService', VectorTileLayerService);
+  .factory('gaVectorTileLayerService', ['gaLang', VectorTileLayerService]);
 
-  function VectorTileLayerService () {
+  function VectorTileLayerService (gaLang) {
     var vectortileLayer = {
       type: 'aggregate',
       background: true,
@@ -13,7 +13,7 @@
       attribution: '' +
         '<a target="_blank" href="https://openmaptiles.org/">OpenMapTiles</a>, ' +
         '<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, ' +
-        '<a target="_blank" href="https://www.swisstopo.admin.ch/' + lang + '/home.html">swisstopo</a>',
+        '<a target="_blank" href="https://www.swisstopo.admin.ch/' + gaLang.getNoRm() + '/home.html">swisstopo</a>',
       styles: [{
         id: 'default',
         url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v006/style.json'

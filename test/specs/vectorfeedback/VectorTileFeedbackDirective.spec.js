@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-describe('ga_vector_feedback_directive', function() {
+describe('ga_vector_tile_feedback_directive', function() {
   var $rootScope,
     $compile,
     gaBrowserSniffer,
@@ -12,8 +12,8 @@ describe('ga_vector_feedback_directive', function() {
     scope = $rootScope.$new();
     scope.options = options;
     var tpl =
-      '<div ga-vector-feedback ' +
-      'ga-vector-feedback-options="options">' +
+      '<div ga-vector-tile-feedback ' +
+      'ga-vector-tile-feedback-options="options">' +
       '</div>';
     el = $compile(tpl)(scope);
     $rootScope.$digest();

@@ -11,7 +11,7 @@ goog.require('ga_layers_service');
     'ga_layers_service'
   ]);
 
-  module.controller('GaVectorFeedbackController', function(
+  module.controller('gaVectorTileFeedbackController', function(
       $scope,
       gaGlobalOptions
   ) {

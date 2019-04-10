@@ -4,7 +4,7 @@ goog.require('ga_layerfilters_service');
 goog.require('ga_layers_service');
 goog.require('ga_permalink');
 goog.require('ga_urlutils_service');
-goog.require('ga_glstylestorage_service');
+goog.require('ga_mapbox_style_storage_service');
 
 (function() {
 
@@ -13,7 +13,7 @@ goog.require('ga_glstylestorage_service');
     'ga_layers_service',
     'ga_urlutils_service',
     'ga_layerfilters_service',
-    'ga_glstylestorage_service',
+    'ga_mapbox_style_storage_service',
     'ga_storage_service',
     'ga_maputils_service'
   ]);

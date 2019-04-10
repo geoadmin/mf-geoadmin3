@@ -1,4 +1,4 @@
-.ga-vector-feedback-panel {
+.ga-vector-tile-feedback-panel {
   z-index: 1025;
   position: absolute;
   top: unit(@header-height + 5, px);
@@ -44,19 +44,19 @@
 }
 
 .ga-draw-active, .ga-edit-active {
-  .ga-vector-feedback-panel {
+  .ga-vector-tile-feedback-panel {
     top: unit(@small-header-height + 5, px);
     max-height: ~"calc(100% - 55px)";
   }
 }
 
-.ga-vector-feedback-header {
+.ga-vector-tile-feedback-header {
   position: relative;
   width: 100%;
   display: table;
   cursor: pointer;
   &:hover {
-    .ga-vector-feedback-title {
+    .ga-vector-tile-feedback-title {
       color: rgba(255, 255, 255, 0.65);
     }
   }
@@ -79,7 +79,7 @@
   }
 }
 
-.ga-vector-feedback-title {
+.ga-vector-tile-feedback-title {
   font-size: 16px;
   font-weight: 500;
   padding: 10px 0;
@@ -90,11 +90,11 @@
   }
 }
 
-.ga-vector-feedback-text {
+.ga-vector-tile-feedback-text {
   text-align: justify;
 }
 
-.ga-vector-feedback-item {
+.ga-vector-tile-feedback-item {
   width: 100%;
   display: table;
   padding: 2px 0;
@@ -111,7 +111,7 @@
   }
 }
 
-.ga-vector-feedback-item-last {
+.ga-vector-tile-feedback-item-last {
   margin-bottom: 15px;
   @media (max-width: @screen-sm), (max-width: @screen-xs) {
     button {
@@ -120,7 +120,7 @@
   }
 }
 
-.ga-vector-feedback-item-title {
+.ga-vector-tile-feedback-item-title {
   font-size: 15px;
   font-weight: 300;
   width: 60%;
@@ -131,7 +131,7 @@
   }
 }
 
-.ga-vector-feedback-item-select-wrapper {
+.ga-vector-tile-feedback-item-select-wrapper {
   width: 40%;
   float: right;
 
@@ -155,7 +155,7 @@
   }
 }
 
-.ga-vector-feedback-item-text-wrapper {
+.ga-vector-tile-feedback-item-text-wrapper {
   width: 100%;
   float: right;
   a {
