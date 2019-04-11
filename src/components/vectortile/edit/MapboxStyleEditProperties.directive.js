@@ -15,8 +15,8 @@ goog.provide('ga_mapbox_style_edit_properties_directive');
       templateUrl:
         'components/vectortile/edit/partials/edit-style-properties.html',
       scope: {
-        glStyle: '=gaEditGlStyle',
-        config: '=gaEditGlStyleConfig'
+        glStyle: '=gaMapboxStyleEditProperties',
+        config: '=gaMapboxStyleEditPropertiesConfig'
       },
       link: function(scope, element, attrs, controller) {
 

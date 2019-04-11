@@ -3,7 +3,7 @@ describe('ga_mapbox_style_edit_directive', function() {
 
   describe('gaMapboxStyleEdit', function() {
     var map, elt, parentScope, $timeout, $httpBackend, $rootScope,
-      $compile, gaDebounce, gaExportGlStyle, gaMapboxStyleStorage, gaStorage, gaLayers,
+      $compile, gaDebounce, gaExportMapboxStyle, gaMapboxStyleStorage, gaStorage, gaLayers,
       $window, scope, $q, gaMapUtils;
 
     var loadDirective = function(map, layer, active) {
@@ -59,7 +59,7 @@ describe('ga_mapbox_style_edit_directive', function() {
       $window = $injector.get('$window');
       gaDebounce = $injector.get('gaDebounce');
       gaMapboxStyleStorage = $injector.get('gaMapboxStyleStorage');
-      gaExportGlStyle = $injector.get('gaExportGlStyle');
+      gaExportMapboxStyle = $injector.get('gaExportMapboxStyle');
       gaStorage = $injector.get('gaStorage');
       gaLayers = $injector.get('gaLayers');
       gaMapUtils = $injector.get('gaMapUtils');
@@ -215,7 +215,7 @@ describe('ga_mapbox_style_edit_directive', function() {
 
         it('does nothing if an glStylesAdminId or an externalStyleUrl are specifed', function() {
           loadDirective(map, layer);
-          var stub = sinon.stub(gaExportGlStyle, 'create').returns($q.when());
+          var stub = sinon.stub(gaExportMapboxStyle, 'create').returns($q.when());
           scope.saveDebounced(null, layer);
           expect(stub.callCount).to.be(0);
         });
@@ -225,7 +225,7 @@ describe('ga_mapbox_style_edit_directive', function() {
           layer.adminId = 'foo';
           var glStyle = { data: 'value' };
 
-          var stub = sinon.stub(gaExportGlStyle, 'create').withArgs(glStyle).
+          var stub = sinon.stub(gaExportMapboxStyle, 'create').withArgs(glStyle).
               returns($q.when(dataStr));
           var stub2 = sinon.stub(gaMapboxStyleStorage, 'save').withArgs(layer.adminId, dataStr).
               returns($q.when({
@@ -244,7 +244,7 @@ describe('ga_mapbox_style_edit_directive', function() {
         it('saves a file in the file storage from a  glStyle', function() {
           loadDirective(map, layer);
           layer.externalStyleUrl = undefined;
-          var stub = sinon.stub(gaExportGlStyle, 'create').withArgs(glStyle).
+          var stub = sinon.stub(gaExportMapboxStyle, 'create').withArgs(glStyle).
               returns($q.when(dataStr));
           var stub2 = sinon.stub(gaMapboxStyleStorage, 'save').withArgs(undefined, dataStr).
               returns($q.when({
@@ -291,13 +291,13 @@ describe('ga_mapbox_style_edit_directive', function() {
           loadDirective(map, layer);
           layer.glStyle = glStyle;
           spy = sinon.stub(evt, 'preventDefault');
-          stub = sinon.stub(gaExportGlStyle, 'createAndDownload').
+          stub = sinon.stub(gaExportMapboxStyle, 'createAndDownload').
               withArgs(glStyle);
         });
 
         afterEach(function() {
           evt.preventDefault.restore();
-          gaExportGlStyle.createAndDownload.restore();
+          gaExportMapboxStyle.createAndDownload.restore();
         });
 
         it('exports', function() {

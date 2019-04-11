@@ -11,7 +11,8 @@ goog.provide('ga_mapbox_style_edit_font_size_directive');
     return {
       require: 'ngModel',
       restrict: 'A',
-      templateUrl: 'components/edit/partials/fontsize.html',
+      templateUrl: 'components/vectortile/edit/partials/' +
+        'edit-style-fontsize.html',
       scope: {
         ngModel: '=',
         ngChange: '&'

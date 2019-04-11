@@ -12,7 +12,8 @@ goog.provide('ga_mapbox_style_color_picker_directive');
     return {
       require: 'ngModel',
       restrict: 'A',
-      templateUrl: 'components/vectortile/edit/partials/color-picker.html',
+      templateUrl: 'components/vectortile/edit/partials/' +
+        'edit-style-colorpicker.html',
       scope: {
         ngModel: '=',
         ngChange: '&'

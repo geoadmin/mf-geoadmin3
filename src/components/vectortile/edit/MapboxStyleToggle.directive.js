@@ -11,7 +11,7 @@ goog.provide('ga_mapbox_style_toggle_directive');
     return {
       require: 'ngModel',
       restrict: 'A',
-      templateUrl: 'components/vectortile/edit/partials/toggle.html',
+      templateUrl: 'components/vectortile/edit/partials/edit-style-toggle.html',
       scope: {
         ngModel: '=',
         ngChange: '&',

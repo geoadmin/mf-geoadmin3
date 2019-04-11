@@ -26,7 +26,7 @@ goog.require('ga_layers_service');
    * This directive add an interface where you can modify a glStyle.
    */
   module.directive('gaMapboxStyleEdit', function($rootScope, $window,
-      $translate, gaMvt, gaDebounce, gaMapboxStyleStorage, gaExportGlStyle,
+      $translate, gaMvt, gaDebounce, gaMapboxStyleStorage, gaExportMapboxStyle,
       gaMapUtils, gaBackground, gaUrlUtils, gaLayers) {
     return {
       restrict: 'A',
@@ -61,7 +61,7 @@ goog.require('ga_layers_service');
         var save = function(evt, layer, glStyle) {
           scope.statusMsgId = 'edit_file_saving';
 
-          gaExportGlStyle.create(glStyle).then(function(dataString) {
+          gaExportMapboxStyle.create(glStyle).then(function(dataString) {
 
             if (!dataString) {
               return;
@@ -98,7 +98,7 @@ goog.require('ga_layers_service');
           if (evt.currentTarget.attributes.disabled) {
             return;
           }
-          gaExportGlStyle.createAndDownload(layer.glStyle);
+          gaExportMapboxStyle.createAndDownload(layer.glStyle);
           evt.preventDefault();
         };
 

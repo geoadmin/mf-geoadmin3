@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-describe('ga_editglstyle_directive', function() {
+describe('ga_mapbox_style_edit_properties_directive', function() {
 
-  describe('gaEditGlStyle', function() {
+  describe('gaMapboxStyleEdit', function() {
 
     var map, elt, parentScope, $timeout, $httpBackend, $rootScope,
       $compile, scope;
@@ -19,7 +19,8 @@ describe('ga_editglstyle_directive', function() {
       parentScope = $rootScope.$new();
       parentScope.glStyle = glStyle;
       parentScope.config = config;
-      var tpl = '<div ga-edit-gl-style="glStyle" ga-edit-gl-style-config="config"></div>';
+      var tpl = '<div ga-mapbox-style-edit-properties="glStyle" ' +
+        'ga-mapbox-style-edit-properties-config="config"></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
       scope = elt.isolateScope();
