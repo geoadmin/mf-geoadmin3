@@ -29,6 +29,7 @@
 /src/lib/Cesium/Widgets
 /re3-translations.json
 rc_user_*
+package-lock.json
 
 # FIXME
 # The following are developer-specific and should probably be in the
@@ -49,3 +50,6 @@ rc_user_*
 
 # Git patch failed
 *.rej
+
+# MacOS related stuff
+.DS_Store
