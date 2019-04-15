@@ -11,8 +11,10 @@ describe('ga_mapbox_style_edit_directive', function() {
       parentScope.map = map;
       parentScope.layer = layer;
       parentScope.active = active;
-      var tpl = '<div ga-mapbox-style-edit ga-edit-map="map" ga-edit-options="options" ' +
-                    'ga-edit-layer="layer" ga-edit-is-active="active"></div>';
+      var tpl = '<div ga-mapbox-style-edit ga-mapbox-style-edit-map="map" ' +
+                  'ga-mapbox-style-edit-options="options" ' +
+                  'ga-mapbox-style-edit-layer="layer" ' +
+                  'ga-mapbox-style-edit-is-active="active"></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
       scope = elt.isolateScope();
