@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 describe('ga_mapbox_style_edit_properties_directive', function() {
 
-  describe('gaMapboxStyleEdit', function() {
+  describe('gaMapboxStyleEditProperties', function() {
 
     var map, elt, parentScope, $timeout, $httpBackend, $rootScope,
       $compile, scope;
@@ -85,9 +85,9 @@ describe('ga_mapbox_style_edit_properties_directive', function() {
         parentScope.glStyle = glStyle;
         parentScope.config = goodConfig;
         $rootScope.$digest();
-        expect(elt.find('[ga-color]').length).to.be(1);
-        expect(elt.find('[ga-size]').length).to.be(1);
-        expect(elt.find('[ga-toggle]').length).to.be(1);
+        expect(elt.find('[ga-mapbox-style-color-picker]').length).to.be(1);
+        expect(elt.find('[ga-mapbox-style-edit-font-size]').length).to.be(1);
+        expect(elt.find('[ga-mapbox-style-toggle]').length).to.be(1);
         expect(elt.find('label').length).to.be(4);
         expect(scope.groups.foo[0]).to.be(glStyle.layers[0]);
         expect(scope.groups.foo.length).to.be(1);
@@ -110,9 +110,9 @@ describe('ga_mapbox_style_edit_properties_directive', function() {
       });
 
       it('display html elements', function() {
-        expect(elt.find('[ga-color]').length).to.be(1);
-        expect(elt.find('[ga-size]').length).to.be(1);
-        expect(elt.find('[ga-toggle]').length).to.be(1);
+        expect(elt.find('[ga-mapbox-style-color-picker]').length).to.be(1);
+        expect(elt.find('[ga-mapbox-style-edit-font-size]').length).to.be(1);
+        expect(elt.find('[ga-mapbox-style-toggle]').length).to.be(1);
         expect(elt.find('label').length).to.be(4);
       });
 

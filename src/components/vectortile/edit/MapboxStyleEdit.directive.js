@@ -32,10 +32,10 @@ goog.require('ga_layers_service');
       restrict: 'A',
       templateUrl: 'components/vectortile/edit/partials/edit-style.html',
       scope: {
-        map: '=gaEditMap',
-        options: '=gaEditOptions',
-        layer: '=gaEditLayer',
-        isActive: '=gaEditActive'
+        map: '=gaMapboxStyleEditMap',
+        options: '=gaMapboxStyleEditOptions',
+        layer: '=gaMapboxStyleEditLayer',
+        isActive: '=gaMapboxStyleEditActive'
       },
       link: function(scope, element, attrs, controller) {
 

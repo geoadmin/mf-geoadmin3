@@ -15,19 +15,19 @@ goog.provide('ga_mapbox_style_toggle_directive');
       scope: {
         ngModel: '=',
         ngChange: '&',
-        gaToggleOn: '=',
-        gaToggleOff: '=',
-        gaToggleOnLabel: '=',
-        gaToggleOffLabel: '='
+        toggleOn: '=gaMapboxStyleToggleOn',
+        toggleOff: '=gaMapboxStyleToggleOff',
+        toggleOnLabel: '=gaMapboxStyleToggleOnLabel',
+        toggleOffLabel: '=gaMapboxStyleToggleOffLabel'
       },
       link: function(scope, element, attrs) {
-        scope.gaToggleOn = scope.gaToggleOn || true;
-        scope.gaToggleOff = scope.gaToggleOff || false;
+        scope.toggleOn = scope.toggleOn || true;
+        scope.toggleOff = scope.toggleOff || false;
         scope.ngModel = scope.ngModel || false;
 
-        scope.text = scope.ngModel === scope.gaToggleOn ?
-          scope.gaToggleOnLabel :
-          scope.gaToggleOffLabel;
+        scope.text = scope.ngModel === scope.toggleOn ?
+          scope.toggleOnLabel :
+          scope.toggleOffLabel;
 
         scope.$watch('ngModel', function(newValue, oldValue) {
           if (newValue && newValue !== oldValue) {
@@ -36,13 +36,13 @@ goog.provide('ga_mapbox_style_toggle_directive');
         });
 
         scope.toggle = function() {
-          var isToggleOn = scope.ngModel === scope.gaToggleOn;
+          var isToggleOn = scope.ngModel === scope.toggleOn;
           scope.ngModel = isToggleOn ?
-            scope.gaToggleOff :
-            scope.gaToggleOn;
+            scope.toggleOff :
+            scope.toggleOn;
           scope.text = isToggleOn ?
-            scope.gaToggleOffLabel :
-            scope.gaToggleOnLabel;
+            scope.toggleOffLabel :
+            scope.toggleOnLabel;
         };
       }
     };

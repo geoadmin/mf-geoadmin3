@@ -12,22 +12,22 @@
   <label ng-if="useWidget('toggle', e)">
     <div ng-model="group[0][e[0]][e[1]]"
          ng-change="change(group[0][e[0]][e[1]], group, e)"
-         ga-toggle
-         ga-toggle-on="e[3]"
-         ga-toggle-off="e[4]"
-         ga-toggle-on-label="'hide'"
-         ga-toggle-off-label="'show'"/>
+         ga-mapbox-style-toggle
+         ga-mapbox-style-toggle-on="e[3]"
+         ga-mapbox-style-toggle-off="e[4]"
+         ga-mapbox-style-toggle-on-label="'hide'"
+         ga-mapbox-style-toggle-off-label="'show'"/>
   </label>
   <label ng-if="useWidget('color', e)">
     <span translate>{{getTranslateId(e)}}:</span>
     <div ng-model="group[0][e[0]][e[1]]"
          ng-change="change(group[0][e[0]][e[1]], group, e)"
-         ga-color />
+         ga-mapbox-style-color-picker />
   </label>
   <label ng-if="useWidget('size', e)">
     <span translate>{{getTranslateId(e)}}:</span>
     <div ng-model="group[0][e[0]][e[1]]"
          ng-change="change(group[0][e[0]][e[1]], group, e)"
-         ga-size />
+         ga-mapbox-style-edit-font-size />
   </label>
 </div>

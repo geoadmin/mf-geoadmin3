@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-describe('ga_toggle_directive', function() {
+describe('ga_mapbox_style_toggle_directive', function() {
 
   describe('gaMapboxStyleToggle', function() {
 
@@ -13,8 +13,9 @@ describe('ga_toggle_directive', function() {
       parentScope.gaToggleOn = gaToggleOn;
       parentScope.gaToggleOff = gaToggleOff;
       var tpl = '<div ng-model="ngModel" ng-change="ngChange()" ' +
-                     'ga-mapbox-style-toggle ga-toggle-on="gaToggleOn" ' +
-                     'ga-toggle-off="gaToggleOff"></div>';
+                     'ga-mapbox-style-toggle ' +
+                     'ga-mapbox-style-toggle-on="gaToggleOn" ' +
+                     'ga-mapbox-style-toggle-off="gaToggleOff"></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
       scope = elt.isolateScope();
@@ -59,8 +60,8 @@ describe('ga_toggle_directive', function() {
       it('set scope values', function() {
         expect(scope.ngModel).to.be(false);
         expect(scope.ngChange).to.be.a(Function);
-        expect(scope.gaToggleOn).to.be(true);
-        expect(scope.gaToggleOff).to.be(false);
+        expect(scope.toggleOn).to.be(true);
+        expect(scope.toggleOff).to.be(false);
         expect(scope.toggle).to.be.a(Function);
         expect(spy.callCount).to.be(0);
       });
@@ -98,8 +99,8 @@ describe('ga_toggle_directive', function() {
       it('set scope values', function() {
         expect(scope.ngModel).to.be('visible');
         expect(scope.ngChange).to.be.a(Function);
-        expect(scope.gaToggleOn).to.be('visible');
-        expect(scope.gaToggleOff).to.be('none');
+        expect(scope.toggleOn).to.be('visible');
+        expect(scope.toggleOff).to.be('none');
         expect(scope.toggle).to.be.a(Function);
         expect(spy.callCount).to.be(0);
       });

@@ -524,7 +524,8 @@ describe('ga_maputils_service', function() {
         map.getView().setZoom(6);
         var promise = gaMapUtils.zoomToExtent(map, null, [-40, -40, 40, 40]);
         var checkZoomToExtent = function() {
-          expect(map.getView().calculateExtent(map.getSize())).to.eql([-44.78732126084546, -44.78732126084546, 44.78732126084546, 44.78732126084546]);
+          // expect(map.getView().calculateExtent(map.getSize())).to.eql([-44.78732126084546, -44.78732126084546, 44.78732126084546, 44.78732126084546]);
+          expect(map.getView().calculateExtent(map.getSize())).to.eql([-40, -40, 40, 40]);
           done();
         };
         promise ? promise.then(checkZoomToExtent) : checkZoomToExtent();
