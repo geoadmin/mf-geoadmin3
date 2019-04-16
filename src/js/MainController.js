@@ -10,6 +10,7 @@ goog.require('ga_storage_service');
 goog.require('ga_topic_service');
 goog.require('ga_translation_service');
 goog.require('ga_window_service');
+goog.require('ga_vector_tile_layer_service');
 
 (function() {
 
@@ -22,7 +23,8 @@ goog.require('ga_window_service');
     'ga_background_service',
     'ga_topic_service',
     'ga_window_service',
-    'ga_translation_service'
+    'ga_translation_service',
+    'ga_vector_tile_layer_service'
   ]);
 
   /**
@@ -33,7 +35,8 @@ goog.require('ga_window_service');
       gaPermalinkFeaturesManager, gaPermalinkLayersManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
       gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic,
-      gaOpaqueLayersManager, gaMapLoad, gaWindow, gaLang) {
+      gaOpaqueLayersManager, gaMapLoad, gaWindow, gaLang,
+      gaVectorTileLayerService) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];

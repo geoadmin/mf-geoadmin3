@@ -26,6 +26,7 @@ module.exports = function(config) {
     '${basePath}/style/app.css',
     '${basePath}/lib/d3.min.js',
     '${basePath}/lib/Cesium.min.js',
+    '${basePath}/lib/ol.js',
     '${basePath}/lib/olcesium.js',
     '${basePath}/lib/build.js',
   % else:
@@ -52,6 +53,7 @@ module.exports = function(config) {
     '${basePath}/lib/tinycolor.js',
     '${basePath}/lib/Cesium/Cesium.js',
     'test/closure-loader-globals.js',
+    '${basePath}/lib/ol.js',
     '${basePath}/lib/olcesium-debug.js',
     '${basePath}/lib/olms.js',
     '.build-artefacts/app-whitespace.js',

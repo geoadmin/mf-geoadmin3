@@ -1,11 +1,18 @@
+goog.provide('ga_vector_tile_layer_service');
+
+goog.require('ga_storage_service');
+goog.require('ga_translation_service');
+
 (function() {
 
   angular.module('ga_vector_tile_layer_service', [
-    'ga_maputils_service'
+    'ga_storage_service',
+    'ga_translation_service'
   ]).
-      factory('gaVectorTileLayerService', ['gaLang', VectorTileLayerService]);
+      factory('gaVectorTileLayerService',
+          ['$window', 'gaLang', 'gaStorage', VectorTileLayerService]);
 
-  function VectorTileLayerService(gaLang) {
+  function VectorTileLayerService($window, gaLang, gaStorage) {
     var vectortileLayer = {
       type: 'aggregate',
       background: true,
@@ -82,8 +89,15 @@
     function getCurrentStyleUrl() {
       return vectortileLayer.styles[currentStyleIndex].url;
     }
+    function getCurrentStyle() {
+      return gaStorage.load(getCurrentStyleUrl());
+    }
+    function applyOlmsToMap(map) {
+      $window.olms(map, getCurrentStyle());
+    }
     return {
-      getCurrentStyleUrl: getCurrentStyleUrl
+      getCurrentStyleUrl: getCurrentStyleUrl,
+      applyOlmsToMap: applyOlmsToMap
     };
   };
 })();

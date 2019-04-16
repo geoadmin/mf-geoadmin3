@@ -80,7 +80,7 @@ openlayers/build/legacy/ol-debug.js: openlayers/node_modules
 build-openlayers: openlayers/build/legacy/ol.js \
                   openlayers/build/legacy/ol-debug.js
 	# cleanup after build, otherwise repo is modified
-	rm openlayers/package-lock.json
+	rm -f openlayers/package-lock.json
 
 .PHONY: clean-openlayers
 clean-openlayers:
