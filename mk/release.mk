@@ -46,7 +46,7 @@ prd/lib/build.js: src/lib/polyfill.min.js \
                   src/lib/EPSG32631.js \
                   src/lib/EPSG32632.js \
                   src/lib/ol.js \
-                  src/lib/olcesium.js \
+                  src/lib/olcesium-debug.js \
                   src/lib/olms.js \
                   src/lib/angular-translate.min.js \
                   src/lib/angular-translate-loader-static-files.min.js \

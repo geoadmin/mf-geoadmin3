@@ -116,8 +116,7 @@ ol-cesium/dist/olcesium-debug.js: ol-cesium/node_modules/ \
 
 .PHONY: build-ol-cesium
 build-ol-cesium: ol-cesium/dist/olcesium.js \
-                 ol-cesium/dist/olcesium-debug.js \
-                 openlayers/build/legacy/ol.js
+                 ol-cesium/dist/olcesium-debug.js
 	# cleanup after build, otherwise repo is modified
 	cd ol-cesium; \
 	rm src/olcs/Ga*; \
