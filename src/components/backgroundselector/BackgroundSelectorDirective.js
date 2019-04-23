@@ -94,6 +94,7 @@ goog.require('ga_event_service');
         gaBackground.loadConfig().then(function() {
           scope.backgroundLayers = gaBackground.getBackgrounds();
           scope.currentLayer = gaBackground.get();
+          console.log('bg layers', scope.backgroundLayers);
 
           // alert message only on long press on mobile
           if (scope.mobile) {
