@@ -1879,6 +1879,58 @@ body:not(.embed) {
 .testviewer-link {
   font-weight: bold;
   color: @red;
+
+/* DIEMO */
+div.evse_data {
+display: grid;
+grid-gap: 10px;
+grid-template-columns: auto auto auto;
+}
+
+table.diemo_evse {
+  border-collapse: collapse;
+  
+}
+table.diemo_evse td, table.diemo_evse th{
+border-width : 2px; 
+border-style : solid;
+padding: 2px;
+text-align: center;
+}
+table.diemo_evse th{
+color: white;
+height: 30px;
+}
+
+th.status_Occupied {
+border-color : rgb(245,6,58);
+background-color:rgb(245,6,58);
+}
+th.status_Reserved {
+border-color: rgb(233,188,114);
+background-color:rgb(233,188,114);
+}
+th.status_Available {
+background-color: rgb(49,169,80);
+border-color: rgb(49,169,80);
+
+}
+th.status_Offline {
+border-color: rgb(130,131,133);
+background-color:rgb(130,131,133);
+
+}
+td.plugs_Occupied {
+border-color: rgb(245,6,58);
+}
+td.plugs_Reserved {
+border-color: rgb(233,188,114);
+}
+td.plugs_Available {
+border-color: rgb(49,169,80);
+}
+td.plugs_Offline {
+border-color: rgb(130,131,133);
 }
 
 @import "print.less";
