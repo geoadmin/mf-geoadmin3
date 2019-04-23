@@ -224,7 +224,7 @@ goog.require('ga_vector_tile_layer_service');
                   layers.removeAt(0);
                 }
               } else if (
-                  bg.id === gaVectorTileLayerService.getVectorLayerBodId()) {
+                bg.id === gaVectorTileLayerService.getVectorLayerBodId()) {
                 if (layers.item(1) && layers.item(1).background) {
                   layers.removeAt(1);
                 }
