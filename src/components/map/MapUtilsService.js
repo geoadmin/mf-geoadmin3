@@ -522,19 +522,20 @@ goog.require('ga_urlutils_service');
           }
 
           if (!olLayer.sourceId) {
-            return;
+
           }
-          gaStorage.load(glStyle.sprite + '.json').then(function(spriteData) {
-            $window.olms.stylefunction(
-                olLayer,
-                glStyle,
-                olLayer.sourceId,
-                undefined,
-                spriteData,
-                glStyle.sprite + '.png'
-            );
-            olLayer.glStyle = glStyle;
-          });
+
+        // gaStorage.load(glStyle.sprite + '.json').then(function(spriteData) {
+        //   $window.olms.stylefunction(
+        //       olLayer,
+        //       glStyle,
+        //       olLayer.sourceId,
+        //       undefined,
+        //       spriteData,
+        //       glStyle.sprite + '.png'
+        //   );
+        //   olLayer.glStyle = glStyle;
+        // });
         },
 
         // This function creates  an ol source and set it to the layer from the

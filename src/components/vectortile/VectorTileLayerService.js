@@ -2,17 +2,21 @@ goog.provide('ga_vector_tile_layer_service');
 
 goog.require('ga_storage_service');
 goog.require('ga_translation_service');
+goog.require('ga_definepropertiesforlayer_service');
 
 (function() {
 
   angular.module('ga_vector_tile_layer_service', [
     'ga_storage_service',
-    'ga_translation_service'
+    'ga_translation_service',
+    'ga_definepropertiesforlayer_service'
   ]).
       factory('gaVectorTileLayerService',
-          ['$window', 'gaLang', 'gaStorage', VectorTileLayerService]);
+          ['$window', '$q', 'gaLang', 'gaStorage', 'gaDefinePropertiesForLayer',
+            VectorTileLayerService]);
 
-  function VectorTileLayerService($window, gaLang, gaStorage) {
+  function VectorTileLayerService($window, $q, gaLang, gaStorage,
+      gaDefinePropertiesForLayer) {
     var vectortileLayer = {
       type: 'aggregate',
       background: true,
@@ -92,12 +96,58 @@ goog.require('ga_translation_service');
     function getCurrentStyle() {
       return gaStorage.load(getCurrentStyleUrl());
     }
-    function applyOlmsToMap(map) {
-      $window.olms(map, getCurrentStyle());
+    var olVectorTileLayer;
+    function init(map) {
+      var deferred = $q.defer();
+      getCurrentStyle().then(
+          function getCurrentStyleSuccess(style) {
+            $window.olms(map, style).then(
+                function olmsSuccess(map) {
+                  var groupLayer = new ol.layer.Group({
+                    opacity: 1
+                  });
+                  var subLayers = [];
+                  map.getLayers().forEach(function(layer) {
+                    if (layer.get('mapbox-source')) {
+                      layer.olmsLayer = true;
+                      layer.parentLayerId = vectortileLayer.serverLayerName;
+                      layer.displayInLayerManager = false;
+                      subLayers.push(layer);
+                    }
+                  });
+                  $.each(subLayers, function(index, subLayer) {
+                    map.removeLayer(subLayer);
+                  })
+                  groupLayer.setLayers(new ol.Collection(subLayers));
+                  gaDefinePropertiesForLayer(groupLayer);
+                  groupLayer.bodId = vectortileLayer.serverLayerName;
+                  groupLayer.displayInLayerManager = false;
+                  map.addLayer(groupLayer);
+                  olVectorTileLayer = groupLayer;
+                  deferred.resolve(olVectorTileLayer);
+                },
+                function olmsError(response) {
+                  deferred.reject(response);
+                }
+            );
+          },
+          function getCurrentStyleError(response) {
+            deferred.reject(response);
+          }
+      )
+      return deferred.promise;
+    }
+    function getOlLayer() {
+      return olVectorTileLayer;
+    }
+    function getVectorLayerBodId() {
+      return vectortileLayer.serverLayerName;
     }
     return {
       getCurrentStyleUrl: getCurrentStyleUrl,
-      applyOlmsToMap: applyOlmsToMap
+      getOlLayer: getOlLayer,
+      getVectorLayerBodId: getVectorLayerBodId,
+      init: init
     };
   };
 })();

@@ -45,6 +45,13 @@ describe('ga_main_controller', function() {
           });
         }
       });
+      $provide.value('gaStorage', {
+        load: function() {
+          return $q.when({
+            test: 'test'
+          });
+        }
+      })
     };
 
     var injectServices = function($injector) {

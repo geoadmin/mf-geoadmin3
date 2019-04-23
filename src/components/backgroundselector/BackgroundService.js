@@ -5,6 +5,7 @@ goog.require('ga_layers_service');
 goog.require('ga_permalink');
 goog.require('ga_urlutils_service');
 goog.require('ga_mapbox_style_storage_service');
+goog.require('ga_vector_tile_layer_service');
 
 (function() {
 
@@ -14,6 +15,7 @@ goog.require('ga_mapbox_style_storage_service');
     'ga_urlutils_service',
     'ga_layerfilters_service',
     'ga_mapbox_style_storage_service',
+    'ga_vector_tile_layer_service',
     'ga_storage_service',
     'ga_maputils_service'
   ]);
@@ -22,12 +24,14 @@ goog.require('ga_mapbox_style_storage_service');
    * Backgrounds manager
    */
   module.provider('gaBackground', function() {
+
     this.$get = function($rootScope, $q, gaTopic, gaLayers, gaPermalink,
         gaUrlUtils, gaLayerFilters, gaMapboxStyleStorage, gaStorage,
-        gaMapUtils) {
+        gaMapUtils, gaVectorTileLayerService) {
       var bg; // The current background
       var bgs = []; // The list of backgrounds available
-      var bgsP; // Promise resolved when the background service is initialized.
+      // Promise resolved when the background service is initialized.
+      var bgsP = $q.defer();
 
       // Bgs with vector tiles tileset.
       var vtBgs = {
@@ -161,9 +165,8 @@ goog.require('ga_mapbox_style_storage_service');
         this.init = function(map) {
           var scope = $rootScope.$new();
           var that = this;
-          // Initialize the service when topics and layers config are
-          // loaded
-          bgsP = $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()]).
+          // Initialize the service when topics and layers config are loaded
+          $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()]).
               then(function() {
                 updateDefaultBgOrder(gaTopic.get().backgroundLayers);
 
@@ -185,23 +188,6 @@ goog.require('ga_mapbox_style_storage_service');
                   );
                 } else {
                   initBg.externalStyleUrl = params.bgLayer_styleUrl;
-                  that.set(map, initBg);
-
-                  // set default GLStyle background rules
-                  // this is needed because we don't use olms default function
-                  // but rather apply olms.stylefunction at every layer
-                  // we created (instead of letting olms create the layers
-                  // for us, and style them correctly for background rules)
-                  if (initBg.olLayer &&
-                      initBg.olLayer.styles &&
-                      initBg.olLayer.styles[0] &&
-                      initBg.olLayer.styles[0].url) {
-                    gaStorage.load(initBg.olLayer.styles[0].url).then(
-                        function(glStyle) {
-                          gaMapUtils.setGlBackground(map, glStyle);
-                        }
-                    )
-                  }
                 }
 
                 $rootScope.$on('gaTopicChange', function(evt, newTopic) {
@@ -210,9 +196,10 @@ goog.require('ga_mapbox_style_storage_service');
                 });
 
                 registerBgLayerStyleUrlPermalink(scope, map);
+                bgsP.resolve()
               });
 
-          return bgsP;
+          return bgsP.promise;
         };
 
         this.getBackgrounds = function() {
@@ -236,13 +223,18 @@ goog.require('ga_mapbox_style_storage_service');
                 if (layers.getLength() > 0 && layers.item(0).background) {
                   layers.removeAt(0);
                 }
+              } else if (
+                  bg.id === gaVectorTileLayerService.getVectorLayerBodId()) {
+                if (layers.item(1) && layers.item(1).background) {
+                  layers.removeAt(1);
+                }
               } else {
                 var layer = createOlLayer(bg);
                 // Add the bg to the map
-                if (layers.item(0) && layers.item(0).background) {
-                  layers.setAt(0, layer);
+                if (layers.item(1) && layers.item(1).background) {
+                  layers.setAt(1, layer);
                 } else {
-                  layers.insertAt(0, layer);
+                  layers.insertAt(1, layer);
                 }
               }
               broadcast();
@@ -251,7 +243,7 @@ goog.require('ga_mapbox_style_storage_service');
         };
 
         this.loadConfig = function() {
-          return bgsP;
+          return bgsP.promise;
         };
 
         this.get = function() {
