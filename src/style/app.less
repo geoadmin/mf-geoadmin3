@@ -1896,41 +1896,34 @@ border-width : 2px;
 border-style : solid;
 padding: 2px;
 text-align: center;
+border-color: rgb(130,131,133);
 }
 table.diemo_evse th{
+background-color:rgb(130,131,133);
 color: white;
 height: 30px;
 }
 
+.status_Occupied {
+border-color : rgb(245,6,58) !important;
+}
+
+.status_Reserved {
+border-color: rgb(233,188,114) !important;
+}
+
+.status_Available {
+border-color: rgb(49,169,80) !important;
+}
+
 th.status_Occupied {
-border-color : rgb(245,6,58);
-background-color:rgb(245,6,58);
+background-color:rgb(245,6,58) !important; 
 }
 th.status_Reserved {
-border-color: rgb(233,188,114);
-background-color:rgb(233,188,114);
+background-color:rgb(233,188,114) !important;
 }
 th.status_Available {
-background-color: rgb(49,169,80);
-border-color: rgb(49,169,80);
-
-}
-th.status_Offline {
-border-color: rgb(130,131,133);
-background-color:rgb(130,131,133);
-
-}
-td.plugs_Occupied {
-border-color: rgb(245,6,58);
-}
-td.plugs_Reserved {
-border-color: rgb(233,188,114);
-}
-td.plugs_Available {
-border-color: rgb(49,169,80);
-}
-td.plugs_Offline {
-border-color: rgb(130,131,133);
+background-color: rgb(49,169,80) !important;
 }
 
 @import "print.less";
