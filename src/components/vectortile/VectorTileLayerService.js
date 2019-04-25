@@ -13,10 +13,10 @@ goog.require('ga_definepropertiesforlayer_service');
   ]).
       factory('gaVectorTileLayerService',
           ['$window', '$q', 'gaLang', 'gaStorage', 'gaDefinePropertiesForLayer',
-            VectorTileLayerService]);
+            'gaGlobalOptions', VectorTileLayerService]);
 
   function VectorTileLayerService($window, $q, gaLang, gaStorage,
-      gaDefinePropertiesForLayer) {
+    gaDefinePropertiesForLayer, gaGlobalOptions) {
     // LayersConfig for vector
     // TODO: replace this by a fetch call on the API (TBD)
     var vectortileLayer = {
@@ -95,7 +95,12 @@ goog.require('ga_definepropertiesforlayer_service');
     // keeping track of the current style index to be able to return
     // it on demand (see styles array above in the layersConfig)
     var currentStyleIndex = 0;
+    var pristine = true;
     function getCurrentStyleUrl() {
+      if (pristine && currentStyleIndex === 0 
+        && gaGlobalOptions.vectorTileCustomStyleUrl) {
+        return gaGlobalOptions.vectorTileCustomStyleUrl;
+      }
       return vectortileLayer.styles[currentStyleIndex].url;
     }
     function getCurrentStyle() {

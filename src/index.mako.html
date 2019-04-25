@@ -834,6 +834,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         var publicUrl = setBackend(prtl + cfg['public_url'], prtl + cfg['public_tech_url'], 'public_url');
         var printUrl = setBackend(prtl + cfg['print_url'], prtl + cfg['print_tech_url'], 'print_url');
         var proxyUrl = prtl + cfg['proxy_url'] + '/';
+        var vectorTileCustomStyleUrl = getParam('bgLayer_styleUrl')
         var apiOverwrite = !!(getParam('api_url') || env);
         var configOverwrite = !!(getParam('config_url') || env);
         var localhostRegexp = new RegExp('https?:\/\/localhost:[0-9]{1,5}');
@@ -888,6 +889,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           apiOverwrite: apiOverwrite,
           configOverwrite: configOverwrite,
           disableTooltip: disableTooltip,
+          vectorTileCustomStyleUrl: vectorTileCustomStyleUrl,
 
           // Map state values
           defaultExtent: JSON.parse(${default_extent}),
