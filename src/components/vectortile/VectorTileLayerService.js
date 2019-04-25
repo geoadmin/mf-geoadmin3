@@ -341,7 +341,7 @@ goog.require('ga_browsersniffer_service');
     }
 
     function getStyles() {
-      return vectortileLayer.styles;
+      return vectortileLayerConfig.styles;
     }
 
     function getCurrentStyleIndex() {
