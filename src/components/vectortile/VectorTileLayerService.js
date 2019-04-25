@@ -340,6 +340,19 @@ goog.require('ga_browsersniffer_service');
       return deferred.promise;
     }
 
+    function getStyles() {
+      return vectortileLayer.styles;
+    }
+
+    function getCurrentStyleIndex() {
+      return currentStyleIndex;
+    }
+
+    function switchToStyleAtIndex(index) {
+      currentStyleIndex = index;
+      applyCurrentStyle();
+    }
+
     return {
       vectortileLayerConfig: vectortileLayerConfig,
       getCurrentStyleUrl: getCurrentStyleUrl,
