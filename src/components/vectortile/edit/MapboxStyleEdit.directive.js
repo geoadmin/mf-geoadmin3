@@ -38,7 +38,6 @@ goog.require('ga_layers_service');
         isActive: '=gaMapboxStyleEditActive'
       },
       link: function(scope, element, attrs, controller) {
-
         // Test if the url comes from the layers config or from another place.
         // Returns true if the url comes from the layers config.
         // Returns true if the url comes from public.XXX storage.

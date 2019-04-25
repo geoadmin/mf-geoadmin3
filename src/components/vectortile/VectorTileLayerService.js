@@ -16,10 +16,10 @@ goog.require('ga_definepropertiesforlayer_service');
             'gaGlobalOptions', VectorTileLayerService]);
 
   function VectorTileLayerService($window, $q, gaLang, gaStorage,
-    gaDefinePropertiesForLayer, gaGlobalOptions) {
+      gaDefinePropertiesForLayer, gaGlobalOptions) {
     // LayersConfig for vector
     // TODO: replace this by a fetch call on the API (TBD)
-    var vectortileLayer = {
+    var vectortileLayerConfig = {
       type: 'aggregate',
       background: true,
       serverLayerName: 'ch.swisstopo.leichte-basiskarte.vt',
@@ -97,11 +97,11 @@ goog.require('ga_definepropertiesforlayer_service');
     var currentStyleIndex = 0;
     var pristine = true;
     function getCurrentStyleUrl() {
-      if (pristine && currentStyleIndex === 0 
-        && gaGlobalOptions.vectorTileCustomStyleUrl) {
+      if (pristine && currentStyleIndex === 0 &&
+        gaGlobalOptions.vectorTileCustomStyleUrl) {
         return gaGlobalOptions.vectorTileCustomStyleUrl;
       }
-      return vectortileLayer.styles[currentStyleIndex].url;
+      return vectortileLayerConfig.styles[currentStyleIndex].url;
     }
     function getCurrentStyle() {
       return gaStorage.load(getCurrentStyleUrl());
@@ -124,68 +124,71 @@ goog.require('ga_definepropertiesforlayer_service');
 
     function applyCurrentStyle() {
 
-        // get a promise ready for return
-        var deferred = $q.defer();
+      // get a promise ready for return
+      var deferred = $q.defer();
 
-        // load current style with gaStorage service (this enables caching)
-        getCurrentStyle().then(
-            function getCurrentStyleSuccess(style) {
-              // if there's already a Layer made by OLMS we remove it
-              if (olVectorTileLayer) {
-                olMap.removeLayer(olVectorTileLayer);
-              }
+      // load current style with gaStorage service (this enables caching)
+      getCurrentStyle().then(
+          function getCurrentStyleSuccess(style) {
 
-              // let olms do the dirty work of creating Layers in OpenLayers
-              $window.olms(olMap, style).then(
-                  function olmsSuccess(map) {
+            // let olms do the dirty work of creating Layers in OpenLayers
+            $window.olms(olMap, style).then(
+                function olmsSuccess(map) {
 
-                    // gather all layers created by olms into a LayerGroup
-                    var groupLayer = new ol.layer.Group({
-                      opacity: 1
-                    });
+                  // gather all layers created by olms into a LayerGroup
+                  var groupLayer = new ol.layer.Group({
+                    opacity: 1
+                  });
 
-                    var subLayers = [];
-                    map.getLayers().forEach(function(layer) {
-                      // if properties mapbox-source is defined, then it's a layer
-                      // made by olms
-                      if (layer.get('mapbox-source')) {
-                        layer.olmsLayer = true;
-                        layer.parentLayerId = vectortileLayer.serverLayerName;
-                        // just in case it's taken by the LayerManager
-                        layer.displayInLayerManager = false;
-                        subLayers.push(layer);
-                      }
-                    });
+                  var subLayers = [];
+                  map.getLayers().forEach(function(layer) {
+                    // if properties mapbox-source is defined,
+                    // then it's a layer made by olms
+                    if (layer.get('mapbox-source')) {
+                      layer.olmsLayer = true;
+                      layer.parentLayerId =
+                          vectortileLayerConfig.serverLayerName;
+                      // just in case it's taken by the LayerManager
+                      layer.displayInLayerManager = false;
+                      subLayers.push(layer);
+                    }
+                  });
 
-                    // we remove all olms layers from the map (we will get
-                    // them back through the LayerGroup)
-                    $.each(subLayers, function(index, subLayer) {
-                      map.removeLayer(subLayer);
-                    })
-                    groupLayer.setLayers(new ol.Collection(subLayers));
+                  // we remove all olms layers from the map (we will get
+                  // them back through the LayerGroup)
+                  $.each(subLayers, function(index, subLayer) {
+                    map.removeLayer(subLayer);
+                  })
+                  groupLayer.setLayers(new ol.Collection(subLayers));
 
-                    // mimicing LayersService output
-                    gaDefinePropertiesForLayer(groupLayer);
-                    groupLayer.bodId = vectortileLayer.serverLayerName;
-                    groupLayer.displayInLayerManager = false;
-                    groupLayer.glStyle = style;
+                  // mimicing LayersService output
+                  gaDefinePropertiesForLayer(groupLayer);
+                  groupLayer.bodId = vectortileLayerConfig.serverLayerName;
+                  groupLayer.displayInLayerManager = false;
+                  groupLayer.glStyle = style;
 
-                    // adding newly created groupLayer
-                    // and resolving pending promise
-                    map.getLayers().insertAt(0, groupLayer);
-                    olVectorTileLayer = groupLayer;
-                    deferred.resolve(olVectorTileLayer);
-                  },
-                  function olmsError(response) {
-                    deferred.reject(response);
+                  // adding newly created groupLayer
+                  // and resolving pending promise
+                  map.getLayers().insertAt(0, groupLayer);
+
+                  // if there's already a Layer made by OLMS we remove it
+                  // before adding the new one
+                  if (olVectorTileLayer) {
+                    olMap.removeLayer(olVectorTileLayer);
                   }
-              );
-            },
-            function getCurrentStyleError(response) {
-              deferred.reject(response);
-            }
-        )
-        return deferred.promise;
+                  olVectorTileLayer = groupLayer;
+                  deferred.resolve(olVectorTileLayer);
+                },
+                function olmsError(response) {
+                  deferred.reject(response);
+                }
+            );
+          },
+          function getCurrentStyleError(response) {
+            deferred.reject(response);
+          }
+      )
+      return deferred.promise;
     }
 
     // return the LayerGroup created in #init()
@@ -196,11 +199,11 @@ goog.require('ga_definepropertiesforlayer_service');
     // return the LayerBodId for VectorTile from the LayersConfig
     // should be "ch.swisstopo.leichte-basiskarte.vt"
     function getVectorLayerBodId() {
-      return vectortileLayer.serverLayerName;
+      return vectortileLayerConfig.serverLayerName;
     }
 
     function getStyles() {
-      return vectortileLayer.styles;
+      return vectortileLayerConfig.styles;
     }
 
     function getCurrentStyleIndex() {
@@ -213,6 +216,7 @@ goog.require('ga_definepropertiesforlayer_service');
     }
 
     return {
+      vectortileLayerConfig: vectortileLayerConfig,
       getCurrentStyleIndex: getCurrentStyleIndex,
       getCurrentStyleUrl: getCurrentStyleUrl,
       getOlLayer: getOlLayer,

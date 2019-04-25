@@ -194,6 +194,7 @@ goog.require('ga_vector_tile_layer_service');
                   that.set(map, getBgByTopic(newTopic));
                 });
                 registerBgLayerStyleUrlPermalink(scope, map);
+                bg = getBgById(gaVectorTileLayerService.getVectorLayerBodId());
                 bgsP.resolve()
               },
               function anyError() {

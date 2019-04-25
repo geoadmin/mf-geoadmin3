@@ -37,7 +37,6 @@ goog.require('ga_translation_service');
         ol3d: '=gaVectorTileFeedbackOl3d'
       },
       link: function(scope, element) {
-        var styleIdx;
         scope.olLayer = null;
         scope.msie = gaBrowserSniffer.msie;
         scope.styles = gaVectorTileLayerService.getStyles();
@@ -63,10 +62,9 @@ goog.require('ga_translation_service');
         scope.openAdvanceEdit = function() {
           toggle(false);
           var bg = gaBackground.get();
-          console.log(bg);
-          if (bg && bg.olLayer) {
+          if (bg && bg.id === gaVectorTileLayerService.getVectorLayerBodId()) {
             $rootScope.$broadcast(
-                'gaToggleEdit', bg.olLayer, true);
+                'gaToggleEdit', gaVectorTileLayerService.getOlLayer(), true);
           }
         };
 
@@ -82,7 +80,7 @@ goog.require('ga_translation_service');
         scope.applyVectorBackground = function() {
           if (!scope.isVectorTileLayer()) {
             gaBackground.setById(scope.map,
-              gaVectorTileLayerService.getVectorLayerBodId());
+                gaVectorTileLayerService.getVectorLayerBodId());
           }
         };
 

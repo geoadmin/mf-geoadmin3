@@ -159,6 +159,34 @@ goog.require('ga_vector_tile_layer_service');
     $scope.map.addInteraction(keyboardPan);
     $scope.map.addInteraction(new ol.interaction.KeyboardZoom());
 
+    $scope.globals = {
+      dev3d: gaGlobalOptions.dev3d,
+      searchFocused: false,
+      homescreen: false,
+      webkit: gaBrowserSniffer.webkit,
+      ios: gaBrowserSniffer.ios,
+      animation: gaBrowserSniffer.animation,
+      offline: gaNetworkStatus.offline,
+      desktop: gaBrowserSniffer.desktop,
+      mobile: gaBrowserSniffer.mobile,
+      embed: gaBrowserSniffer.embed,
+      pulldownShown: false,
+      catalogShown: false,
+      selectionShown: false,
+      feedbackPopupShown: false,
+      settingsShown: false,
+      queryShown: false,
+      isShareActive: false,
+      isDrawActive: false,
+      isEditActive: false,
+      isFeatureTreeActive: false,
+      isPrintActive: false,
+      isSwipeActive: false,
+      is3dActive: startWith3D,
+      isFpsActive: false,
+      hostIsProd: gaGlobalOptions.hostIsProd
+    };
+
     gaVectorTileLayerService.init($scope.map).then(function() {
 
       // Load the background if the "bgLayer" parameter exist.
@@ -258,34 +286,6 @@ goog.require('ga_vector_tile_layer_service');
         $scope.deviceSwitcherHref =
           gaPermalink.getHref({mobile: switchToMobile});
       });
-
-      $scope.globals = {
-        dev3d: gaGlobalOptions.dev3d,
-        searchFocused: false,
-        homescreen: false,
-        webkit: gaBrowserSniffer.webkit,
-        ios: gaBrowserSniffer.ios,
-        animation: gaBrowserSniffer.animation,
-        offline: gaNetworkStatus.offline,
-        desktop: gaBrowserSniffer.desktop,
-        mobile: gaBrowserSniffer.mobile,
-        embed: gaBrowserSniffer.embed,
-        pulldownShown: false,
-        catalogShown: false,
-        selectionShown: false,
-        feedbackPopupShown: false,
-        settingsShown: false,
-        queryShown: false,
-        isShareActive: false,
-        isDrawActive: false,
-        isEditActive: false,
-        isFeatureTreeActive: false,
-        isPrintActive: false,
-        isSwipeActive: false,
-        is3dActive: startWith3D,
-        isFpsActive: false,
-        hostIsProd: gaGlobalOptions.hostIsProd
-      };
 
       // gaWindow is efficient only after the dom is ready
       $scope.$applyAsync(function() {
