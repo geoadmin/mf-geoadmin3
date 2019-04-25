@@ -537,7 +537,11 @@ describe('ga_map_directive', function() {
 
       module(function($provide) {
         $provide.value('gaTopic', {});
-        $provide.value('gaLang', {});
+        $provide.value('gaLang', {
+          getNoRm: function() {
+            return 'en'
+          }
+        });
         $provide.value('gaLayers', {
           loadConfig: function() {
             return $q.when({

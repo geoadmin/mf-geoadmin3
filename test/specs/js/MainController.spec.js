@@ -51,6 +51,11 @@ describe('ga_main_controller', function() {
             test: 'test'
           });
         }
+      });
+      $provide.value('gaLang', {
+        getNoRm: function() {
+          return 'en';
+        }
       })
     };
 

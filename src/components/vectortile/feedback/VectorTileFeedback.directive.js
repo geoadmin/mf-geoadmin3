@@ -12,7 +12,8 @@ goog.require('ga_translation_service');
     'ga_background_service',
     'ga_translation_service',
     'ga_layers_service',
-    'ga_mvt_service'
+    'ga_mvt_service',
+    'ga_vector_tile_layer_service'
   ]);
 
   module.directive('gaVectorTileFeedback', function(
@@ -21,7 +22,8 @@ goog.require('ga_translation_service');
       gaBrowserSniffer,
       gaLang,
       gaLayers,
-      gaMvt
+      gaMvt,
+      gaVectorTileLayerService
   ) {
     return {
       restrict: 'A',
@@ -38,6 +40,7 @@ goog.require('ga_translation_service');
         var styleIdx;
         scope.olLayer = null;
         scope.msie = gaBrowserSniffer.msie;
+        scope.styles = gaVectorTileLayerService.getStyles();
 
         element.find('#ga-feedback-vector-body').on('show.bs.collapse',
             function() {
@@ -60,6 +63,7 @@ goog.require('ga_translation_service');
         scope.openAdvanceEdit = function() {
           toggle(false);
           var bg = gaBackground.get();
+          console.log(bg);
           if (bg && bg.olLayer) {
             $rootScope.$broadcast(
                 'gaToggleEdit', bg.olLayer, true);
@@ -78,7 +82,7 @@ goog.require('ga_translation_service');
         scope.applyVectorBackground = function() {
           if (!scope.isVectorTileLayer()) {
             gaBackground.setById(scope.map,
-                'ch.swisstopo.leichte-basiskarte.vt');
+              gaVectorTileLayerService.getVectorLayerBodId());
           }
         };
 
@@ -92,35 +96,11 @@ goog.require('ga_translation_service');
           }
         });
 
-        scope.$watch('olLayer', function(newVal, oldVal) {
-          if (newVal && newVal !== oldVal) {
-            scope.styles = gaLayers.getLayerProperty(scope.olLayer.id,
-                'styles');
-            styleIdx = scope.styles.findIndex(function(style) {
-              return style.url === scope.olLayer.externalStyleUrl;
-            });
-            if (styleIdx === -1) {
-              styleIdx = 0;
-            }
-          }
-        });
+        scope.currentStyleUrl = gaVectorTileLayerService.getCurrentStyleUrl();
 
         scope.applyNextStyle = function(style, idx) {
-          if (style) {
-            scope.olLayer.externalStyleUrl = idx ? style.url : undefined;
-          } else {
-            // Apply the next style from the styles array
-            if (isNaN(styleIdx) || styleIdx === -1 ||
-                styleIdx >= scope.styles.length - 1) {
-              styleIdx = 0;
-            } else {
-              styleIdx++;
-            }
-            scope.olLayer.externalStyleUrl = (!styleIdx) ? undefined :
-              scope.styles[styleIdx].url;
-
-          }
-          gaMvt.reload(scope.olLayer, scope.map);
+          gaVectorTileLayerService.switchToStyleAtIndex(idx);
+          scope.currentStyleUrl = gaVectorTileLayerService.getCurrentStyleUrl();
         };
       }
     };

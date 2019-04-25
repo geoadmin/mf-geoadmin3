@@ -81,6 +81,12 @@ describe('ga_background_service', function() {
           }
         });
 
+        $provide.value('gaVectorTileLayerService', {
+          init: function() {
+            return $q.when({});
+          }
+        })
+
       });
 
       inject(function($injector) {

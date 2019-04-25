@@ -110,6 +110,7 @@ goog.require('ga_definepropertiesforlayer_service');
     // keeping a reference on the layerGroup we have created to bundle all
     // layers created by ol-mapbox-style
     var olVectorTileLayer;
+    var olMap;
 
     // This will call ol-mapbox-style (olms) on the map, with current style
     // and will then gather all layers created by this library. It will then
@@ -117,64 +118,74 @@ goog.require('ga_definepropertiesforlayer_service');
     // manipulation easier throughout the application (it was the way it was
     // done before, when we were creating mapbox layers ourselves)
     function init(map) {
+      olMap = map;
+      return applyCurrentStyle();
+    }
 
-      // get a promise ready for return
-      var deferred = $q.defer();
+    function applyCurrentStyle() {
 
-      // load current style with gaStorage service (this enables caching)
-      getCurrentStyle().then(
-          function getCurrentStyleSuccess(style) {
+        // get a promise ready for return
+        var deferred = $q.defer();
 
-            // let olms do the dirty work of creating Layers in OpenLayers
-            $window.olms(map, style).then(
-                function olmsSuccess(map) {
+        // load current style with gaStorage service (this enables caching)
+        getCurrentStyle().then(
+            function getCurrentStyleSuccess(style) {
+              // if there's already a Layer made by OLMS we remove it
+              if (olVectorTileLayer) {
+                olMap.removeLayer(olVectorTileLayer);
+              }
 
-                  // gather all layers created by olms into a LayerGroup
-                  var groupLayer = new ol.layer.Group({
-                    opacity: 1
-                  });
+              // let olms do the dirty work of creating Layers in OpenLayers
+              $window.olms(olMap, style).then(
+                  function olmsSuccess(map) {
 
-                  var subLayers = [];
-                  map.getLayers().forEach(function(layer) {
-                    // if properties mapbox-source is defined, then it's a layer
-                    // made by olms
-                    if (layer.get('mapbox-source')) {
-                      layer.olmsLayer = true;
-                      layer.parentLayerId = vectortileLayer.serverLayerName;
-                      // just in case it's taken by the LayerManager
-                      layer.displayInLayerManager = false;
-                      subLayers.push(layer);
-                    }
-                  });
+                    // gather all layers created by olms into a LayerGroup
+                    var groupLayer = new ol.layer.Group({
+                      opacity: 1
+                    });
 
-                  // we remove all olms layers from the map (we will get
-                  // them back through the LayerGroup)
-                  $.each(subLayers, function(index, subLayer) {
-                    map.removeLayer(subLayer);
-                  })
-                  groupLayer.setLayers(new ol.Collection(subLayers));
+                    var subLayers = [];
+                    map.getLayers().forEach(function(layer) {
+                      // if properties mapbox-source is defined, then it's a layer
+                      // made by olms
+                      if (layer.get('mapbox-source')) {
+                        layer.olmsLayer = true;
+                        layer.parentLayerId = vectortileLayer.serverLayerName;
+                        // just in case it's taken by the LayerManager
+                        layer.displayInLayerManager = false;
+                        subLayers.push(layer);
+                      }
+                    });
 
-                  // mimicing LayersService output
-                  gaDefinePropertiesForLayer(groupLayer);
-                  groupLayer.bodId = vectortileLayer.serverLayerName;
-                  groupLayer.displayInLayerManager = false;
+                    // we remove all olms layers from the map (we will get
+                    // them back through the LayerGroup)
+                    $.each(subLayers, function(index, subLayer) {
+                      map.removeLayer(subLayer);
+                    })
+                    groupLayer.setLayers(new ol.Collection(subLayers));
 
-                  // adding newly created groupLayer
-                  // and resolving pending promise
-                  map.addLayer(groupLayer);
-                  olVectorTileLayer = groupLayer;
-                  deferred.resolve(olVectorTileLayer);
-                },
-                function olmsError(response) {
-                  deferred.reject(response);
-                }
-            );
-          },
-          function getCurrentStyleError(response) {
-            deferred.reject(response);
-          }
-      )
-      return deferred.promise;
+                    // mimicing LayersService output
+                    gaDefinePropertiesForLayer(groupLayer);
+                    groupLayer.bodId = vectortileLayer.serverLayerName;
+                    groupLayer.displayInLayerManager = false;
+                    groupLayer.glStyle = style;
+
+                    // adding newly created groupLayer
+                    // and resolving pending promise
+                    map.getLayers().insertAt(0, groupLayer);
+                    olVectorTileLayer = groupLayer;
+                    deferred.resolve(olVectorTileLayer);
+                  },
+                  function olmsError(response) {
+                    deferred.reject(response);
+                  }
+              );
+            },
+            function getCurrentStyleError(response) {
+              deferred.reject(response);
+            }
+        )
+        return deferred.promise;
     }
 
     // return the LayerGroup created in #init()
@@ -188,10 +199,26 @@ goog.require('ga_definepropertiesforlayer_service');
       return vectortileLayer.serverLayerName;
     }
 
+    function getStyles() {
+      return vectortileLayer.styles;
+    }
+
+    function getCurrentStyleIndex() {
+      return currentStyleIndex;
+    }
+
+    function switchToStyleAtIndex(index) {
+      currentStyleIndex = index;
+      applyCurrentStyle();
+    }
+
     return {
+      getCurrentStyleIndex: getCurrentStyleIndex,
       getCurrentStyleUrl: getCurrentStyleUrl,
       getOlLayer: getOlLayer,
       getVectorLayerBodId: getVectorLayerBodId,
+      getStyles: getStyles,
+      switchToStyleAtIndex: switchToStyleAtIndex,
       init: init
     };
   };

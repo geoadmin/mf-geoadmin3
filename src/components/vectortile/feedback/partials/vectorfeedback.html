@@ -16,7 +16,7 @@
                 <a class="ga-feedback-survey-link btn btn-default form-control"
                    ng-repeat="style in styles"
                    ng-click="applyNextStyle(style, $index)"
-                   ng-disabled="($index === 0 && !olLayer.externalStyleUrl) ||  style.url === olLayer.externalStyleUrl"
+                   ng-disabled="style.url === currentStyleUrl"
                    href="" translate>
                   {{ 'vector_feedback_style_' + style.id }}
                 </a>

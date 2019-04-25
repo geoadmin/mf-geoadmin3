@@ -71,6 +71,9 @@ describe('ga_printlayer_service', function() {
         $provide.value('gaLang', {
           get: function() {
             return lang;
+          },
+          getNoRm: function() {
+            return lang;
           }
         });
       });

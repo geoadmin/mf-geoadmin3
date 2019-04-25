@@ -167,7 +167,7 @@ goog.require('ga_vector_tile_layer_service');
           var that = this;
           // Initialize the service when topics and layers config are loaded
           $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()]).
-              then(function() {
+              then(function topicAndLayersSuccess() {
                 updateDefaultBgOrder(gaTopic.get().backgroundLayers);
 
                 var params = gaPermalink.getParams();
@@ -189,14 +189,15 @@ goog.require('ga_vector_tile_layer_service');
                 } else {
                   initBg.externalStyleUrl = params.bgLayer_styleUrl;
                 }
-
                 $rootScope.$on('gaTopicChange', function(evt, newTopic) {
                   updateDefaultBgOrder(newTopic.backgroundLayers);
                   that.set(map, getBgByTopic(newTopic));
                 });
-
                 registerBgLayerStyleUrlPermalink(scope, map);
                 bgsP.resolve()
+              },
+              function anyError() {
+                bgsP.reject();
               });
 
           return bgsP.promise;
