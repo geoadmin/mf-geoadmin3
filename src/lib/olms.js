@@ -581,10 +581,7 @@ function processStyle(glStyle, map, baseUrl, host, path, accessToken) {
   var glLayer, glSource, glSourceId, id, layer, url;
   for (var i = 0, ii = glLayers.length; i < ii; ++i) {
     glLayer = glLayers[i];
-    var type = glLayer.type;
-    if (type == 'heatmap' || type == 'fill-extrusion' || type == 'hillshade') {
-      //FIXME Unsupported layer type
-    } else if (type == 'background') {
+    if (glLayer.type == 'background') {
       setBackground(map, glLayer);
     } else {
       id = glLayer.source || getSourceIdByRef(glLayers, glLayer.ref);
@@ -20948,7 +20945,7 @@ function fromTemplate(text, properties) {
             circleColor + '.' + circleStrokeWidth;
           iconImg = iconImageCache[cache_key];
           if (!iconImg) {
-            iconImg = iconImageCache[cache_key] = new ol_style_Circle__WEBPACK_IMPORTED_MODULE_5___default.a({
+            iconImg = new ol_style_Circle__WEBPACK_IMPORTED_MODULE_5___default.a({
               radius: circleRadius,
               stroke: circleStrokeColor && circleStrokeWidth > 0 ? new ol_style_Stroke__WEBPACK_IMPORTED_MODULE_2___default.a({
                 width: circleStrokeWidth,
@@ -21010,7 +21007,6 @@ function fromTemplate(text, properties) {
           text.setPlacement(placement$1);
           var textHaloWidth = getValue(layer, 'paint', 'text-halo-width', zoom, f);
           var textOffset = getValue(layer, 'layout', 'text-offset', zoom, f);
-          var textTranslate = getValue(layer, 'paint', 'text-translate', zoom, f);
           // Text offset has to take halo width and line height into account
           var vOffset = 0;
           var hOffset = 0;
@@ -21037,8 +21033,8 @@ function fromTemplate(text, properties) {
             vOffset = textHaloWidth + (0.5 * (textLineHeight - 1)) * textSize;
           }
           text.setTextBaseline(textBaseline);
-          text.setOffsetX(textOffset[0] * textSize + hOffset + textTranslate[0]);
-          text.setOffsetY(textOffset[1] * textSize + vOffset + textTranslate[1]);
+          text.setOffsetX(textOffset[0] * textSize + hOffset);
+          text.setOffsetY(textOffset[1] * textSize + vOffset);
           textColor.setColor(colorWithOpacity(getValue(layer, 'paint', 'text-color', zoom, f), opacity));
           text.setFill(textColor);
           var haloColor = colorWithOpacity(getValue(layer, 'paint', 'text-halo-color', zoom, f), opacity);
