@@ -350,7 +350,50 @@ goog.require('ga_browsersniffer_service');
 
     function switchToStyleAtIndex(index) {
       currentStyleIndex = index;
-      applyCurrentStyle();
+      pristine = false;
+      __loadCurrentStyle__().then(function (style) {
+        currentStyle = style;
+        __applyCurrentStyle__();
+      })
+    }
+
+    function setCurrentStyle(style) {
+      currentStyle = style;
+      __applyCurrentStyle__();
+    }
+
+    function hideVectorTileLayers() {
+      $.each(olVectorTileLayers, function (index, layer) {
+        layer.setVisible(false);
+      })
+    }
+
+    function showVectorTileLayers() {
+      $.each(olVectorTileLayers, function (index, layer) {
+        layer.setVisible(true);
+      })
+    }
+
+    // This will call ol-mapbox-style (olms) on the map, with current style
+    // and will then gather all layers created by this library. It will then
+    // bundle them into a LayerGroup, in order to make hidding and other
+    // manipulation easier throughout the application (it was the way it was
+    // done before, when we were creating mapbox layers ourselves)
+    function init(map) {
+      olMap = map;
+      var deferred = $q.defer();
+      __loadCurrentStyle__().then(function (style) {
+        currentStyle = style;
+        __applyCurrentStyle__(true).then(
+          function initSuccess() {
+            deferred.resolve();
+          },
+          function initError() {
+            deferred.reject();
+          }
+        )
+      })
+      return deferred.promise;
     }
 
     return {
