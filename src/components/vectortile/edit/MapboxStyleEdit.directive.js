@@ -3,7 +3,6 @@ goog.provide('ga_mapbox_style_edit_directive');
 goog.require('ga_export_mapbox_style_service');
 goog.require('ga_mapbox_style_storage_service');
 goog.require('ga_debounce_service');
-goog.require('ga_maputils_service');
 goog.require('ga_mvt_service');
 goog.require('ga_background_service');
 goog.require('ga_urlutils_service');
@@ -15,11 +14,11 @@ goog.require('ga_layers_service');
     'ga_export_mapbox_style_service',
     'ga_mapbox_style_storage_service',
     'ga_debounce_service',
-    'ga_maputils_service',
     'ga_mvt_service',
     'ga_background_service',
     'ga_urlutils_service',
-    'ga_layers_service'
+    'ga_layers_service',
+    'ga_vector_tile_layer_service'
   ]);
 
   /**
@@ -27,14 +26,14 @@ goog.require('ga_layers_service');
    */
   module.directive('gaMapboxStyleEdit', function($rootScope, $window,
       $translate, gaMvt, gaDebounce, gaMapboxStyleStorage, gaExportMapboxStyle,
-      gaMapUtils, gaBackground, gaUrlUtils, gaLayers) {
+      gaBackground, gaUrlUtils, gaLayers, gaVectorTileLayerService) {
     return {
       restrict: 'A',
       templateUrl: 'components/vectortile/edit/partials/edit-style.html',
       scope: {
         map: '=gaMapboxStyleEditMap',
         options: '=gaMapboxStyleEditOptions',
-        layer: '=gaMapboxStyleEditLayer',
+        style: '=gaMapboxStyleEditStyle',
         isActive: '=gaMapboxStyleEditActive'
       },
       link: function(scope, element, attrs, controller) {
@@ -42,25 +41,23 @@ goog.require('ga_layers_service');
         // Returns true if the url comes from the layers config.
         // Returns true if the url comes from public.XXX storage.
         // Returns false otherwise.
-        scope.isExternalStyleUrlValid = function(layer) {
-          if (!layer || !layer.externalStyleUrl) {
-            return true;
-          }
-          var styleUrls = (gaLayers.getLayerProperty(layer.id, 'styles') ||
-              []).map(function(style) {
-            return style.url;
-          });
-          return (styleUrls.indexOf(layer.externalStyleUrl) !== -1) ||
-            gaUrlUtils.isPublicValid(layer.externalStyleUrl);
+        scope.isExternalStyleUrlValid = function() {
+          var currentSyleUrl = gaVectorTileLayerService.getCurrentStyleUrl();
+          var styleUrls = gaVectorTileLayerService.vectortileLayerConfig.styles.
+              map(function(style) {
+                return style.url;
+              });
+          return (styleUrls.indexOf(currentSyleUrl) !== -1) ||
+            gaUrlUtils.isPublicValid(currentSyleUrl);
         }
 
         /// /////////////////////////////////
         // create/update the file on s3
         /// /////////////////////////////////
-        var save = function(evt, layer, glStyle) {
+        var save = function(evt, style) {
           scope.statusMsgId = 'edit_file_saving';
 
-          gaExportMapboxStyle.create(glStyle).then(function(dataString) {
+          gaExportMapboxStyle.create(style).then(function(dataString) {
 
             if (!dataString) {
               return;
@@ -68,16 +65,16 @@ goog.require('ga_layers_service');
 
             // Get the id to use by the glStyleStorage, if no id
             // the service will create a new one.
-            var id = layer.adminId;
+            var id = gaVectorTileLayerService.getVectorLayerBodId();
             gaMapboxStyleStorage.save(id, dataString).then(function(data) {
               scope.statusMsgId = 'edit_file_saved';
 
               // If a file has been created we set the correct id to the
               // layer
               if (data.adminId) {
-                layer.adminId = data.adminId;
-                layer.externalStyleUrl = data.fileUrl;
-                layer.useThirdPartyData = true;
+                // layer.adminId = data.adminId;
+                // layer.externalStyleUrl = data.fileUrl;
+                // layer.useThirdPartyData = true;
               }
             }
             );
@@ -102,7 +99,7 @@ goog.require('ga_layers_service');
         };
 
         // Apply the default style to the layer.
-        scope.reset = function(evt, layer) {
+        scope.reset = function(evt, style) {
           if (evt.currentTarget.attributes &&
               evt.currentTarget.attributes.disabled) {
             return;
@@ -110,22 +107,22 @@ goog.require('ga_layers_service');
           var str = $translate.instant('edit_confirm_reset_style');
           if ($window.confirm(str)) {
             // Delete the file on server ?
-            layer.externalStyleUrl = undefined;
-            gaMvt.reload(layer, scope.map);
+            // layer.externalStyleUrl = undefined;
+            // gaMvt.reload(layer, scope.map);
           }
         };
 
         /// /////////////////////////////////
         // Show share modal
         /// /////////////////////////////////
-        scope.canShare = function(layer) {
-          return !!(layer && layer.adminId);
+        scope.canShare = function(style) {
+          return !!(style);
         };
-        scope.share = function(evt, layer) {
+        scope.share = function(evt, style) {
           if (evt.currentTarget.attributes.disabled) {
             return;
           }
-          $rootScope.$broadcast('gaShareDrawActive', layer);
+          $rootScope.$broadcast('gaShareDrawActive', style);
         };
 
         scope.getBgLabelId = function() {
@@ -138,8 +135,7 @@ goog.require('ga_layers_service');
             return;
           }
 
-          gaMapUtils.applyGlStyleToOlLayer(scope.layer, glStyle);
-          gaMapUtils.setGlBackground(scope.map, glStyle);
+          gaVectorTileLayerService.setCurrentStyle(glStyle);
           scope.saveDebounced({}, scope.layer, glStyle);
         });
       }

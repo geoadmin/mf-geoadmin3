@@ -34,7 +34,8 @@ goog.provide('ga_mapbox_style_edit_properties_directive');
           scope.glStyle.layers.forEach(function(layer) {
             scope.config.forEach(function(edit) {
               var regex = new RegExp(edit.regex || edit.id);
-              if (regex.test(layer.id) || regex.test(layer['source-layer'])) {
+              if ((regex.test(layer.id) || regex.test(layer['source-layer']))
+                && (!edit.type || layer.type === edit.type)) {
                 if (!scope.groups[edit.id]) {
                   scope.groups[edit.id] = [];
                 }
@@ -44,6 +45,7 @@ goog.provide('ga_mapbox_style_edit_properties_directive');
           });
           scope.edit = scope.config[0];
           scope.group = scope.groups[scope.edit.id];
+          console.log('groups', scope.groups)
         });
 
         scope.useWidget = function(widget, path) {
@@ -59,7 +61,7 @@ goog.provide('ga_mapbox_style_edit_properties_directive');
          */
         scope.change = function(value, group, path) {
           group.forEach(function(layer, idx) {
-            if (idx !== 0 && layer[path[0]] && layer[path[0]][path[1]]) {
+            if (layer[path[0]] && layer[path[0]][path[1]]) {
               layer[path[0]][path[1]] = value;
             }
             // hack for background / territory

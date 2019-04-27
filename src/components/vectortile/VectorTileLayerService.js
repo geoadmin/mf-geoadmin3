@@ -11,9 +11,7 @@ goog.require('ga_definepropertiesforlayer_service');
     'ga_translation_service',
     'ga_definepropertiesforlayer_service'
   ]).
-      factory('gaVectorTileLayerService',
-          ['$window', '$q', 'gaLang', 'gaStorage', 'gaDefinePropertiesForLayer',
-            'gaGlobalOptions', VectorTileLayerService]);
+      factory('gaVectorTileLayerService', VectorTileLayerService);
 
   function VectorTileLayerService($window, $q, gaLang, gaStorage,
       gaDefinePropertiesForLayer, gaGlobalOptions) {
@@ -43,35 +41,36 @@ goog.require('ga_definepropertiesforlayer_service');
       edits: [{
         id: 'settlement',
         regex: /settlement/,
+        type: 'fill',
         props: [
           ['paint', 'fill-color', '{color}']
         ]
-
       }, {
         id: 'landuse',
         regex: /landuse/,
+        type: 'fill',
         props: [
           ['paint', 'fill-color', '{color}']
         ]
-
       }, {
         id: 'hydrology',
         regex: /hydrology/,
+        type: 'fill',
         props: [
           ['paint', 'fill-color', '{color}']
         ]
-
       }, {
         id: 'roadtraffic',
         regex: /roadtraffic/,
+        type: 'line',
         props: [
           ['paint', 'line-color', '{color}'],
           ['paint', 'line-width', '{size}']
         ]
-
       }, {
         id: 'labels',
         regex: /labels/,
+        type: 'symbol',
         props: [
           ['layout', 'visibility', '{toggle}', 'visible', 'none'],
           ['paint', 'text-color', '{color}'],
@@ -80,6 +79,7 @@ goog.require('ga_definepropertiesforlayer_service');
       }, {
         id: 'woodland',
         regex: /woodland/,
+        type: 'fill',
         props: [
           ['paint', 'fill-color', '{color}']
         ]
@@ -94,8 +94,10 @@ goog.require('ga_definepropertiesforlayer_service');
 
     // keeping track of the current style index to be able to return
     // it on demand (see styles array above in the layersConfig)
+    var currentStyle = null;
     var currentStyleIndex = 0;
     var pristine = true;
+
     function getCurrentStyleUrl() {
       if (pristine && currentStyleIndex === 0 &&
         gaGlobalOptions.vectorTileCustomStyleUrl) {
@@ -103,97 +105,84 @@ goog.require('ga_definepropertiesforlayer_service');
       }
       return vectortileLayerConfig.styles[currentStyleIndex].url;
     }
-    function getCurrentStyle() {
+
+    // return a promise that will resolve as soon as gaStorage service
+    // has loaded the current style (or has returned it from its cache)
+    function __loadCurrentStyle__() {
       return gaStorage.load(getCurrentStyleUrl());
+    }
+
+    // return a promise that will resolve when the style has been applied
+    function __applyCurrentStyle__(firstCall) {
+      return applyStyle(currentStyle, firstCall);
+    }
+
+    // return the current style as a JSON
+    function getCurrentStyle() {
+      return currentStyle;
+    }
+
+    // force reload from gaStorage and load with OLMS
+    function reloadCurrentStyle() {
+      __loadCurrentStyle__().then(function (style) {
+        currentStyle = style;
+        __applyCurrentStyle__();
+      })
     }
 
     // keeping a reference on the layerGroup we have created to bundle all
     // layers created by ol-mapbox-style
-    var olVectorTileLayer;
+    var olVectorTileLayers = [];
     var olMap;
 
-    // This will call ol-mapbox-style (olms) on the map, with current style
-    // and will then gather all layers created by this library. It will then
-    // bundle them into a LayerGroup, in order to make hidding and other
-    // manipulation easier throughout the application (it was the way it was
-    // done before, when we were creating mapbox layers ourselves)
-    function init(map) {
-      olMap = map;
-      return applyCurrentStyle();
-    }
-
-    function applyCurrentStyle() {
-
-      // get a promise ready for return
+    function applyStyle(style, firstCall) {
       var deferred = $q.defer();
 
-      // load current style with gaStorage service (this enables caching)
-      getCurrentStyle().then(
-          function getCurrentStyleSuccess(style) {
-
-            // let olms do the dirty work of creating Layers in OpenLayers
-            $window.olms(olMap, style).then(
-                function olmsSuccess(map) {
-
-                  // gather all layers created by olms into a LayerGroup
-                  var groupLayer = new ol.layer.Group({
-                    opacity: 1
-                  });
-
-                  var subLayers = [];
-                  map.getLayers().forEach(function(layer) {
-                    // if properties mapbox-source is defined,
-                    // then it's a layer made by olms
-                    if (layer.get('mapbox-source')) {
-                      layer.olmsLayer = true;
-                      layer.parentLayerId =
-                          vectortileLayerConfig.serverLayerName;
-                      // just in case it's taken by the LayerManager
-                      layer.displayInLayerManager = false;
-                      subLayers.push(layer);
-                    }
-                  });
-
-                  // we remove all olms layers from the map (we will get
-                  // them back through the LayerGroup)
-                  $.each(subLayers, function(index, subLayer) {
-                    map.removeLayer(subLayer);
-                  })
-                  groupLayer.setLayers(new ol.Collection(subLayers));
-
-                  // mimicing LayersService output
-                  gaDefinePropertiesForLayer(groupLayer);
-                  groupLayer.bodId = vectortileLayerConfig.serverLayerName;
-                  groupLayer.displayInLayerManager = false;
-                  groupLayer.glStyle = style;
-
-                  // adding newly created groupLayer
-                  // and resolving pending promise
-                  map.getLayers().insertAt(0, groupLayer);
-
-                  // if there's already a Layer made by OLMS we remove it
-                  // before adding the new one
-                  if (olVectorTileLayer) {
-                    olMap.removeLayer(olVectorTileLayer);
-                  }
-                  olVectorTileLayer = groupLayer;
-                  deferred.resolve(olVectorTileLayer);
-                },
-                function olmsError(response) {
-                  deferred.reject(response);
-                }
-            );
-          },
-          function getCurrentStyleError(response) {
-            deferred.reject(response);
+      // we save any layer, other than OLMS layers, so that we can put them
+      // back on top of the layer stack after OLMS call
+      var otherLayers = [];
+      olMap.getLayers().forEach(function (layer) {
+        if (layer) {
+          if (layer.bodId || layer.adminId) {
+            otherLayers.push(layer);
+          } else {
+            console.log('removing layer', layer)
+            olMap.removeLayer(layer);
           }
-      )
-      return deferred.promise;
-    }
+        } else {
+          console.log('wierd layer', layer)
+        }
+      })
+      olVectorTileLayers = [];
 
-    // return the LayerGroup created in #init()
-    function getOlLayer() {
-      return olVectorTileLayer;
+      $window.olms(olMap, style).then(
+        function olmsSuccess(map) {
+          map.getLayers().forEach(function(layer) {
+            layer.olmsLayer = true;
+            layer.parentLayerId = vectortileLayerConfig.serverLayerName;
+            layer.glStyle = style;
+            // just in case it's taken by the LayerManager
+            layer.displayInLayerManager = false;
+            olVectorTileLayers.push(layer);
+          });
+
+          // we reorder layers present before OLMS
+          // call at the top of the stack so that if any BGDI
+          // layer was present, it will be on top
+          angular.forEach(otherLayers, function (layer, index) {
+            layer.setZIndex(index + olVectorTileLayers.length);
+          })
+
+          console.log('layer count', map.getLayers().getLength())
+
+          deferred.resolve(olVectorTileLayers);
+        },
+        function olmsError(response) {
+          deferred.reject(response);
+        }
+      );
+
+      return deferred.promise;
     }
 
     // return the LayerBodId for VectorTile from the LayersConfig
@@ -206,23 +195,65 @@ goog.require('ga_definepropertiesforlayer_service');
       return vectortileLayerConfig.styles;
     }
 
-    function getCurrentStyleIndex() {
-      return currentStyleIndex;
-    }
-
     function switchToStyleAtIndex(index) {
       currentStyleIndex = index;
-      applyCurrentStyle();
+      pristine = false;
+      __loadCurrentStyle__().then(function (style) {
+        currentStyle = style;
+        __applyCurrentStyle__();
+      })
+    }
+
+    function setCurrentStyle(style) {
+      currentStyle = style;
+      __applyCurrentStyle__();
+    }
+
+    function hideVectorTileLayers() {
+      $.each(olVectorTileLayers, function (index, layer) {
+        layer.setVisible(false);
+      })
+    }
+
+    function showVectorTileLayers() {
+      $.each(olVectorTileLayers, function (index, layer) {
+        layer.setVisible(true);
+      })
+    }
+
+    // This will call ol-mapbox-style (olms) on the map, with current style
+    // and will then gather all layers created by this library. It will then
+    // bundle them into a LayerGroup, in order to make hidding and other
+    // manipulation easier throughout the application (it was the way it was
+    // done before, when we were creating mapbox layers ourselves)
+    function init(map) {
+      olMap = map;
+      var deferred = $q.defer();
+      __loadCurrentStyle__().then(function (style) {
+        currentStyle = style;
+        __applyCurrentStyle__(true).then(
+          function initSuccess() {
+            deferred.resolve();
+          },
+          function initError() {
+            deferred.reject();
+          }
+        )
+      })
+      return deferred.promise;
     }
 
     return {
       vectortileLayerConfig: vectortileLayerConfig,
-      getCurrentStyleIndex: getCurrentStyleIndex,
       getCurrentStyleUrl: getCurrentStyleUrl,
-      getOlLayer: getOlLayer,
+      getCurrentStyle: getCurrentStyle,
+      setCurrentStyle: setCurrentStyle,
       getVectorLayerBodId: getVectorLayerBodId,
+      reloadCurrentStyle: reloadCurrentStyle,
       getStyles: getStyles,
       switchToStyleAtIndex: switchToStyleAtIndex,
+      hideVectorTileLayers: hideVectorTileLayers,
+      showVectorTileLayers: showVectorTileLayers,
       init: init
     };
   };

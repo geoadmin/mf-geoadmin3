@@ -1,21 +1,22 @@
-<div ng-if="!layer.glStyle" translate>
+<div ng-if="!style" translate>
   <p><span translate>edit_not_possible</span></p>
 </div>
-<p ng-if="layer.glStyle && !isExternalStyleUrlValid(layer)">
+<p ng-if="style && !isExternalStyleUrlValid()">
   <span translate>{{ 'edit_or_reset_style' }}:</span>
   <a href=""
      class="btn btn-default"
-     ng-disabled="!canExport(layer)"
-     ng-click="reset($event, layer)"
+     ng-disabled="!canExport(style)"
+     ng-click="reset($event, style)"
      translate>edit_reset</a>
 </p>
-<div ng-show="layer.glStyle && isExternalStyleUrlValid(layer)">
+<div ng-show="style && isExternalStyleUrlValid()">
   <p>
     <span translate>edit_current_layer</span>
     <span translate>{{ getBgLabelId() }}</span>
   </p>
 
-  <div ng-if="isActive" ga-mapbox-style-edit-properties="layer.glStyle"
+  <div ng-if="isActive"
+       ga-mapbox-style-edit-properties="style"
        ga-mapbox-style-edit-properties-config="options.editConfig"></div>
 
   <div class="ga-edit-info-save">
@@ -33,22 +34,22 @@
       <li class="col-sm-4 col-xs-4 vr">
         <a href=""
            class="btn"
-           ng-disabled="!canExport(layer)"
-           ng-click="reset($event, layer)"
+           ng-disabled="!canExport(style)"
+           ng-click="reset($event, style)"
            translate>edit_reset</a>
       </li>
       <li class="col-sm-4 col-xs-4 vr">
         <a href=""
            class="btn"
-           ng-disabled="!canExport(layer)"
-           ng-click="export($event, layer)"
+           ng-disabled="!canExport(style)"
+           ng-click="export($event, style)"
            translate>export</a>
       </li>
       <li class="col-sm-4 col-xs-4">
         <a href=""
            class="btn"
-           ng-disabled="!canShare(layer)"
-           ng-click="share($event, layer)"
+           ng-disabled="!canShare(style)"
+           ng-click="share($event, style)"
            translate>share</a>
       </li>
     </ul>

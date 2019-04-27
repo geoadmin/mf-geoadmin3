@@ -63,8 +63,8 @@ goog.require('ga_translation_service');
           toggle(false);
           var bg = gaBackground.get();
           if (bg && bg.id === gaVectorTileLayerService.getVectorLayerBodId()) {
-            $rootScope.$broadcast(
-                'gaToggleEdit', gaVectorTileLayerService.getOlLayer(), true);
+            $rootScope.$broadcast('gaToggleEdit',
+                gaVectorTileLayerService.getCurrentStyle(), true);
           }
         };
 

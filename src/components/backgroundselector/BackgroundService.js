@@ -218,27 +218,35 @@ goog.require('ga_vector_tile_layer_service');
           if (map && (!bg || newBgId !== bg.id)) {
             var newBg = getBgById(newBgId);
             if (newBg) {
-              bg = newBg;
               var layers = map.getLayers();
-              if (bg.id === 'voidLayer') {
+              if (newBg.id === 'voidLayer') {
                 // Remove the bg from the map
-                if (layers.getLength() > 0 && layers.item(0).background) {
-                  layers.removeAt(0);
+                if (layers.getLength() > 0 && layers.item(4).background) {
+                  layers.removeAt(4);
                 }
-              } else if (
-                bg.id === gaVectorTileLayerService.getVectorLayerBodId()) {
-                if (layers.item(1) && layers.item(1).background) {
-                  layers.removeAt(1);
-                }
+                // hidding vector tile layers
+                gaVectorTileLayerService.hideVectorTileLayers();
               } else {
-                var layer = createOlLayer(bg);
-                // Add the bg to the map
-                if (layers.item(1) && layers.item(1).background) {
-                  layers.setAt(1, layer);
+
+                // showing vector tile if needed (if void layer was selected)
+                gaVectorTileLayerService.showVectorTileLayers();
+
+                if (newBg.id ===
+                     gaVectorTileLayerService.getVectorLayerBodId()) {
+                  if (layers.item(4) && layers.item(4).background) {
+                    layers.removeAt(4);
+                  }
                 } else {
-                  layers.insertAt(1, layer);
+                  var layer = createOlLayer(newBg);
+                  // Add the bg to the map
+                  if (layers.item(4) && layers.item(4).background) {
+                    layers.setAt(4, layer);
+                  } else {
+                    layers.insertAt(4, layer);
+                  }
                 }
               }
+              bg = newBg;
               broadcast();
             }
           }
