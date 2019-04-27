@@ -58,7 +58,7 @@ goog.require('ga_urlutils_service');
           olLayer.useThirdPartyData = gaUrlUtils.isThirdPartyValid(styleUrl);
 
           return gaStorage.load(styleUrl).then(function(glStyle) {
-            gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle);
+            gaMapUtils.applyGlStyleToOlLayer(olLayer, glStyle, map);
             // re-apply background if map is defined
             if (map) {
               gaMapUtils.setGlBackground(map, glStyle);
