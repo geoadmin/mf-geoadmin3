@@ -51,6 +51,7 @@ libs:
 	cp -f $(addprefix node_modules/bootstrap/dist/js/, bootstrap.js bootstrap.min.js) src/lib/;
 	cp -f $(addprefix node_modules/gyronorm/dist/, gyronorm.complete.js gyronorm.complete.min.js) src/lib/;
 	cp -f $(addprefix node_modules/corejs-typeahead/dist/, typeahead.jquery.js typeahead.jquery.min.js) src/lib/;
+	cp -f $(addprefix node_modules/mapbox-gl/dist/, mapbox-gl.js) src/lib/;
 	cp -f node_modules/slipjs/slip.js src/lib;
 	cp -f node_modules/fastclick/lib/fastclick.js src/lib/;
 	$(call applypatches)
