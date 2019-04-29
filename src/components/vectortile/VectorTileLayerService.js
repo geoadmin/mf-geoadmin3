@@ -176,6 +176,7 @@ goog.require('ga_definepropertiesforlayer_service');
               layer.parentLayerId = vectortileLayerConfig.serverLayerName;
               layer.glStyle = style;
               layer.background = true;
+              layer.disable3d = true;
               // just in case it's taken by the LayerManager
               layer.displayInLayerManager = false;
               olVectorTileLayers.push(layer);

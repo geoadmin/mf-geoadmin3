@@ -13,7 +13,7 @@ goog.provide('ga_tilt3d_directive');
         scope.supported = gaBrowserSniffer.webgl;
 
         // true is the selected background layer is not 3d compatible.
-        scope.disabled = false;
+        scope.disabled = true;
         var unregBgChange = scope.$on('gaBgChange', function(evt, value) {
           scope.disabled = !!value.disable3d;
         });
