@@ -20317,7 +20317,7 @@ function getUid(obj) {
  * OpenLayers version.
  * @type {string}
  */
-var VERSION = '5.3.1';
+var VERSION = '5.3.2';
 
 //# sourceMappingURL=util.js.map
 
