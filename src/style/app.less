@@ -1880,51 +1880,6 @@ body:not(.embed) {
   font-weight: bold;
   color: @red;
 
-/* DIEMO */
-div.evse_data {
-display: grid;
-grid-gap: 10px;
-grid-template-columns: auto auto auto;
-}
-
-table.diemo_evse {
-  border-collapse: collapse;
-  
-}
-table.diemo_evse td, table.diemo_evse th{
-border-width : 2px; 
-border-style : solid;
-padding: 2px;
-text-align: center;
-border-color: rgb(130,131,133);
-}
-table.diemo_evse th{
-background-color:rgb(130,131,133);
-color: white;
-height: 30px;
-}
-
-.status_Occupied {
-border-color : rgb(245,6,58) !important;
-}
-
-.status_Reserved {
-border-color: rgb(233,188,114) !important;
-}
-
-.status_Available {
-border-color: rgb(49,169,80) !important;
-}
-
-th.status_Occupied {
-background-color:rgb(245,6,58) !important; 
-}
-th.status_Reserved {
-background-color:rgb(233,188,114) !important;
-}
-th.status_Available {
-background-color: rgb(49,169,80) !important;
-}
-
 @import "print.less";
 @import "offline.less";
+@import "diemo.less";
