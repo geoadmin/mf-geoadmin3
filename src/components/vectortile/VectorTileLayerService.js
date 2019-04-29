@@ -141,29 +141,28 @@ goog.require('ga_definepropertiesforlayer_service');
       // we save any layer, other than OLMS layers, so that we can put them
       // back on top of the layer stack after OLMS call
       var otherLayers = [];
-      olMap.getLayers().forEach(function (layer) {
-        if (layer) {
-          if (layer.bodId || layer.adminId) {
+      var layers = olMap.getLayers().getArray();
+      for (var i = layers.length - 1; i >= 0; --i) {
+        var layer = layers[i];
+        if (layer.bodId || layer.adminId) {
             otherLayers.push(layer);
           } else {
-            console.log('removing layer', layer)
             olMap.removeLayer(layer);
           }
-        } else {
-          console.log('wierd layer', layer)
-        }
-      })
+      }
       olVectorTileLayers = [];
 
       $window.olms(olMap, style).then(
         function olmsSuccess(map) {
           map.getLayers().forEach(function(layer) {
-            layer.olmsLayer = true;
-            layer.parentLayerId = vectortileLayerConfig.serverLayerName;
-            layer.glStyle = style;
-            // just in case it's taken by the LayerManager
-            layer.displayInLayerManager = false;
-            olVectorTileLayers.push(layer);
+            if (layer.get('mapbox-source')) {
+              layer.olmsLayer = true;
+              layer.parentLayerId = vectortileLayerConfig.serverLayerName;
+              layer.glStyle = style;
+              // just in case it's taken by the LayerManager
+              layer.displayInLayerManager = false;
+              olVectorTileLayers.push(layer);
+            }
           });
 
           // we reorder layers present before OLMS
@@ -172,8 +171,6 @@ goog.require('ga_definepropertiesforlayer_service');
           angular.forEach(otherLayers, function (layer, index) {
             layer.setZIndex(index + olVectorTileLayers.length);
           })
-
-          console.log('layer count', map.getLayers().getLength())
 
           deferred.resolve(olVectorTileLayers);
         },
