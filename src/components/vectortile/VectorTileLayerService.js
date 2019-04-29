@@ -135,6 +135,10 @@ goog.require('ga_definepropertiesforlayer_service');
     var olVectorTileLayers = [];
     var olMap;
 
+    function getVectorTileLayersCount() {
+      return olVectorTileLayers.length;
+    }
+
     function applyStyle(style, firstCall) {
       var deferred = $q.defer();
 
@@ -144,10 +148,10 @@ goog.require('ga_definepropertiesforlayer_service');
       var layers = olMap.getLayers().getArray();
       for (var i = layers.length - 1; i >= 0; --i) {
         var layer = layers[i];
-        if (layer.bodId || layer.adminId) {
-            otherLayers.push(layer);
-          } else {
+        if (layer.get('mapbox-source')) {
             olMap.removeLayer(layer);
+          } else {
+            otherLayers.push(layer);
           }
       }
       olVectorTileLayers = [];
@@ -159,6 +163,7 @@ goog.require('ga_definepropertiesforlayer_service');
               layer.olmsLayer = true;
               layer.parentLayerId = vectortileLayerConfig.serverLayerName;
               layer.glStyle = style;
+              layer.background = true;
               // just in case it's taken by the LayerManager
               layer.displayInLayerManager = false;
               olVectorTileLayers.push(layer);
@@ -246,6 +251,7 @@ goog.require('ga_definepropertiesforlayer_service');
       getCurrentStyle: getCurrentStyle,
       setCurrentStyle: setCurrentStyle,
       getVectorLayerBodId: getVectorLayerBodId,
+      getVectorTileLayersCount: getVectorTileLayersCount,
       reloadCurrentStyle: reloadCurrentStyle,
       getStyles: getStyles,
       switchToStyleAtIndex: switchToStyleAtIndex,
