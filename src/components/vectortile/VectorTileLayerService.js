@@ -170,7 +170,8 @@ goog.require('ga_definepropertiesforlayer_service');
           map.getLayers().forEach(function(layer) {
             layerArrayAfterOlms.push(layer);
           });
-          angular.forEach(layerArrayAfterOlms, function (layer) {
+          for (var i = 0; i < layerArrayAfterOlms.length; i++) {
+            var layer = layerArrayAfterOlms[i];
             if (layer.get('mapbox-source')) {
               layer.olmsLayer = true;
               layer.parentLayerId = vectortileLayerConfig.serverLayerName;
@@ -181,7 +182,7 @@ goog.require('ga_definepropertiesforlayer_service');
               layer.displayInLayerManager = false;
               olVectorTileLayers.push(layer);
             }
-          });
+          }
 
           // we reorder layers present before OLMS
           // call at the top of the stack so that if any BGDI
