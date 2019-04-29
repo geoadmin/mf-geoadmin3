@@ -35,7 +35,7 @@ goog.provide('ga_mapbox_style_edit_properties_directive');
             scope.config.forEach(function(edit) {
               var regex = new RegExp(edit.regex || edit.id);
               if ((regex.test(layer.id) || regex.test(layer['source-layer'])) &&
-                (!edit.type || layer.type === edit.type)) {
+                  (!edit.type || edit.type === layer.type)) {
                 if (!scope.groups[edit.id]) {
                   scope.groups[edit.id] = [];
                 }
