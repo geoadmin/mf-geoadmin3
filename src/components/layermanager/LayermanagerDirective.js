@@ -134,7 +134,7 @@ goog.require('ga_window_service');
           scope.filteredLayers = (items) ? items.slice().reverse() : [];
           scope.enableDragAndDrop();
           var order = [];
-          angular.forEach(scope.filteredLayers, function (layer) {
+          angular.forEach(scope.filteredLayers, function(layer) {
             order.push(layer.bodId);
           })
         });

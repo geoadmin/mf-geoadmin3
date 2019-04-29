@@ -149,11 +149,11 @@ goog.require('ga_definepropertiesforlayer_service');
       // we save any layer, other than OLMS layers, so that we can put them
       // back on top of the layer stack after OLMS call
       var otherLayers = [];
-      var t_layers = [];
+      var layerArray = [];
       olMap.getLayers().forEach(function (layer) {
-        t_layers.push(layer);
+        layerArray.push(layer);
       })
-      angular.forEach(t_layers, function (layer, index) {
+      angular.forEach(layerArray, function (layer, index) {
         if (typeof(layer.get('mapbox-source')) === 'string' 
             && layer.get('mapbox-source') !== '') {
           olMap.removeLayer(layer);
@@ -166,11 +166,11 @@ goog.require('ga_definepropertiesforlayer_service');
       $window.olms(olMap, style).then(
         function olmsSuccess(map) {
 
-          var t_layersArray = [];
+          var layerArrayAfterOlms = [];
           map.getLayers().forEach(function(layer) {
-            t_layersArray.push(layer);
+            layerArrayAfterOlms.push(layer);
           });
-          angular.forEach(t_layersArray, function (layer) {
+          angular.forEach(layerArrayAfterOlms, function (layer) {
             if (layer.get('mapbox-source')) {
               layer.olmsLayer = true;
               layer.parentLayerId = vectortileLayerConfig.serverLayerName;

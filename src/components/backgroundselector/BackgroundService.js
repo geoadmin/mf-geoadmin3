@@ -216,7 +216,7 @@ goog.require('ga_vector_tile_layer_service');
 
         function removeBackgroundLayersIfNotOlms(map) {
           var layersArray = [];
-          map.getLayers().forEach(function (layer) {
+          map.getLayers().forEach(function(layer) {
             layersArray.push(layer);
           })
           for (var i = 0; i < layersArray.length; i++) {
@@ -246,11 +246,11 @@ goog.require('ga_vector_tile_layer_service');
                 removeBackgroundLayersIfNotOlms(map);
                 // if new bg layer is not vector tile, we add it on top
                 // of OLMS layers
-                if (newBg.id !== 
+                if (newBg.id !==
                     gaVectorTileLayerService.getVectorLayerBodId()) {
                   // looking for latest olms layer index
-                  var backgroundOffset 
-                    = gaVectorTileLayerService.getVectorTileLayersCount();
+                  var backgroundOffset =
+                    gaVectorTileLayerService.getVectorTileLayersCount();
                   var layer = createOlLayer(newBg);
                   layers.insertAt(backgroundOffset, layer);
                 }

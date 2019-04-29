@@ -374,8 +374,8 @@ goog.require('ga_vector_tile_layer_service');
                       }
 
                       if (hasBg) {
-                        idx = idx 
-                        + gaVectorTileLayerService.getVectorTileLayersCount();
+                        idx = idx +
+                        gaVectorTileLayerService.getVectorTileLayersCount();
                       }
                       if (i !== idx) {
                         map.getLayers().remove(layer);
