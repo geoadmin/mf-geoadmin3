@@ -133,6 +133,10 @@ goog.require('ga_window_service');
         scope.$watchCollection('layers | filter:layerFilter', function(items) {
           scope.filteredLayers = (items) ? items.slice().reverse() : [];
           scope.enableDragAndDrop();
+          var order = [];
+          angular.forEach(scope.filteredLayers, function (layer) {
+            order.push(layer.bodId);
+          })
         });
 
         // Use to disable drag and drop if the user drops the layer at its

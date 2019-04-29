@@ -139,26 +139,38 @@ goog.require('ga_definepropertiesforlayer_service');
       return olVectorTileLayers.length;
     }
 
+    function getVectorTileLayers() {
+      return olVectorTileLayers;
+    }
+
     function applyStyle(style, firstCall) {
       var deferred = $q.defer();
 
       // we save any layer, other than OLMS layers, so that we can put them
       // back on top of the layer stack after OLMS call
       var otherLayers = [];
-      var layers = olMap.getLayers().getArray();
-      for (var i = layers.length - 1; i >= 0; --i) {
-        var layer = layers[i];
-        if (layer.get('mapbox-source')) {
-            olMap.removeLayer(layer);
-          } else {
-            otherLayers.push(layer);
-          }
-      }
+      var t_layers = [];
+      olMap.getLayers().forEach(function (layer) {
+        t_layers.push(layer);
+      })
+      angular.forEach(t_layers, function (layer, index) {
+        if (typeof(layer.get('mapbox-source')) === 'string' 
+            && layer.get('mapbox-source') !== '') {
+          olMap.removeLayer(layer);
+        } else {
+          otherLayers.push(layer);
+        }
+      })
       olVectorTileLayers = [];
 
       $window.olms(olMap, style).then(
         function olmsSuccess(map) {
+
+          var t_layersArray = [];
           map.getLayers().forEach(function(layer) {
+            t_layersArray.push(layer);
+          });
+          angular.forEach(t_layersArray, function (layer) {
             if (layer.get('mapbox-source')) {
               layer.olmsLayer = true;
               layer.parentLayerId = vectortileLayerConfig.serverLayerName;
@@ -173,9 +185,11 @@ goog.require('ga_definepropertiesforlayer_service');
           // we reorder layers present before OLMS
           // call at the top of the stack so that if any BGDI
           // layer was present, it will be on top
-          angular.forEach(otherLayers, function (layer, index) {
-            layer.setZIndex(index + olVectorTileLayers.length);
-          })
+          for (var i = 0; i < otherLayers.length; i++) {
+            var layer = otherLayers[i];
+            map.removeLayer(layer);
+            map.addLayer(layer);
+          }
 
           deferred.resolve(olVectorTileLayers);
         },
@@ -251,6 +265,7 @@ goog.require('ga_definepropertiesforlayer_service');
       getCurrentStyle: getCurrentStyle,
       setCurrentStyle: setCurrentStyle,
       getVectorLayerBodId: getVectorLayerBodId,
+      getVectorTileLayers: getVectorTileLayers,
       getVectorTileLayersCount: getVectorTileLayersCount,
       reloadCurrentStyle: reloadCurrentStyle,
       getStyles: getStyles,

@@ -214,6 +214,19 @@ goog.require('ga_vector_tile_layer_service');
           }
         };
 
+        function removeBackgroundLayersIfNotOlms(map) {
+          var layersArray = [];
+          map.getLayers().forEach(function (layer) {
+            layersArray.push(layer);
+          })
+          for (var i = 0; i < layersArray.length; i++) {
+            var layer = layersArray[i];
+            if (!!layer.background && !layer.olmsLayer) {
+              map.removeLayer(layer);
+            }
+          }
+        }
+
         this.setById = function(map, newBgId) {
           if (map && (!bg || newBgId !== bg.id)) {
             var newBg = getBgById(newBgId);
@@ -221,9 +234,7 @@ goog.require('ga_vector_tile_layer_service');
               var layers = map.getLayers();
               if (newBg.id === 'voidLayer') {
                 // Remove the bg from the map
-                if (layers.getLength() > 0 && layers.item(4).background) {
-                  layers.removeAt(4);
-                }
+                removeBackgroundLayersIfNotOlms(map);
                 // hidding vector tile layers
                 gaVectorTileLayerService.hideVectorTileLayers();
               } else {
@@ -231,19 +242,17 @@ goog.require('ga_vector_tile_layer_service');
                 // showing vector tile if needed (if void layer was selected)
                 gaVectorTileLayerService.showVectorTileLayers();
 
-                if (newBg.id ===
-                     gaVectorTileLayerService.getVectorLayerBodId()) {
-                  if (layers.item(4) && layers.item(4).background) {
-                    layers.removeAt(4);
-                  }
-                } else {
+                // removing any background layer present (other than olms)
+                removeBackgroundLayersIfNotOlms(map);
+                // if new bg layer is not vector tile, we add it on top
+                // of OLMS layers
+                if (newBg.id !== 
+                    gaVectorTileLayerService.getVectorLayerBodId()) {
+                  // looking for latest olms layer index
+                  var backgroundOffset 
+                    = gaVectorTileLayerService.getVectorTileLayersCount();
                   var layer = createOlLayer(newBg);
-                  // Add the bg to the map
-                  if (layers.item(4) && layers.item(4).background) {
-                    layers.setAt(4, layer);
-                  } else {
-                    layers.insertAt(4, layer);
-                  }
+                  layers.insertAt(backgroundOffset, layer);
                 }
               }
               bg = newBg;

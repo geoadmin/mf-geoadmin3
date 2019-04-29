@@ -34,21 +34,21 @@
       <li class="col-sm-4 col-xs-4 vr">
         <a href=""
            class="btn"
-           ng-disabled="!canExport(style)"
+           ng-disabled="!canExportOrShare(style)"
            ng-click="reset($event, style)"
            translate>edit_reset</a>
       </li>
       <li class="col-sm-4 col-xs-4 vr">
         <a href=""
            class="btn"
-           ng-disabled="!canExport(style)"
+           ng-disabled="!canExportOrShare(style)"
            ng-click="export($event, style)"
            translate>export</a>
       </li>
       <li class="col-sm-4 col-xs-4">
         <a href=""
            class="btn"
-           ng-disabled="!canShare(style)"
+           ng-disabled="!canExportOrShare(style)"
            ng-click="share($event, style)"
            translate>share</a>
       </li>
