@@ -485,5 +485,6 @@
   "layer_cant_be_displayed_in_3d": "",
   "layer_cant_be_printed": "",
   "print_request_too_large": "",
-  "whatsapp_tooltip": ""
+  "whatsapp_tooltip": "",
+  "try_test_viewer": ""
 }
