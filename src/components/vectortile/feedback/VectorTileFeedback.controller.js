@@ -18,7 +18,7 @@ goog.require('ga_layers_service');
     var apiUrl = gaGlobalOptions.apiUrl;
     $scope.options = {
       surveyUrl: 'https://findmind.ch/c/vectorsimple{lang}',
-      serviceDocUrl: apiUrl + '/services/sdiservices.html#vectortiles'
+      serviceDocUrl: apiUrl + '/services/sdiservices.html#mapbox-vector-tiles'
     };
   });
 })();

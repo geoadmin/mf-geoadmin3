@@ -3,18 +3,23 @@ goog.provide('ga_vector_tile_layer_service');
 goog.require('ga_storage_service');
 goog.require('ga_translation_service');
 goog.require('ga_definepropertiesforlayer_service');
+goog.require('ga_permalink_service');
+goog.require('ga_mapbox_style_storage_service');
 
 (function() {
 
   angular.module('ga_vector_tile_layer_service', [
     'ga_storage_service',
     'ga_translation_service',
-    'ga_definepropertiesforlayer_service'
+    'ga_definepropertiesforlayer_service',
+    'ga_permalink_service',
+    'ga_mapbox_style_storage_service'
   ]).
       factory('gaVectorTileLayerService', VectorTileLayerService);
 
-  function VectorTileLayerService($window, $q, gaLang, gaStorage,
-      gaDefinePropertiesForLayer, gaGlobalOptions) {
+  function VectorTileLayerService($window, $q, $rootScope, gaLang, gaStorage,
+      gaDefinePropertiesForLayer, gaGlobalOptions, gaPermalink,
+      gaMapboxStyleStorage) {
     // LayersConfig for vector
     // TODO: replace this by a fetch call on the API (TBD)
     var vectortileLayerConfig = {
@@ -94,16 +99,11 @@ goog.require('ga_definepropertiesforlayer_service');
 
     // keeping track of the current style index to be able to return
     // it on demand (see styles array above in the layersConfig)
+    var currentStyleUrl = null;
     var currentStyle = null;
-    var currentStyleIndex = 0;
-    var pristine = true;
 
     function getCurrentStyleUrl() {
-      if (pristine && currentStyleIndex === 0 &&
-        gaGlobalOptions.vectorTileCustomStyleUrl) {
-        return gaGlobalOptions.vectorTileCustomStyleUrl;
-      }
-      return vectortileLayerConfig.styles[currentStyleIndex].url;
+      return currentStyleUrl;
     }
 
     // return a promise that will resolve as soon as gaStorage service
@@ -124,7 +124,7 @@ goog.require('ga_definepropertiesforlayer_service');
 
     // force reload from gaStorage and load with OLMS
     function reloadCurrentStyle() {
-      __loadCurrentStyle__().then(function (style) {
+      __loadCurrentStyle__().then(function(style) {
         currentStyle = style;
         __applyCurrentStyle__();
       })
@@ -150,12 +150,12 @@ goog.require('ga_definepropertiesforlayer_service');
       // back on top of the layer stack after OLMS call
       var otherLayers = [];
       var layerArray = [];
-      olMap.getLayers().forEach(function (layer) {
+      olMap.getLayers().forEach(function(layer) {
         layerArray.push(layer);
       })
-      angular.forEach(layerArray, function (layer, index) {
-        if (typeof(layer.get('mapbox-source')) === 'string' 
-            && layer.get('mapbox-source') !== '') {
+      angular.forEach(layerArray, function(layer, index) {
+        if (typeof (layer.get('mapbox-source')) === 'string' &&
+            layer.get('mapbox-source') !== '') {
           olMap.removeLayer(layer);
         } else {
           otherLayers.push(layer);
@@ -164,40 +164,40 @@ goog.require('ga_definepropertiesforlayer_service');
       olVectorTileLayers = [];
 
       $window.olms(olMap, style).then(
-        function olmsSuccess(map) {
+          function olmsSuccess(map) {
 
-          var layerArrayAfterOlms = [];
-          map.getLayers().forEach(function(layer) {
-            layerArrayAfterOlms.push(layer);
-          });
-          for (var i = 0; i < layerArrayAfterOlms.length; i++) {
-            var layer = layerArrayAfterOlms[i];
-            if (layer.get('mapbox-source')) {
-              layer.olmsLayer = true;
-              layer.parentLayerId = vectortileLayerConfig.serverLayerName;
-              layer.glStyle = style;
-              layer.background = true;
-              layer.disable3d = true;
-              // just in case it's taken by the LayerManager
-              layer.displayInLayerManager = false;
-              olVectorTileLayers.push(layer);
+            var layerArrayAfterOlms = [];
+            map.getLayers().forEach(function(layer) {
+              layerArrayAfterOlms.push(layer);
+            });
+            for (var i = 0; i < layerArrayAfterOlms.length; i++) {
+              var layer = layerArrayAfterOlms[i];
+              if (layer.get('mapbox-source')) {
+                layer.olmsLayer = true;
+                layer.parentLayerId = vectortileLayerConfig.serverLayerName;
+                layer.glStyle = style;
+                layer.background = true;
+                layer.disable3d = true;
+                // just in case it's taken by the LayerManager
+                layer.displayInLayerManager = false;
+                olVectorTileLayers.push(layer);
+              }
             }
-          }
 
-          // we reorder layers present before OLMS
-          // call at the top of the stack so that if any BGDI
-          // layer was present, it will be on top
-          for (var i = 0; i < otherLayers.length; i++) {
-            var layer = otherLayers[i];
-            map.removeLayer(layer);
-            map.addLayer(layer);
-          }
+            // we reorder layers present before OLMS
+            // call at the top of the stack so that if any BGDI
+            // layer was present, it will be on top
+            for (var j = 0; j < otherLayers.length; j++) {
+              var anotherLayer = otherLayers[j];
+              map.removeLayer(anotherLayer);
+              map.addLayer(anotherLayer);
+            }
 
-          deferred.resolve(olVectorTileLayers);
-        },
-        function olmsError(response) {
-          deferred.reject(response);
-        }
+            deferred.resolve(olVectorTileLayers);
+          },
+          function olmsError(response) {
+            deferred.reject(response);
+          }
       );
 
       return deferred.promise;
@@ -214,12 +214,27 @@ goog.require('ga_definepropertiesforlayer_service');
     }
 
     function switchToStyleAtIndex(index) {
-      currentStyleIndex = index;
-      pristine = false;
-      __loadCurrentStyle__().then(function (style) {
-        currentStyle = style;
-        __applyCurrentStyle__();
-      })
+      var deferred = $q.defer();
+      if (index >= 0 && index < vectortileLayerConfig.styles.length) {
+        currentStyleUrl = vectortileLayerConfig.styles[index].url;
+      }
+      __loadCurrentStyle__().then(
+          function loadCurrentStyleSucces(style) {
+            currentStyle = style;
+            __applyCurrentStyle__().then(
+                function applyStyleSucces() {
+                  deferred.resolve();
+                },
+                function applyStyleError(data) {
+                  deferred.reject(data);
+                }
+            )
+          },
+          function loadCurrentStyleError(data) {
+            deferred.reject(data);
+          }
+      )
+      return deferred.promise;
     }
 
     function setCurrentStyle(style) {
@@ -228,13 +243,13 @@ goog.require('ga_definepropertiesforlayer_service');
     }
 
     function hideVectorTileLayers() {
-      $.each(olVectorTileLayers, function (index, layer) {
+      $.each(olVectorTileLayers, function(index, layer) {
         layer.setVisible(false);
       })
     }
 
     function showVectorTileLayers() {
-      $.each(olVectorTileLayers, function (index, layer) {
+      $.each(olVectorTileLayers, function(index, layer) {
         layer.setVisible(true);
       })
     }
@@ -247,17 +262,66 @@ goog.require('ga_definepropertiesforlayer_service');
     function init(map) {
       olMap = map;
       var deferred = $q.defer();
-      __loadCurrentStyle__().then(function (style) {
-        currentStyle = style;
-        __applyCurrentStyle__(true).then(
-          function initSuccess() {
-            deferred.resolve();
-          },
-          function initError() {
-            deferred.reject();
-          }
-        )
-      })
+
+      var permaLinkParams = gaPermalink.getParams();
+
+      if (permaLinkParams.glStylesAdminId) {
+
+        gaMapboxStyleStorage.
+            getFileUrlFromAdminId(permaLinkParams.glStylesAdminId).then(
+                function(styleUrl) {
+                  currentStyleUrl = styleUrl;
+                  __loadCurrentStyle__().then(function(style) {
+                    currentStyle = style;
+                    __applyCurrentStyle__(true,
+                        permaLinkParams.glStylesAdminId).
+                        then(
+                            function initSuccess() {
+                              // attaching externalStyleUrl to first layer
+                              if (olVectorTileLayers.length > 0) {
+                                var firstLayer = olVectorTileLayers[0];
+                                firstLayer.externalStyleUrl = styleUrl;
+                                firstLayer.adminId =
+                        permaLinkParams.glStylesAdminId;
+                                firstLayer.id = getVectorLayerBodId();
+                                firstLayer.glStyle = style;
+                                firstLayer.useThirdPartyData = true;
+                                // activating style edit toolbox
+                                $rootScope.$broadcast('gaToggleEdit',
+                                    style, true);
+                              }
+                              gaPermalink.deleteParam('glStylesAdminId');
+                              deferred.resolve();
+                            },
+                            function initError() {
+                              deferred.reject();
+                            }
+                        )
+                  });
+                }
+            );
+
+      } else {
+
+        if (gaGlobalOptions.vectorTileCustomStyleUrl) {
+          currentStyleUrl = gaGlobalOptions.vectorTileCustomStyleUrl;
+        } else {
+          currentStyleUrl = vectortileLayerConfig.styles[0].url;
+        }
+
+        __loadCurrentStyle__().then(function(style) {
+          currentStyle = style;
+          __applyCurrentStyle__(true).then(
+              function initSuccess() {
+                deferred.resolve();
+              },
+              function initError() {
+                deferred.reject();
+              }
+          )
+        });
+      }
+
       return deferred.promise;
     }
 

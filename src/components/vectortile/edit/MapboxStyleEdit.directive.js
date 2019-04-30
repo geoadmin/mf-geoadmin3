@@ -62,21 +62,24 @@ goog.require('ga_layers_service');
             if (!dataString) {
               return;
             }
+            if (gaVectorTileLayerService.getVectorTileLayersCount() === 0) {
+              return;
+            }
+
+            var firstLayer = gaVectorTileLayerService.getVectorTileLayers()[0];
 
             // Get the id to use by the glStyleStorage, if no id
             // the service will create a new one.
-            // var id = gaVectorTileLayerService.getVectorLayerBodId();
-            gaMapboxStyleStorage.save(null, dataString).then(function(data) {
+            var id = firstLayer.adminId;
+            gaMapboxStyleStorage.save(id, dataString).then(function(data) {
               scope.statusMsgId = 'edit_file_saved';
 
               // If a file has been created we set the correct id to the
               // layer
-              if (data.adminId &&
-                  gaVectorTileLayerService.getVectorTileLayersCount() > 0) {
-                var layer = gaVectorTileLayerService.getVectorTileLayers()[0];
-                layer.adminId = data.adminId;
-                layer.externalStyleUrl = data.fileUrl;
-                layer.useThirdPartyData = true;
+              if (data.adminId && firstLayer) {
+                firstLayer.adminId = data.adminId;
+                firstLayer.externalStyleUrl = data.fileUrl;
+                firstLayer.useThirdPartyData = true;
               }
             }
             );
@@ -110,8 +113,7 @@ goog.require('ga_layers_service');
           var str = $translate.instant('edit_confirm_reset_style');
           if ($window.confirm(str)) {
             // Delete the file on server ?
-            // layer.externalStyleUrl = undefined;
-            // gaMvt.reload(layer, scope.map);
+            gaVectorTileLayerService.switchToStyleAtIndex(0);
           }
         };
 
@@ -146,8 +148,8 @@ goog.require('ga_layers_service');
             return;
           }
 
-          gaVectorTileLayerService.setCurrentStyle(glStyle);
           scope.saveDebounced({}, glStyle);
+          gaVectorTileLayerService.setCurrentStyle(glStyle);
         });
       }
     };
