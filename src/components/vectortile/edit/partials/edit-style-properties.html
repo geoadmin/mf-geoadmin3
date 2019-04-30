@@ -1,0 +1,33 @@
+<label>
+  <span translate>{{'edit_glstyle_choose_layer'}}:</span>
+  <select class="form-control"
+          ng-model="edit"
+          ng-change="group = groups[edit.id]"
+          ng-options="(edit.id | translate) for edit in config">
+  </select>
+</label>
+
+
+<div ng-repeat="e in edit.props">
+  <label ng-if="useWidget('toggle', e)">
+    <div ng-model="group[0][e[0]][e[1]]"
+         ng-change="change(group[0][e[0]][e[1]], group, e)"
+         ga-mapbox-style-toggle
+         ga-mapbox-style-toggle-on="e[3]"
+         ga-mapbox-style-toggle-off="e[4]"
+         ga-mapbox-style-toggle-on-label="'hide'"
+         ga-mapbox-style-toggle-off-label="'show'"/>
+  </label>
+  <label ng-if="useWidget('color', e)">
+    <span translate>{{getTranslateId(e)}}:</span>
+    <div ng-model="group[0][e[0]][e[1]]"
+         ng-change="change(group[0][e[0]][e[1]], group, e)"
+         ga-mapbox-style-color-picker />
+  </label>
+  <label ng-if="useWidget('size', e)">
+    <span translate>{{getTranslateId(e)}}:</span>
+    <div ng-model="group[0][e[0]][e[1]]"
+         ng-change="change(group[0][e[0]][e[1]], group, e)"
+         ga-mapbox-style-edit-font-size />
+  </label>
+</div>

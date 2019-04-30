@@ -9,6 +9,7 @@ goog.require('ga_tilegrid_service');
 goog.require('ga_time_service');
 goog.require('ga_translation_service');
 goog.require('ga_urlutils_service');
+goog.require('ga_vector_tile_layer_service');
 
 (function() {
 
@@ -23,6 +24,7 @@ goog.require('ga_urlutils_service');
     'ga_urlutils_service',
     'ga_permalink_service',
     'ga_translation_service',
+    'ga_vector_tile_layer_service',
     'pascalprecht.translate'
   ]);
 
@@ -35,7 +37,7 @@ goog.require('ga_urlutils_service');
         gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapUtils,
         gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils,
         gaStylesFromLiterals, gaGlobalOptions, gaPermalink,
-        gaLang, gaTime, gaStyleFactory) {
+        gaLang, gaTime, gaStyleFactory, gaVectorTileLayerService) {
 
       var h2 = function(domainsArray) {
         if (gaBrowserSniffer.h2) {
@@ -102,12 +104,6 @@ goog.require('ga_urlutils_service');
             url = url.replace('{TileMatrixSet}', tileMatrixSet);
           }
           return url;
-        };
-
-        var getTerrainUrl = function(layer, time) {
-          return terrainUrl.
-              replace('{Layer}', layer).
-              replace('{Time}', time);
         };
 
         var cpt;
@@ -310,73 +306,8 @@ goog.require('ga_urlutils_service');
                 });
               });
 
-              response.data['ch.swisstopo.leichte-basiskarte.vt'] = {
-                type: 'aggregate',
-                background: true,
-                serverLayerName: 'ch.swisstopo.leichte-basiskarte.vt',
-                attribution: '' +
-                  '<a target="_blank" href="https://openmaptiles.org/">OpenMapTiles</a>, ' +
-                  '<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, ' +
-                  '<a target="_blank" href="https://www.swisstopo.admin.ch/' + lang + '/home.html">swisstopo</a>',
-                styles: [{
-                  id: 'default',
-                  url: 'https://vectortiles.geo.admin.ch/gl-styles/ch.swisstopo.leichte-basiskarte.vt/v006/style.json'
-                }, {
-                  id: 'color',
-                  url: 'https://cms.geo.admin.ch/www.geo.admin.ch/cms_api/gl-styles/ch.swisstopo.leichte-basiskarte-vintage.vt_v006.json'
-                }, {
-                  id: 'grey',
-                  url: 'https://cms.geo.admin.ch/www.geo.admin.ch/cms_api/gl-styles/ch.swisstopo.leichte-basiskarte-grey.vt_v006.json'
-                }, {
-                  id: 'lsd',
-                  url: 'https://cms.geo.admin.ch/www.geo.admin.ch/cms_api/gl-styles/ch.swisstopo.leichte-basiskarte-lsd.vt_v006.json'
-                }],
-                edits: [{
-                  id: 'settlement',
-                  regex: /settlement/,
-                  type: 'fill',
-                  props: [
-                    ['paint', 'fill-color', '{color}']
-                  ]
-                }, {
-                  id: 'hydrology',
-                  regex: /hydrology/,
-                  type: 'fill',
-                  props: [
-                    ['paint', 'fill-color', '{color}']
-                  ]
-                }, {
-                  id: 'roadtraffic',
-                  regex: /roadtraffic/,
-                  type: 'line',
-                  props: [
-                    ['paint', 'line-color', '{color}'],
-                    ['paint', 'line-width', '{size}']
-                  ]
-                }, {
-                  id: 'labels',
-                  regex: /labels/,
-                  type: 'symbol',
-                  props: [
-                    ['layout', 'visibility', '{toggle}', 'visible', 'none'],
-                    ['paint', 'text-color', '{color}'],
-                    ['layout', 'text-size', '{size}']
-                  ]
-                }, {
-                  id: 'woodland',
-                  regex: /woodland/,
-                  type: 'fill',
-                  props: [
-                    ['paint', 'fill-color', '{color}']
-                  ]
-                }, {
-                  id: 'territory',
-                  regex: /territory|background/,
-                  props: [
-                    ['paint', 'background-color', '{color}']
-                  ]
-                }]
-              };
+              response.data['ch.swisstopo.leichte-basiskarte.vt'] =
+                gaVectorTileLayerService.vectortileLayerConfig;
             }
 
             if (!layers) { // First load
@@ -405,6 +336,12 @@ goog.require('ga_urlutils_service');
           return configP;
         };
 
+        this._getTerrainUrl = function(layer, time) {
+          return terrainUrl.
+              replace('{Layer}', layer).
+              replace('{Time}', time);
+        };
+
         /**
          * Returns an Cesium terrain provider.
          */
@@ -417,7 +354,7 @@ goog.require('ga_urlutils_service');
               gaTime.get());
           var requestedLayer = config3d.serverLayerName || bodId;
           var provider = new Cesium.CesiumTerrainProvider({
-            url: getTerrainUrl(requestedLayer, timestamp),
+            url: this._getTerrainUrl(requestedLayer, timestamp),
             availableLevels: gaGlobalOptions.terrainAvailableLevels,
             rectangle: gaMapUtils.extentToRectangle(
                 gaGlobalOptions.swissExtent)
@@ -710,77 +647,82 @@ goog.require('ga_urlutils_service');
               gaDefinePropertiesForLayer(olLayer);
             }
           } else if (config.type === 'aggregate') {
-            var subLayersIds = config.subLayersIds || [];
-            var createSubLayers = function(olLayer, glStyle) {
-              if (!subLayersIds.length) {
-                // No sublayerIds provided so we use directly what is available
-                // in sources list of the glStyle.
-                for (var s in glStyle.sources) {
-                  subLayersIds.push(s);
-                }
-              }
-              // Create sublayers.
-              var subLayers = [];
-              olLayer.glStyle = glStyle;
-              for (var i = 0; i < subLayersIds.length; i++) {
-                var id = subLayersIds[i];
-
-                // If a raster config already exists,
-                // we inform the developer.
-                if (layers[id] &&
-                    layers[id].type !== 'vectortile' &&
-                    glStyle && glStyle.sources &&
-                    glStyle.sources[id] &&
-                    glStyle.sources[id].type === 'vector') {
-                  $window.console.log('A raster config already exists ' +
-                    'for the glStyle source ' + id + '. ' +
-                    'Please change the source\'s ' +
-                    'name in the glStyle to avoid conflicts.');
-                  continue;
-                }
-
-                // If there is no config for this id, we assume it's
-                // a vectortile so we create a default config.
-                if (!layers[id]) {
-                  layers[id] = {
-                    serverLayerName: id,
-                    type: 'vectortile',
-                    sourceId: id
+            if (bodId === 'ch.swisstopo.leichte-basiskarte.vt') {
+              // managed by VectorTileService, we return null
+              olLayer = null;
+            } else {
+              var subLayersIds = config.subLayersIds || [];
+              var createSubLayers = function(olLayer, glStyle) {
+                if (!subLayersIds.length) {
+                  // No sublayerIds provided so we use directly what is
+                  // available in sources list of the glStyle.
+                  for (var s in glStyle.sources) {
+                    subLayersIds.push(s);
                   }
                 }
+                // Create sublayers.
+                var subLayers = [];
+                olLayer.glStyle = glStyle;
+                for (var i = 0; i < subLayersIds.length; i++) {
+                  var id = subLayersIds[i];
 
-                // If the sourceId doesn't correspond to a source in glStyle
-                // object, we inform the developer.
-                var sourceId = layers[id].sourceId;
-                if (sourceId && glStyle && glStyle.sources &&
-                    !glStyle.sources[sourceId]) {
-                  $window.console.log('The glStyle has no source with ' +
-                    'the name ' +
-                    layers[id].sourceId + '. Please change the source\'s ' +
-                    'name in the glStyle to avoid conflicts.');
-                  continue;
+                  // If a raster config already exists,
+                  // we inform the developer.
+                  if (layers[id] &&
+                      layers[id].type !== 'vectortile' &&
+                      glStyle && glStyle.sources &&
+                      glStyle.sources[id] &&
+                      glStyle.sources[id].type === 'vector') {
+                    $window.console.log('A raster config already exists ' +
+                      'for the glStyle source ' + id + '. ' +
+                      'Please change the source\'s ' +
+                      'name in the glStyle to avoid conflicts.');
+                    continue;
+                  }
+
+                  // If there is no config for this id, we assume it's
+                  // a vectortile so we create a default config.
+                  if (!layers[id]) {
+                    layers[id] = {
+                      serverLayerName: id,
+                      type: 'vectortile',
+                      sourceId: id
+                    }
+                  }
+
+                  // If the sourceId doesn't correspond to a source in glStyle
+                  // object, we inform the developer.
+                  var sourceId = layers[id].sourceId;
+                  if (sourceId && glStyle && glStyle.sources &&
+                      !glStyle.sources[sourceId]) {
+                    $window.console.log('The glStyle has no source with ' +
+                      'the name ' +
+                      layers[id].sourceId + '. Please change the source\'s ' +
+                      'name in the glStyle to avoid conflicts.');
+                    continue;
+                  }
+
+                  subLayers.push(that.getOlLayerById(id, {
+                    glStyle: glStyle,
+                    parentLayerId: bodId
+                  }));
                 }
-
-                subLayers.push(that.getOlLayerById(id, {
-                  glStyle: glStyle,
-                  parentLayerId: bodId
-                }));
-              }
-              olLayer.setLayers(new ol.Collection(subLayers));
-            };
-            olLayer = new ol.layer.Group({
-              minResolution: config.minResolution,
-              maxResolution: config.maxResolution,
-              opacity: config.opacity || 1
-            });
-            gaDefinePropertiesForLayer(olLayer);
-            if (glStyle || styleUrl) {
-              var p = (glStyle) ? $q.when(glStyle) : gaStorage.load(styleUrl);
-              p.then(function(glStyle) {
-                createSubLayers(olLayer, glStyle);
+                olLayer.setLayers(new ol.Collection(subLayers));
+              };
+              olLayer = new ol.layer.Group({
+                minResolution: config.minResolution,
+                maxResolution: config.maxResolution,
+                opacity: config.opacity || 1
               });
-            } else {
-              createSubLayers(olLayer);
+              gaDefinePropertiesForLayer(olLayer);
+              if (glStyle || styleUrl) {
+                var p = (glStyle) ? $q.when(glStyle) : gaStorage.load(styleUrl);
+                p.then(function(glStyle) {
+                  createSubLayers(olLayer, glStyle);
+                });
+              } else {
+                createSubLayers(olLayer);
+              }
             }
 
           } else if (config.type === 'geojson') {

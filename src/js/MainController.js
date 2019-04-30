@@ -10,6 +10,7 @@ goog.require('ga_storage_service');
 goog.require('ga_topic_service');
 goog.require('ga_translation_service');
 goog.require('ga_window_service');
+goog.require('ga_vector_tile_layer_service');
 
 (function() {
 
@@ -22,7 +23,8 @@ goog.require('ga_window_service');
     'ga_background_service',
     'ga_topic_service',
     'ga_window_service',
-    'ga_translation_service'
+    'ga_translation_service',
+    'ga_vector_tile_layer_service'
   ]);
 
   /**
@@ -33,7 +35,8 @@ goog.require('ga_window_service');
       gaPermalinkFeaturesManager, gaPermalinkLayersManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
       gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic,
-      gaOpaqueLayersManager, gaMapLoad, gaWindow, gaLang) {
+      gaOpaqueLayersManager, gaMapLoad, gaWindow, gaLang,
+      gaVectorTileLayerService) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
@@ -54,10 +57,9 @@ goog.require('ga_window_service');
         '<i class="fa fa-ga-circle"></i>' +
         '<i class="fa fa-ga-zoom-minus"></i>' +
       '</span>';
-
       var map = new ol.Map({
         moveTolerance: 5,
-        controls: ol.control.util.defaults({
+        controls: ol.control.defaults({
           attribution: false,
           rotate: false,
           zoomOptions: {
@@ -157,103 +159,6 @@ goog.require('ga_window_service');
     $scope.map.addInteraction(keyboardPan);
     $scope.map.addInteraction(new ol.interaction.KeyboardZoom());
 
-    // Start managing global time parameter, when all permalink layers are
-    // added.
-    gaTime.init($scope.map);
-
-    // Load the background if the "bgLayer" parameter exist.
-    gaBackground.init($scope.map);
-
-    // Activate the "layers" parameter permalink manager for the map.
-    gaPermalinkLayersManager($scope.map);
-
-    // Activate the "features" permalink manager for the map.
-    gaPermalinkFeaturesManager($scope.map);
-
-    // Activate watcher for layers with real-time data
-    gaRealtimeLayersManager($scope.map);
-
-    // Optimize performance by hiding non-visible layers
-    gaOpaqueLayersManager($scope);
-
-    var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
-    var initWithFeedback = /feedback/g.test(gaPermalink.getParams().widgets);
-    var initWithDraw = /draw/g.test(gaPermalink.getParams().widgets) ||
-        (!!(gaPermalink.getParams().adminId) &&
-        !gaPermalink.getParams().glStyleAdminId);
-    var initWithEdit = /edit/g.test(gaPermalink.getParams().widgets) ||
-        !!(gaPermalink.getParams().glStylesAdminId);
-    gaPermalink.deleteParam('widgets');
-
-    var onTopicsLoaded = function() {
-      if (gaPermalink.getParams().layers !== undefined) {
-        $scope.globals.catalogShown = false;
-        $scope.globals.selectionShown = true;
-      } else {
-        $scope.globals.catalogShown = true;
-        $scope.globals.selectionShown = false;
-      }
-    };
-
-    var onTopicChange = function(event, topic) {
-      $scope.topicId = topic.id;
-
-      // iOS 7 minimal-ui meta tag bug
-      if (gaBrowserSniffer.ios) {
-        $window.scrollTo(0, 0);
-      }
-
-      if (topic.activatedLayers.length) {
-        $scope.globals.selectionShown = true;
-        $scope.globals.catalogShown = false;
-      } else if (topic.selectedLayers.length) {
-        $scope.globals.catalogShown = true;
-        $scope.globals.selectionShown = false;
-      } else {
-        if (event === null) {
-          onTopicsLoaded();
-        } else {
-          $scope.globals.catalogShown = true;
-        }
-      }
-    };
-
-    gaTopic.loadConfig().then(function() {
-      $scope.topicId = gaTopic.get().id;
-
-      if (initWithPrint) {
-        $scope.globals.isPrintActive = true;
-      } else if (initWithFeedback) {
-        $scope.globals.feedbackPopupShown = initWithFeedback;
-      } else if (initWithDraw) {
-        $scope.globals.isDrawActive = initWithDraw;
-      } else if (initWithEdit) {
-        $scope.globals.isEditActive = initWithEdit;
-      } else {
-        onTopicChange(null, gaTopic.get());
-      }
-      $rootScope.$on('gaTopicChange', onTopicChange);
-    });
-
-    $rootScope.$on('$translateChangeEnd', function() {
-      $scope.langId = gaLang.get();
-    });
-
-    $scope.time = gaTime.get();
-    $rootScope.$on('gaTimeChange', function(event, time) {
-      $scope.time = time; // Used in embed page
-    });
-
-    // Create switch device url
-    var switchToMobile = '' + !gaBrowserSniffer.mobile;
-    $scope.host = {url: $window.location.host}; // only use in embed.html
-    $scope.toMainHref = gaPermalink.getMainHref();
-    $scope.deviceSwitcherHref = gaPermalink.getHref({mobile: switchToMobile});
-    $rootScope.$on('gaPermalinkChange', function() {
-      $scope.toMainHref = gaPermalink.getMainHref();
-      $scope.deviceSwitcherHref = gaPermalink.getHref({mobile: switchToMobile});
-    });
-
     $scope.globals = {
       dev3d: gaGlobalOptions.dev3d,
       searchFocused: false,
@@ -282,220 +187,321 @@ goog.require('ga_window_service');
       hostIsProd: gaGlobalOptions.hostIsProd
     };
 
-    // gaWindow is efficient only after the dom is ready
-    $scope.$applyAsync(function() {
-      $scope.globals.searchFocused = gaWindow.isWidth('>xs');
-      $scope.globals.pulldownShown = gaWindow.isWidth('>s') &&
-           gaWindow.isHeight('>s');
-      $scope.globals.settingsShown = gaWindow.isWidth('<=m');
-      $scope.globals.queryShown = gaWindow.isWidth('>m');
-    });
+    gaVectorTileLayerService.init($scope.map).then(function() {
 
-    $scope.hidePulldownOnXSmallScreen = function() {
-      if (gaWindow.isWidth('xs')) {
-        $scope.globals.pulldownShown = false;
-      }
-    };
+      // Load the background if the "bgLayer" parameter exist.
+      gaBackground.init($scope.map);
 
-    // Deactivate all tools when draw is opening
-    $scope.$watch('globals.isDrawActive', function(active) {
-      if (active) {
-        $scope.globals.feedbackPopupShown = false;
-        $scope.globals.isFeatureTreeActive = false;
-        $scope.globals.isSwipeActive = false;
-        $scope.globals.isEditActive = false;
-      }
-    });
-    // Deactivate all tools when draw is opening
-    $scope.$watch('globals.isEditActive', function(active) {
-      if (active) {
-        $scope.globals.feedbackPopupShown = false;
-        $scope.globals.isFeatureTreeActive = false;
-        $scope.globals.isSwipeActive = false;
-        $scope.globals.isDrawActive = false;
-      }
-    });
-    // Deactivate all tools when 3d is opening
-    $scope.$watch('globals.is3dActive', function(active) {
-      if (active) {
-        $scope.globals.feedbackPopupShown = false;
-        $scope.globals.isFeatureTreeActive = false;
-        $scope.globals.isSwipeActive = false;
-        $scope.globals.isDrawActive = false;
-        $scope.globals.isEditActive = false;
-        $scope.globals.isShareActive = false;
-      }
-    });
-    // Activate share tool when menu is opening.
-    $scope.$watch('globals.pulldownShown', function(active) {
-      if (active &&
-          gaWindow.isWidth('xs') &&
-          !$scope.globals.isDrawActive &&
-          !$scope.globals.isEditActive &&
-          !$scope.globals.isShareActive) {
-        $scope.globals.isShareActive = true;
-      }
-    });
+      // Start managing global time parameter, when all permalink layers are
+      // added.
+      gaTime.init($scope.map);
 
-    $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
-      $scope.globals.offline = offline;
-    });
+      // Activate the "layers" parameter permalink manager for the map.
+      gaPermalinkLayersManager($scope.map);
 
-    // Only iOS Safari
-    if (!$window.navigator.standalone && gaBrowserSniffer.ios &&
-        gaBrowserSniffer.safari && !gaStorage.getItem('homescreen')) {
-      $timeout(function() {
-        $scope.globals.homescreen = true;
-        $scope.globals.tablet = gaWindow.isWidth('s');
-        $scope.$watch('globals.homescreen', function(newVal) {
-          if (newVal === false) {
-            gaStorage.setItem('homescreen', 'none');
-          }
-        });
-      }, 2000);
-    }
+      // Activate the "features" permalink manager for the map.
+      gaPermalinkFeaturesManager($scope.map);
 
-    // Manage exit of draw mode
-    // Exit Draw mode when pressing ESC or Backspace button
-    $document.on('keydown', function(evt) {
-      if (evt.which === 8) {
-        if (!/^(input|textarea)$/i.test(evt.target.tagName)) {
-          evt.preventDefault();
+      // Activate watcher for layers with real-time data
+      gaRealtimeLayersManager($scope.map);
+
+      // Optimize performance by hiding non-visible layers
+      gaOpaqueLayersManager($scope);
+
+      var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
+      var initWithFeedback = /feedback/g.test(gaPermalink.getParams().widgets);
+      var initWithDraw = /draw/g.test(gaPermalink.getParams().widgets) ||
+          (!!(gaPermalink.getParams().adminId) &&
+          !gaPermalink.getParams().glStyleAdminId);
+      var initWithEdit = /edit/g.test(gaPermalink.getParams().widgets) ||
+          !!(gaPermalink.getParams().glStylesAdminId);
+      gaPermalink.deleteParam('widgets');
+
+      var onTopicsLoaded = function() {
+        if (gaPermalink.getParams().layers !== undefined) {
+          $scope.globals.catalogShown = false;
+          $scope.globals.selectionShown = true;
         } else {
-          return;
+          $scope.globals.catalogShown = true;
+          $scope.globals.selectionShown = false;
         }
-      }
-      if ((evt.which === 8 || evt.which === 27) &&
-          ($scope.globals.isDrawActive || $scope.globals.isEditActive)) {
-        $scope.globals.isDrawActive = false;
-        $scope.globals.isEditActive = false;
-        $scope.$digest();
-      }
-    });
+      };
 
-    // Browser back button management
-    $scope.$watch('globals.isDrawActive', function(isActive) {
-      if (isActive && gaHistory) {
-        gaHistory.replaceState({
-          isDrawActive: false
-        }, '', gaPermalink.getHref());
+      var onTopicChange = function(event, topic) {
+        $scope.topicId = topic.id;
 
-        gaHistory.pushState(null, '', gaPermalink.getHref());
+        // iOS 7 minimal-ui meta tag bug
+        if (gaBrowserSniffer.ios) {
+          $window.scrollTo(0, 0);
+        }
+
+        if (topic.activatedLayers.length) {
+          $scope.globals.selectionShown = true;
+          $scope.globals.catalogShown = false;
+        } else if (topic.selectedLayers.length) {
+          $scope.globals.catalogShown = true;
+          $scope.globals.selectionShown = false;
+        } else {
+          if (event === null) {
+            onTopicsLoaded();
+          } else {
+            $scope.globals.catalogShown = true;
+          }
+        }
+      };
+
+      gaTopic.loadConfig().then(function() {
+        $scope.topicId = gaTopic.get().id;
+
+        if (initWithPrint) {
+          $scope.globals.isPrintActive = true;
+        } else if (initWithFeedback) {
+          $scope.globals.feedbackPopupShown = initWithFeedback;
+        } else if (initWithDraw) {
+          $scope.globals.isDrawActive = initWithDraw;
+        } else if (initWithEdit) {
+          $scope.globals.isEditActive = initWithEdit;
+        } else {
+          onTopicChange(null, gaTopic.get());
+        }
+        $rootScope.$on('gaTopicChange', onTopicChange);
+      });
+
+      $rootScope.$on('$translateChangeEnd', function() {
+        $scope.langId = gaLang.get();
+      });
+
+      $scope.time = gaTime.get();
+      $rootScope.$on('gaTimeChange', function(event, time) {
+        $scope.time = time; // Used in embed page
+      });
+
+      // Create switch device url
+      var switchToMobile = '' + !gaBrowserSniffer.mobile;
+      $scope.host = {url: $window.location.host}; // only use in embed.html
+      $scope.toMainHref = gaPermalink.getMainHref();
+      $scope.deviceSwitcherHref = gaPermalink.getHref({mobile: switchToMobile});
+      $rootScope.$on('gaPermalinkChange', function() {
+        $scope.toMainHref = gaPermalink.getMainHref();
+        $scope.deviceSwitcherHref =
+          gaPermalink.getHref({mobile: switchToMobile});
+      });
+
+      // gaWindow is efficient only after the dom is ready
+      $scope.$applyAsync(function() {
+        $scope.globals.searchFocused = gaWindow.isWidth('>xs');
+        $scope.globals.pulldownShown = gaWindow.isWidth('>s') &&
+             gaWindow.isHeight('>s');
+        $scope.globals.settingsShown = gaWindow.isWidth('<=m');
+        $scope.globals.queryShown = gaWindow.isWidth('>m');
+      });
+
+      $scope.hidePulldownOnXSmallScreen = function() {
+        if (gaWindow.isWidth('xs')) {
+          $scope.globals.pulldownShown = false;
+        }
+      };
+
+      // Deactivate all tools when draw is opening
+      $scope.$watch('globals.isDrawActive', function(active) {
+        if (active) {
+          $scope.globals.feedbackPopupShown = false;
+          $scope.globals.isFeatureTreeActive = false;
+          $scope.globals.isSwipeActive = false;
+          $scope.globals.isEditActive = false;
+        }
+      });
+      // Deactivate all tools when draw is opening
+      $scope.$watch('globals.isEditActive', function(active) {
+        if (active) {
+          $scope.globals.feedbackPopupShown = false;
+          $scope.globals.isFeatureTreeActive = false;
+          $scope.globals.isSwipeActive = false;
+          $scope.globals.isDrawActive = false;
+        }
+      });
+      // Deactivate all tools when 3d is opening
+      $scope.$watch('globals.is3dActive', function(active) {
+        if (active) {
+          $scope.globals.feedbackPopupShown = false;
+          $scope.globals.isFeatureTreeActive = false;
+          $scope.globals.isSwipeActive = false;
+          $scope.globals.isDrawActive = false;
+          $scope.globals.isEditActive = false;
+          $scope.globals.isShareActive = false;
+        }
+      });
+      // Activate share tool when menu is opening.
+      $scope.$watch('globals.pulldownShown', function(active) {
+        if (active &&
+            gaWindow.isWidth('xs') &&
+            !$scope.globals.isDrawActive &&
+            !$scope.globals.isEditActive &&
+            !$scope.globals.isShareActive) {
+          $scope.globals.isShareActive = true;
+        }
+      });
+
+      $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
+        $scope.globals.offline = offline;
+      });
+
+      // Only iOS Safari
+      if (!$window.navigator.standalone && gaBrowserSniffer.ios &&
+          gaBrowserSniffer.safari && !gaStorage.getItem('homescreen')) {
+        $timeout(function() {
+          $scope.globals.homescreen = true;
+          $scope.globals.tablet = gaWindow.isWidth('s');
+          $scope.$watch('globals.homescreen', function(newVal) {
+            if (newVal === false) {
+              gaStorage.setItem('homescreen', 'none');
+            }
+          });
+        }, 2000);
       }
-    });
 
-    // Browser back button management
-    $scope.$watch('globals.isEditActive', function(isActive) {
-      if (isActive && gaHistory) {
-        gaHistory.replaceState({
-          isEditActive: false
-        }, '', gaPermalink.getHref());
+      // Manage exit of draw mode
+      // Exit Draw mode when pressing ESC or Backspace button
+      $document.on('keydown', function(evt) {
+        if (evt.which === 8) {
+          if (!/^(input|textarea)$/i.test(evt.target.tagName)) {
+            evt.preventDefault();
+          } else {
+            return;
+          }
+        }
+        if ((evt.which === 8 || evt.which === 27) &&
+            ($scope.globals.isDrawActive || $scope.globals.isEditActive)) {
+          $scope.globals.isDrawActive = false;
+          $scope.globals.isEditActive = false;
+          $scope.$digest();
+        }
+      });
 
-        gaHistory.pushState(null, '', gaPermalink.getHref());
-      }
-    });
+      // Browser back button management
+      $scope.$watch('globals.isDrawActive', function(isActive) {
+        if (isActive && gaHistory) {
+          gaHistory.replaceState({
+            isDrawActive: false
+          }, '', gaPermalink.getHref());
 
-    $window.onpopstate = function(evt) {
-      // When we go to full screen evt.state is null
-      if (evt.state && evt.state.isDrawActive === false) {
-        $scope.globals.isDrawActive = false;
-        gaPermalink.refresh();
-        $scope.$digest();
-      }
-      if (evt.state && evt.state.isEditActive === false) {
-        $scope.globals.isEditActive = false;
-        gaPermalink.refresh();
-        $scope.$digest();
-      }
-    };
+          gaHistory.pushState(null, '', gaPermalink.getHref());
+        }
+      });
 
-    // Management of panels display (only on screen bigger than 480px)
-    win.on('resize', function() {
-      // Hide catalog panel if height is too small
-      if (gaWindow.isHeight('<=m')) {
-        if ($scope.globals.catalogShown) {
+      // Browser back button management
+      $scope.$watch('globals.isEditActive', function(isActive) {
+        if (isActive && gaHistory) {
+          gaHistory.replaceState({
+            isEditActive: false
+          }, '', gaPermalink.getHref());
+
+          gaHistory.pushState(null, '', gaPermalink.getHref());
+        }
+      });
+
+      $window.onpopstate = function(evt) {
+        // When we go to full screen evt.state is null
+        if (evt.state && evt.state.isDrawActive === false) {
+          $scope.globals.isDrawActive = false;
+          gaPermalink.refresh();
+          $scope.$digest();
+        }
+        if (evt.state && evt.state.isEditActive === false) {
+          $scope.globals.isEditActive = false;
+          gaPermalink.refresh();
+          $scope.$digest();
+        }
+      };
+
+      // Management of panels display (only on screen bigger than 480px)
+      win.on('resize', function() {
+        // Hide catalog panel if height is too small
+        if (gaWindow.isHeight('<=m')) {
+          if ($scope.globals.catalogShown) {
+            $scope.$applyAsync(function() {
+              $scope.globals.catalogShown = false;
+            });
+          }
+        }
+
+        // Open share panel by default on phone
+        if ($scope.globals.pulldownShown && !$scope.globals.isShareActive &&
+            !$scope.globals.isDrawActive && !$scope.globals.isEditActive &&
+            gaWindow.isWidth('xs')) {
           $scope.$applyAsync(function() {
-            $scope.globals.catalogShown = false;
+            $scope.globals.isShareActive = true;
           });
         }
-      }
 
-      // Open share panel by default on phone
-      if ($scope.globals.pulldownShown && !$scope.globals.isShareActive &&
-          !$scope.globals.isDrawActive && !$scope.globals.isEditActive &&
-          gaWindow.isWidth('xs')) {
-        $scope.$applyAsync(function() {
-          $scope.globals.isShareActive = true;
-        });
-      }
+        // Display settings panel
+        if ((gaWindow.isWidth('<=m') && !$scope.globals.settingsShown) ||
+           (gaWindow.isWidth('>m') && $scope.globals.settingsShown)) {
+          $scope.$applyAsync(function() {
+            $scope.globals.settingsShown = !$scope.globals.settingsShown;
+          });
+        }
 
-      // Display settings panel
-      if ((gaWindow.isWidth('<=m') && !$scope.globals.settingsShown) ||
-         (gaWindow.isWidth('>m') && $scope.globals.settingsShown)) {
-        $scope.$applyAsync(function() {
-          $scope.globals.settingsShown = !$scope.globals.settingsShown;
-        });
-      }
-
-      // Display query tool
-      if ((gaWindow.isWidth('<=m') && $scope.globals.queryShown) ||
-         (gaWindow.isWidth('>m') && !$scope.globals.queryShown)) {
-        $scope.$applyAsync(function() {
-          $scope.globals.queryShown = !$scope.globals.queryShown;
-          if (!$scope.globals.queryShown) {
-            $scope.globals.isFeatureTreeActive = false;
-          }
-        });
-      }
-    });
-
-    // Hide a panel clicking on its heading
-    var hidePanel = function(id) {
-      if ($('#' + id).hasClass('in')) {
-        $('#' + id + 'Heading').trigger('click');
-      }
-    };
-
-    var hideAccordionPanels = function() {
-      hidePanel('share');
-      hidePanel('print');
-      hidePanel('tools');
-    };
-
-    $('#catalog').on('shown.bs.collapse', function() {
-      if (gaWindow.isWidth('xs')) {
-        return;
-      }
-      // Close accordion
-      hideAccordionPanels();
-
-      if (gaWindow.isHeight('<=s')) {
-        // Close selection
-        hidePanel('selection');
-      }
-    });
-
-    $('#selection').on('shown.bs.collapse', function() {
-      if (gaWindow.isWidth('xs')) {
-        return;
-      }
-      // Close accordion
-      hideAccordionPanels();
-
-      if (gaWindow.isHeight('<=s')) {
-        // Close catalog
-        hidePanel('catalog');
-      }
-    });
-
-    // Load new appcache file if available.
-    if ($window.applicationCache) {
-      $window.applicationCache.addEventListener('obsolete', function(e) {
-        // setTimeout is needed for correct appcache update on Firefox
-        setTimeout(function() {
-          $window.location.reload(true);
-        });
+        // Display query tool
+        if ((gaWindow.isWidth('<=m') && $scope.globals.queryShown) ||
+           (gaWindow.isWidth('>m') && !$scope.globals.queryShown)) {
+          $scope.$applyAsync(function() {
+            $scope.globals.queryShown = !$scope.globals.queryShown;
+            if (!$scope.globals.queryShown) {
+              $scope.globals.isFeatureTreeActive = false;
+            }
+          });
+        }
       });
-    }
+
+      // Hide a panel clicking on its heading
+      var hidePanel = function(id) {
+        if ($('#' + id).hasClass('in')) {
+          $('#' + id + 'Heading').trigger('click');
+        }
+      };
+
+      var hideAccordionPanels = function() {
+        hidePanel('share');
+        hidePanel('print');
+        hidePanel('tools');
+      };
+
+      $('#catalog').on('shown.bs.collapse', function() {
+        if (gaWindow.isWidth('xs')) {
+          return;
+        }
+        // Close accordion
+        hideAccordionPanels();
+
+        if (gaWindow.isHeight('<=s')) {
+          // Close selection
+          hidePanel('selection');
+        }
+      });
+
+      $('#selection').on('shown.bs.collapse', function() {
+        if (gaWindow.isWidth('xs')) {
+          return;
+        }
+        // Close accordion
+        hideAccordionPanels();
+
+        if (gaWindow.isHeight('<=s')) {
+          // Close catalog
+          hidePanel('catalog');
+        }
+      });
+
+      // Load new appcache file if available.
+      if ($window.applicationCache) {
+        $window.applicationCache.addEventListener('obsolete', function(e) {
+          // setTimeout is needed for correct appcache update on Firefox
+          setTimeout(function() {
+            $window.location.reload(true);
+          });
+        });
+      }
+    });
   });
 })();

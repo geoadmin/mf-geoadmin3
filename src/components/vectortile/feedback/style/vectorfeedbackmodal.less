@@ -1,0 +1,69 @@
+[ga-vector-tile-feedback-modal] {
+  iframe,
+  .input-modal-container {
+    height: 100%;
+    width: 100%;
+  }
+
+  .input-modal-container {
+    overflow: hidden;
+  }
+
+  .modal-dialog {
+    width: 100%;
+    height: ~'calc(100% - 178px)';
+    max-width: 850px;
+    max-height: 660px;
+
+    .modal-content {
+      height: 100%;
+    }
+
+    .modal-body {
+      height: ~'calc(100% - 58px)';
+      overflow-x: hidden;
+
+      @media (max-width: @screen-phone) {
+        height: ~'calc(100% - 35px)';
+        max-height: none !important;
+      }
+    }
+
+    @media (max-width: @screen-desktop) {
+      max-width: 692px;
+    }
+
+    @media (max-width: @screen-tablet) {
+      max-width: 535px;
+      top: 15px;
+    }
+
+    @media (max-width: 605px) {
+      max-width: 377px;
+    }
+
+    @media (max-width: @screen-phone) {
+      max-width: ~'calc(100% - 20px)';
+    }
+
+    @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
+      height: ~'calc(100% - 30px)';
+    }
+  }
+}
+.ios {
+
+  body,
+  html {
+    position: fixed;
+  }
+
+  [ga-vector-tile-feedback-modal] {
+
+    .input-modal-container {
+      overflow-y: scroll;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+}

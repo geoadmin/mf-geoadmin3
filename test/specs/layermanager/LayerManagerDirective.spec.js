@@ -2,25 +2,25 @@
 describe('ga_layermanager_directive', function() {
   // Valid layers
 
-  var layerMngr = new ol.layer.Layer({});
+  var layerMngr = new ol.layer.Tile({});
   layerMngr.displayInLayerManager = true;
 
   // Unvalid layer
-  var layerBg = new ol.layer.Layer({});
+  var layerBg = new ol.layer.Tile({});
   layerBg.background = true;
 
-  var layerPrev = new ol.layer.Layer({});
+  var layerPrev = new ol.layer.Tile({});
   layerPrev.preview = true;
 
-  var layerUnvalid = new ol.layer.Layer({});
+  var layerUnvalid = new ol.layer.Tile({});
   layerBg.visible = true;
 
   // Third party layer layer
-  var layerThirdParty = new ol.layer.Layer({});
+  var layerThirdParty = new ol.layer.Tile({});
   layerThirdParty.displayInLayerManager = true;
   layerThirdParty.url = 'http://foo.ch/admin/wms';
 
-  var layerThirdPartyStyle = new ol.layer.Layer({});
+  var layerThirdPartyStyle = new ol.layer.Tile({});
   layerThirdPartyStyle.displayInLayerManager = true;
   layerThirdPartyStyle.externalStyleUrl = 'http://mystyle.json';
 

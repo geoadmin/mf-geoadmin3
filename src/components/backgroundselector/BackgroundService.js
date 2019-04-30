@@ -4,7 +4,8 @@ goog.require('ga_layerfilters_service');
 goog.require('ga_layers_service');
 goog.require('ga_permalink');
 goog.require('ga_urlutils_service');
-goog.require('ga_glstylestorage_service');
+goog.require('ga_mapbox_style_storage_service');
+goog.require('ga_vector_tile_layer_service');
 
 (function() {
 
@@ -13,7 +14,8 @@ goog.require('ga_glstylestorage_service');
     'ga_layers_service',
     'ga_urlutils_service',
     'ga_layerfilters_service',
-    'ga_glstylestorage_service',
+    'ga_mapbox_style_storage_service',
+    'ga_vector_tile_layer_service',
     'ga_storage_service',
     'ga_maputils_service'
   ]);
@@ -22,11 +24,14 @@ goog.require('ga_glstylestorage_service');
    * Backgrounds manager
    */
   module.provider('gaBackground', function() {
+
     this.$get = function($rootScope, $q, gaTopic, gaLayers, gaPermalink,
-        gaUrlUtils, gaLayerFilters, gaGlStyleStorage, gaStorage, gaMapUtils) {
+        gaUrlUtils, gaLayerFilters, gaMapboxStyleStorage, gaStorage,
+        gaMapUtils, gaVectorTileLayerService) {
       var bg; // The current background
       var bgs = []; // The list of backgrounds available
-      var bgsP; // Promise resolved when the background service is initialized.
+      // Promise resolved when the background service is initialized.
+      var bgsP = $q.defer();
 
       // Bgs with vector tiles tileset.
       var vtBgs = {
@@ -160,10 +165,9 @@ goog.require('ga_glstylestorage_service');
         this.init = function(map) {
           var scope = $rootScope.$new();
           var that = this;
-          // Initialize the service when topics and layers config are
-          // loaded
-          bgsP = $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()]).
-              then(function() {
+          // Initialize the service when topics and layers config are loaded
+          $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()]).
+              then(function topicAndLayersSuccess() {
                 updateDefaultBgOrder(gaTopic.get().backgroundLayers);
 
                 var params = gaPermalink.getParams();
@@ -174,7 +178,7 @@ goog.require('ga_glstylestorage_service');
                 // We create the olLayer with the correct style from permalink
                 var adminId = params.glStylesAdminId;
                 if (adminId) {
-                  gaGlStyleStorage.getFileUrlFromAdminId(adminId).then(
+                  gaMapboxStyleStorage.getFileUrlFromAdminId(adminId).then(
                       function(styleUrl) {
                         initBg.adminId = adminId;
                         initBg.externalStyleUrl = styleUrl;
@@ -184,34 +188,20 @@ goog.require('ga_glstylestorage_service');
                   );
                 } else {
                   initBg.externalStyleUrl = params.bgLayer_styleUrl;
-                  that.set(map, initBg);
-
-                  // set default GLStyle background rules
-                  // this is needed because we don't use olms default function
-                  // but rather apply olms.stylefunction at every layer
-                  // we created (instead of letting olms create the layers
-                  // for us, and style them correctly for background rules)
-                  if (initBg.olLayer &&
-                      initBg.olLayer.styles &&
-                      initBg.olLayer.styles[0] &&
-                      initBg.olLayer.styles[0].url) {
-                    gaStorage.load(initBg.olLayer.styles[0].url).then(
-                        function(glStyle) {
-                          gaMapUtils.setGlBackground(map, glStyle);
-                        }
-                    )
-                  }
                 }
-
                 $rootScope.$on('gaTopicChange', function(evt, newTopic) {
                   updateDefaultBgOrder(newTopic.backgroundLayers);
                   that.set(map, getBgByTopic(newTopic));
                 });
-
                 registerBgLayerStyleUrlPermalink(scope, map);
+                bg = getBgById(gaVectorTileLayerService.getVectorLayerBodId());
+                bgsP.resolve()
+              },
+              function anyError() {
+                bgsP.reject();
               });
 
-          return bgsP;
+          return bgsP.promise;
         };
 
         this.getBackgrounds = function() {
@@ -224,33 +214,55 @@ goog.require('ga_glstylestorage_service');
           }
         };
 
+        function removeBackgroundLayersIfNotOlms(map) {
+          var layersArray = [];
+          map.getLayers().forEach(function(layer) {
+            layersArray.push(layer);
+          })
+          for (var i = 0; i < layersArray.length; i++) {
+            var layer = layersArray[i];
+            if (!!layer.background && !layer.olmsLayer) {
+              map.removeLayer(layer);
+            }
+          }
+        }
+
         this.setById = function(map, newBgId) {
           if (map && (!bg || newBgId !== bg.id)) {
             var newBg = getBgById(newBgId);
             if (newBg) {
-              bg = newBg;
               var layers = map.getLayers();
-              if (bg.id === 'voidLayer') {
+              if (newBg.id === 'voidLayer') {
                 // Remove the bg from the map
-                if (layers.getLength() > 0 && layers.item(0).background) {
-                  layers.removeAt(0);
-                }
+                removeBackgroundLayersIfNotOlms(map);
+                // hidding vector tile layers
+                gaVectorTileLayerService.hideVectorTileLayers();
               } else {
-                var layer = createOlLayer(bg);
-                // Add the bg to the map
-                if (layers.item(0) && layers.item(0).background) {
-                  layers.setAt(0, layer);
-                } else {
-                  layers.insertAt(0, layer);
+
+                // showing vector tile if needed (if void layer was selected)
+                gaVectorTileLayerService.showVectorTileLayers();
+
+                // removing any background layer present (other than olms)
+                removeBackgroundLayersIfNotOlms(map);
+                // if new bg layer is not vector tile, we add it on top
+                // of OLMS layers
+                if (newBg.id !==
+                    gaVectorTileLayerService.getVectorLayerBodId()) {
+                  // looking for latest olms layer index
+                  var backgroundOffset =
+                    gaVectorTileLayerService.getVectorTileLayersCount();
+                  var layer = createOlLayer(newBg);
+                  layers.insertAt(backgroundOffset, layer);
                 }
               }
+              bg = newBg;
               broadcast();
             }
           }
         };
 
         this.loadConfig = function() {
-          return bgsP;
+          return bgsP.promise;
         };
 
         this.get = function() {

@@ -114,7 +114,7 @@ describe('ga_previewfeatures_service', function() {
       });
 
       it('removes the features and the layer when the associated layer is removed', function() {
-        var layer = new ol.layer.Layer({});
+        var layer = new ol.layer.Tile({});
         layer.id = 'somelayer';
         map.addLayer(layer);
         var feats = map.getLayers().item(0).getSource().getFeatures();
@@ -125,7 +125,7 @@ describe('ga_previewfeatures_service', function() {
 
       it('removes the feature and not the layer when the associated layer is removed', function() {
         gaPreviewFeatures.add(map, new ol.Feature());
-        var layer = new ol.layer.Layer({});
+        var layer = new ol.layer.Tile({});
         layer.id = 'somelayer';
         map.addLayer(layer);
         var feats = map.getLayers().item(0).getSource().getFeatures();

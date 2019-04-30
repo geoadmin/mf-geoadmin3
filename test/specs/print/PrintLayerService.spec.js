@@ -71,6 +71,9 @@ describe('ga_printlayer_service', function() {
         $provide.value('gaLang', {
           get: function() {
             return lang;
+          },
+          getNoRm: function() {
+            return lang;
           }
         });
       });
@@ -538,7 +541,7 @@ describe('ga_printlayer_service', function() {
         var stub = sinon.stub($window.console, 'error').withArgs('Trying to encode a group with the layer encoder!');
         var gr = new ol.layer.Group({
           layers: [
-            new ol.layer.Layer({}),
+            new ol.layer.Tile({}),
             new ol.layer.Group({}),
             layerWMS,
             layerWMTS,

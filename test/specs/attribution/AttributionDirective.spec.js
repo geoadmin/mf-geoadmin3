@@ -1,37 +1,37 @@
 /* eslint-disable max-len */
 describe('ga_attribution_directive', function() {
   // Valid layers
-  var layerBg = new ol.layer.Layer({});
+  var layerBg = new ol.layer.Tile({});
   layerBg.background = true;
   layerBg.visible = true;
 
-  var layerPrev = new ol.layer.Layer({});
+  var layerPrev = new ol.layer.Tile({});
   layerPrev.preview = true;
   layerPrev.visible = true;
 
-  var layerMngr = new ol.layer.Layer({});
+  var layerMngr = new ol.layer.Tile({});
   layerMngr.displayInLayerManager = true;
   layerMngr.visible = true;
 
   // Valid layers but hidden
-  var layerBg2 = new ol.layer.Layer({});
+  var layerBg2 = new ol.layer.Tile({});
   layerBg2.background = true;
   layerBg2.visible = false;
 
-  var layerPrev2 = new ol.layer.Layer({});
+  var layerPrev2 = new ol.layer.Tile({});
   layerPrev2.preview = true;
   layerPrev2.visible = false;
 
-  var layerMngr2 = new ol.layer.Layer({});
+  var layerMngr2 = new ol.layer.Tile({});
   layerMngr2.displayInLayerManager = true;
   layerMngr2.visible = false;
 
   // Unvalid layer
-  var layerUnvalid = new ol.layer.Layer({});
+  var layerUnvalid = new ol.layer.Tile({});
   layerBg.visible = true;
 
   // Third party layer layer
-  var layerThirdParty = new ol.layer.Layer({});
+  var layerThirdParty = new ol.layer.Tile({});
   layerThirdParty.visible = true;
   layerThirdParty.displayInLayerManager = true;
   layerThirdParty.url = 'http://foo.ch/admin/wms';

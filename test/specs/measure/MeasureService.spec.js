@@ -206,14 +206,14 @@ describe('ga_measure_service', function() {
     describe('#updateOverlays()', function() {
 
       it('does nothing if the feature has no overlays', function() {
-        var layer = new ol.layer.Layer({});
+        var layer = new ol.layer.Tile({});
         var feat = new ol.Feature();
         gaMeasure.updateOverlays(layer, feat);
         expect(feat.get('overlays')).to.be(undefined);
       });
 
       describe('for a polygon', function() {
-        var feat, layer = new ol.layer.Layer({});
+        var feat, layer = new ol.layer.Tile({});
         var coords = [
           [3, 15],
           [2, 17],
@@ -264,7 +264,7 @@ describe('ga_measure_service', function() {
       });
 
       describe('for a line or a polygon', function() {
-        var featLine, featPoly, layer = new ol.layer.Layer({});
+        var featLine, featPoly, layer = new ol.layer.Tile({});
 
         beforeEach(function() {
           layer.setOpacity(1);
@@ -554,7 +554,7 @@ describe('ga_measure_service', function() {
 
     describe('#addOverlays()', function() {
       var c = [0, 0];
-      var stubUp, stubAdd, stubRm, map = new ol.Map({}), layer = new ol.layer.Layer({}),
+      var stubUp, stubAdd, stubRm, map = new ol.Map({}), layer = new ol.layer.Tile({}),
         feat = new ol.Feature();
       var goodGeoms = [
         new ol.geom.LineString([c]),

@@ -1,0 +1,59 @@
+<div ng-if="!style" translate>
+  <p><span translate>edit_not_possible</span></p>
+</div>
+<p ng-if="style && !isExternalStyleUrlValid()">
+  <span translate>{{ 'edit_or_reset_style' }}:</span>
+  <a href=""
+     class="btn btn-default"
+     ng-disabled="!canExport(style)"
+     ng-click="reset($event, style)"
+     translate>edit_reset</a>
+</p>
+<div ng-show="style && isExternalStyleUrlValid()">
+  <p>
+    <span translate>edit_current_layer</span>
+    <span translate>{{ getBgLabelId() }}</span>
+  </p>
+
+  <div ng-if="isActive"
+       ga-mapbox-style-edit-properties="style"
+       ga-mapbox-style-edit-properties-config="options.editConfig"></div>
+
+  <div class="ga-edit-info-save">
+    <span class="ga-success" translate="{{statusMsgId}}"></span>
+  </div>
+  <hr />
+  <label>
+    <span translate>{{ 'object_information' }}:</span>
+    <div ga-query-vector-select
+         ga-query-vector-select-is-edit-active="isActive"></div>
+  </label>
+  <hr />
+  <div class="ga-more">
+    <ul class="list-inline row">
+      <li class="col-sm-4 col-xs-4 vr">
+        <a href=""
+           class="btn"
+           ng-disabled="!canExportOrShare(style)"
+           ng-click="reset($event, style)"
+           translate>edit_reset</a>
+      </li>
+      <li class="col-sm-4 col-xs-4 vr">
+        <a href=""
+           class="btn"
+           ng-disabled="!canExportOrShare(style)"
+           ng-click="export($event, style)"
+           translate>export</a>
+      </li>
+      <li class="col-sm-4 col-xs-4">
+        <a href=""
+           class="btn"
+           ng-disabled="!canExportOrShare(style)"
+           ng-click="share($event, style)"
+           translate>share</a>
+      </li>
+    </ul>
+  </div>
+  <hr />
+  <div class="ga-edit-disclaimer" translate>edit_share_file_disclaimer</div>
+</div>

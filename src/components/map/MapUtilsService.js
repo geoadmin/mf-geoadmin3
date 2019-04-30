@@ -34,17 +34,6 @@ goog.require('ga_urlutils_service');
       var extent = gaGlobalOptions.defaultExtent || proj.getExtent();
       var BASE64_MARKER = ';base64,';
 
-      // For mobile, redefine disposeInternal function for mvt.
-      // TODO: verify if it's useful
-      var disposeInternal = ol.VectorImageTile.prototype.disposeInternal;
-      ol.VectorImageTile.prototype.disposeInternal = function() {
-        for (var key in this.context_) {
-          var context = this.context_[key];
-          context.canvas.width = context.canvas.height = 0;
-        }
-        disposeInternal.call(this);
-      };
-
       return {
         Z_PREVIEW_LAYER: 1000,
         Z_PREVIEW_FEATURE: 1100,
@@ -211,7 +200,6 @@ goog.require('ga_urlutils_service');
           var view = map.getView();
           view.setZoom(zoom);
           view.setCenter(center);
-          return $q.when();
         },
 
         zoomToExtent: function(map, ol3d, extent) {
@@ -221,7 +209,6 @@ goog.require('ga_urlutils_service');
           map.getView().fit(extent, {
             size: map.getSize()
           });
-          return $q.when();
         },
 
         // This function differs from moveTo because it adds panning effect in
@@ -292,7 +279,9 @@ goog.require('ga_urlutils_service');
           if (!olLayerOrId) {
             return false;
           }
-          if (olLayerOrId instanceof ol.layer.Layer) {
+          if (olLayerOrId instanceof ol.layer.Tile ||
+              olLayerOrId instanceof ol.layer.Image ||
+              olLayerOrId instanceof ol.layer.Vector) {
             olLayerOrId = olLayerOrId.id;
           }
           if (angular.isString(olLayerOrId)) {
@@ -314,7 +303,9 @@ goog.require('ga_urlutils_service');
           if (!olLayerOrId) {
             return false;
           }
-          if (olLayerOrId instanceof ol.layer.Layer) {
+          if (olLayerOrId instanceof ol.layer.Tile ||
+              olLayerOrId instanceof ol.layer.Image ||
+              olLayerOrId instanceof ol.layer.Vector) {
             olLayerOrId = olLayerOrId.id;
           }
           if (angular.isString(olLayerOrId)) {
@@ -360,7 +351,9 @@ goog.require('ga_urlutils_service');
           if (!olLayerOrId) {
             return false;
           }
-          if (olLayerOrId instanceof ol.layer.Layer) {
+          if (olLayerOrId instanceof ol.layer.Tile ||
+              olLayerOrId instanceof ol.layer.Image ||
+              olLayerOrId instanceof ol.layer.Vector) {
             olLayerOrId = olLayerOrId.id;
           }
           if (angular.isString(olLayerOrId)) {
@@ -529,20 +522,20 @@ goog.require('ga_urlutils_service');
           }
 
           if (!olLayer.sourceId) {
-            return;
+
           }
 
-          gaStorage.load(glStyle.sprite + '.json').then(function(spriteData) {
-            $window.olms.stylefunction(
-                olLayer,
-                glStyle,
-                olLayer.sourceId,
-                undefined,
-                spriteData,
-                glStyle.sprite + '.png'
-            );
-            olLayer.glStyle = glStyle;
-          });
+        // gaStorage.load(glStyle.sprite + '.json').then(function(spriteData) {
+        //   $window.olms.stylefunction(
+        //       olLayer,
+        //       glStyle,
+        //       olLayer.sourceId,
+        //       undefined,
+        //       spriteData,
+        //       glStyle.sprite + '.png'
+        //   );
+        //   olLayer.glStyle = glStyle;
+        // });
         },
 
         // This function creates  an ol source and set it to the layer from the
@@ -558,7 +551,7 @@ goog.require('ga_urlutils_service');
               maxZoom: sourceConfig.maxZoom || data.maxzoom,
               urls: data.tiles,
               tileLoadFunction: function(tile, url) {
-                tile.setLoader(function() {
+                tile.setLoader(function(extent, resolution, projection) {
                   gaStorage.getTile(that.getTileKey(url)
                   ).then(function(base64) {
                     if (!base64) {
@@ -578,10 +571,11 @@ goog.require('ga_urlutils_service');
                     return $q.when(new ArrayBuffer(0));
                   }).then(function(arrayBuffer) {
                     var format = tile.getFormat();
-                    tile.setProjection(format.readProjection(arrayBuffer));
-                    tile.setFeatures(format.readFeatures(arrayBuffer));
-                    // the line below is only required for ol/format/MVT
-                    tile.setExtent(format.getLastExtent());
+                    tile.setFeatures(format.readFeatures(data, {
+                      // extent is only required for ol/format/MVT
+                      extent: extent,
+                      featureProjection: projection
+                    }));
                   });
                 });
               }

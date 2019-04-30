@@ -396,7 +396,7 @@ These `edits` objects have 3 properties:
 - `props`: An array of properties allowed for modification. These properties are defined as an array of string.
   + Example with `['paint', 'text-color', '{color}']`:
     - `paint` and `text-color` define the properties of the layer object to modify: `layer.paint.fill-color`
-    - `{color}` defines which directive to used to modify the value here the ga-color directive. 3 possibilities: `{color}`, `{size}`, `{toggle}`
+    - `{color}` defines which directive to used to modify the value here the ga-mapbox-style-color-picker directive. 3 possibilities: `{color}`, `{size}`, `{toggle}`
       + When using the `{toggle}` directive, if the property is not a boolean, you have to defined 2 values to toggle.
       + Example for [visibility](https://www.mapbox.com/mapbox-gl-js/style-spec/#layout-background-visibility) property:
         ['layout', 'visibility', '{toggle}', 'visible', 'none'] , The toggle directive will switch between the 2 values, visible' and 'none'.

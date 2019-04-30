@@ -141,7 +141,7 @@ describe('ga_import_controller', function() {
             Identifier: 'bar',
             capabilitiesUrl: 'foo'
           };
-          var layer = new ol.layer.Layer({});
+          var layer = new ol.layer.Tile({});
           var spy = sinon.stub(gaWmts, 'getOlLayerFromGetCap').withArgs(map, scope.wmtsGetCap, 'bar').returns(layer);
           var layerReturned = scope.options.getOlLayerFromGetCapLayer(getCapLayer);
           expect(spy.callCount).to.be(1);

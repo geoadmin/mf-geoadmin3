@@ -39,6 +39,8 @@ itemscope itemtype="http://schema.org/WebApplication"
     ## HACK: load Roboto font from googleapi since olms is not capable of loading font from
     ## source defined in style
     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400normal" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css?family=Roboto:normalitalic" rel="stylesheet"> 
 
     <!-- Description is translated 'by hand' in the MainController -->
     <meta name="description" translate-attr="{content: 'page_description'}" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
@@ -191,13 +193,13 @@ itemscope itemtype="http://schema.org/WebApplication"
 
 % endif
     <div id="loader"></div>
-    <!-- Vector feedback -->
-    <div ng-controller="GaVectorFeedbackController">
-      <div ga-vector-feedback
-           ga-vector-feedback-map="::map"
-           ga-vector-feedback-options="::options"
-           ga-vector-feedback-toggle="!globals.isEditActive"
-           ga-vector-feedback-ol3d="::ol3d">
+    <!-- Vector Tile feedback -->
+    <div ng-controller="gaVectorTileFeedbackController">
+      <div ga-vector-tile-feedback
+           ga-vector-tile-feedback-map="::map"
+           ga-vector-tile-feedback-options="::options"
+           ga-vector-tile-feedback-toggle="!globals.isEditActive"
+           ga-vector-tile-feedback-ol3d="::ol3d">
       </div>
     </div>
     <div tabindex="1" ga-map ga-map-map="map" ga-map-ol3d="::ol3d">
@@ -225,7 +227,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div ga-geolocation ga-geolocation-map="::map" ga-geolocation-ol3d="::ol3d"></div>
   % endif
         <div id="zoomButtons"></div>
-        <div ga-tilt3d ng-if="globals.dev3d"></div>
+        ## <div ga-tilt3d ng-if="globals.dev3d"></div>
   % if device != 'embed':
         <div ga-time-selector-bt ga-time-selector-bt-map="map"></div>
   % endif
@@ -389,11 +391,11 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div class="panel" ng-show="globals.isEditActive">
           <div id="edit" class="panel-collapse">
             <div class="panel-body" ng-controller="GaEditController">
-              <div ga-edit
-                   ga-edit-map="map"
-                   ga-edit-options="options"
-                   ga-edit-layer="layer"
-                   ga-edit-active="globals.isEditActive">
+              <div ga-mapbox-style-edit
+                   ga-mapbox-style-edit-map="map"
+                   ga-mapbox-style-edit-options="options"
+                   ga-mapbox-style-edit-style="style"
+                   ga-mapbox-style-edit-active="globals.isEditActive">
               </div>
             </div>
           </div>
@@ -518,7 +520,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div> <!-- #pulldown -->
 
     <!-- Modal: vector tiles survey -->
-    <div ng-cloak translate-cloak ga-vector-feedback-modal></div>
+    <div ng-cloak translate-cloak ga-vector-tile-feedback-modal></div>
 
     <!-- Modal: offline menu -->
     <div ng-cloak translate-cloak ga-offline-menu ga-offline-menu-map="map"></div>
@@ -723,6 +725,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       window.CLOSURE_NO_DEPS = true;
     </script>
 
+    <script src="${s3basepath}lib/ol.js"></script>
     <script src="${s3basepath}lib/olcesium-debug.js"></script>
     <script src="${s3basepath}lib/olms.js"></script>
     <script src="${s3basepath}deps.js"></script>
@@ -833,6 +836,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         var publicUrl = setBackend(prtl + cfg['public_url'], prtl + cfg['public_tech_url'], 'public_url');
         var printUrl = setBackend(prtl + cfg['print_url'], prtl + cfg['print_tech_url'], 'print_url');
         var proxyUrl = prtl + cfg['proxy_url'] + '/';
+        var vectorTileCustomStyleUrl = getParam('bgLayer_styleUrl')
         var apiOverwrite = !!(getParam('api_url') || env);
         var configOverwrite = !!(getParam('config_url') || env);
         var localhostRegexp = new RegExp('https?:\/\/localhost:[0-9]{1,5}');
@@ -887,6 +891,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           apiOverwrite: apiOverwrite,
           configOverwrite: configOverwrite,
           disableTooltip: disableTooltip,
+          vectorTileCustomStyleUrl: vectorTileCustomStyleUrl,
 
           // Map state values
           defaultExtent: JSON.parse(${default_extent}),

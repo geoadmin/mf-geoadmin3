@@ -262,13 +262,13 @@ describe('ga_wmts_service', function() {
         var getCap = {};
         var layerIdentifier = 'foo';
         var options = {};
-        var layer = new ol.layer.Layer({});
+        var layer = new ol.layer.Tile({});
 
         // Add layers to test insertion
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
+        map.addLayer(new ol.layer.Tile({}));
+        map.addLayer(new ol.layer.Tile({}));
+        map.addLayer(new ol.layer.Tile({}));
+        map.addLayer(new ol.layer.Tile({}));
 
         sinon.stub(gaWmts, 'getOlLayerFromGetCap').withArgs(map, getCap, layerIdentifier, options).returns(layer);
 
@@ -286,13 +286,13 @@ describe('ga_wmts_service', function() {
         var options = {
           index: 2
         };
-        var layer = new ol.layer.Layer({});
+        var layer = new ol.layer.Tile({});
 
         // Add layers to test insertion
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
+        map.addLayer(new ol.layer.Tile({}));
+        map.addLayer(new ol.layer.Tile({}));
+        map.addLayer(new ol.layer.Tile({}));
+        map.addLayer(new ol.layer.Tile({}));
 
         sinon.stub(gaWmts, 'getOlLayerFromGetCap').withArgs(map, getCap, layerIdentifier, options).returns(layer);
         var layerReturned = gaWmts.addWmtsToMapFromGetCap(map, getCap, layerIdentifier, options);
@@ -311,7 +311,7 @@ describe('ga_wmts_service', function() {
         var getCap = {};
         var layerIdentifier = 'foo';
         var options = {};
-        var layer = new ol.layer.Layer({});
+        var layer = new ol.layer.Tile({});
 
         var stub = sinon.stub(gaWmts, 'addWmtsToMapFromGetCap').withArgs(map, getCap, layerIdentifier, options).returns(layer);
         $httpBackend.expectGET('http://proxy.geo.admin.ch/http/foo.ch%2Fwmts').respond(getCap);
@@ -330,7 +330,7 @@ describe('ga_wmts_service', function() {
         var getCap = {};
         var layerIdentifier = 'foo';
         var options = {};
-        var layer = new ol.layer.Layer({});
+        var layer = new ol.layer.Tile({});
 
         sinon.stub(gaWmts, 'addWmtsToMapFromGetCap').withArgs(map, getCap, layerIdentifier, options).returns(layer);
         $httpBackend.expectGET('http://proxy.geo.admin.ch/http/foo.ch%2Fwmts').respond(getCap);
@@ -354,7 +354,7 @@ describe('ga_wmts_service', function() {
         var getCap = {};
         var layerIdentifier = 'foo';
         var options = {};
-        var layer = new ol.layer.Layer({});
+        var layer = new ol.layer.Tile({});
 
         var spy = sinon.stub($window.console, 'error');
         sinon.stub(gaWmts, 'addWmtsToMapFromGetCap').withArgs(map, getCap, layerIdentifier, options).returns(layer);
