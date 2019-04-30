@@ -34,7 +34,8 @@ goog.require('ga_translation_service');
         map: '=gaVectorTileFeedbackMap',
         options: '=gaVectorTileFeedbackOptions',
         toggle: '=gaVectorTileFeedbackToggle',
-        ol3d: '=gaVectorTileFeedbackOl3d'
+        ol3d: '=gaVectorTileFeedbackOl3d',
+        isEmbedded: '=gaVectorTileFeedbackIsEmbedded'
       },
       link: function(scope, element) {
         scope.olLayer = null;
@@ -55,6 +56,10 @@ goog.require('ga_translation_service');
           // Do not open menu feedback panel if edit menu is active
           element.find('#ga-feedback-vector-body').collapse(
               show && scope.toggle ? 'show' : 'hide');
+        }
+
+        if (scope.isEmbedded) {
+          toggle(false);
         }
 
         scope.$watch('toggle', toggle);
