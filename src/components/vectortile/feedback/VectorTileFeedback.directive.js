@@ -89,6 +89,10 @@ goog.require('ga_translation_service');
           }
         };
 
+        scope.broadcastShowVectorTileFeedbackModal = function () {
+          $rootScope.$broadcast('gaShowVectorTileFeedbackModal')
+        };
+
         scope.$on('gaBgChange', function(evt, bg) {
           if (bg.disableEdit) {
             scope.olLayer = null;

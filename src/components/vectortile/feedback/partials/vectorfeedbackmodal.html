@@ -7,7 +7,7 @@
       </div>
       <div class="modal-body">
         <div class="input-modal-container">
-          <iframe ng-src="{{url}}" height="100%" width="100%" frameborder="0"></iframe>
+          <iframe ng-if="url" ng-src="{{url}}" height="100%" width="100%" frameborder="0"></iframe>
         </div>
       </div>
     </div>
