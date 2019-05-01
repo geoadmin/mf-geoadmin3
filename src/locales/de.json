@@ -140,7 +140,7 @@
 "ech_service_link_href": "https://www.geo.admin.ch/de/home.html",
 "ech_service_link_label": "geo.admin.ch",
 "edit_back": "Zurück / Editieren beenden",
-"edit_confirm_reset_style": "Diese Aktion entfernt alle Ihre Änderungen und wendet den Standardstil der Ebene an. Ist es das, was du willst?",
+"edit_confirm_reset_style": "Diese Aktion entfernt alle Ihre Änderungen und wendet den Standardstil der Ebene an. ",
 "edit_current_layer": "Bearbeitung des Datensatz ",
 "edit_file_saved": "Alle Änderungen gespeichert",
 "edit_file_saving": "Speichern ....",

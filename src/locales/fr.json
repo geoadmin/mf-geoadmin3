@@ -140,7 +140,7 @@
 "ech_service_link_href": "https://www.geo.admin.ch/fr/home.html",
 "ech_service_link_label": "geo.admin.ch",
 "edit_back": "Retour / Terminer l'édition",
-"edit_confirm_reset_style": "Cette action supprimera tous vos changements et appliquera le style par défaut du calque. C'est ce que tu veux ?",
+"edit_confirm_reset_style": "Cette action supprimera tous vos changements et appliquera le style par défaut du calque. ",
 "edit_current_layer": "Modification de la couche ",
 "edit_file_saved": "Carte sauvegardée.",
 "edit_file_saving": "Sauvegarde....",
