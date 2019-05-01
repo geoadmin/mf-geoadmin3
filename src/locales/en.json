@@ -140,7 +140,7 @@
 "ech_service_link_href": "https://www.geo.admin.ch/en/home.html",
 "ech_service_link_label": "geo.admin.ch",
 "edit_back": "Back / Finish edition",
-"edit_confirm_reset_style": "This action wil remove all your changes and apply the default style of the layer. Is that what you want ?",
+"edit_confirm_reset_style": "This action wil remove all your changes and apply the default style of the layer. ",
 "edit_current_layer": "Modifying the layer ",
 "edit_file_saved": "Map saved.",
 "edit_file_saving": "Saving ...",

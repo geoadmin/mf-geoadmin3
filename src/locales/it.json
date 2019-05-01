@@ -140,7 +140,7 @@
 "ech_service_link_href": "https://www.geo.admin.ch/it/home.html",
 "ech_service_link_label": "geo.admin.ch",
 "edit_back": "Indietro / Finire il disegno",
-"edit_confirm_reset_style": "Questa azione rimuoverà tutte le modifiche e applicherà lo stile predefinito del livello. È questo quello che vuoi?",
+"edit_confirm_reset_style": "Questa azione rimuoverà tutte le modifiche e applicherà lo stile predefinito del livello. ",
 "edit_current_layer": "Modificare il layer ",
 "edit_file_saved": "Tutte le modifiche salvate",
 "edit_file_saving": "Salvataggio...",
