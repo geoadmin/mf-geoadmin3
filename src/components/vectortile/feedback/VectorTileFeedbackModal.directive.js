@@ -16,9 +16,16 @@ goog.require('ga_translation_service');
       scope: {},
       link: function(scope, elt) {
         var urlTemplate = 'https://findmind.ch/c/vectorsimple{lang}';
-        scope.url = urlTemplate.replace('{lang}', gaLang.getNoRm());
-        $rootScope.$on('$translateChangeEnd', function() {
+
+        scope.url = undefined;
+
+        $rootScope.$on('gaShowVectorTileFeedbackModal', function () {
           scope.url = urlTemplate.replace('{lang}', gaLang.getNoRm());
+        })
+        $rootScope.$on('$translateChangeEnd', function() {
+          if (scope.url) {
+            scope.url = urlTemplate.replace('{lang}', gaLang.getNoRm());
+          }
         });
 
         function preventDefault(e) {
