@@ -14,6 +14,8 @@ describe('ga_translation_service', function() {
         gaPermalink = $injector.get('gaPermalink');
       });
 
+      gaLang.init();
+
       cpt = 0;
       $rootScope.$on('$translateChangeEnd', function(evt, newLang) {
         cpt++;

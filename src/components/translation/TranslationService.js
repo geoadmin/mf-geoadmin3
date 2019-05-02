@@ -12,7 +12,8 @@ goog.require('ga_permalink_service');
    * Lang manager
    */
   module.provider('gaLang', function() {
-    this.$get = function($window, $translate, gaPermalink, gaGlobalOptions) {
+    this.$get = function($q, $window, $translate, gaPermalink,
+        gaGlobalOptions) {
       var lang = gaPermalink.getParams().lang ||
           ($window.navigator.userLanguage ||
           $window.navigator.language).split('-')[0];
@@ -23,22 +24,38 @@ goog.require('ga_permalink_service');
 
       // Load translations via $translate service
       var loadTranslations = function(newLang) {
+        var deferred = $q.defer();
         if (newLang !== $translate.use()) {
           lang = newLang;
-          $translate.use(lang).then(angular.noop, function() {
-            // failed to load lang from server, fallback to default code.
-            loadTranslations(gaGlobalOptions.translationFallbackCode);
-          })['finally'](function() {
+          $translate.use(lang).then(
+              function useSuccess() {
+                deferred.resolve(lang);
+              },
+              function useError() {
+                if (newLang !== gaGlobalOptions.translationFallbackCode) {
+                // failed to load lang from server, fallback to default code.
+                  loadTranslations(gaGlobalOptions.translationFallbackCode);
+                } else {
+                  deferred.reject();
+                }
+              }
+          )['finally'](function() {
             gaPermalink.updateParams({lang: lang});
           });
+        } else {
+          deferred.resolve(lang);
         }
+        return deferred.promise;
       };
-      loadTranslations(lang);
 
       var Lang = function() {
 
+        this.init = function() {
+          return loadTranslations(lang);
+        };
+
         this.set = function(newLang) {
-          loadTranslations(newLang);
+          return loadTranslations(newLang);
         };
 
         this.get = function() {

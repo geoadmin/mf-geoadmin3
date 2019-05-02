@@ -265,9 +265,9 @@ goog.require('ga_browsersniffer_service');
     function init(map) {
       olMap = map;
 
-      if (gaBrowserSniffer.msie && gaBrowserSniffer.msie <= 11) {
-        alert($translate.instant('mvt_ie11_alert'));
-      }
+      // if (gaBrowserSniffer.msie && gaBrowserSniffer.msie <= 11) {
+      alert($translate.instant('mvt_ie11_alert'));
+      // }
 
       var deferred = $q.defer();
 
