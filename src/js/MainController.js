@@ -187,10 +187,8 @@ goog.require('ga_vector_tile_layer_service');
       hostIsProd: gaGlobalOptions.hostIsProd
     };
 
-    var promises = [];
-    promises.push(gaLang.init());
-    promises.push(gaVectorTileLayerService.init($scope.map));
-    $q.all(promises).then(function() {
+    var initApp = function() {
+
       // Load the background if the "bgLayer" parameter exist.
       gaBackground.init($scope.map);
 
@@ -512,6 +510,13 @@ goog.require('ga_vector_tile_layer_service');
               });
             });
       }
-    });
+    }
+    gaLang.init().then(
+        function() {
+          gaVectorTileLayerService.init($scope.map).then(function() {
+            initApp();
+          })
+        }
+    );
   });
 })();
