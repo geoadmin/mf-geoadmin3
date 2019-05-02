@@ -62,6 +62,7 @@ goog.require('ga_tooltip_controller');
 goog.require('ga_topic');
 goog.require('ga_translation');
 goog.require('ga_translation_controller');
+goog.require('ga_vector_tile');
 goog.require('ga_waitcursor_service');
 (function() {
 
@@ -128,7 +129,8 @@ goog.require('ga_waitcursor_service');
     'ga_featuretree_controller',
     'ga_draw_controller',
     'ga_drawstyle_controller',
-    'ga_drawstylepopup_controller'
+    'ga_drawstylepopup_controller',
+    'ga_vector_tile'
   ]);
 
   module.config(function($translateProvider, gaGlobalOptions) {
