@@ -634,7 +634,7 @@ goog.require('ga_urlutils_service');
          * Mapping between Swiss map zooms and Web Mercator zooms.
         */
         swissZoomToMercator: function(zoom) {
-          var gridZoom = zoom + 14;
+          var gridZoom = Math.round(zoom) + 14;
           var wmtsMaxZoom = gaGlobalOptions.tileGridResolutions.length;
           var mapMaxZoom = gaGlobalOptions.resolutions.length;
           var zoomOffset = wmtsMaxZoom - mapMaxZoom;
