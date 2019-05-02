@@ -19,7 +19,7 @@ goog.require('ga_translation_service');
 
         scope.url = undefined;
 
-        $rootScope.$on('gaShowVectorTileFeedbackModal', function () {
+        $rootScope.$on('gaShowVectorTileFeedbackModal', function() {
           scope.url = urlTemplate.replace('{lang}', gaLang.getNoRm());
         })
         $rootScope.$on('$translateChangeEnd', function() {
