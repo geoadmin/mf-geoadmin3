@@ -5,6 +5,7 @@ goog.require('ga_translation_service');
 goog.require('ga_definepropertiesforlayer_service');
 goog.require('ga_permalink_service');
 goog.require('ga_mapbox_style_storage_service');
+goog.require('ga_browsersniffer_service');
 
 (function() {
 
@@ -13,13 +14,15 @@ goog.require('ga_mapbox_style_storage_service');
     'ga_translation_service',
     'ga_definepropertiesforlayer_service',
     'ga_permalink_service',
-    'ga_mapbox_style_storage_service'
+    'ga_mapbox_style_storage_service',
+    'ga_browsersniffer_service',
+    'pascalprecht.translate'
   ]).
       factory('gaVectorTileLayerService', VectorTileLayerService);
 
-  function VectorTileLayerService($window, $q, $rootScope, gaLang, gaStorage,
-      gaDefinePropertiesForLayer, gaGlobalOptions, gaPermalink,
-      gaMapboxStyleStorage) {
+  function VectorTileLayerService($window, $q, $rootScope, $translate, gaLang,
+      gaStorage, gaDefinePropertiesForLayer, gaGlobalOptions, gaPermalink,
+      gaMapboxStyleStorage, gaBrowserSniffer) {
     // LayersConfig for vector
     // TODO: replace this by a fetch call on the API (TBD)
     var vectortileLayerConfig = {
@@ -261,6 +264,11 @@ goog.require('ga_mapbox_style_storage_service');
     // done before, when we were creating mapbox layers ourselves)
     function init(map) {
       olMap = map;
+
+      if (gaBrowserSniffer.msie && gaBrowserSniffer.msie <= 11) {
+        alert($translate.instant('mvt_ie11_alert'));
+      }
+
       var deferred = $q.defer();
 
       var permaLinkParams = gaPermalink.getParams();

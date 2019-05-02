@@ -187,13 +187,13 @@ goog.require('ga_vector_tile_layer_service');
       hostIsProd: gaGlobalOptions.hostIsProd
     };
 
-    gaVectorTileLayerService.init($scope.map).then(function() {
+    var initApp = function() {
 
       // Load the background if the "bgLayer" parameter exist.
       gaBackground.init($scope.map);
 
-      // Start managing global time parameter, when all permalink layers are
-      // added.
+      // Start managing global time parameter, when all permalink
+      // layers are added.
       gaTime.init($scope.map);
 
       // Activate the "layers" parameter permalink manager for the map.
@@ -209,12 +209,13 @@ goog.require('ga_vector_tile_layer_service');
       gaOpaqueLayersManager($scope);
 
       var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
-      var initWithFeedback = /feedback/g.test(gaPermalink.getParams().widgets);
+      var initWithFeedback = /feedback/g.test(gaPermalink.getParams().
+          widgets);
       var initWithDraw = /draw/g.test(gaPermalink.getParams().widgets) ||
-          (!!(gaPermalink.getParams().adminId) &&
-          !gaPermalink.getParams().glStyleAdminId);
+        (!!(gaPermalink.getParams().adminId) &&
+        !gaPermalink.getParams().glStyleAdminId);
       var initWithEdit = /edit/g.test(gaPermalink.getParams().widgets) ||
-          !!(gaPermalink.getParams().glStylesAdminId);
+        !!(gaPermalink.getParams().glStylesAdminId);
       gaPermalink.deleteParam('widgets');
 
       var onTopicsLoaded = function() {
@@ -278,20 +279,23 @@ goog.require('ga_vector_tile_layer_service');
 
       // Create switch device url
       var switchToMobile = '' + !gaBrowserSniffer.mobile;
-      $scope.host = {url: $window.location.host}; // only use in embed.html
+      // only use in embed.html
+      $scope.host = {url: $window.location.host};
       $scope.toMainHref = gaPermalink.getMainHref();
-      $scope.deviceSwitcherHref = gaPermalink.getHref({mobile: switchToMobile});
+      $scope.deviceSwitcherHref = gaPermalink.getHref({
+        mobile: switchToMobile
+      });
       $rootScope.$on('gaPermalinkChange', function() {
         $scope.toMainHref = gaPermalink.getMainHref();
         $scope.deviceSwitcherHref =
-          gaPermalink.getHref({mobile: switchToMobile});
+        gaPermalink.getHref({mobile: switchToMobile});
       });
 
       // gaWindow is efficient only after the dom is ready
       $scope.$applyAsync(function() {
         $scope.globals.searchFocused = gaWindow.isWidth('>xs');
         $scope.globals.pulldownShown = gaWindow.isWidth('>s') &&
-             gaWindow.isHeight('>s');
+           gaWindow.isHeight('>s');
         $scope.globals.settingsShown = gaWindow.isWidth('<=m');
         $scope.globals.queryShown = gaWindow.isWidth('>m');
       });
@@ -334,10 +338,10 @@ goog.require('ga_vector_tile_layer_service');
       // Activate share tool when menu is opening.
       $scope.$watch('globals.pulldownShown', function(active) {
         if (active &&
-            gaWindow.isWidth('xs') &&
-            !$scope.globals.isDrawActive &&
-            !$scope.globals.isEditActive &&
-            !$scope.globals.isShareActive) {
+          gaWindow.isWidth('xs') &&
+          !$scope.globals.isDrawActive &&
+          !$scope.globals.isEditActive &&
+          !$scope.globals.isShareActive) {
           $scope.globals.isShareActive = true;
         }
       });
@@ -348,7 +352,7 @@ goog.require('ga_vector_tile_layer_service');
 
       // Only iOS Safari
       if (!$window.navigator.standalone && gaBrowserSniffer.ios &&
-          gaBrowserSniffer.safari && !gaStorage.getItem('homescreen')) {
+        gaBrowserSniffer.safari && !gaStorage.getItem('homescreen')) {
         $timeout(function() {
           $scope.globals.homescreen = true;
           $scope.globals.tablet = gaWindow.isWidth('s');
@@ -371,7 +375,7 @@ goog.require('ga_vector_tile_layer_service');
           }
         }
         if ((evt.which === 8 || evt.which === 27) &&
-            ($scope.globals.isDrawActive || $scope.globals.isEditActive)) {
+        ($scope.globals.isDrawActive || $scope.globals.isEditActive)) {
           $scope.globals.isDrawActive = false;
           $scope.globals.isEditActive = false;
           $scope.$digest();
@@ -401,7 +405,7 @@ goog.require('ga_vector_tile_layer_service');
       });
 
       $window.onpopstate = function(evt) {
-        // When we go to full screen evt.state is null
+      // When we go to full screen evt.state is null
         if (evt.state && evt.state.isDrawActive === false) {
           $scope.globals.isDrawActive = false;
           gaPermalink.refresh();
@@ -416,7 +420,7 @@ goog.require('ga_vector_tile_layer_service');
 
       // Management of panels display (only on screen bigger than 480px)
       win.on('resize', function() {
-        // Hide catalog panel if height is too small
+      // Hide catalog panel if height is too small
         if (gaWindow.isHeight('<=m')) {
           if ($scope.globals.catalogShown) {
             $scope.$applyAsync(function() {
@@ -426,9 +430,11 @@ goog.require('ga_vector_tile_layer_service');
         }
 
         // Open share panel by default on phone
-        if ($scope.globals.pulldownShown && !$scope.globals.isShareActive &&
-            !$scope.globals.isDrawActive && !$scope.globals.isEditActive &&
-            gaWindow.isWidth('xs')) {
+        if ($scope.globals.pulldownShown &&
+          !$scope.globals.isShareActive &&
+          !$scope.globals.isDrawActive &&
+          !$scope.globals.isEditActive &&
+          gaWindow.isWidth('xs')) {
           $scope.$applyAsync(function() {
             $scope.globals.isShareActive = true;
           });
@@ -436,7 +442,7 @@ goog.require('ga_vector_tile_layer_service');
 
         // Display settings panel
         if ((gaWindow.isWidth('<=m') && !$scope.globals.settingsShown) ||
-           (gaWindow.isWidth('>m') && $scope.globals.settingsShown)) {
+         (gaWindow.isWidth('>m') && $scope.globals.settingsShown)) {
           $scope.$applyAsync(function() {
             $scope.globals.settingsShown = !$scope.globals.settingsShown;
           });
@@ -444,7 +450,7 @@ goog.require('ga_vector_tile_layer_service');
 
         // Display query tool
         if ((gaWindow.isWidth('<=m') && $scope.globals.queryShown) ||
-           (gaWindow.isWidth('>m') && !$scope.globals.queryShown)) {
+         (gaWindow.isWidth('>m') && !$scope.globals.queryShown)) {
           $scope.$applyAsync(function() {
             $scope.globals.queryShown = !$scope.globals.queryShown;
             if (!$scope.globals.queryShown) {
@@ -475,7 +481,7 @@ goog.require('ga_vector_tile_layer_service');
         hideAccordionPanels();
 
         if (gaWindow.isHeight('<=s')) {
-          // Close selection
+        // Close selection
           hidePanel('selection');
         }
       });
@@ -488,20 +494,29 @@ goog.require('ga_vector_tile_layer_service');
         hideAccordionPanels();
 
         if (gaWindow.isHeight('<=s')) {
-          // Close catalog
+        // Close catalog
           hidePanel('catalog');
         }
       });
 
       // Load new appcache file if available.
       if ($window.applicationCache) {
-        $window.applicationCache.addEventListener('obsolete', function(e) {
-          // setTimeout is needed for correct appcache update on Firefox
-          setTimeout(function() {
-            $window.location.reload(true);
-          });
-        });
+        $window.applicationCache.addEventListener('obsolete',
+            function(e) {
+              // setTimeout is needed for correct
+              // appcache update on Firefox
+              setTimeout(function() {
+                $window.location.reload(true);
+              });
+            });
       }
-    });
+    }
+    gaLang.init().then(
+        function() {
+          gaVectorTileLayerService.init($scope.map).then(function() {
+            initApp();
+          })
+        }
+    );
   });
 })();
