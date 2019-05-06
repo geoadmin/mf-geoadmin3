@@ -241,16 +241,20 @@ goog.require('ga_throttle_service');
           elts.removeClass(naClass);
           var msgId;
           switch (error.code) {
-            case error.PERMISSION_DENIED:
+            // PERMISSION_DENIED
+            case 1:
               msgId = 'geoloc_permission_denied';
               break;
-            case error.POSITION_UNAVAILABLE:
+            // POSITION_UNAVAILABLE
+            case 2:
               msgId = 'geoloc_pos_unavailable';
               break;
-            case error.TIMEOUT:
+            // TIMEOUT
+            case 3:
               msgId = 'geoloc_time_out';
               break;
-            case error.UNKNOWN_ERROR:
+            // UNKNOWN_ERROR
+            case 4:
               msgId = 'geoloc_unknown';
               break;
           }
