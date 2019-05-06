@@ -177,10 +177,14 @@ goog.require('ga_browsersniffer_service');
               var layer = layerArrayAfterOlms[i];
               if (layer.get('mapbox-source')) {
                 layer.olmsLayer = true;
-                layer.parentLayerId = vectortileLayerConfig.serverLayerName;
+                layer.parentLayerId = getVectorLayerBodId();
+                layer.id = getVectorLayerBodId();
+                layer.bodId = getVectorLayerBodId();
                 layer.glStyle = style;
                 layer.background = true;
                 layer.disable3d = true;
+                layer.visible = true;
+                layer.preview = false;
                 // just in case it's taken by the LayerManager
                 layer.displayInLayerManager = false;
                 olVectorTileLayers.push(layer);
@@ -292,6 +296,7 @@ goog.require('ga_browsersniffer_service');
                                 firstLayer.adminId =
                         permaLinkParams.glStylesAdminId;
                                 firstLayer.id = getVectorLayerBodId();
+                                firstLayer.background = true;
                                 firstLayer.glStyle = style;
                                 firstLayer.useThirdPartyData = true;
                                 // activating style edit toolbox
@@ -299,6 +304,7 @@ goog.require('ga_browsersniffer_service');
                                     style, true);
                               }
                               gaPermalink.deleteParam('glStylesAdminId');
+                              $rootScope.$broadcast('gaVectorTileInitDone');
                               deferred.resolve();
                             },
                             function initError() {
@@ -321,6 +327,7 @@ goog.require('ga_browsersniffer_service');
           currentStyle = style;
           __applyCurrentStyle__(true).then(
               function initSuccess() {
+                $rootScope.$broadcast('gaVectorTileInitDone');
                 deferred.resolve();
               },
               function initError() {
