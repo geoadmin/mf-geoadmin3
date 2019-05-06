@@ -513,6 +513,7 @@ goog.require('ga_vector_tile_layer_service');
     }
     gaLang.init().then(
         function() {
+          $scope.langId = gaLang.get();
           gaVectorTileLayerService.init($scope.map).then(function() {
             initApp();
           })
