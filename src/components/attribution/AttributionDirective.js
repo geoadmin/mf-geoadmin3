@@ -95,6 +95,11 @@ goog.require('ga_event_service');
         $rootScope.$on('gaLayersTranslationChange', function() {
           updateDebounced(element, layersFiltered);
         });
+        $rootScope.$on('gaVectorTileInitDone', function() {
+          scope.layers = scope.map.getLayers().getArray();
+          layersFiltered = scope.layers.filter(scope.layerFilter);
+          updateDebounced(element, layersFiltered);
+        });
 
         // Watch layers with attribution from 3d globe
         scope.is3dActive = function() {
