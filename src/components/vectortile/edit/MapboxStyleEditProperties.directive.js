@@ -45,7 +45,6 @@ goog.provide('ga_mapbox_style_edit_properties_directive');
           });
           scope.edit = scope.config[0];
           scope.group = scope.groups[scope.edit.id];
-          console.log('groups', scope.groups)
         });
 
         scope.useWidget = function(widget, path) {

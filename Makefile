@@ -201,14 +201,6 @@ install-olms: build-olms
 build-openlayers:
 	$(MAKE) -C libs build-openlayers
 
-.PHONY: install-olms
-install-olms: build-olms
-	cp libs/ol-mapbox-style/dist/olms-debug.js src/lib/olms.js
-
-.PHONY: build-openlayers
-build-openlayers:
-	$(MAKE) -C libs build-openlayers
-
 .PHONY: install-openlayers
 install-openlayers: build-openlayers
 	cp libs/openlayers/build/legacy/ol.js src/lib/ol.js; \
