@@ -162,6 +162,10 @@ goog.require('ga_browsersniffer_service');
         canvas.style.zIndex = zindex;
       };
 
+      Mapbox.prototype.setStyle = function setStyle(style) {
+        this.mbmap.setStyle(style);
+      }
+
       /**
        * @inheritDoc
        */
@@ -293,19 +297,6 @@ goog.require('ga_browsersniffer_service');
     var currentStyleUrl = null;
     var currentStyle = null;
 
-    var mbLayer = null;
-
-    function addMapboxLayer() {
-      if (!mbLayer) {
-        mbLayer = new Mapbox({
-          map: olMap,
-          container: olMap.getTarget(),
-          style: getCurrentStyle()
-        });
-        olMap.addLayer(mbLayer);
-      }
-    }
-
     function getCurrentStyleUrl() {
       return currentStyleUrl;
     }
@@ -316,9 +307,8 @@ goog.require('ga_browsersniffer_service');
       return gaStorage.load(getCurrentStyleUrl());
     }
 
-    // return a promise that will resolve when the style has been applied
-    function __applyCurrentStyle__(firstCall) {
-      return applyStyle(currentStyle, firstCall);
+    function __applyCurrentStyle__() {
+      applyStyle(currentStyle);
     }
 
     // return the current style as a JSON
@@ -326,89 +316,38 @@ goog.require('ga_browsersniffer_service');
       return currentStyle;
     }
 
-    // force reload from gaStorage and load with OLMS
-    function reloadCurrentStyle() {
-      __loadCurrentStyle__().then(function(style) {
-        currentStyle = style;
-        __applyCurrentStyle__();
-      })
-    }
-
-    // keeping a reference on the layerGroup we have created to bundle all
-    // layers created by ol-mapbox-style
-    var olVectorTileLayers = [];
+    // keeping a reference on the layer we have created with Mapbox
+    var mbLayer = null;
     var olMap;
 
-    function getVectorTileLayersCount() {
-      return olVectorTileLayers.length;
+    function getVectorTileLayer() {
+      return mbLayer;
     }
 
-    function getVectorTileLayers() {
-      return olVectorTileLayers;
-    }
-
-    function applyStyle(style, firstCall) {
-      var deferred = $q.defer();
-
-      // we save any layer, other than OLMS layers, so that we can put them
-      // back on top of the layer stack after OLMS call
-      var otherLayers = [];
-      var layerArray = [];
-      olMap.getLayers().forEach(function(layer) {
-        layerArray.push(layer);
-      })
-      angular.forEach(layerArray, function(layer, index) {
-        if (typeof (layer.get('mapbox-source')) === 'string' &&
-            layer.get('mapbox-source') !== '') {
-          olMap.removeLayer(layer);
-        } else {
-          otherLayers.push(layer);
-        }
-      })
-      olVectorTileLayers = [];
-
-      $window.olms(olMap, style).then(
-          function olmsSuccess(map) {
-
-            var layerArrayAfterOlms = [];
-            map.getLayers().forEach(function(layer) {
-              layerArrayAfterOlms.push(layer);
-            });
-            for (var i = 0; i < layerArrayAfterOlms.length; i++) {
-              var layer = layerArrayAfterOlms[i];
-              if (layer.get('mapbox-source')) {
-                layer.olmsLayer = true;
-                layer.parentLayerId = getVectorLayerBodId();
-                layer.id = getVectorLayerBodId();
-                layer.bodId = getVectorLayerBodId();
-                layer.glStyle = style;
-                layer.background = true;
-                layer.disable3d = true;
-                layer.visible = true;
-                layer.preview = false;
-                // just in case it's taken by the LayerManager
-                layer.displayInLayerManager = false;
-                olVectorTileLayers.push(layer);
-              }
-            }
-
-            // we reorder layers present before OLMS
-            // call at the top of the stack so that if any BGDI
-            // layer was present, it will be on top
-            for (var j = 0; j < otherLayers.length; j++) {
-              var anotherLayer = otherLayers[j];
-              map.removeLayer(anotherLayer);
-              map.addLayer(anotherLayer);
-            }
-
-            deferred.resolve(olVectorTileLayers);
-          },
-          function olmsError(response) {
-            deferred.reject(response);
-          }
-      );
-
-      return deferred.promise;
+    function applyStyle(style) {
+      if (mbLayer) {
+        mbLayer.setStyle(style);
+        mbLayer.glStyle = style;
+      } else {
+        mbLayer = new Mapbox({
+          map: olMap,
+          container: olMap.getTarget(),
+          style: style
+        });
+        // mimicing LayersService output
+        mbLayer.olmsLayer = true;
+        mbLayer.parentLayerId = getVectorLayerBodId();
+        mbLayer.id = getVectorLayerBodId();
+        mbLayer.bodId = getVectorLayerBodId();
+        mbLayer.glStyle = style;
+        mbLayer.background = true;
+        mbLayer.disable3d = true;
+        mbLayer.visible = true;
+        mbLayer.preview = false;
+        // just in case it's taken by the LayerManager
+        mbLayer.displayInLayerManager = false;
+        olMap.addLayer(mbLayer);
+      }
     }
 
     // return the LayerBodId for VectorTile from the LayersConfig
@@ -429,14 +368,8 @@ goog.require('ga_browsersniffer_service');
       __loadCurrentStyle__().then(
           function loadCurrentStyleSucces(style) {
             currentStyle = style;
-            __applyCurrentStyle__().then(
-                function applyStyleSucces() {
-                  deferred.resolve();
-                },
-                function applyStyleError(data) {
-                  deferred.reject(data);
-                }
-            )
+            __applyCurrentStyle__();
+            deferred.resolve();
           },
           function loadCurrentStyleError(data) {
             deferred.reject(data);
@@ -451,15 +384,15 @@ goog.require('ga_browsersniffer_service');
     }
 
     function hideVectorTileLayers() {
-      $.each(olVectorTileLayers, function(index, layer) {
-        layer.setVisible(false);
-      })
+      if (mbLayer) {
+        mbLayer.setVisible(false);
+      }
     }
 
     function showVectorTileLayers() {
-      $.each(olVectorTileLayers, function(index, layer) {
-        layer.setVisible(true);
-      })
+      if (mbLayer) {
+        mbLayer.setVisible(true);
+      }
     }
 
     // This will call ol-mapbox-style (olms) on the map, with current style
@@ -481,38 +414,31 @@ goog.require('ga_browsersniffer_service');
       if (permaLinkParams.glStylesAdminId) {
 
         gaMapboxStyleStorage.
-            getFileUrlFromAdminId(permaLinkParams.glStylesAdminId).then(
-                function(styleUrl) {
+            getFileUrlFromAdminId(permaLinkParams.glStylesAdminId)
+            .then(
+                function loadStyleSuccess(styleUrl) {
                   currentStyleUrl = styleUrl;
                   __loadCurrentStyle__().then(function(style) {
                     currentStyle = style;
-                    __applyCurrentStyle__(true,
-                        permaLinkParams.glStylesAdminId).
-                        then(
-                            function initSuccess() {
-                              // attaching externalStyleUrl to first layer
-                              if (olVectorTileLayers.length > 0) {
-                                var firstLayer = olVectorTileLayers[0];
-                                firstLayer.externalStyleUrl = styleUrl;
-                                firstLayer.adminId =
-                        permaLinkParams.glStylesAdminId;
-                                firstLayer.id = getVectorLayerBodId();
-                                firstLayer.background = true;
-                                firstLayer.glStyle = style;
-                                firstLayer.useThirdPartyData = true;
-                                // activating style edit toolbox
-                                $rootScope.$broadcast('gaToggleEdit',
-                                    style, true);
-                              }
-                              gaPermalink.deleteParam('glStylesAdminId');
-                              $rootScope.$broadcast('gaVectorTileInitDone');
-                              deferred.resolve();
-                            },
-                            function initError() {
-                              deferred.reject();
-                            }
-                        )
+                    __applyCurrentStyle__();
+                    // attaching externalStyleUrl to mapbox layer
+                    if (mbLayer) {
+                      mbLayer.externalStyleUrl = styleUrl;
+                      mbLayer.adminId = permaLinkParams.glStylesAdminId;
+                      mbLayer.id = getVectorLayerBodId();
+                      mbLayer.background = true;
+                      mbLayer.glStyle = style;
+                      mbLayer.useThirdPartyData = true;
+                      // activating style edit toolbox
+                      $rootScope.$broadcast('gaToggleEdit', style, true);
+                    }
+                    gaPermalink.deleteParam('glStylesAdminId');
+                    $rootScope.$broadcast('gaVectorTileInitDone');
+                    deferred.resolve();
                   });
+                },
+                function loadStyleError(error) {
+                  deferred.reject(error);
                 }
             );
 
@@ -524,18 +450,18 @@ goog.require('ga_browsersniffer_service');
           currentStyleUrl = vectortileLayerConfig.styles[0].url;
         }
 
-        __loadCurrentStyle__().then(function(style) {
-          currentStyle = style;
-          __applyCurrentStyle__(true).then(
-              function initSuccess() {
-                $rootScope.$broadcast('gaVectorTileInitDone');
-                deferred.resolve();
-              },
-              function initError() {
-                deferred.reject();
-              }
-          )
-        });
+        __loadCurrentStyle__()
+        .then(
+          function loadCurrentStyleSucces(style) {
+            currentStyle = style;
+            __applyCurrentStyle__();
+            $rootScope.$broadcast('gaVectorTileInitDone');
+            deferred.resolve();
+          },
+          function loadCurrentStyleError(error) {
+            deferred.reject(error);
+          }
+        );
       }
 
       return deferred.promise;
@@ -547,9 +473,7 @@ goog.require('ga_browsersniffer_service');
       getCurrentStyle: getCurrentStyle,
       setCurrentStyle: setCurrentStyle,
       getVectorLayerBodId: getVectorLayerBodId,
-      getVectorTileLayers: getVectorTileLayers,
-      getVectorTileLayersCount: getVectorTileLayersCount,
-      reloadCurrentStyle: reloadCurrentStyle,
+      getVectorTileLayer: getVectorTileLayer,
       getStyles: getStyles,
       switchToStyleAtIndex: switchToStyleAtIndex,
       hideVectorTileLayers: hideVectorTileLayers,

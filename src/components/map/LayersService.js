@@ -649,7 +649,7 @@ goog.require('ga_vector_tile_layer_service');
           } else if (config.type === 'aggregate') {
             if (bodId === 'ch.swisstopo.leichte-basiskarte.vt') {
               // managed by VectorTileService, we return null
-              olLayer = null;
+              olLayer = gaVectorTileLayerService.getVectorTileLayer();
             } else {
               var subLayersIds = config.subLayersIds || [];
               var createSubLayers = function(olLayer, glStyle) {
