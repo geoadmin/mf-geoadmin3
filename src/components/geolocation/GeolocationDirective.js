@@ -255,6 +255,7 @@ goog.require('ga_throttle_service');
               break;
             // UNKNOWN_ERROR
             case 4:
+            default:
               msgId = 'geoloc_unknown';
               break;
           }
