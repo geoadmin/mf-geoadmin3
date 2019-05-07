@@ -239,15 +239,15 @@ goog.require('ga_vector_tile_layer_service');
                 gaVectorTileLayerService.hideVectorTileLayers();
               } else {
 
-                // showing vector tile if needed (if void layer was selected)
-                gaVectorTileLayerService.showVectorTileLayers();
-
-                // removing any background layer present (other than olms)
                 removeBackgroundLayersIfNotOlms(map);
-                // if new bg layer is not vector tile, we add it on top
-                // of OLMS layers
-                if (newBg.id !==
+                if (newBg.id ===
                     gaVectorTileLayerService.getVectorLayerBodId()) {
+                  // removing any background layer present (other than olms)
+                  gaVectorTileLayerService.showVectorTileLayers();
+                } else {
+                  // if new bg layer is not vector tile, we add it on top
+                  // of OLMS layers (hidden)
+                  gaVectorTileLayerService.hideVectorTileLayers();
                   // looking for latest olms layer index
                   var backgroundOffset =
                     gaVectorTileLayerService.getVectorTileLayersCount();
