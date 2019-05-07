@@ -1638,6 +1638,7 @@ body.webkit .ga-checkbox {
   top: unit(@header-height, px);
   right: unit(@control-btns-right, px);
   bottom: unit(@bt-bottom, px);
+  width: 44px;
   z-index: 1000;
   transition: 1s;
   transition-property: top, bottom;
@@ -1656,6 +1657,31 @@ body.webkit .ga-checkbox {
     margin-top: unit(@control-btn-space, px);
     height: unit(@control-btn-size, px);
     pointer-events: auto;
+    font-size: 40px;
+  }
+
+  .ol-zoom-in, .ol-zoom-out button {
+    display: block; /*without this, chrome add 3 pixels between zoomin/out buttons*/
+  }
+
+  .ol-zoom-in, .ol-zoom-out {
+
+    i {
+      margin: 2px;
+    }
+  
+    .fa-ga-circle {
+      font-size: 40px;
+    }
+
+    .fa-ga-zoom-plus, .fa-ga-zoom-minus {
+      font-size: 40px;
+    }
+
+    .fa-ga-circle-bg {
+      font-size: 38px;
+      padding: 1px;
+    }  
   }
 
   button {
