@@ -247,8 +247,7 @@ goog.require('ga_urlutils_service');
           var destRes = Math.max(
               (extent[2] - extent[0]) / size[0],
               (extent[3] - extent[1]) / size[1]);
-          destRes = Math.max(map.getView().constrainResolution(destRes, 0, 0),
-              2.5);
+          destRes = Math.max(destRes, 2.5);
           var view = map.getView();
           view.animate({
             center: dest,
