@@ -24,6 +24,8 @@ goog.require('ga_browsersniffer_service');
       gaStorage, gaDefinePropertiesForLayer, gaGlobalOptions, gaPermalink,
       gaMapboxStyleStorage, gaBrowserSniffer) {
 
+    var ZOOM_OFFSET = 3;
+
     var Mapbox = /*@__PURE__*/(function (Layer) {
       function Mapbox(options) {
         var baseOptions = Object.assign({}, options);
@@ -40,15 +42,15 @@ goog.require('ga_browsersniffer_service');
         this.initMap();
       }
 
-      if ( Layer ) Mapbox.prototype = Layer;
-      Mapbox.prototype = Object.create( Layer && Layer.prototype );
+      if (Layer) Mapbox.prototype = Layer;
+      Mapbox.prototype = Object.create(Layer && Layer.prototype);
       Mapbox.prototype.constructor = Mapbox;
 
-      Mapbox.prototype.initMap = function initMap () {
+      Mapbox.prototype.initMap = function initMap() {
         var map = this.map_;
         var view = map.getView();
         var transformToLatLng = ol.proj.getTransform(
-          view.getProjection(), 'EPSG:4326');
+            view.getProjection(), 'EPSG:4326');
         var center = transformToLatLng(view.getCenter());
 
         this.centerLastRender = view.getCenter();
@@ -69,7 +71,7 @@ goog.require('ga_browsersniffer_service');
           pitchWithRotate: false,
           scrollZoom: false,
           touchZoomRotate: false,
-          zoom: view.getZoom() - 1
+          zoom: view.getZoom() + ZOOM_OFFSET
         });
 
         this.mbmap = new $window.mapboxgl.Map(options);
@@ -79,7 +81,7 @@ goog.require('ga_browsersniffer_service');
           this.map_.render();
           [
             'mapboxgl-control-container'
-          ].forEach(function (className) { 
+          ].forEach(function(className) {
             return document.getElementsByClassName(className)[0].remove();
           });
         }.bind(this));
@@ -101,17 +103,17 @@ goog.require('ga_browsersniffer_service');
        *
        * @inheritDoc
        */
-      Mapbox.prototype.render = function render (frameState) {
+      Mapbox.prototype.render = function render(frameState) {
         var map = this.map_;
         var view = map.getView();
         var transformToLatLng = ol.proj.getTransform(view.getProjection(),
-          'EPSG:4326');
+            'EPSG:4326');
 
         this.centerNextRender = view.getCenter();
         var lastRender = map.getPixelFromCoordinate(this.centerLastRender);
         var nextRender = map.getPixelFromCoordinate(this.centerNextRender);
-        var centerOffset = [lastRender[0] - nextRender[0], lastRender[1]
-           - nextRender[1]];
+        var centerOffset = [lastRender[0] - nextRender[0], lastRender[1] -
+           nextRender[1]];
         this.zoomNextRender = view.getZoom();
         var zoomOffset = Math.pow(2, this.zoomNextRender - this.zoomLastRender);
         this.updateRenderedPosition(centerOffset, zoomOffset);
@@ -125,7 +127,7 @@ goog.require('ga_browsersniffer_service');
 
         // Re-render mbmap
         var center = transformToLatLng(this.centerNextRender);
-        var zoom = view.getZoom() - 1;
+        var zoom = view.getZoom() + ZOOM_OFFSET;
         this.mbmap.jumpTo({
           center: center,
           zoom: zoom
@@ -133,28 +135,28 @@ goog.require('ga_browsersniffer_service');
         return this.mbmap.getCanvas();
       };
 
-      Mapbox.prototype.updateRenderedPosition = 
-      function updateRenderedPosition (centerOffset, zoomOffset) {
+      Mapbox.prototype.updateRenderedPosition =
+      function updateRenderedPosition(centerOffset, zoomOffset) {
         var style = this.mbmap.getCanvas().style;
         style.left = Math.round(centerOffset[0]) + 'px';
         style.top = Math.round(centerOffset[1]) + 'px';
         style.transform = 'scale(' + zoomOffset + ')';
       };
 
-      Mapbox.prototype.setVisible = function setVisible (visible) {
+      Mapbox.prototype.setVisible = function setVisible(visible) {
         Layer.prototype.setVisible.call(this, visible);
 
         var canvas = this.mbmap.getCanvas();
         canvas.style.display = visible ? 'block' : 'none';
       };
 
-      Mapbox.prototype.setOpacity = function setOpacity (opacity) {
+      Mapbox.prototype.setOpacity = function setOpacity(opacity) {
         Layer.prototype.setOpacity.call(this, opacity);
         var canvas = this.mbmap.getCanvas();
         canvas.style.opacity = opacity;
       };
 
-      Mapbox.prototype.setZIndex = function setZIndex (zindex) {
+      Mapbox.prototype.setZIndex = function setZIndex(zindex) {
         Layer.prototype.setZIndex.call(this, zindex);
         var canvas = this.mbmap.getCanvas();
         canvas.style.zIndex = zindex;
@@ -163,11 +165,11 @@ goog.require('ga_browsersniffer_service');
       /**
        * @inheritDoc
        */
-      Mapbox.prototype.getSourceState = function getSourceState () {
+      Mapbox.prototype.getSourceState = function getSourceState() {
         return this.loaded ? 'ready' : 'undefined';
       };
 
-      Mapbox.prototype.setMap = function setMap (map) {
+      Mapbox.prototype.setMap = function setMap(map) {
         this.map_ = map;
       };
 
@@ -184,9 +186,9 @@ goog.require('ga_browsersniffer_service');
       canvasContainer.insertBefore(this._canvas, canvasContainer.firstChild);
       this._canvas.style.position = 'absolute';
       this._canvas.addEventListener('webglcontextlost',
-        this._contextLost, false);
+          this._contextLost, false);
       this._canvas.addEventListener('webglcontextrestored',
-        this._contextRestored, false);
+          this._contextRestored, false);
       this._canvas.setAttribute('tabindex', '0');
       this._canvas.setAttribute('aria-label', 'Map');
       this._canvas.className = 'mapboxgl-canvas';
@@ -202,12 +204,12 @@ goog.require('ga_browsersniffer_service');
 
       var positions = this._controlPositions = {};
       ['top-left', 'top-right', 'bottom-left', 'bottom-right'].forEach(
-      function(positionName) {
-        var elem = document.createElement('div');
-        elem.className = 'mapboxgl-ctrl-' + positionName;
-        controlContainer.appendChild(elem);
-        positions[positionName] = elem;
-      });
+          function(positionName) {
+            var elem = document.createElement('div');
+            elem.className = 'mapboxgl-ctrl-' + positionName;
+            controlContainer.appendChild(elem);
+            positions[positionName] = elem;
+          });
     };
 
     // LayersConfig for vector
@@ -300,7 +302,7 @@ goog.require('ga_browsersniffer_service');
           container: olMap.getTarget(),
           style: getCurrentStyle()
         });
-        olMap.addLayer(mbLayer); 
+        olMap.addLayer(mbLayer);
       }
     }
 
@@ -550,7 +552,7 @@ goog.require('ga_browsersniffer_service');
     function switchToStyleAtIndex(index) {
       currentStyleIndex = index;
       pristine = false;
-      __loadCurrentStyle__().then(function (style) {
+      __loadCurrentStyle__().then(function(style) {
         currentStyle = style;
         __applyCurrentStyle__();
       })
@@ -562,13 +564,13 @@ goog.require('ga_browsersniffer_service');
     }
 
     function hideVectorTileLayers() {
-      $.each(olVectorTileLayers, function (index, layer) {
+      $.each(olVectorTileLayers, function(index, layer) {
         layer.setVisible(false);
       })
     }
 
     function showVectorTileLayers() {
-      $.each(olVectorTileLayers, function (index, layer) {
+      $.each(olVectorTileLayers, function(index, layer) {
         layer.setVisible(true);
       })
     }
@@ -581,7 +583,7 @@ goog.require('ga_browsersniffer_service');
     function init(map) {
       olMap = map;
       var deferred = $q.defer();
-      __loadCurrentStyle__().then(function (style) {
+      __loadCurrentStyle__().then(function(style) {
         currentStyle = style;
         addMapboxLayer();
         deferred.resolve();
