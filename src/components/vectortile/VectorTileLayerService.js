@@ -386,12 +386,14 @@ goog.require('ga_browsersniffer_service');
     function hideVectorTileLayers() {
       if (mbLayer) {
         mbLayer.setVisible(false);
+        mbLayer.visible = false;
       }
     }
 
     function showVectorTileLayers() {
       if (mbLayer) {
         mbLayer.setVisible(true);
+        mbLayer.visible = true;
       }
     }
 
