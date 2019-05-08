@@ -252,12 +252,14 @@ goog.require('ga_browsersniffer_service');
     function hideVectorTileLayers() {
       $.each(olVectorTileLayers, function(index, layer) {
         layer.setVisible(false);
+        layer.visible = false;
       })
     }
 
     function showVectorTileLayers() {
       $.each(olVectorTileLayers, function(index, layer) {
         layer.setVisible(true);
+        layer.visible = true;
       })
     }
 
