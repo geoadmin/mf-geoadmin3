@@ -26,7 +26,7 @@ goog.require('ga_browsersniffer_service');
 
     var ZOOM_OFFSET = 3;
 
-    var Mapbox = /*@__PURE__*/(function (Layer) {
+    var Mapbox = /* @__PURE__ */(function(Layer) {
       function Mapbox(options) {
         var baseOptions = Object.assign({}, options);
         Layer.call(this, baseOptions);
@@ -414,8 +414,8 @@ goog.require('ga_browsersniffer_service');
       if (permaLinkParams.glStylesAdminId) {
 
         gaMapboxStyleStorage.
-            getFileUrlFromAdminId(permaLinkParams.glStylesAdminId)
-            .then(
+            getFileUrlFromAdminId(permaLinkParams.glStylesAdminId).
+            then(
                 function loadStyleSuccess(styleUrl) {
                   currentStyleUrl = styleUrl;
                   __loadCurrentStyle__().then(function(style) {
@@ -450,18 +450,18 @@ goog.require('ga_browsersniffer_service');
           currentStyleUrl = vectortileLayerConfig.styles[0].url;
         }
 
-        __loadCurrentStyle__()
-        .then(
-          function loadCurrentStyleSucces(style) {
-            currentStyle = style;
-            __applyCurrentStyle__();
-            $rootScope.$broadcast('gaVectorTileInitDone');
-            deferred.resolve();
-          },
-          function loadCurrentStyleError(error) {
-            deferred.reject(error);
-          }
-        );
+        __loadCurrentStyle__().
+            then(
+                function loadCurrentStyleSucces(style) {
+                  currentStyle = style;
+                  __applyCurrentStyle__();
+                  $rootScope.$broadcast('gaVectorTileInitDone');
+                  deferred.resolve();
+                },
+                function loadCurrentStyleError(error) {
+                  deferred.reject(error);
+                }
+            );
       }
 
       return deferred.promise;

@@ -249,8 +249,6 @@ goog.require('ga_vector_tile_layer_service');
                   // of OLMS layers (hidden)
                   gaVectorTileLayerService.hideVectorTileLayers();
                   // looking for latest olms layer index
-                  var backgroundOffset =
-                    gaVectorTileLayerService.getVectorTileLayersCount();
                   var layer = createOlLayer(newBg);
                   layers.insertAt(1, layer);
                 }
