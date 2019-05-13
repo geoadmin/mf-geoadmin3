@@ -86,17 +86,6 @@ goog.require('ga_browsersniffer_service');
           });
         }.bind(this));
 
-        this.mbmap.on('render', function() {
-          // Reset offset
-          if (this.centerNextRender) {
-            this.centerLastRender = this.centerNextRender;
-          }
-          if (this.zoomNextRender) {
-            this.zoomLastRender = this.zoomNextRender;
-          }
-          this.updateRenderedPosition([0, 0], 1);
-        }.bind(this));
-
       };
 
       /**
@@ -110,14 +99,8 @@ goog.require('ga_browsersniffer_service');
             'EPSG:4326');
 
         this.centerNextRender = view.getCenter();
-        var lastRender = map.getPixelFromCoordinate(this.centerLastRender);
-        var nextRender = map.getPixelFromCoordinate(this.centerNextRender);
-        var centerOffset = [lastRender[0] - nextRender[0], lastRender[1] -
-           nextRender[1]];
-        this.zoomNextRender = view.getZoom();
-        var zoomOffset = Math.pow(2, this.zoomNextRender - this.zoomLastRender);
-        this.updateRenderedPosition(centerOffset, zoomOffset);
 
+        // adjust view parameters in mapbox
         var rotation = frameState.viewState.rotation;
         if (rotation) {
           this.mbmap.rotateTo(-rotation * 180 / Math.PI, {
@@ -125,22 +108,23 @@ goog.require('ga_browsersniffer_service');
           });
         }
 
-        // Re-render mbmap
         var center = transformToLatLng(this.centerNextRender);
         var zoom = view.getZoom() + ZOOM_OFFSET;
         this.mbmap.jumpTo({
           center: center,
-          zoom: zoom
+          zoom: zoom,
+          animate: false
         });
-        return this.mbmap.getCanvas();
-      };
+        // cancel the scheduled update & trigger synchronous redraw
+        // see https://github.com/mapbox/mapbox-gl-js/issues/7893#issue-408992184
+        // NOTE: THIS MIGHT BREAK WHEN UPDATING MAPBOX
+        if (this.mbmap._frame) {
+          this.mbmap._frame.cancel();
+          this.mbmap._frame = null;
+        }
+        this.mbmap._render();
 
-      Mapbox.prototype.updateRenderedPosition =
-      function updateRenderedPosition(centerOffset, zoomOffset) {
-        var style = this.mbmap.getCanvas().style;
-        style.left = Math.round(centerOffset[0]) + 'px';
-        style.top = Math.round(centerOffset[1]) + 'px';
-        style.transform = 'scale(' + zoomOffset + ')';
+        return this.mbmap.getCanvas();
       };
 
       Mapbox.prototype.setVisible = function setVisible(visible) {
