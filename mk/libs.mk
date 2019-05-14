@@ -3,16 +3,6 @@ define applypatches
 	git apply --directory=src/lib scripts/slipjs.patch;
 endef
 
-
-.build-artefacts/openlayers:
-	git clone https://github.com/geoblocks/legacylib.git $@
-
-.build-artefacts/olcesium:
-	git clone https://github.com/openlayers/ol-cesium.git $@
-
-.build-artefacts/cesium:
-	git clone https://github.com/camptocamp/cesium.git $@
-
 # No npm module
 .build-artefacts/filesaver:
 	git clone https://github.com/eligrey/FileSaver.js.git $@
@@ -30,45 +20,6 @@ endef
 	mkdir -p $@
 	curl -q -o $@/polyfill.js 'https://cdn.polyfill.io/v2/polyfill.js?features=URL,Array.isArray,requestAnimationFrame,Element.prototype.classList,Object.assign&flags=always,gated&unknown=polyfill'
 	curl -q -o $@/polyfill.min.js 'https://cdn.polyfill.io/v2/polyfill.min.js?features=URL,Array.isArray,requestAnimationFrame,Element.prototype.classList,Object.assign&flags=always,gated&unknown=polyfill'
-
-
-.PHONY: cesium
-cesium: .build-artefacts/cesium
-	cd .build-artefacts/cesium; \
-	git fetch --all; \
-	git checkout $(CESIUM_VERSION); \
-	npm install; \
-	npm run combineRelease; \
-	npm run minifyRelease; \
-	rm -r ../../src/lib/Cesium; \
-	cp -r Build/CesiumUnminified ../../src/lib/Cesium; \
-	cp Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js; \
-	$(call moveto,Build/Cesium/Workers/*.js,../../src/lib/Cesium/Workers/,'.js','.min.js') \
-	$(call moveto,Build/Cesium/ThirdParty/Workers/*.js,../../src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js')
-
-openlayers: .build-artefacts/openlayers
-	cd .build-artefacts/openlayers/; \
-	npm i; cd ol5; \
-	git fetch; git reset --hard; \
-	git checkout $(GEOBLOCKS_LEGACYLIB_VERSION); \
-	sed -i 'sY"ol": ".*"Y"ol": "https://api.github.com/repos/openlayers/openlayers/tarball/$(OL_VERSION)"Y' package.json; \
-	npm install; \
-	npm run build  # having tons of jsdoc parsing errors is normal
-
-.PHONY: olcesium
-olcesium:  openlayers .build-artefacts/olcesium
-	if ! [ -f ".build-artefacts/cesium/Build/Cesium/Cesium.js" ]; then make cesium; else echo 'Cesium already built'; fi; \
-	cd .build-artefacts/olcesium; \
-	git fetch --all; git reset --hard; \
-	git checkout $(OL_CESIUM_VERSION); \
-	cp -r ../../olcesium-plugin/Ga* src/olcs/; \
-	cp ../../olcesium-plugin/index.library.js src/; \
-	npm install; \
-	npm run build-library; \
-	cat ../openlayers/ol5/build/ol.js dist/olcesium.js > ../../src/lib/olcesium.js; \
-	npm run build-library-debug; \
-	cat ../openlayers/ol5/build/ol-debug.js dist/olcesium-debug.js > ../../src/lib/olcesium-debug.js; \
-
 
 .PHONY: filesaver
 filesaver: .build-artefacts/filesaver
