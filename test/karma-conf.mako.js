@@ -28,6 +28,7 @@ module.exports = function(config) {
     '${basePath}/lib/d3.min.js',
     '${basePath}/lib/Cesium.min.js',
     '${basePath}/lib/ol.js',
+    '${basePath}/lib/olcesium.js',
     '${basePath}/lib/build.js',
   % else:
     '${basePath}/style/app.css',
