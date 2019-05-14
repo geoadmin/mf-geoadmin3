@@ -54,3 +54,6 @@ package-lock.json
 
 # Git patch failed
 *.rej
+
+# MacOS related stuff
+.DS_Store

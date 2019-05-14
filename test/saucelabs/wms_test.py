@@ -57,7 +57,7 @@ def runWmsTest(driver, target):
     # Close popup
     driver.find_element_by_css_selector("#import-popup .fa-remove").click()
     # Mobile Version URL contain QUERYSTRING_WMS ?
-    assert QUERYSTRING_WMS in driver.find_element_by_xpath("//*[@id='toptools']/a[3]").get_attribute("href")
+    assert QUERYSTRING_WMS in driver.find_element_by_xpath("//*[@id='toptools']/a[4]").get_attribute("href")
     # Was the URL in the address bar adapted?
     # Check if url is adapted to WMS layer
     assert QUERYSTRING_WMS in driver.current_url

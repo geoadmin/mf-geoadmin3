@@ -25,6 +25,9 @@ prd/lib/Cesium/: src/lib/Cesium/Assets
 	mkdir -p $@
 	cp -rf  $^ $@
 
+prd/lib/Cesium/Cesium.js: prd/lib/Cesium/ src/lib/Cesium/Cesium.js
+	cp -rf src/lib/Cesium/Cesium.js $@
+
 prd/lib/Cesium/Workers/: src/lib/Cesium/Workers/*.min.js
 	mkdir -p $@; \
 	$(call moveto,$^,$@,'.min.js','.js')
@@ -145,6 +148,7 @@ release: showVariables \
          .build-artefacts/devlibs \
          prd/lib/ \
          prd/lib/Cesium/ \
+         prd/lib/Cesium/Cesium.js \
          prd/lib/Cesium/Workers/ \
          prd/lib/Cesium/ThirdParty/Workers/ \
          prd/lib/build.js \
@@ -163,4 +167,3 @@ release: showVariables \
          prd/info.json \
          prd/robots.txt \
          prd/robots_prod.txt
-
