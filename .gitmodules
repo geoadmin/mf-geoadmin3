@@ -1,3 +1,6 @@
 [submodule "libs/openlayers"]
 	path = libs/openlayers
 	url = git@github.com:openlayers/openlayers.git
+[submodule "libs/ol-cesium"]
+	path = libs/ol-cesium
+	url = git@github.com:openlayers/ol-cesium.git
