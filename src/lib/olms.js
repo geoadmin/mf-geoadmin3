@@ -581,10 +581,7 @@ function processStyle(glStyle, map, baseUrl, host, path, accessToken) {
   var glLayer, glSource, glSourceId, id, layer, url;
   for (var i = 0, ii = glLayers.length; i < ii; ++i) {
     glLayer = glLayers[i];
-    var type = glLayer.type;
-    if (type == 'heatmap' || type == 'fill-extrusion' || type == 'hillshade') {
-      //FIXME Unsupported layer type
-    } else if (type == 'background') {
+    if (glLayer.type == 'background') {
       setBackground(map, glLayer);
     } else {
       id = glLayer.source || getSourceIdByRef(glLayers, glLayer.ref);
@@ -17027,59 +17024,52 @@ module.exports = function(fonts, size, lineHeight) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./util.js */ "./node_modules/ol/util.js");
-var __extends = (undefined && undefined.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 /**
  * @module ol/AssertionError
  */
+
 
 /**
  * Error object thrown when an assertion failed. This is an ECMA-262 Error,
  * extended with a `code` property.
  * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error.
  */
-var AssertionError = /** @class */ (function (_super) {
-    __extends(AssertionError, _super);
+var AssertionError = /*@__PURE__*/(function (Error) {
+  function AssertionError(code) {
+    var path = _util_js__WEBPACK_IMPORTED_MODULE_0__["VERSION"] === 'latest' ? _util_js__WEBPACK_IMPORTED_MODULE_0__["VERSION"] : 'v' + _util_js__WEBPACK_IMPORTED_MODULE_0__["VERSION"].split('-')[0];
+    var message = 'Assertion failed. See https://openlayers.org/en/' + path +
+    '/doc/errors/#' + code + ' for details.';
+
+    Error.call(this, message);
+
     /**
-     * @param {number} code Error code.
+     * Error code. The meaning of the code can be found on
+     * https://openlayers.org/en/latest/doc/errors/ (replace `latest` with
+     * the version found in the OpenLayers script's header comment if a version
+     * other than the latest is used).
+     * @type {number}
+     * @api
      */
-    function AssertionError(code) {
-        var _this = this;
-        var path = _util_js__WEBPACK_IMPORTED_MODULE_0__["VERSION"] === 'latest' ? _util_js__WEBPACK_IMPORTED_MODULE_0__["VERSION"] : 'v' + _util_js__WEBPACK_IMPORTED_MODULE_0__["VERSION"].split('-')[0];
-        var message = 'Assertion failed. See https://openlayers.org/en/' + path +
-            '/doc/errors/#' + code + ' for details.';
-        _this = _super.call(this, message) || this;
-        /**
-         * Error code. The meaning of the code can be found on
-         * https://openlayers.org/en/latest/doc/errors/ (replace `latest` with
-         * the version found in the OpenLayers script's header comment if a version
-         * other than the latest is used).
-         * @type {number}
-         * @api
-         */
-        _this.code = code;
-        /**
-         * @type {string}
-         */
-        _this.name = 'AssertionError';
-        // Re-assign message, see https://github.com/Rich-Harris/buble/issues/40
-        _this.message = message;
-        return _this;
-    }
-    return AssertionError;
+    this.code = code;
+
+    /**
+     * @type {string}
+     */
+    this.name = 'AssertionError';
+
+    // Re-assign message, see https://github.com/Rich-Harris/buble/issues/40
+    this.message = message;
+  }
+
+  if ( Error ) { AssertionError.__proto__ = Error; }
+  AssertionError.prototype = Object.create( Error && Error.prototype );
+  AssertionError.prototype.constructor = AssertionError;
+
+  return AssertionError;
 }(Error));
+
 /* harmony default export */ __webpack_exports__["default"] = (AssertionError);
+
 //# sourceMappingURL=AssertionError.js.map
 
 /***/ }),
@@ -17096,36 +17086,38 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * @module ol/Disposable
  */
+
 /**
  * @classdesc
  * Objects that need to clean up after themselves.
  */
-var Disposable = /** @class */ (function () {
-    function Disposable() {
-        /**
-         * The object has already been disposed.
-         * @type {boolean}
-         * @private
-         */
-        this.disposed_ = false;
-    }
-    /**
-     * Clean up.
-     */
-    Disposable.prototype.dispose = function () {
-        if (!this.disposed_) {
-            this.disposed_ = true;
-            this.disposeInternal();
-        }
-    };
-    /**
-     * Extension point for disposable objects.
-     * @protected
-     */
-    Disposable.prototype.disposeInternal = function () { };
-    return Disposable;
-}());
+var Disposable = function Disposable() {
+  /**
+   * The object has already been disposed.
+   * @type {boolean}
+   * @private
+   */
+  this.disposed_ = false;
+};
+
+/**
+ * Clean up.
+ */
+Disposable.prototype.dispose = function dispose () {
+  if (!this.disposed_) {
+    this.disposed_ = true;
+    this.disposeInternal();
+  }
+};
+
+/**
+ * Extension point for disposable objects.
+ * @protected
+ */
+Disposable.prototype.disposeInternal = function disposeInternal () {};
+
 /* harmony default export */ __webpack_exports__["default"] = (Disposable);
+
 //# sourceMappingURL=Disposable.js.map
 
 /***/ }),
@@ -17145,16 +17137,264 @@ __webpack_require__.r(__webpack_exports__);
  * @module ol/asserts
  */
 
+
 /**
  * @param {*} assertion Assertion we expected to be truthy.
  * @param {number} errorCode Error code.
  */
 function assert(assertion, errorCode) {
-    if (!assertion) {
-        throw new _AssertionError_js__WEBPACK_IMPORTED_MODULE_0__["default"](errorCode);
-    }
+  if (!assertion) {
+    throw new _AssertionError_js__WEBPACK_IMPORTED_MODULE_0__["default"](errorCode);
+  }
 }
+
 //# sourceMappingURL=asserts.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ol/color.js":
+/*!**********************************!*\
+  !*** ./node_modules/ol/color.js ***!
+  \**********************************/
+/*! exports provided: asString, fromString, asArray, normalize, toString */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asString", function() { return asString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromString", function() { return fromString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asArray", function() { return asArray; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "normalize", function() { return normalize; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toString", function() { return toString; });
+/* harmony import */ var _asserts_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./asserts.js */ "./node_modules/ol/asserts.js");
+/* harmony import */ var _math_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./math.js */ "./node_modules/ol/math.js");
+/**
+ * @module ol/color
+ */
+
+
+
+
+/**
+ * A color represented as a short array [red, green, blue, alpha].
+ * red, green, and blue should be integers in the range 0..255 inclusive.
+ * alpha should be a float in the range 0..1 inclusive. If no alpha value is
+ * given then `1` will be used.
+ * @typedef {Array<number>} Color
+ * @api
+ */
+
+
+/**
+ * This RegExp matches # followed by 3, 4, 6, or 8 hex digits.
+ * @const
+ * @type {RegExp}
+ * @private
+ */
+var HEX_COLOR_RE_ = /^#([a-f0-9]{3}|[a-f0-9]{4}(?:[a-f0-9]{2}){0,2})$/i;
+
+
+/**
+ * Regular expression for matching potential named color style strings.
+ * @const
+ * @type {RegExp}
+ * @private
+ */
+var NAMED_COLOR_RE_ = /^([a-z]*)$/i;
+
+
+/**
+ * Return the color as an rgba string.
+ * @param {Color|string} color Color.
+ * @return {string} Rgba string.
+ * @api
+ */
+function asString(color) {
+  if (typeof color === 'string') {
+    return color;
+  } else {
+    return toString(color);
+  }
+}
+
+/**
+ * Return named color as an rgba string.
+ * @param {string} color Named color.
+ * @return {string} Rgb string.
+ */
+function fromNamed(color) {
+  var el = document.createElement('div');
+  el.style.color = color;
+  if (el.style.color !== '') {
+    document.body.appendChild(el);
+    var rgb = getComputedStyle(el).color;
+    document.body.removeChild(el);
+    return rgb;
+  } else {
+    return '';
+  }
+}
+
+
+/**
+ * @param {string} s String.
+ * @return {Color} Color.
+ */
+var fromString = (
+  function() {
+
+    // We maintain a small cache of parsed strings.  To provide cheap LRU-like
+    // semantics, whenever the cache grows too large we simply delete an
+    // arbitrary 25% of the entries.
+
+    /**
+     * @const
+     * @type {number}
+     */
+    var MAX_CACHE_SIZE = 1024;
+
+    /**
+     * @type {Object<string, Color>}
+     */
+    var cache = {};
+
+    /**
+     * @type {number}
+     */
+    var cacheSize = 0;
+
+    return (
+      /**
+       * @param {string} s String.
+       * @return {Color} Color.
+       */
+      function(s) {
+        var color;
+        if (cache.hasOwnProperty(s)) {
+          color = cache[s];
+        } else {
+          if (cacheSize >= MAX_CACHE_SIZE) {
+            var i = 0;
+            for (var key in cache) {
+              if ((i++ & 3) === 0) {
+                delete cache[key];
+                --cacheSize;
+              }
+            }
+          }
+          color = fromStringInternal_(s);
+          cache[s] = color;
+          ++cacheSize;
+        }
+        return color;
+      }
+    );
+
+  })();
+
+/**
+ * Return the color as an array. This function maintains a cache of calculated
+ * arrays which means the result should not be modified.
+ * @param {Color|string} color Color.
+ * @return {Color} Color.
+ * @api
+ */
+function asArray(color) {
+  if (Array.isArray(color)) {
+    return color;
+  } else {
+    return fromString(color);
+  }
+}
+
+/**
+ * @param {string} s String.
+ * @private
+ * @return {Color} Color.
+ */
+function fromStringInternal_(s) {
+  var r, g, b, a, color;
+
+  if (NAMED_COLOR_RE_.exec(s)) {
+    s = fromNamed(s);
+  }
+
+  if (HEX_COLOR_RE_.exec(s)) { // hex
+    var n = s.length - 1; // number of hex digits
+    var d; // number of digits per channel
+    if (n <= 4) {
+      d = 1;
+    } else {
+      d = 2;
+    }
+    var hasAlpha = n === 4 || n === 8;
+    r = parseInt(s.substr(1 + 0 * d, d), 16);
+    g = parseInt(s.substr(1 + 1 * d, d), 16);
+    b = parseInt(s.substr(1 + 2 * d, d), 16);
+    if (hasAlpha) {
+      a = parseInt(s.substr(1 + 3 * d, d), 16);
+    } else {
+      a = 255;
+    }
+    if (d == 1) {
+      r = (r << 4) + r;
+      g = (g << 4) + g;
+      b = (b << 4) + b;
+      if (hasAlpha) {
+        a = (a << 4) + a;
+      }
+    }
+    color = [r, g, b, a / 255];
+  } else if (s.indexOf('rgba(') == 0) { // rgba()
+    color = s.slice(5, -1).split(',').map(Number);
+    normalize(color);
+  } else if (s.indexOf('rgb(') == 0) { // rgb()
+    color = s.slice(4, -1).split(',').map(Number);
+    color.push(1);
+    normalize(color);
+  } else {
+    Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(false, 14); // Invalid color
+  }
+  return color;
+}
+
+
+/**
+ * TODO this function is only used in the test, we probably shouldn't export it
+ * @param {Color} color Color.
+ * @return {Color} Clamped color.
+ */
+function normalize(color) {
+  color[0] = Object(_math_js__WEBPACK_IMPORTED_MODULE_1__["clamp"])((color[0] + 0.5) | 0, 0, 255);
+  color[1] = Object(_math_js__WEBPACK_IMPORTED_MODULE_1__["clamp"])((color[1] + 0.5) | 0, 0, 255);
+  color[2] = Object(_math_js__WEBPACK_IMPORTED_MODULE_1__["clamp"])((color[2] + 0.5) | 0, 0, 255);
+  color[3] = Object(_math_js__WEBPACK_IMPORTED_MODULE_1__["clamp"])(color[3], 0, 1);
+  return color;
+}
+
+
+/**
+ * @param {Color} color Color.
+ * @return {string} String.
+ */
+function toString(color) {
+  var r = color[0];
+  if (r != (r | 0)) {
+    r = (r + 0.5) | 0;
+  }
+  var g = color[1];
+  if (g != (g | 0)) {
+    g = (g + 0.5) | 0;
+  }
+  var b = color[2];
+  if (b != (b | 0)) {
+    b = (b + 0.5) | 0;
+  }
+  var a = color[3] === undefined ? 1 : color[3];
+  return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+}
+
+//# sourceMappingURL=color.js.map
 
 /***/ }),
 
@@ -17177,6 +17417,8 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * @module ol/css
  */
+
+
 /**
  * The CSS class for hidden feature.
  *
@@ -17184,6 +17426,8 @@ __webpack_require__.r(__webpack_exports__);
  * @type {string}
  */
 var CLASS_HIDDEN = 'ol-hidden';
+
+
 /**
  * The CSS class that we'll give the DOM elements to have them selectable.
  *
@@ -17191,6 +17435,8 @@ var CLASS_HIDDEN = 'ol-hidden';
  * @type {string}
  */
 var CLASS_SELECTABLE = 'ol-selectable';
+
+
 /**
  * The CSS class that we'll give the DOM elements to have them unselectable.
  *
@@ -17198,6 +17444,8 @@ var CLASS_SELECTABLE = 'ol-selectable';
  * @type {string}
  */
 var CLASS_UNSELECTABLE = 'ol-unselectable';
+
+
 /**
  * The CSS class for unsupported feature.
  *
@@ -17205,6 +17453,8 @@ var CLASS_UNSELECTABLE = 'ol-unselectable';
  * @type {string}
  */
 var CLASS_UNSUPPORTED = 'ol-unsupported';
+
+
 /**
  * The CSS class for controls.
  *
@@ -17212,6 +17462,8 @@ var CLASS_UNSUPPORTED = 'ol-unsupported';
  * @type {string}
  */
 var CLASS_CONTROL = 'ol-control';
+
+
 /**
  * The CSS class that we'll give the DOM elements that are collapsed, i.e.
  * to those elements which usually can be expanded.
@@ -17220,31 +17472,34 @@ var CLASS_CONTROL = 'ol-control';
  * @type {string}
  */
 var CLASS_COLLAPSED = 'ol-collapsed';
+
+
 /**
  * Get the list of font families from a font spec.  Note that this doesn't work
  * for font families that have commas in them.
  * @param {string} The CSS font property.
  * @return {Object<string>} The font families (or null if the input spec is invalid).
  */
-var getFontFamilies = (function () {
-    var style;
-    var cache = {};
-    return function (font) {
-        if (!style) {
-            style = document.createElement('div').style;
-        }
-        if (!(font in cache)) {
-            style.font = font;
-            var family = style.fontFamily;
-            style.font = '';
-            if (!family) {
-                return null;
-            }
-            cache[font] = family.split(/,\s?/);
-        }
-        return cache[font];
-    };
+var getFontFamilies = (function() {
+  var style;
+  var cache = {};
+  return function(font) {
+    if (!style) {
+      style = document.createElement('div').style;
+    }
+    if (!(font in cache)) {
+      style.font = font;
+      var family = style.fontFamily;
+      style.font = '';
+      if (!family) {
+        return null;
+      }
+      cache[font] = family.split(/,\s?/);
+    }
+    return cache[font];
+  };
 })();
+
 //# sourceMappingURL=css.js.map
 
 /***/ }),
@@ -17253,7 +17508,7 @@ var getFontFamilies = (function () {
 /*!********************************!*\
   !*** ./node_modules/ol/dom.js ***!
   \********************************/
-/*! exports provided: createCanvasContext2D, outerWidth, outerHeight, replaceNode, removeNode, removeChildren, replaceChildren */
+/*! exports provided: createCanvasContext2D, outerWidth, outerHeight, replaceNode, removeNode, removeChildren */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17264,10 +17519,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "replaceNode", function() { return replaceNode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeNode", function() { return removeNode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeChildren", function() { return removeChildren; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "replaceChildren", function() { return replaceChildren; });
 /**
  * @module ol/dom
  */
+
+
 /**
  * Create an html canvas element and returns its 2d context.
  * @param {number=} opt_width Canvas width.
@@ -17275,15 +17531,17 @@ __webpack_require__.r(__webpack_exports__);
  * @return {CanvasRenderingContext2D} The context.
  */
 function createCanvasContext2D(opt_width, opt_height) {
-    var canvas = document.createElement('canvas');
-    if (opt_width) {
-        canvas.width = opt_width;
-    }
-    if (opt_height) {
-        canvas.height = opt_height;
-    }
-    return canvas.getContext('2d');
+  var canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+  if (opt_width) {
+    canvas.width = opt_width;
+  }
+  if (opt_height) {
+    canvas.height = opt_height;
+  }
+  return /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
 }
+
+
 /**
  * Get the current computed width for the given element including margin,
  * padding and border.
@@ -17292,11 +17550,14 @@ function createCanvasContext2D(opt_width, opt_height) {
  * @return {number} The width.
  */
 function outerWidth(element) {
-    var width = element.offsetWidth;
-    var style = getComputedStyle(element);
-    width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
-    return width;
+  var width = element.offsetWidth;
+  var style = getComputedStyle(element);
+  width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
+
+  return width;
 }
+
+
 /**
  * Get the current computed height for the given element including margin,
  * padding and border.
@@ -17305,72 +17566,41 @@ function outerWidth(element) {
  * @return {number} The height.
  */
 function outerHeight(element) {
-    var height = element.offsetHeight;
-    var style = getComputedStyle(element);
-    height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
-    return height;
+  var height = element.offsetHeight;
+  var style = getComputedStyle(element);
+  height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
+
+  return height;
 }
+
 /**
  * @param {Node} newNode Node to replace old node
  * @param {Node} oldNode The node to be replaced
  */
 function replaceNode(newNode, oldNode) {
-    var parent = oldNode.parentNode;
-    if (parent) {
-        parent.replaceChild(newNode, oldNode);
-    }
+  var parent = oldNode.parentNode;
+  if (parent) {
+    parent.replaceChild(newNode, oldNode);
+  }
 }
+
 /**
  * @param {Node} node The node to remove.
  * @returns {Node} The node that was removed or null.
  */
 function removeNode(node) {
-    return node && node.parentNode ? node.parentNode.removeChild(node) : null;
+  return node && node.parentNode ? node.parentNode.removeChild(node) : null;
 }
+
 /**
  * @param {Node} node The node to remove the children from.
  */
 function removeChildren(node) {
-    while (node.lastChild) {
-        node.removeChild(node.lastChild);
-    }
+  while (node.lastChild) {
+    node.removeChild(node.lastChild);
+  }
 }
-/**
- * Transform the children of a parent node so they match the
- * provided list of children.  This function aims to efficiently
- * remove, add, and reorder child nodes while maintaining a simple
- * implementation (it is not guaranteed to minimize DOM operations).
- * @param {Node} node The parent node whose children need reworking.
- * @param {Array<Node>} children The desired children.
- */
-function replaceChildren(node, children) {
-    var oldChildren = node.childNodes;
-    for (var i = 0; true; ++i) {
-        var oldChild = oldChildren[i];
-        var newChild = children[i];
-        // check if our work is done
-        if (!oldChild && !newChild) {
-            break;
-        }
-        // check if children match
-        if (oldChild === newChild) {
-            continue;
-        }
-        // check if a new child needs to be added
-        if (!oldChild) {
-            node.appendChild(newChild);
-            continue;
-        }
-        // check if an old child needs to be removed
-        if (!newChild) {
-            node.removeChild(oldChild);
-            --i;
-            continue;
-        }
-        // reorder
-        node.insertBefore(newChild, oldChild);
-    }
-}
+
 //# sourceMappingURL=dom.js.map
 
 /***/ }),
@@ -17397,6 +17627,8 @@ __webpack_require__.r(__webpack_exports__);
  * @module ol/events
  */
 
+
+
 /**
  * Key to use with {@link module:ol/Observable~Observable#unByKey}.
  * @typedef {Object} EventsKey
@@ -17409,6 +17641,8 @@ __webpack_require__.r(__webpack_exports__);
  * @property {string} type
  * @api
  */
+
+
 /**
  * Listener function. This function is called with an event object as argument.
  * When the function returns `false`, event propagation will stop.
@@ -17416,22 +17650,26 @@ __webpack_require__.r(__webpack_exports__);
  * @typedef {function((Event|import("./events/Event.js").default)): (void|boolean)} ListenerFunction
  * @api
  */
+
+
 /**
  * @param {EventsKey} listenerObj Listener object.
  * @return {ListenerFunction} Bound listener.
  */
 function bindListener(listenerObj) {
-    var boundListener = function (evt) {
-        var listener = listenerObj.listener;
-        var bindTo = listenerObj.bindTo || listenerObj.target;
-        if (listenerObj.callOnce) {
-            unlistenByKey(listenerObj);
-        }
-        return listener.call(bindTo, evt);
-    };
-    listenerObj.boundListener = boundListener;
-    return boundListener;
+  var boundListener = function(evt) {
+    var listener = listenerObj.listener;
+    var bindTo = listenerObj.bindTo || listenerObj.target;
+    if (listenerObj.callOnce) {
+      unlistenByKey(listenerObj);
+    }
+    return listener.call(bindTo, evt);
+  };
+  listenerObj.boundListener = boundListener;
+  return boundListener;
 }
+
+
 /**
  * Finds the matching {@link module:ol/events~EventsKey} in the given listener
  * array.
@@ -17444,28 +17682,32 @@ function bindListener(listenerObj) {
  * @return {EventsKey|undefined} The matching listener object.
  */
 function findListener(listeners, listener, opt_this, opt_setDeleteIndex) {
-    var listenerObj;
-    for (var i = 0, ii = listeners.length; i < ii; ++i) {
-        listenerObj = listeners[i];
-        if (listenerObj.listener === listener &&
-            listenerObj.bindTo === opt_this) {
-            if (opt_setDeleteIndex) {
-                listenerObj.deleteIndex = i;
-            }
-            return listenerObj;
-        }
+  var listenerObj;
+  for (var i = 0, ii = listeners.length; i < ii; ++i) {
+    listenerObj = listeners[i];
+    if (listenerObj.listener === listener &&
+        listenerObj.bindTo === opt_this) {
+      if (opt_setDeleteIndex) {
+        listenerObj.deleteIndex = i;
+      }
+      return listenerObj;
     }
-    return undefined;
+  }
+  return undefined;
 }
+
+
 /**
  * @param {import("./events/Target.js").EventTargetLike} target Target.
  * @param {string} type Type.
  * @return {Array<EventsKey>|undefined} Listeners.
  */
 function getListeners(target, type) {
-    var listenerMap = getListenerMap(target);
-    return listenerMap ? listenerMap[type] : undefined;
+  var listenerMap = getListenerMap(target);
+  return listenerMap ? listenerMap[type] : undefined;
 }
+
+
 /**
  * Get the lookup of listeners.
  * @param {Object} target Target.
@@ -17474,19 +17716,23 @@ function getListeners(target, type) {
  *     listeners by event type.
  */
 function getListenerMap(target, opt_create) {
-    var listenerMap = target.ol_lm;
-    if (!listenerMap && opt_create) {
-        listenerMap = target.ol_lm = {};
-    }
-    return listenerMap;
+  var listenerMap = target.ol_lm;
+  if (!listenerMap && opt_create) {
+    listenerMap = target.ol_lm = {};
+  }
+  return listenerMap;
 }
+
+
 /**
  * Remove the listener map from a target.
  * @param {Object} target Target.
  */
 function removeListenerMap(target) {
-    delete target.ol_lm;
+  delete target.ol_lm;
 }
+
+
 /**
  * Clean up all listener objects of the given type.  All properties on the
  * listener objects will be removed, and if no listeners remain in the listener
@@ -17495,23 +17741,25 @@ function removeListenerMap(target) {
  * @param {string} type Type.
  */
 function removeListeners(target, type) {
-    var listeners = getListeners(target, type);
-    if (listeners) {
-        for (var i = 0, ii = listeners.length; i < ii; ++i) {
-            /** @type {import("./events/Target.js").default} */ (target).
-                removeEventListener(type, listeners[i].boundListener);
-            Object(_obj_js__WEBPACK_IMPORTED_MODULE_0__["clear"])(listeners[i]);
-        }
-        listeners.length = 0;
-        var listenerMap = getListenerMap(target);
-        if (listenerMap) {
-            delete listenerMap[type];
-            if (Object.keys(listenerMap).length === 0) {
-                removeListenerMap(target);
-            }
-        }
+  var listeners = getListeners(target, type);
+  if (listeners) {
+    for (var i = 0, ii = listeners.length; i < ii; ++i) {
+      /** @type {import("./events/Target.js").default} */ (target).
+        removeEventListener(type, listeners[i].boundListener);
+      Object(_obj_js__WEBPACK_IMPORTED_MODULE_0__["clear"])(listeners[i]);
     }
+    listeners.length = 0;
+    var listenerMap = getListenerMap(target);
+    if (listenerMap) {
+      delete listenerMap[type];
+      if (Object.keys(listenerMap).length === 0) {
+        removeListenerMap(target);
+      }
+    }
+  }
 }
+
+
 /**
  * Registers an event listener on an event target. Inspired by
  * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
@@ -17528,32 +17776,34 @@ function removeListeners(target, type) {
  * @return {EventsKey} Unique key for the listener.
  */
 function listen(target, type, listener, opt_this, opt_once) {
-    var listenerMap = getListenerMap(target, true);
-    var listeners = listenerMap[type];
-    if (!listeners) {
-        listeners = listenerMap[type] = [];
+  var listenerMap = getListenerMap(target, true);
+  var listeners = listenerMap[type];
+  if (!listeners) {
+    listeners = listenerMap[type] = [];
+  }
+  var listenerObj = findListener(listeners, listener, opt_this, false);
+  if (listenerObj) {
+    if (!opt_once) {
+      // Turn one-off listener into a permanent one.
+      listenerObj.callOnce = false;
     }
-    var listenerObj = findListener(listeners, listener, opt_this, false);
-    if (listenerObj) {
-        if (!opt_once) {
-            // Turn one-off listener into a permanent one.
-            listenerObj.callOnce = false;
-        }
-    }
-    else {
-        listenerObj = {
-            bindTo: opt_this,
-            callOnce: !!opt_once,
-            listener: listener,
-            target: target,
-            type: type
-        };
-        /** @type {import("./events/Target.js").default} */ (target).
-            addEventListener(type, bindListener(listenerObj));
-        listeners.push(listenerObj);
-    }
-    return listenerObj;
+  } else {
+    listenerObj = /** @type {EventsKey} */ ({
+      bindTo: opt_this,
+      callOnce: !!opt_once,
+      listener: listener,
+      target: target,
+      type: type
+    });
+    /** @type {import("./events/Target.js").default} */ (target).
+      addEventListener(type, bindListener(listenerObj));
+    listeners.push(listenerObj);
+  }
+
+  return listenerObj;
 }
+
+
 /**
  * Registers a one-off event listener on an event target. Inspired by
  * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
@@ -17575,8 +17825,10 @@ function listen(target, type, listener, opt_this, opt_once) {
  * @return {EventsKey} Key for unlistenByKey.
  */
 function listenOnce(target, type, listener, opt_this) {
-    return listen(target, type, listener, opt_this, true);
+  return listen(target, type, listener, opt_this, true);
 }
+
+
 /**
  * Unregisters an event listener on an event target. Inspired by
  * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
@@ -17591,14 +17843,16 @@ function listenOnce(target, type, listener, opt_this) {
  *     listener. Default is the `target`.
  */
 function unlisten(target, type, listener, opt_this) {
-    var listeners = getListeners(target, type);
-    if (listeners) {
-        var listenerObj = findListener(listeners, listener, opt_this, true);
-        if (listenerObj) {
-            unlistenByKey(listenerObj);
-        }
+  var listeners = getListeners(target, type);
+  if (listeners) {
+    var listenerObj = findListener(listeners, listener, opt_this, true);
+    if (listenerObj) {
+      unlistenByKey(listenerObj);
     }
+  }
 }
+
+
 /**
  * Unregisters event listeners on an event target. Inspired by
  * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
@@ -17609,22 +17863,24 @@ function unlisten(target, type, listener, opt_this) {
  * @param {EventsKey} key The key.
  */
 function unlistenByKey(key) {
-    if (key && key.target) {
-        /** @type {import("./events/Target.js").default} */ (key.target).
-            removeEventListener(key.type, key.boundListener);
-        var listeners = getListeners(key.target, key.type);
-        if (listeners) {
-            var i = 'deleteIndex' in key ? key.deleteIndex : listeners.indexOf(key);
-            if (i !== -1) {
-                listeners.splice(i, 1);
-            }
-            if (listeners.length === 0) {
-                removeListeners(key.target, key.type);
-            }
-        }
-        Object(_obj_js__WEBPACK_IMPORTED_MODULE_0__["clear"])(key);
+  if (key && key.target) {
+    /** @type {import("./events/Target.js").default} */ (key.target).
+      removeEventListener(key.type, key.boundListener);
+    var listeners = getListeners(key.target, key.type);
+    if (listeners) {
+      var i = 'deleteIndex' in key ? key.deleteIndex : listeners.indexOf(key);
+      if (i !== -1) {
+        listeners.splice(i, 1);
+      }
+      if (listeners.length === 0) {
+        removeListeners(key.target, key.type);
+      }
     }
+    Object(_obj_js__WEBPACK_IMPORTED_MODULE_0__["clear"])(key);
+  }
 }
+
+
 /**
  * Unregisters all event listeners on an event target. Inspired by
  * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
@@ -17632,13 +17888,14 @@ function unlistenByKey(key) {
  * @param {import("./events/Target.js").EventTargetLike} target Target.
  */
 function unlistenAll(target) {
-    var listenerMap = getListenerMap(target);
-    if (listenerMap) {
-        for (var type in listenerMap) {
-            removeListeners(target, type);
-        }
+  var listenerMap = getListenerMap(target);
+  if (listenerMap) {
+    for (var type in listenerMap) {
+      removeListeners(target, type);
     }
+  }
 }
+
 //# sourceMappingURL=events.js.map
 
 /***/ }),
@@ -17657,6 +17914,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * @module ol/events/Event
  */
+
 /**
  * @classdesc
  * Stripped down implementation of the W3C DOM Level 2 Event interface.
@@ -17667,57 +17925,62 @@ __webpack_require__.r(__webpack_exports__);
  * for higher level events defined in the library, and works with
  * {@link module:ol/events/Target~Target}.
  */
-var Event = /** @class */ (function () {
-    /**
-     * @param {string} type Type.
-     */
-    function Event(type) {
-        /**
-         * @type {boolean}
-         */
-        this.propagationStopped;
-        /**
-         * The event type.
-         * @type {string}
-         * @api
-         */
-        this.type = type;
-        /**
-         * The event target.
-         * @type {Object}
-         * @api
-         */
-        this.target = null;
-    }
-    /**
-     * Stop event propagation.
-     * @api
-     */
-    Event.prototype.preventDefault = function () {
-        this.propagationStopped = true;
-    };
-    /**
-     * Stop event propagation.
-     * @api
-     */
-    Event.prototype.stopPropagation = function () {
-        this.propagationStopped = true;
-    };
-    return Event;
-}());
+var Event = function Event(type) {
+
+  /**
+   * @type {boolean}
+   */
+  this.propagationStopped;
+
+  /**
+   * The event type.
+   * @type {string}
+   * @api
+   */
+  this.type = type;
+
+  /**
+   * The event target.
+   * @type {Object}
+   * @api
+   */
+  this.target = null;
+};
+
+/**
+ * Stop event propagation.
+ * @api
+ */
+Event.prototype.preventDefault = function preventDefault () {
+  this.propagationStopped = true;
+};
+
+/**
+ * Stop event propagation.
+ * @api
+ */
+Event.prototype.stopPropagation = function stopPropagation () {
+  this.propagationStopped = true;
+};
+
+
 /**
  * @param {Event|import("./Event.js").default} evt Event
  */
 function stopPropagation(evt) {
-    evt.stopPropagation();
+  evt.stopPropagation();
 }
+
+
 /**
  * @param {Event|import("./Event.js").default} evt Event
  */
 function preventDefault(evt) {
-    evt.preventDefault();
+  evt.preventDefault();
 }
+
 /* harmony default export */ __webpack_exports__["default"] = (Event);
+
 //# sourceMappingURL=Event.js.map
 
 /***/ }),
@@ -17734,40 +17997,43 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * @module ol/events/EventType
  */
+
 /**
  * @enum {string}
  * @const
  */
 /* harmony default export */ __webpack_exports__["default"] = ({
-    /**
-     * Generic change event. Triggered when the revision counter is increased.
-     * @event module:ol/events/Event~Event#change
-     * @api
-     */
-    CHANGE: 'change',
-    CLEAR: 'clear',
-    CONTEXTMENU: 'contextmenu',
-    CLICK: 'click',
-    DBLCLICK: 'dblclick',
-    DRAGENTER: 'dragenter',
-    DRAGOVER: 'dragover',
-    DROP: 'drop',
-    ERROR: 'error',
-    KEYDOWN: 'keydown',
-    KEYPRESS: 'keypress',
-    LOAD: 'load',
-    MOUSEDOWN: 'mousedown',
-    MOUSEMOVE: 'mousemove',
-    MOUSEOUT: 'mouseout',
-    MOUSEUP: 'mouseup',
-    MOUSEWHEEL: 'mousewheel',
-    MSPOINTERDOWN: 'MSPointerDown',
-    RESIZE: 'resize',
-    TOUCHSTART: 'touchstart',
-    TOUCHMOVE: 'touchmove',
-    TOUCHEND: 'touchend',
-    WHEEL: 'wheel'
+  /**
+   * Generic change event. Triggered when the revision counter is increased.
+   * @event module:ol/events/Event~Event#change
+   * @api
+   */
+  CHANGE: 'change',
+
+  CLEAR: 'clear',
+  CONTEXTMENU: 'contextmenu',
+  CLICK: 'click',
+  DBLCLICK: 'dblclick',
+  DRAGENTER: 'dragenter',
+  DRAGOVER: 'dragover',
+  DROP: 'drop',
+  ERROR: 'error',
+  KEYDOWN: 'keydown',
+  KEYPRESS: 'keypress',
+  LOAD: 'load',
+  MOUSEDOWN: 'mousedown',
+  MOUSEMOVE: 'mousemove',
+  MOUSEOUT: 'mouseout',
+  MOUSEUP: 'mouseup',
+  MOUSEWHEEL: 'mousewheel',
+  MSPOINTERDOWN: 'MSPointerDown',
+  RESIZE: 'resize',
+  TOUCHSTART: 'touchstart',
+  TOUCHMOVE: 'touchmove',
+  TOUCHEND: 'touchend',
+  WHEEL: 'wheel'
 });
+
 //# sourceMappingURL=EventType.js.map
 
 /***/ }),
@@ -17785,19 +18051,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _events_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../events.js */ "./node_modules/ol/events.js");
 /* harmony import */ var _functions_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../functions.js */ "./node_modules/ol/functions.js");
 /* harmony import */ var _Event_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Event.js */ "./node_modules/ol/events/Event.js");
-var __extends = (undefined && undefined.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 /**
  * @module ol/events/Target
  */
@@ -17805,9 +18058,13 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 
 
+
+
 /**
  * @typedef {EventTarget|Target} EventTargetLike
  */
+
+
 /**
  * @classdesc
  * A simplified implementation of the W3C DOM Level 2 EventTarget interface.
@@ -17823,133 +18080,149 @@ var __extends = (undefined && undefined.__extends) || (function () {
  *    more listeners after this one will be called. Same as when the listener
  *    returns false.
  */
-var Target = /** @class */ (function (_super) {
-    __extends(Target, _super);
-    function Target() {
-        var _this = _super.call(this) || this;
-        /**
-         * @private
-         * @type {!Object<string, number>}
-         */
-        _this.pendingRemovals_ = {};
-        /**
-         * @private
-         * @type {!Object<string, number>}
-         */
-        _this.dispatching_ = {};
-        /**
-         * @private
-         * @type {!Object<string, Array<import("../events.js").ListenerFunction>>}
-         */
-        _this.listeners_ = {};
-        return _this;
+var Target = /*@__PURE__*/(function (Disposable) {
+  function Target() {
+
+    Disposable.call(this);
+
+    /**
+     * @private
+     * @type {!Object<string, number>}
+     */
+    this.pendingRemovals_ = {};
+
+    /**
+     * @private
+     * @type {!Object<string, number>}
+     */
+    this.dispatching_ = {};
+
+    /**
+     * @private
+     * @type {!Object<string, Array<import("../events.js").ListenerFunction>>}
+     */
+    this.listeners_ = {};
+
+  }
+
+  if ( Disposable ) { Target.__proto__ = Disposable; }
+  Target.prototype = Object.create( Disposable && Disposable.prototype );
+  Target.prototype.constructor = Target;
+
+  /**
+   * @param {string} type Type.
+   * @param {import("../events.js").ListenerFunction} listener Listener.
+   */
+  Target.prototype.addEventListener = function addEventListener (type, listener) {
+    var listeners = this.listeners_[type];
+    if (!listeners) {
+      listeners = this.listeners_[type] = [];
     }
-    /**
-     * @param {string} type Type.
-     * @param {import("../events.js").ListenerFunction} listener Listener.
-     */
-    Target.prototype.addEventListener = function (type, listener) {
-        var listeners = this.listeners_[type];
-        if (!listeners) {
-            listeners = this.listeners_[type] = [];
+    if (listeners.indexOf(listener) === -1) {
+      listeners.push(listener);
+    }
+  };
+
+  /**
+   * Dispatches an event and calls all listeners listening for events
+   * of this type. The event parameter can either be a string or an
+   * Object with a `type` property.
+   *
+   * @param {{type: string,
+   *     target: (EventTargetLike|undefined),
+   *     propagationStopped: (boolean|undefined)}|
+   *     import("./Event.js").default|string} event Event object.
+   * @return {boolean|undefined} `false` if anyone called preventDefault on the
+   *     event object or if any of the listeners returned false.
+   * @api
+   */
+  Target.prototype.dispatchEvent = function dispatchEvent (event) {
+    var evt = typeof event === 'string' ? new _Event_js__WEBPACK_IMPORTED_MODULE_3__["default"](event) : event;
+    var type = evt.type;
+    evt.target = this;
+    var listeners = this.listeners_[type];
+    var propagate;
+    if (listeners) {
+      if (!(type in this.dispatching_)) {
+        this.dispatching_[type] = 0;
+        this.pendingRemovals_[type] = 0;
+      }
+      ++this.dispatching_[type];
+      for (var i = 0, ii = listeners.length; i < ii; ++i) {
+        if (listeners[i].call(this, evt) === false || evt.propagationStopped) {
+          propagate = false;
+          break;
         }
-        if (listeners.indexOf(listener) === -1) {
-            listeners.push(listener);
+      }
+      --this.dispatching_[type];
+      if (this.dispatching_[type] === 0) {
+        var pendingRemovals = this.pendingRemovals_[type];
+        delete this.pendingRemovals_[type];
+        while (pendingRemovals--) {
+          this.removeEventListener(type, _functions_js__WEBPACK_IMPORTED_MODULE_2__["VOID"]);
         }
-    };
-    /**
-     * Dispatches an event and calls all listeners listening for events
-     * of this type. The event parameter can either be a string or an
-     * Object with a `type` property.
-     *
-     * @param {{type: string,
-     *     target: (EventTargetLike|undefined),
-     *     propagationStopped: (boolean|undefined)}|
-     *     import("./Event.js").default|string} event Event object.
-     * @return {boolean|undefined} `false` if anyone called preventDefault on the
-     *     event object or if any of the listeners returned false.
-     * @api
-     */
-    Target.prototype.dispatchEvent = function (event) {
-        var evt = typeof event === 'string' ? new _Event_js__WEBPACK_IMPORTED_MODULE_3__["default"](event) : event;
-        var type = evt.type;
-        evt.target = this;
-        var listeners = this.listeners_[type];
-        var propagate;
-        if (listeners) {
-            if (!(type in this.dispatching_)) {
-                this.dispatching_[type] = 0;
-                this.pendingRemovals_[type] = 0;
-            }
-            ++this.dispatching_[type];
-            for (var i = 0, ii = listeners.length; i < ii; ++i) {
-                if (listeners[i].call(this, evt) === false || evt.propagationStopped) {
-                    propagate = false;
-                    break;
-                }
-            }
-            --this.dispatching_[type];
-            if (this.dispatching_[type] === 0) {
-                var pendingRemovals = this.pendingRemovals_[type];
-                delete this.pendingRemovals_[type];
-                while (pendingRemovals--) {
-                    this.removeEventListener(type, _functions_js__WEBPACK_IMPORTED_MODULE_2__["VOID"]);
-                }
-                delete this.dispatching_[type];
-            }
-            return propagate;
+        delete this.dispatching_[type];
+      }
+      return propagate;
+    }
+  };
+
+  /**
+   * @inheritDoc
+   */
+  Target.prototype.disposeInternal = function disposeInternal () {
+    Object(_events_js__WEBPACK_IMPORTED_MODULE_1__["unlistenAll"])(this);
+  };
+
+  /**
+   * Get the listeners for a specified event type. Listeners are returned in the
+   * order that they will be called in.
+   *
+   * @param {string} type Type.
+   * @return {Array<import("../events.js").ListenerFunction>} Listeners.
+   */
+  Target.prototype.getListeners = function getListeners (type) {
+    return this.listeners_[type];
+  };
+
+  /**
+   * @param {string=} opt_type Type. If not provided,
+   *     `true` will be returned if this event target has any listeners.
+   * @return {boolean} Has listeners.
+   */
+  Target.prototype.hasListener = function hasListener (opt_type) {
+    return opt_type ?
+      opt_type in this.listeners_ :
+      Object.keys(this.listeners_).length > 0;
+  };
+
+  /**
+   * @param {string} type Type.
+   * @param {import("../events.js").ListenerFunction} listener Listener.
+   */
+  Target.prototype.removeEventListener = function removeEventListener (type, listener) {
+    var listeners = this.listeners_[type];
+    if (listeners) {
+      var index = listeners.indexOf(listener);
+      if (type in this.pendingRemovals_) {
+        // make listener a no-op, and remove later in #dispatchEvent()
+        listeners[index] = _functions_js__WEBPACK_IMPORTED_MODULE_2__["VOID"];
+        ++this.pendingRemovals_[type];
+      } else {
+        listeners.splice(index, 1);
+        if (listeners.length === 0) {
+          delete this.listeners_[type];
         }
-    };
-    /**
-     * @inheritDoc
-     */
-    Target.prototype.disposeInternal = function () {
-        Object(_events_js__WEBPACK_IMPORTED_MODULE_1__["unlistenAll"])(this);
-    };
-    /**
-     * Get the listeners for a specified event type. Listeners are returned in the
-     * order that they will be called in.
-     *
-     * @param {string} type Type.
-     * @return {Array<import("../events.js").ListenerFunction>} Listeners.
-     */
-    Target.prototype.getListeners = function (type) {
-        return this.listeners_[type];
-    };
-    /**
-     * @param {string=} opt_type Type. If not provided,
-     *     `true` will be returned if this event target has any listeners.
-     * @return {boolean} Has listeners.
-     */
-    Target.prototype.hasListener = function (opt_type) {
-        return opt_type ?
-            opt_type in this.listeners_ :
-            Object.keys(this.listeners_).length > 0;
-    };
-    /**
-     * @param {string} type Type.
-     * @param {import("../events.js").ListenerFunction} listener Listener.
-     */
-    Target.prototype.removeEventListener = function (type, listener) {
-        var listeners = this.listeners_[type];
-        if (listeners) {
-            var index = listeners.indexOf(listener);
-            if (type in this.pendingRemovals_) {
-                // make listener a no-op, and remove later in #dispatchEvent()
-                listeners[index] = _functions_js__WEBPACK_IMPORTED_MODULE_2__["VOID"];
-                ++this.pendingRemovals_[type];
-            }
-            else {
-                listeners.splice(index, 1);
-                if (listeners.length === 0) {
-                    delete this.listeners_[type];
-                }
-            }
-        }
-    };
-    return Target;
+      }
+    }
+  };
+
+  return Target;
 }(_Disposable_js__WEBPACK_IMPORTED_MODULE_0__["default"]));
+
+
 /* harmony default export */ __webpack_exports__["default"] = (Target);
+
 //# sourceMappingURL=Target.js.map
 
 /***/ }),
@@ -17969,27 +18242,254 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * @module ol/functions
  */
+
 /**
  * Always returns true.
  * @returns {boolean} true.
  */
 function TRUE() {
-    return true;
+  return true;
 }
+
 /**
  * Always returns false.
  * @returns {boolean} false.
  */
 function FALSE() {
-    return false;
+  return false;
 }
+
 /**
  * A reusable function, used e.g. as a default for callbacks.
  *
  * @return {void} Nothing.
  */
-function VOID() { }
+function VOID() {}
+
 //# sourceMappingURL=functions.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ol/math.js":
+/*!*********************************!*\
+  !*** ./node_modules/ol/math.js ***!
+  \*********************************/
+/*! exports provided: clamp, cosh, roundUpToPowerOfTwo, squaredSegmentDistance, squaredDistance, solveLinearSystem, toDegrees, toRadians, modulo, lerp */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clamp", function() { return clamp; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cosh", function() { return cosh; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "roundUpToPowerOfTwo", function() { return roundUpToPowerOfTwo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "squaredSegmentDistance", function() { return squaredSegmentDistance; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "squaredDistance", function() { return squaredDistance; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "solveLinearSystem", function() { return solveLinearSystem; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toDegrees", function() { return toDegrees; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toRadians", function() { return toRadians; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "modulo", function() { return modulo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lerp", function() { return lerp; });
+/* harmony import */ var _asserts_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./asserts.js */ "./node_modules/ol/asserts.js");
+/**
+ * @module ol/math
+ */
+
+
+/**
+ * Takes a number and clamps it to within the provided bounds.
+ * @param {number} value The input number.
+ * @param {number} min The minimum value to return.
+ * @param {number} max The maximum value to return.
+ * @return {number} The input number if it is within bounds, or the nearest
+ *     number within the bounds.
+ */
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+
+/**
+ * Return the hyperbolic cosine of a given number. The method will use the
+ * native `Math.cosh` function if it is available, otherwise the hyperbolic
+ * cosine will be calculated via the reference implementation of the Mozilla
+ * developer network.
+ *
+ * @param {number} x X.
+ * @return {number} Hyperbolic cosine of x.
+ */
+var cosh = (function() {
+  // Wrapped in a iife, to save the overhead of checking for the native
+  // implementation on every invocation.
+  var cosh;
+  if ('cosh' in Math) {
+    // The environment supports the native Math.cosh function, use it…
+    cosh = Math.cosh;
+  } else {
+    // … else, use the reference implementation of MDN:
+    cosh = function(x) {
+      var y = /** @type {Math} */ (Math).exp(x);
+      return (y + 1 / y) / 2;
+    };
+  }
+  return cosh;
+}());
+
+
+/**
+ * @param {number} x X.
+ * @return {number} The smallest power of two greater than or equal to x.
+ */
+function roundUpToPowerOfTwo(x) {
+  Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(0 < x, 29); // `x` must be greater than `0`
+  return Math.pow(2, Math.ceil(Math.log(x) / Math.LN2));
+}
+
+
+/**
+ * Returns the square of the closest distance between the point (x, y) and the
+ * line segment (x1, y1) to (x2, y2).
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @param {number} x1 X1.
+ * @param {number} y1 Y1.
+ * @param {number} x2 X2.
+ * @param {number} y2 Y2.
+ * @return {number} Squared distance.
+ */
+function squaredSegmentDistance(x, y, x1, y1, x2, y2) {
+  var dx = x2 - x1;
+  var dy = y2 - y1;
+  if (dx !== 0 || dy !== 0) {
+    var t = ((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy);
+    if (t > 1) {
+      x1 = x2;
+      y1 = y2;
+    } else if (t > 0) {
+      x1 += dx * t;
+      y1 += dy * t;
+    }
+  }
+  return squaredDistance(x, y, x1, y1);
+}
+
+
+/**
+ * Returns the square of the distance between the points (x1, y1) and (x2, y2).
+ * @param {number} x1 X1.
+ * @param {number} y1 Y1.
+ * @param {number} x2 X2.
+ * @param {number} y2 Y2.
+ * @return {number} Squared distance.
+ */
+function squaredDistance(x1, y1, x2, y2) {
+  var dx = x2 - x1;
+  var dy = y2 - y1;
+  return dx * dx + dy * dy;
+}
+
+
+/**
+ * Solves system of linear equations using Gaussian elimination method.
+ *
+ * @param {Array<Array<number>>} mat Augmented matrix (n x n + 1 column)
+ *                                     in row-major order.
+ * @return {Array<number>} The resulting vector.
+ */
+function solveLinearSystem(mat) {
+  var n = mat.length;
+
+  for (var i = 0; i < n; i++) {
+    // Find max in the i-th column (ignoring i - 1 first rows)
+    var maxRow = i;
+    var maxEl = Math.abs(mat[i][i]);
+    for (var r = i + 1; r < n; r++) {
+      var absValue = Math.abs(mat[r][i]);
+      if (absValue > maxEl) {
+        maxEl = absValue;
+        maxRow = r;
+      }
+    }
+
+    if (maxEl === 0) {
+      return null; // matrix is singular
+    }
+
+    // Swap max row with i-th (current) row
+    var tmp = mat[maxRow];
+    mat[maxRow] = mat[i];
+    mat[i] = tmp;
+
+    // Subtract the i-th row to make all the remaining rows 0 in the i-th column
+    for (var j = i + 1; j < n; j++) {
+      var coef = -mat[j][i] / mat[i][i];
+      for (var k = i; k < n + 1; k++) {
+        if (i == k) {
+          mat[j][k] = 0;
+        } else {
+          mat[j][k] += coef * mat[i][k];
+        }
+      }
+    }
+  }
+
+  // Solve Ax=b for upper triangular matrix A (mat)
+  var x = new Array(n);
+  for (var l = n - 1; l >= 0; l--) {
+    x[l] = mat[l][n] / mat[l][l];
+    for (var m = l - 1; m >= 0; m--) {
+      mat[m][n] -= mat[m][l] * x[l];
+    }
+  }
+  return x;
+}
+
+
+/**
+ * Converts radians to to degrees.
+ *
+ * @param {number} angleInRadians Angle in radians.
+ * @return {number} Angle in degrees.
+ */
+function toDegrees(angleInRadians) {
+  return angleInRadians * 180 / Math.PI;
+}
+
+
+/**
+ * Converts degrees to radians.
+ *
+ * @param {number} angleInDegrees Angle in degrees.
+ * @return {number} Angle in radians.
+ */
+function toRadians(angleInDegrees) {
+  return angleInDegrees * Math.PI / 180;
+}
+
+/**
+ * Returns the modulo of a / b, depending on the sign of b.
+ *
+ * @param {number} a Dividend.
+ * @param {number} b Divisor.
+ * @return {number} Modulo.
+ */
+function modulo(a, b) {
+  var r = a % b;
+  return r * b < 0 ? r + b : r;
+}
+
+/**
+ * Calculates the linearly interpolated value of x between a and b.
+ *
+ * @param {number} a Number
+ * @param {number} b Number
+ * @param {number} x Value to be interpolated.
+ * @return {number} Interpolated value.
+ */
+function lerp(a, b, x) {
+  return a + x * (b - a);
+}
+
+//# sourceMappingURL=math.js.map
 
 /***/ }),
 
@@ -18009,6 +18509,8 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * @module ol/obj
  */
+
+
 /**
  * Polyfill for Object.assign().  Assigns enumerable and own properties from
  * one or more source objects to a target object.
@@ -18018,61 +18520,67 @@ __webpack_require__.r(__webpack_exports__);
  * @param {...Object} var_sources The source object(s).
  * @return {!Object} The modified target object.
  */
-var assign = (typeof Object.assign === 'function') ? Object.assign : function (target, var_sources) {
-    var arguments$1 = arguments;
+var assign = (typeof Object.assign === 'function') ? Object.assign : function(target, var_sources) {
+  var arguments$1 = arguments;
 
-    if (target === undefined || target === null) {
-        throw new TypeError('Cannot convert undefined or null to object');
-    }
-    var output = Object(target);
-    for (var i = 1, ii = arguments.length; i < ii; ++i) {
-        var source = arguments$1[i];
-        if (source !== undefined && source !== null) {
-            for (var key in source) {
-                if (source.hasOwnProperty(key)) {
-                    output[key] = source[key];
-                }
-            }
+  if (target === undefined || target === null) {
+    throw new TypeError('Cannot convert undefined or null to object');
+  }
+
+  var output = Object(target);
+  for (var i = 1, ii = arguments.length; i < ii; ++i) {
+    var source = arguments$1[i];
+    if (source !== undefined && source !== null) {
+      for (var key in source) {
+        if (source.hasOwnProperty(key)) {
+          output[key] = source[key];
         }
+      }
     }
-    return output;
+  }
+  return output;
 };
+
+
 /**
  * Removes all properties from an object.
  * @param {Object} object The object to clear.
  */
 function clear(object) {
-    for (var property in object) {
-        delete object[property];
-    }
+  for (var property in object) {
+    delete object[property];
+  }
 }
+
+
 /**
- * Polyfill for Object.values().  Get an array of property values from an object.
- * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values
- *
- * @param {!Object<K,V>} object The object from which to get the values.
+ * Get an array of property values from an object.
+ * @param {Object<K,V>} object The object from which to get the values.
  * @return {!Array<V>} The property values.
  * @template K,V
  */
-var getValues = (typeof Object.values === 'function') ? Object.values : function (object) {
-    var values = [];
-    for (var property in object) {
-        values.push(object[property]);
-    }
-    return values;
-};
+function getValues(object) {
+  var values = [];
+  for (var property in object) {
+    values.push(object[property]);
+  }
+  return values;
+}
+
+
 /**
  * Determine if an object has any properties.
  * @param {Object} object The object to check.
  * @return {boolean} The object is empty.
  */
 function isEmpty(object) {
-    var property;
-    for (property in object) {
-        return false;
-    }
-    return !property;
+  var property;
+  for (property in object) {
+    return false;
+  }
+  return !property;
 }
+
 //# sourceMappingURL=obj.js.map
 
 /***/ }),
@@ -18081,7 +18589,7 @@ function isEmpty(object) {
 /*!******************************************!*\
   !*** ./node_modules/ol/render/canvas.js ***!
   \******************************************/
-/*! exports provided: defaultFont, defaultFillStyle, defaultLineCap, defaultLineDash, defaultLineDashOffset, defaultLineJoin, defaultMiterLimit, defaultStrokeStyle, defaultTextAlign, defaultTextBaseline, defaultPadding, defaultLineWidth, labelCache, checkedFonts, textHeights, checkFont, measureTextHeight, measureTextWidth, measureAndCacheTextWidth, measureTextWidths, rotateAtOffset, resetTransform, drawImage */
+/*! exports provided: defaultFont, defaultFillStyle, defaultLineCap, defaultLineDash, defaultLineDashOffset, defaultLineJoin, defaultMiterLimit, defaultStrokeStyle, defaultTextAlign, defaultTextBaseline, defaultPadding, defaultLineWidth, labelCache, checkedFonts, textHeights, checkFont, measureTextHeight, measureTextWidth, rotateAtOffset, resetTransform, drawImage */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18104,19 +18612,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkFont", function() { return checkFont; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "measureTextHeight", function() { return measureTextHeight; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "measureTextWidth", function() { return measureTextWidth; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "measureAndCacheTextWidth", function() { return measureAndCacheTextWidth; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "measureTextWidths", function() { return measureTextWidths; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "rotateAtOffset", function() { return rotateAtOffset; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resetTransform", function() { return resetTransform; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "drawImage", function() { return drawImage; });
 /* harmony import */ var _css_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../css.js */ "./node_modules/ol/css.js");
 /* harmony import */ var _dom_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../dom.js */ "./node_modules/ol/dom.js");
 /* harmony import */ var _obj_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../obj.js */ "./node_modules/ol/obj.js");
-/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../transform.js */ "./node_modules/ol/transform.js");
-/* harmony import */ var _canvas_LabelCache_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./canvas/LabelCache.js */ "./node_modules/ol/render/canvas/LabelCache.js");
+/* harmony import */ var _structs_LRUCache_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../structs/LRUCache.js */ "./node_modules/ol/structs/LRUCache.js");
+/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../transform.js */ "./node_modules/ol/transform.js");
 /**
  * @module ol/render/canvas
  */
+
+
 
 
 
@@ -18126,6 +18634,8 @@ __webpack_require__.r(__webpack_exports__);
  * @typedef {Object} FillState
  * @property {import("../colorlike.js").ColorLike} fillStyle
  */
+
+
 /**
  * @typedef {Object} FillStrokeState
  * @property {import("../colorlike.js").ColorLike} [currentFillStyle]
@@ -18146,6 +18656,8 @@ __webpack_require__.r(__webpack_exports__);
  * @property {number} [lineWidth]
  * @property {number} [miterLimit]
  */
+
+
 /**
  * @typedef {Object} StrokeState
  * @property {string} lineCap
@@ -18156,6 +18668,8 @@ __webpack_require__.r(__webpack_exports__);
  * @property {number} miterLimit
  * @property {import("../colorlike.js").ColorLike} strokeStyle
  */
+
+
 /**
  * @typedef {Object} TextState
  * @property {string} font
@@ -18169,6 +18683,8 @@ __webpack_require__.r(__webpack_exports__);
  * @property {number} [scale]
  * @property {Array<number>} [padding]
  */
+
+
 /**
  * Container for decluttered replay instructions that need to be rendered or
  * omitted together, i.e. when styles render both an image and text, or for the
@@ -18180,243 +18696,256 @@ __webpack_require__.r(__webpack_exports__);
  * arguments to {@link module:ol/render/canvas~drawImage} are appended to the array.
  * @typedef {Array<*>} DeclutterGroup
  */
+
+
 /**
  * @const
  * @type {string}
  */
 var defaultFont = '10px sans-serif';
+
+
 /**
  * @const
- * @type {import("../colorlike.js").ColorLike}
+ * @type {import("../color.js").Color}
  */
-var defaultFillStyle = '#000';
+var defaultFillStyle = [0, 0, 0, 1];
+
+
 /**
  * @const
  * @type {string}
  */
 var defaultLineCap = 'round';
+
+
 /**
  * @const
  * @type {Array<number>}
  */
 var defaultLineDash = [];
+
+
 /**
  * @const
  * @type {number}
  */
 var defaultLineDashOffset = 0;
+
+
 /**
  * @const
  * @type {string}
  */
 var defaultLineJoin = 'round';
+
+
 /**
  * @const
  * @type {number}
  */
 var defaultMiterLimit = 10;
+
+
 /**
  * @const
- * @type {import("../colorlike.js").ColorLike}
+ * @type {import("../color.js").Color}
  */
-var defaultStrokeStyle = '#000';
+var defaultStrokeStyle = [0, 0, 0, 1];
+
+
 /**
  * @const
  * @type {string}
  */
 var defaultTextAlign = 'center';
+
+
 /**
  * @const
  * @type {string}
  */
 var defaultTextBaseline = 'middle';
+
+
 /**
  * @const
  * @type {Array<number>}
  */
 var defaultPadding = [0, 0, 0, 0];
+
+
 /**
  * @const
  * @type {number}
  */
 var defaultLineWidth = 1;
+
+
 /**
  * The label cache for text rendering. To change the default cache size of 2048
  * entries, use {@link module:ol/structs/LRUCache#setSize}.
- * @type {LabelCache}
+ * @type {LRUCache<HTMLCanvasElement>}
  * @api
  */
-var labelCache = new _canvas_LabelCache_js__WEBPACK_IMPORTED_MODULE_4__["default"]();
+var labelCache = new _structs_LRUCache_js__WEBPACK_IMPORTED_MODULE_3__["default"]();
+
+
 /**
  * @type {!Object<string, number>}
  */
 var checkedFonts = {};
+
+
 /**
  * @type {CanvasRenderingContext2D}
  */
 var measureContext = null;
+
+
 /**
  * @type {!Object<string, number>}
  */
 var textHeights = {};
+
+
 /**
  * Clears the label cache when a font becomes available.
  * @param {string} fontSpec CSS font spec.
  */
-var checkFont = (function () {
-    var retries = 60;
-    var checked = checkedFonts;
-    var size = '32px ';
-    var referenceFonts = ['monospace', 'serif'];
-    var len = referenceFonts.length;
-    var text = 'wmytzilWMYTZIL@#/&?$%10\uF013';
-    var interval, referenceWidth;
-    function isAvailable(font) {
-        var context = getMeasureContext();
-        // Check weight ranges according to
-        // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights
-        for (var weight = 100; weight <= 700; weight += 300) {
-            var fontWeight = weight + ' ';
-            var available = true;
-            for (var i = 0; i < len; ++i) {
-                var referenceFont = referenceFonts[i];
-                context.font = fontWeight + size + referenceFont;
-                referenceWidth = context.measureText(text).width;
-                if (font != referenceFont) {
-                    context.font = fontWeight + size + font + ',' + referenceFont;
-                    var width = context.measureText(text).width;
-                    // If width and referenceWidth are the same, then the fallback was used
-                    // instead of the font we wanted, so the font is not available.
-                    available = available && width != referenceWidth;
-                }
-            }
-            if (available) {
-                // Consider font available when it is available in one weight range.
-                //FIXME With this we miss rare corner cases, so we should consider
-                //FIXME checking availability for each requested weight range.
-                return true;
-            }
+var checkFont = (function() {
+  var retries = 60;
+  var checked = checkedFonts;
+  var size = '32px ';
+  var referenceFonts = ['monospace', 'serif'];
+  var len = referenceFonts.length;
+  var text = 'wmytzilWMYTZIL@#/&?$%10\uF013';
+  var interval, referenceWidth;
+
+  function isAvailable(font) {
+    var context = getMeasureContext();
+    // Check weight ranges according to
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights
+    for (var weight = 100; weight <= 700; weight += 300) {
+      var fontWeight = weight + ' ';
+      var available = true;
+      for (var i = 0; i < len; ++i) {
+        var referenceFont = referenceFonts[i];
+        context.font = fontWeight + size + referenceFont;
+        referenceWidth = context.measureText(text).width;
+        if (font != referenceFont) {
+          context.font = fontWeight + size + font + ',' + referenceFont;
+          var width = context.measureText(text).width;
+          // If width and referenceWidth are the same, then the fallback was used
+          // instead of the font we wanted, so the font is not available.
+          available = available && width != referenceWidth;
         }
-        return false;
+      }
+      if (available) {
+        // Consider font available when it is available in one weight range.
+        //FIXME With this we miss rare corner cases, so we should consider
+        //FIXME checking availability for each requested weight range.
+        return true;
+      }
     }
-    function check() {
-        var done = true;
-        for (var font in checked) {
-            if (checked[font] < retries) {
-                if (isAvailable(font)) {
-                    checked[font] = retries;
-                    Object(_obj_js__WEBPACK_IMPORTED_MODULE_2__["clear"])(textHeights);
-                    // Make sure that loaded fonts are picked up by Safari
-                    measureContext = null;
-                    labelCache.clear();
-                }
-                else {
-                    ++checked[font];
-                    done = false;
-                }
-            }
+    return false;
+  }
+
+  function check() {
+    var done = true;
+    for (var font in checked) {
+      if (checked[font] < retries) {
+        if (isAvailable(font)) {
+          checked[font] = retries;
+          Object(_obj_js__WEBPACK_IMPORTED_MODULE_2__["clear"])(textHeights);
+          // Make sure that loaded fonts are picked up by Safari
+          measureContext = null;
+          labelCache.clear();
+        } else {
+          ++checked[font];
+          done = false;
         }
-        if (done) {
-            clearInterval(interval);
-            interval = undefined;
-        }
+      }
     }
-    return function (fontSpec) {
-        var fontFamilies = Object(_css_js__WEBPACK_IMPORTED_MODULE_0__["getFontFamilies"])(fontSpec);
-        if (!fontFamilies) {
-            return;
+    if (done) {
+      clearInterval(interval);
+      interval = undefined;
+    }
+  }
+
+  return function(fontSpec) {
+    var fontFamilies = Object(_css_js__WEBPACK_IMPORTED_MODULE_0__["getFontFamilies"])(fontSpec);
+    if (!fontFamilies) {
+      return;
+    }
+    for (var i = 0, ii = fontFamilies.length; i < ii; ++i) {
+      var fontFamily = fontFamilies[i];
+      if (!(fontFamily in checked)) {
+        checked[fontFamily] = retries;
+        if (!isAvailable(fontFamily)) {
+          checked[fontFamily] = 0;
+          if (interval === undefined) {
+            interval = setInterval(check, 32);
+          }
         }
-        for (var i = 0, ii = fontFamilies.length; i < ii; ++i) {
-            var fontFamily = fontFamilies[i];
-            if (!(fontFamily in checked)) {
-                checked[fontFamily] = retries;
-                if (!isAvailable(fontFamily)) {
-                    checked[fontFamily] = 0;
-                    if (interval === undefined) {
-                        interval = setInterval(check, 32);
-                    }
-                }
-            }
-        }
-    };
+      }
+    }
+  };
 })();
+
+
 /**
  * @return {CanvasRenderingContext2D} Measure context.
  */
 function getMeasureContext() {
-    if (!measureContext) {
-        measureContext = Object(_dom_js__WEBPACK_IMPORTED_MODULE_1__["createCanvasContext2D"])(1, 1);
-    }
-    return measureContext;
+  if (!measureContext) {
+    measureContext = Object(_dom_js__WEBPACK_IMPORTED_MODULE_1__["createCanvasContext2D"])(1, 1);
+  }
+  return measureContext;
 }
+
+
 /**
  * @param {string} font Font to use for measuring.
  * @return {import("../size.js").Size} Measurement.
  */
-var measureTextHeight = (function () {
-    var div;
-    var heights = textHeights;
-    return function (font) {
-        var height = heights[font];
-        if (height == undefined) {
-            if (!div) {
-                div = document.createElement('div');
-                div.innerHTML = 'M';
-                div.style.margin = div.style.padding = '0 !important';
-                div.style.position = 'absolute !important';
-                div.style.left = '-99999px !important';
-            }
-            div.style.font = font;
-            document.body.appendChild(div);
-            height = heights[font] = div.offsetHeight;
-            document.body.removeChild(div);
-        }
-        return height;
-    };
+var measureTextHeight = (function() {
+  var span;
+  var heights = textHeights;
+  return function(font) {
+    var height = heights[font];
+    if (height == undefined) {
+      if (!span) {
+        span = document.createElement('span');
+        span.textContent = 'M';
+        span.style.margin = span.style.padding = '0 !important';
+        span.style.position = 'absolute !important';
+        span.style.left = '-99999px !important';
+      }
+      span.style.font = font;
+      document.body.appendChild(span);
+      height = heights[font] = span.offsetHeight;
+      document.body.removeChild(span);
+    }
+    return height;
+  };
 })();
+
+
 /**
  * @param {string} font Font.
  * @param {string} text Text.
  * @return {number} Width.
  */
 function measureTextWidth(font, text) {
-    var measureContext = getMeasureContext();
-    if (font != measureContext.font) {
-        measureContext.font = font;
-    }
-    return measureContext.measureText(text).width;
+  var measureContext = getMeasureContext();
+  if (font != measureContext.font) {
+    measureContext.font = font;
+  }
+  return measureContext.measureText(text).width;
 }
-/**
- * Measure text width using a cache.
- * @param {string} font The font.
- * @param {string} text The text to measure.
- * @param {Object<string, number>} cache A lookup of cached widths by text.
- * @returns {number} The text width.
- */
-function measureAndCacheTextWidth(font, text, cache) {
-    if (text in cache) {
-        return cache[text];
-    }
-    var width = cache[text] = measureTextWidth(font, text);
-    return width;
-}
-/**
- * @param {string} font Font to use for measuring.
- * @param {Array<string>} lines Lines to measure.
- * @param {Array<number>} widths Array will be populated with the widths of
- * each line.
- * @return {number} Width of the whole text.
- */
-function measureTextWidths(font, lines, widths) {
-    var numLines = lines.length;
-    var width = 0;
-    for (var i = 0; i < numLines; ++i) {
-        var currentWidth = measureTextWidth(font, lines[i]);
-        width = Math.max(width, currentWidth);
-        widths.push(currentWidth);
-    }
-    return width;
-}
+
+
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} rotation Rotation.
@@ -18424,13 +18953,17 @@ function measureTextWidths(font, lines, widths) {
  * @param {number} offsetY Y offset.
  */
 function rotateAtOffset(context, rotation, offsetX, offsetY) {
-    if (rotation !== 0) {
-        context.translate(offsetX, offsetY);
-        context.rotate(rotation);
-        context.translate(-offsetX, -offsetY);
-    }
+  if (rotation !== 0) {
+    context.translate(offsetX, offsetY);
+    context.rotate(rotation);
+    context.translate(-offsetX, -offsetY);
+  }
 }
-var resetTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_3__["create"])();
+
+
+var resetTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_4__["create"])();
+
+
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {import("../transform.js").Transform|null} transform Transform.
@@ -18444,115 +18977,28 @@ var resetTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_3__["create"]
  * @param {number} y Y.
  * @param {number} scale Scale.
  */
-function drawImage(context, transform, opacity, image, originX, originY, w, h, x, y, scale) {
-    var alpha;
-    if (opacity != 1) {
-        alpha = context.globalAlpha;
-        context.globalAlpha = alpha * opacity;
-    }
-    if (transform) {
-        context.setTransform.apply(context, transform);
-    }
-    context.drawImage(image, originX, originY, w, h, x, y, w * scale, h * scale);
-    if (alpha) {
-        context.globalAlpha = alpha;
-    }
-    if (transform) {
-        context.setTransform.apply(context, resetTransform);
-    }
+function drawImage(context,
+  transform, opacity, image, originX, originY, w, h, x, y, scale) {
+  var alpha;
+  if (opacity != 1) {
+    alpha = context.globalAlpha;
+    context.globalAlpha = alpha * opacity;
+  }
+  if (transform) {
+    context.setTransform.apply(context, transform);
+  }
+
+  context.drawImage(image, originX, originY, w, h, x, y, w * scale, h * scale);
+
+  if (alpha) {
+    context.globalAlpha = alpha;
+  }
+  if (transform) {
+    context.setTransform.apply(context, resetTransform);
+  }
 }
+
 //# sourceMappingURL=canvas.js.map
-
-/***/ }),
-
-/***/ "./node_modules/ol/render/canvas/LabelCache.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/ol/render/canvas/LabelCache.js ***!
-  \*****************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../util.js */ "./node_modules/ol/util.js");
-/* harmony import */ var _structs_LRUCache_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../structs/LRUCache.js */ "./node_modules/ol/structs/LRUCache.js");
-var __extends = (undefined && undefined.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-
-
-/**
- * @module ol/render/canvas/LabelCache
- */
-/**
- * @classdesc
- * Cache of pre-rendered labels.
- * @fires import("../events/Event.js").Event
- */
-var LabelCache = /** @class */ (function (_super) {
-    __extends(LabelCache, _super);
-    /**
-     * @inheritDoc
-     */
-    function LabelCache(opt_highWaterMark) {
-        var _this = _super.call(this, opt_highWaterMark) || this;
-        _this.consumers = {};
-        return _this;
-    }
-    LabelCache.prototype.clear = function () {
-        _super.prototype.clear.call(this);
-        this.consumers = {};
-    };
-    /**
-     * @override
-     * @param {string} key Label key.
-     * @param {import("./Executor.js").default} consumer Label consumer.
-     * @return {HTMLCanvasElement} Label.
-     */
-    LabelCache.prototype.get = function (key, consumer) {
-        var canvas = _super.prototype.get.call(this, key);
-        var consumerId = Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["getUid"])(consumer);
-        if (!(consumerId in this.consumers)) {
-            this.consumers[consumerId] = {};
-        }
-        this.consumers[consumerId][key] = true;
-        return canvas;
-    };
-    LabelCache.prototype.prune = function () {
-        outer: while (this.canExpireCache()) {
-            var key = this.peekLastKey();
-            for (var consumerId in this.consumers) {
-                if (key in this.consumers[consumerId]) {
-                    break outer;
-                }
-            }
-            var canvas = this.pop();
-            canvas.width = canvas.height = 0;
-            for (var consumerId in this.consumers) {
-                delete this.consumers[consumerId][key];
-            }
-        }
-    };
-    /**
-     * @param {import("./Executor.js").default} consumer Label consumer.
-     */
-    LabelCache.prototype.release = function (consumer) {
-        delete this.consumers[Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["getUid"])(consumer)];
-    };
-    return LabelCache;
-}(_structs_LRUCache_js__WEBPACK_IMPORTED_MODULE_1__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (LabelCache);
-//# sourceMappingURL=LabelCache.js.map
 
 /***/ }),
 
@@ -18571,19 +19017,9 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * @module ol/structs/LRUCache
  */
-var __extends = (undefined && undefined.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
+
+
+
 
 
 
@@ -18594,6 +19030,8 @@ var __extends = (undefined && undefined.__extends) || (function () {
  * @property {Object} older
  * @property {*} value_
  */
+
+
 /**
  * @classdesc
  * Implements a Least-Recently-Used cache where the keys do not conflict with
@@ -18603,234 +19041,283 @@ var __extends = (undefined && undefined.__extends) || (function () {
  * @fires import("../events/Event.js").Event
  * @template T
  */
-var LRUCache = /** @class */ (function (_super) {
-    __extends(LRUCache, _super);
+var LRUCache = /*@__PURE__*/(function (EventTarget) {
+  function LRUCache(opt_highWaterMark) {
+
+    EventTarget.call(this);
+
     /**
-     * @param {number=} opt_highWaterMark High water mark.
+     * @type {number}
      */
-    function LRUCache(opt_highWaterMark) {
-        var _this = _super.call(this) || this;
-        /**
-         * @type {number}
-         */
-        _this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
-        /**
-         * @private
-         * @type {number}
-         */
-        _this.count_ = 0;
-        /**
-         * @private
-         * @type {!Object<string, Entry>}
-         */
-        _this.entries_ = {};
-        /**
-         * @private
-         * @type {?Entry}
-         */
-        _this.oldest_ = null;
-        /**
-         * @private
-         * @type {?Entry}
-         */
-        _this.newest_ = null;
-        return _this;
+    this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.count_ = 0;
+
+    /**
+     * @private
+     * @type {!Object<string, Entry>}
+     */
+    this.entries_ = {};
+
+    /**
+     * @private
+     * @type {?Entry}
+     */
+    this.oldest_ = null;
+
+    /**
+     * @private
+     * @type {?Entry}
+     */
+    this.newest_ = null;
+
+  }
+
+  if ( EventTarget ) { LRUCache.__proto__ = EventTarget; }
+  LRUCache.prototype = Object.create( EventTarget && EventTarget.prototype );
+  LRUCache.prototype.constructor = LRUCache;
+
+
+  /**
+   * @return {boolean} Can expire cache.
+   */
+  LRUCache.prototype.canExpireCache = function canExpireCache () {
+    return this.getCount() > this.highWaterMark;
+  };
+
+
+  /**
+   * FIXME empty description for jsdoc
+   */
+  LRUCache.prototype.clear = function clear () {
+    this.count_ = 0;
+    this.entries_ = {};
+    this.oldest_ = null;
+    this.newest_ = null;
+    this.dispatchEvent(_events_EventType_js__WEBPACK_IMPORTED_MODULE_2__["default"].CLEAR);
+  };
+
+
+  /**
+   * @param {string} key Key.
+   * @return {boolean} Contains key.
+   */
+  LRUCache.prototype.containsKey = function containsKey (key) {
+    return this.entries_.hasOwnProperty(key);
+  };
+
+
+  /**
+   * @param {function(this: S, T, string, LRUCache): ?} f The function
+   *     to call for every entry from the oldest to the newer. This function takes
+   *     3 arguments (the entry value, the entry key and the LRUCache object).
+   *     The return value is ignored.
+   * @param {S=} opt_this The object to use as `this` in `f`.
+   * @template S
+   */
+  LRUCache.prototype.forEach = function forEach (f, opt_this) {
+    var entry = this.oldest_;
+    while (entry) {
+      f.call(opt_this, entry.value_, entry.key_, this);
+      entry = entry.newer;
     }
-    /**
-     * @return {boolean} Can expire cache.
-     */
-    LRUCache.prototype.canExpireCache = function () {
-        return this.getCount() > this.highWaterMark;
-    };
-    /**
-     * FIXME empty description for jsdoc
-     */
-    LRUCache.prototype.clear = function () {
-        this.count_ = 0;
-        this.entries_ = {};
-        this.oldest_ = null;
-        this.newest_ = null;
-        this.dispatchEvent(_events_EventType_js__WEBPACK_IMPORTED_MODULE_2__["default"].CLEAR);
-    };
-    /**
-     * @param {string} key Key.
-     * @return {boolean} Contains key.
-     */
-    LRUCache.prototype.containsKey = function (key) {
-        return this.entries_.hasOwnProperty(key);
-    };
-    /**
-     * @param {function(T, string, LRUCache): ?} f The function
-     *     to call for every entry from the oldest to the newer. This function takes
-     *     3 arguments (the entry value, the entry key and the LRUCache object).
-     *     The return value is ignored.
-     */
-    LRUCache.prototype.forEach = function (f) {
-        var entry = this.oldest_;
-        while (entry) {
-            f(entry.value_, entry.key_, this);
-            entry = entry.newer;
-        }
-    };
-    /**
-     * @param {string} key Key.
-     * @param {*=} opt_options Options (reserverd for subclasses).
-     * @return {T} Value.
-     */
-    LRUCache.prototype.get = function (key, opt_options) {
-        var entry = this.entries_[key];
-        Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
-        if (entry === this.newest_) {
-            return entry.value_;
-        }
-        else if (entry === this.oldest_) {
-            this.oldest_ = /** @type {Entry} */ (this.oldest_.newer);
-            this.oldest_.older = null;
-        }
-        else {
-            entry.newer.older = entry.older;
-            entry.older.newer = entry.newer;
-        }
-        entry.newer = null;
-        entry.older = this.newest_;
-        this.newest_.newer = entry;
-        this.newest_ = entry;
-        return entry.value_;
-    };
-    /**
-     * Remove an entry from the cache.
-     * @param {string} key The entry key.
-     * @return {T} The removed entry.
-     */
-    LRUCache.prototype.remove = function (key) {
-        var entry = this.entries_[key];
-        Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
-        if (entry === this.newest_) {
-            this.newest_ = /** @type {Entry} */ (entry.older);
-            if (this.newest_) {
-                this.newest_.newer = null;
-            }
-        }
-        else if (entry === this.oldest_) {
-            this.oldest_ = /** @type {Entry} */ (entry.newer);
-            if (this.oldest_) {
-                this.oldest_.older = null;
-            }
-        }
-        else {
-            entry.newer.older = entry.older;
-            entry.older.newer = entry.newer;
-        }
-        delete this.entries_[key];
-        --this.count_;
-        return entry.value_;
-    };
-    /**
-     * @return {number} Count.
-     */
-    LRUCache.prototype.getCount = function () {
-        return this.count_;
-    };
-    /**
-     * @return {Array<string>} Keys.
-     */
-    LRUCache.prototype.getKeys = function () {
-        var keys = new Array(this.count_);
-        var i = 0;
-        var entry;
-        for (entry = this.newest_; entry; entry = entry.older) {
-            keys[i++] = entry.key_;
-        }
-        return keys;
-    };
-    /**
-     * @return {Array<T>} Values.
-     */
-    LRUCache.prototype.getValues = function () {
-        var values = new Array(this.count_);
-        var i = 0;
-        var entry;
-        for (entry = this.newest_; entry; entry = entry.older) {
-            values[i++] = entry.value_;
-        }
-        return values;
-    };
-    /**
-     * @return {T} Last value.
-     */
-    LRUCache.prototype.peekLast = function () {
-        return this.oldest_.value_;
-    };
-    /**
-     * @return {string} Last key.
-     */
-    LRUCache.prototype.peekLastKey = function () {
-        return this.oldest_.key_;
-    };
-    /**
-     * Get the key of the newest item in the cache.  Throws if the cache is empty.
-     * @return {string} The newest key.
-     */
-    LRUCache.prototype.peekFirstKey = function () {
-        return this.newest_.key_;
-    };
-    /**
-     * @return {T} value Value.
-     */
-    LRUCache.prototype.pop = function () {
-        var entry = this.oldest_;
-        delete this.entries_[entry.key_];
-        if (entry.newer) {
-            entry.newer.older = null;
-        }
-        this.oldest_ = /** @type {Entry} */ (entry.newer);
-        if (!this.oldest_) {
-            this.newest_ = null;
-        }
-        --this.count_;
-        return entry.value_;
-    };
-    /**
-     * @param {string} key Key.
-     * @param {T} value Value.
-     */
-    LRUCache.prototype.replace = function (key, value) {
-        this.get(key); // update `newest_`
-        this.entries_[key].value_ = value;
-    };
-    /**
-     * @param {string} key Key.
-     * @param {T} value Value.
-     */
-    LRUCache.prototype.set = function (key, value) {
-        Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(!(key in this.entries_), 16); // Tried to set a value for a key that is used already
-        var entry = {
-            key_: key,
-            newer: null,
-            older: this.newest_,
-            value_: value
-        };
-        if (!this.newest_) {
-            this.oldest_ = entry;
-        }
-        else {
-            this.newest_.newer = entry;
-        }
-        this.newest_ = entry;
-        this.entries_[key] = entry;
-        ++this.count_;
-    };
-    /**
-     * Set a maximum number of entries for the cache.
-     * @param {number} size Cache size.
-     * @api
-     */
-    LRUCache.prototype.setSize = function (size) {
-        this.highWaterMark = size;
-    };
-    return LRUCache;
+  };
+
+
+  /**
+   * @param {string} key Key.
+   * @return {T} Value.
+   */
+  LRUCache.prototype.get = function get (key) {
+    var entry = this.entries_[key];
+    Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(entry !== undefined,
+      15); // Tried to get a value for a key that does not exist in the cache
+    if (entry === this.newest_) {
+      return entry.value_;
+    } else if (entry === this.oldest_) {
+      this.oldest_ = /** @type {Entry} */ (this.oldest_.newer);
+      this.oldest_.older = null;
+    } else {
+      entry.newer.older = entry.older;
+      entry.older.newer = entry.newer;
+    }
+    entry.newer = null;
+    entry.older = this.newest_;
+    this.newest_.newer = entry;
+    this.newest_ = entry;
+    return entry.value_;
+  };
+
+
+  /**
+   * Remove an entry from the cache.
+   * @param {string} key The entry key.
+   * @return {T} The removed entry.
+   */
+  LRUCache.prototype.remove = function remove (key) {
+    var entry = this.entries_[key];
+    Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
+    if (entry === this.newest_) {
+      this.newest_ = /** @type {Entry} */ (entry.older);
+      if (this.newest_) {
+        this.newest_.newer = null;
+      }
+    } else if (entry === this.oldest_) {
+      this.oldest_ = /** @type {Entry} */ (entry.newer);
+      if (this.oldest_) {
+        this.oldest_.older = null;
+      }
+    } else {
+      entry.newer.older = entry.older;
+      entry.older.newer = entry.newer;
+    }
+    delete this.entries_[key];
+    --this.count_;
+    return entry.value_;
+  };
+
+
+  /**
+   * @return {number} Count.
+   */
+  LRUCache.prototype.getCount = function getCount () {
+    return this.count_;
+  };
+
+
+  /**
+   * @return {Array<string>} Keys.
+   */
+  LRUCache.prototype.getKeys = function getKeys () {
+    var keys = new Array(this.count_);
+    var i = 0;
+    var entry;
+    for (entry = this.newest_; entry; entry = entry.older) {
+      keys[i++] = entry.key_;
+    }
+    return keys;
+  };
+
+
+  /**
+   * @return {Array<T>} Values.
+   */
+  LRUCache.prototype.getValues = function getValues () {
+    var values = new Array(this.count_);
+    var i = 0;
+    var entry;
+    for (entry = this.newest_; entry; entry = entry.older) {
+      values[i++] = entry.value_;
+    }
+    return values;
+  };
+
+
+  /**
+   * @return {T} Last value.
+   */
+  LRUCache.prototype.peekLast = function peekLast () {
+    return this.oldest_.value_;
+  };
+
+
+  /**
+   * @return {string} Last key.
+   */
+  LRUCache.prototype.peekLastKey = function peekLastKey () {
+    return this.oldest_.key_;
+  };
+
+
+  /**
+   * Get the key of the newest item in the cache.  Throws if the cache is empty.
+   * @return {string} The newest key.
+   */
+  LRUCache.prototype.peekFirstKey = function peekFirstKey () {
+    return this.newest_.key_;
+  };
+
+
+  /**
+   * @return {T} value Value.
+   */
+  LRUCache.prototype.pop = function pop () {
+    var entry = this.oldest_;
+    delete this.entries_[entry.key_];
+    if (entry.newer) {
+      entry.newer.older = null;
+    }
+    this.oldest_ = /** @type {Entry} */ (entry.newer);
+    if (!this.oldest_) {
+      this.newest_ = null;
+    }
+    --this.count_;
+    return entry.value_;
+  };
+
+
+  /**
+   * @param {string} key Key.
+   * @param {T} value Value.
+   */
+  LRUCache.prototype.replace = function replace (key, value) {
+    this.get(key); // update `newest_`
+    this.entries_[key].value_ = value;
+  };
+
+
+  /**
+   * @param {string} key Key.
+   * @param {T} value Value.
+   */
+  LRUCache.prototype.set = function set (key, value) {
+    Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(!(key in this.entries_),
+      16); // Tried to set a value for a key that is used already
+    var entry = /** @type {Entry} */ ({
+      key_: key,
+      newer: null,
+      older: this.newest_,
+      value_: value
+    });
+    if (!this.newest_) {
+      this.oldest_ = entry;
+    } else {
+      this.newest_.newer = entry;
+    }
+    this.newest_ = entry;
+    this.entries_[key] = entry;
+    ++this.count_;
+  };
+
+
+  /**
+   * Set a maximum number of entries for the cache.
+   * @param {number} size Cache size.
+   * @api
+   */
+  LRUCache.prototype.setSize = function setSize (size) {
+    this.highWaterMark = size;
+  };
+
+
+  /**
+   * Prune the cache.
+   */
+  LRUCache.prototype.prune = function prune () {
+    while (this.canExpireCache()) {
+      this.pop();
+    }
+  };
+
+  return LRUCache;
 }(_events_Target_js__WEBPACK_IMPORTED_MODULE_1__["default"]));
+
 /* harmony default export */ __webpack_exports__["default"] = (LRUCache);
+
 //# sourceMappingURL=LRUCache.js.map
 
 /***/ }),
@@ -18844,63 +19331,99 @@ var LRUCache = /** @class */ (function (_super) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util.js */ "./node_modules/ol/util.js");
+/* harmony import */ var _color_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../color.js */ "./node_modules/ol/color.js");
 /**
  * @module ol/style/Fill
  */
+
+
+
+
 /**
  * @typedef {Object} Options
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color=null] A color, gradient or pattern.
+ * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color] A color, gradient or pattern.
  * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
  * Default null; if null, the Canvas/renderer default black will be used.
  */
+
+
 /**
  * @classdesc
  * Set fill style for vector features.
  * @api
  */
-var Fill = /** @class */ (function () {
-    /**
-     * @param {Options=} opt_options Options.
-     */
-    function Fill(opt_options) {
-        var options = opt_options || {};
-        /**
-         * @private
-         * @type {import("../color.js").Color|import("../colorlike.js").ColorLike}
-         */
-        this.color_ = options.color !== undefined ? options.color : null;
+var Fill = function Fill(opt_options) {
+
+  var options = opt_options || {};
+
+  /**
+   * @private
+   * @type {import("../color.js").Color|import("../colorlike.js").ColorLike}
+   */
+  this.color_ = options.color !== undefined ? options.color : null;
+
+  /**
+   * @private
+   * @type {string|undefined}
+   */
+  this.checksum_ = undefined;
+};
+
+/**
+ * Clones the style. The color is not cloned if it is an {@link module:ol/colorlike~ColorLike}.
+ * @return {Fill} The cloned style.
+ * @api
+ */
+Fill.prototype.clone = function clone () {
+  var color = this.getColor();
+  return new Fill({
+    color: Array.isArray(color) ? color.slice() : color || undefined
+  });
+};
+
+/**
+ * Get the fill color.
+ * @return {import("../color.js").Color|import("../colorlike.js").ColorLike} Color.
+ * @api
+ */
+Fill.prototype.getColor = function getColor () {
+  return this.color_;
+};
+
+/**
+ * Set the color.
+ *
+ * @param {import("../color.js").Color|import("../colorlike.js").ColorLike} color Color.
+ * @api
+ */
+Fill.prototype.setColor = function setColor (color) {
+  this.color_ = color;
+  this.checksum_ = undefined;
+};
+
+/**
+ * @return {string} The checksum.
+ */
+Fill.prototype.getChecksum = function getChecksum () {
+  if (this.checksum_ === undefined) {
+    var color = this.color_;
+    if (color) {
+      if (Array.isArray(color) || typeof color == 'string') {
+        this.checksum_ = 'f' + Object(_color_js__WEBPACK_IMPORTED_MODULE_1__["asString"])(/** @type {import("../color.js").Color|string} */ (color));
+      } else {
+        this.checksum_ = Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["getUid"])(this.color_);
+      }
+    } else {
+      this.checksum_ = 'f-';
     }
-    /**
-     * Clones the style. The color is not cloned if it is an {@link module:ol/colorlike~ColorLike}.
-     * @return {Fill} The cloned style.
-     * @api
-     */
-    Fill.prototype.clone = function () {
-        var color = this.getColor();
-        return new Fill({
-            color: Array.isArray(color) ? color.slice() : color || undefined
-        });
-    };
-    /**
-     * Get the fill color.
-     * @return {import("../color.js").Color|import("../colorlike.js").ColorLike} Color.
-     * @api
-     */
-    Fill.prototype.getColor = function () {
-        return this.color_;
-    };
-    /**
-     * Set the color.
-     *
-     * @param {import("../color.js").Color|import("../colorlike.js").ColorLike} color Color.
-     * @api
-     */
-    Fill.prototype.setColor = function (color) {
-        this.color_ = color;
-    };
-    return Fill;
-}());
+  }
+
+  return this.checksum_;
+};
+
 /* harmony default export */ __webpack_exports__["default"] = (Fill);
+
 //# sourceMappingURL=Fill.js.map
 
 /***/ }),
@@ -18921,6 +19444,8 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+
+
 /**
  * The default fill color to use if no fill was set at construction time; a
  * blackish `#333`.
@@ -18928,17 +19453,19 @@ __webpack_require__.r(__webpack_exports__);
  * @const {string}
  */
 var DEFAULT_FILL_COLOR = '#333';
+
+
 /**
  * @typedef {Object} Options
  * @property {string} [font] Font style as CSS 'font' value, see:
  * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font. Default is '10px sans-serif'
- * @property {number} [maxAngle=Math.PI/4] When `placement` is set to `'line'`, allow a maximum angle between adjacent characters.
+ * @property {number} [maxAngle] When `placement` is set to `'line'`, allow a maximum angle between adjacent characters.
  * The expected value is in radians, and the default is 45° (`Math.PI / 4`).
  * @property {number} [offsetX=0] Horizontal text offset in pixels. A positive will shift the text right.
  * @property {number} [offsetY=0] Vertical text offset in pixels. A positive will shift the text down.
  * @property {boolean} [overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
  * the width of the polygon at the label position or the length of the path that it follows.
- * @property {import("./TextPlacement.js").default|string} [placement='point'] Text placement.
+ * @property {import("./TextPlacement.js").default|string} [placement] Text placement.
  * @property {number} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
@@ -18957,421 +19484,462 @@ var DEFAULT_FILL_COLOR = '#333';
  * @property {Array<number>} [padding=[0, 0, 0, 0]] Padding in pixels around the text for decluttering and background. The order of
  * values in the array is `[top, right, bottom, left]`.
  */
+
+
 /**
  * @classdesc
  * Set text style for vector features.
  * @api
  */
-var Text = /** @class */ (function () {
-    /**
-     * @param {Options=} opt_options Options.
-     */
-    function Text(opt_options) {
-        var options = opt_options || {};
-        /**
-         * @private
-         * @type {string|undefined}
-         */
-        this.font_ = options.font;
-        /**
-         * @private
-         * @type {number|undefined}
-         */
-        this.rotation_ = options.rotation;
-        /**
-         * @private
-         * @type {boolean|undefined}
-         */
-        this.rotateWithView_ = options.rotateWithView;
-        /**
-         * @private
-         * @type {number|undefined}
-         */
-        this.scale_ = options.scale;
-        /**
-         * @private
-         * @type {string|undefined}
-         */
-        this.text_ = options.text;
-        /**
-         * @private
-         * @type {string|undefined}
-         */
-        this.textAlign_ = options.textAlign;
-        /**
-         * @private
-         * @type {string|undefined}
-         */
-        this.textBaseline_ = options.textBaseline;
-        /**
-         * @private
-         * @type {import("./Fill.js").default}
-         */
-        this.fill_ = options.fill !== undefined ? options.fill :
-            new _Fill_js__WEBPACK_IMPORTED_MODULE_0__["default"]({ color: DEFAULT_FILL_COLOR });
-        /**
-         * @private
-         * @type {number}
-         */
-        this.maxAngle_ = options.maxAngle !== undefined ? options.maxAngle : Math.PI / 4;
-        /**
-         * @private
-         * @type {import("./TextPlacement.js").default|string}
-         */
-        this.placement_ = options.placement !== undefined ? options.placement : _TextPlacement_js__WEBPACK_IMPORTED_MODULE_1__["default"].POINT;
-        /**
-         * @private
-         * @type {boolean}
-         */
-        this.overflow_ = !!options.overflow;
-        /**
-         * @private
-         * @type {import("./Stroke.js").default}
-         */
-        this.stroke_ = options.stroke !== undefined ? options.stroke : null;
-        /**
-         * @private
-         * @type {number}
-         */
-        this.offsetX_ = options.offsetX !== undefined ? options.offsetX : 0;
-        /**
-         * @private
-         * @type {number}
-         */
-        this.offsetY_ = options.offsetY !== undefined ? options.offsetY : 0;
-        /**
-         * @private
-         * @type {import("./Fill.js").default}
-         */
-        this.backgroundFill_ = options.backgroundFill ? options.backgroundFill : null;
-        /**
-         * @private
-         * @type {import("./Stroke.js").default}
-         */
-        this.backgroundStroke_ = options.backgroundStroke ? options.backgroundStroke : null;
-        /**
-         * @private
-         * @type {Array<number>}
-         */
-        this.padding_ = options.padding === undefined ? null : options.padding;
-    }
-    /**
-     * Clones the style.
-     * @return {Text} The cloned style.
-     * @api
-     */
-    Text.prototype.clone = function () {
-        return new Text({
-            font: this.getFont(),
-            placement: this.getPlacement(),
-            maxAngle: this.getMaxAngle(),
-            overflow: this.getOverflow(),
-            rotation: this.getRotation(),
-            rotateWithView: this.getRotateWithView(),
-            scale: this.getScale(),
-            text: this.getText(),
-            textAlign: this.getTextAlign(),
-            textBaseline: this.getTextBaseline(),
-            fill: this.getFill() ? this.getFill().clone() : undefined,
-            stroke: this.getStroke() ? this.getStroke().clone() : undefined,
-            offsetX: this.getOffsetX(),
-            offsetY: this.getOffsetY(),
-            backgroundFill: this.getBackgroundFill() ? this.getBackgroundFill().clone() : undefined,
-            backgroundStroke: this.getBackgroundStroke() ? this.getBackgroundStroke().clone() : undefined
-        });
-    };
-    /**
-     * Get the `overflow` configuration.
-     * @return {boolean} Let text overflow the length of the path they follow.
-     * @api
-     */
-    Text.prototype.getOverflow = function () {
-        return this.overflow_;
-    };
-    /**
-     * Get the font name.
-     * @return {string|undefined} Font.
-     * @api
-     */
-    Text.prototype.getFont = function () {
-        return this.font_;
-    };
-    /**
-     * Get the maximum angle between adjacent characters.
-     * @return {number} Angle in radians.
-     * @api
-     */
-    Text.prototype.getMaxAngle = function () {
-        return this.maxAngle_;
-    };
-    /**
-     * Get the label placement.
-     * @return {import("./TextPlacement.js").default|string} Text placement.
-     * @api
-     */
-    Text.prototype.getPlacement = function () {
-        return this.placement_;
-    };
-    /**
-     * Get the x-offset for the text.
-     * @return {number} Horizontal text offset.
-     * @api
-     */
-    Text.prototype.getOffsetX = function () {
-        return this.offsetX_;
-    };
-    /**
-     * Get the y-offset for the text.
-     * @return {number} Vertical text offset.
-     * @api
-     */
-    Text.prototype.getOffsetY = function () {
-        return this.offsetY_;
-    };
-    /**
-     * Get the fill style for the text.
-     * @return {import("./Fill.js").default} Fill style.
-     * @api
-     */
-    Text.prototype.getFill = function () {
-        return this.fill_;
-    };
-    /**
-     * Determine whether the text rotates with the map.
-     * @return {boolean|undefined} Rotate with map.
-     * @api
-     */
-    Text.prototype.getRotateWithView = function () {
-        return this.rotateWithView_;
-    };
-    /**
-     * Get the text rotation.
-     * @return {number|undefined} Rotation.
-     * @api
-     */
-    Text.prototype.getRotation = function () {
-        return this.rotation_;
-    };
-    /**
-     * Get the text scale.
-     * @return {number|undefined} Scale.
-     * @api
-     */
-    Text.prototype.getScale = function () {
-        return this.scale_;
-    };
-    /**
-     * Get the stroke style for the text.
-     * @return {import("./Stroke.js").default} Stroke style.
-     * @api
-     */
-    Text.prototype.getStroke = function () {
-        return this.stroke_;
-    };
-    /**
-     * Get the text to be rendered.
-     * @return {string|undefined} Text.
-     * @api
-     */
-    Text.prototype.getText = function () {
-        return this.text_;
-    };
-    /**
-     * Get the text alignment.
-     * @return {string|undefined} Text align.
-     * @api
-     */
-    Text.prototype.getTextAlign = function () {
-        return this.textAlign_;
-    };
-    /**
-     * Get the text baseline.
-     * @return {string|undefined} Text baseline.
-     * @api
-     */
-    Text.prototype.getTextBaseline = function () {
-        return this.textBaseline_;
-    };
-    /**
-     * Get the background fill style for the text.
-     * @return {import("./Fill.js").default} Fill style.
-     * @api
-     */
-    Text.prototype.getBackgroundFill = function () {
-        return this.backgroundFill_;
-    };
-    /**
-     * Get the background stroke style for the text.
-     * @return {import("./Stroke.js").default} Stroke style.
-     * @api
-     */
-    Text.prototype.getBackgroundStroke = function () {
-        return this.backgroundStroke_;
-    };
-    /**
-     * Get the padding for the text.
-     * @return {Array<number>} Padding.
-     * @api
-     */
-    Text.prototype.getPadding = function () {
-        return this.padding_;
-    };
-    /**
-     * Set the `overflow` property.
-     *
-     * @param {boolean} overflow Let text overflow the path that it follows.
-     * @api
-     */
-    Text.prototype.setOverflow = function (overflow) {
-        this.overflow_ = overflow;
-    };
-    /**
-     * Set the font.
-     *
-     * @param {string|undefined} font Font.
-     * @api
-     */
-    Text.prototype.setFont = function (font) {
-        this.font_ = font;
-    };
-    /**
-     * Set the maximum angle between adjacent characters.
-     *
-     * @param {number} maxAngle Angle in radians.
-     * @api
-     */
-    Text.prototype.setMaxAngle = function (maxAngle) {
-        this.maxAngle_ = maxAngle;
-    };
-    /**
-     * Set the x offset.
-     *
-     * @param {number} offsetX Horizontal text offset.
-     * @api
-     */
-    Text.prototype.setOffsetX = function (offsetX) {
-        this.offsetX_ = offsetX;
-    };
-    /**
-     * Set the y offset.
-     *
-     * @param {number} offsetY Vertical text offset.
-     * @api
-     */
-    Text.prototype.setOffsetY = function (offsetY) {
-        this.offsetY_ = offsetY;
-    };
-    /**
-     * Set the text placement.
-     *
-     * @param {import("./TextPlacement.js").default|string} placement Placement.
-     * @api
-     */
-    Text.prototype.setPlacement = function (placement) {
-        this.placement_ = placement;
-    };
-    /**
-     * Set whether to rotate the text with the view.
-     *
-     * @param {boolean} rotateWithView Rotate with map.
-     * @api
-     */
-    Text.prototype.setRotateWithView = function (rotateWithView) {
-        this.rotateWithView_ = rotateWithView;
-    };
-    /**
-     * Set the fill.
-     *
-     * @param {import("./Fill.js").default} fill Fill style.
-     * @api
-     */
-    Text.prototype.setFill = function (fill) {
-        this.fill_ = fill;
-    };
-    /**
-     * Set the rotation.
-     *
-     * @param {number|undefined} rotation Rotation.
-     * @api
-     */
-    Text.prototype.setRotation = function (rotation) {
-        this.rotation_ = rotation;
-    };
-    /**
-     * Set the scale.
-     *
-     * @param {number|undefined} scale Scale.
-     * @api
-     */
-    Text.prototype.setScale = function (scale) {
-        this.scale_ = scale;
-    };
-    /**
-     * Set the stroke.
-     *
-     * @param {import("./Stroke.js").default} stroke Stroke style.
-     * @api
-     */
-    Text.prototype.setStroke = function (stroke) {
-        this.stroke_ = stroke;
-    };
-    /**
-     * Set the text.
-     *
-     * @param {string|undefined} text Text.
-     * @api
-     */
-    Text.prototype.setText = function (text) {
-        this.text_ = text;
-    };
-    /**
-     * Set the text alignment.
-     *
-     * @param {string|undefined} textAlign Text align.
-     * @api
-     */
-    Text.prototype.setTextAlign = function (textAlign) {
-        this.textAlign_ = textAlign;
-    };
-    /**
-     * Set the text baseline.
-     *
-     * @param {string|undefined} textBaseline Text baseline.
-     * @api
-     */
-    Text.prototype.setTextBaseline = function (textBaseline) {
-        this.textBaseline_ = textBaseline;
-    };
-    /**
-     * Set the background fill.
-     *
-     * @param {import("./Fill.js").default} fill Fill style.
-     * @api
-     */
-    Text.prototype.setBackgroundFill = function (fill) {
-        this.backgroundFill_ = fill;
-    };
-    /**
-     * Set the background stroke.
-     *
-     * @param {import("./Stroke.js").default} stroke Stroke style.
-     * @api
-     */
-    Text.prototype.setBackgroundStroke = function (stroke) {
-        this.backgroundStroke_ = stroke;
-    };
-    /**
-     * Set the padding (`[top, right, bottom, left]`).
-     *
-     * @param {!Array<number>} padding Padding.
-     * @api
-     */
-    Text.prototype.setPadding = function (padding) {
-        this.padding_ = padding;
-    };
-    return Text;
-}());
+var Text = function Text(opt_options) {
+
+  var options = opt_options || {};
+
+  /**
+  * @private
+  * @type {string|undefined}
+  */
+  this.font_ = options.font;
+
+  /**
+  * @private
+  * @type {number|undefined}
+  */
+  this.rotation_ = options.rotation;
+
+  /**
+  * @private
+  * @type {boolean|undefined}
+  */
+  this.rotateWithView_ = options.rotateWithView;
+
+  /**
+  * @private
+  * @type {number|undefined}
+  */
+  this.scale_ = options.scale;
+
+  /**
+  * @private
+  * @type {string|undefined}
+  */
+  this.text_ = options.text;
+
+  /**
+  * @private
+  * @type {string|undefined}
+  */
+  this.textAlign_ = options.textAlign;
+
+  /**
+  * @private
+  * @type {string|undefined}
+  */
+  this.textBaseline_ = options.textBaseline;
+
+  /**
+  * @private
+  * @type {import("./Fill.js").default}
+  */
+  this.fill_ = options.fill !== undefined ? options.fill :
+    new _Fill_js__WEBPACK_IMPORTED_MODULE_0__["default"]({color: DEFAULT_FILL_COLOR});
+
+  /**
+  * @private
+  * @type {number}
+  */
+  this.maxAngle_ = options.maxAngle !== undefined ? options.maxAngle : Math.PI / 4;
+
+  /**
+  * @private
+  * @type {import("./TextPlacement.js").default|string}
+  */
+  this.placement_ = options.placement !== undefined ? options.placement : _TextPlacement_js__WEBPACK_IMPORTED_MODULE_1__["default"].POINT;
+
+  /**
+  * @private
+  * @type {boolean}
+  */
+  this.overflow_ = !!options.overflow;
+
+  /**
+  * @private
+  * @type {import("./Stroke.js").default}
+  */
+  this.stroke_ = options.stroke !== undefined ? options.stroke : null;
+
+  /**
+  * @private
+  * @type {number}
+  */
+  this.offsetX_ = options.offsetX !== undefined ? options.offsetX : 0;
+
+  /**
+  * @private
+  * @type {number}
+  */
+  this.offsetY_ = options.offsetY !== undefined ? options.offsetY : 0;
+
+  /**
+  * @private
+  * @type {import("./Fill.js").default}
+  */
+  this.backgroundFill_ = options.backgroundFill ? options.backgroundFill : null;
+
+  /**
+  * @private
+  * @type {import("./Stroke.js").default}
+  */
+  this.backgroundStroke_ = options.backgroundStroke ? options.backgroundStroke : null;
+
+  /**
+  * @private
+  * @type {Array<number>}
+  */
+  this.padding_ = options.padding === undefined ? null : options.padding;
+};
+
+/**
+* Clones the style.
+* @return {Text} The cloned style.
+* @api
+*/
+Text.prototype.clone = function clone () {
+  return new Text({
+    font: this.getFont(),
+    placement: this.getPlacement(),
+    maxAngle: this.getMaxAngle(),
+    overflow: this.getOverflow(),
+    rotation: this.getRotation(),
+    rotateWithView: this.getRotateWithView(),
+    scale: this.getScale(),
+    text: this.getText(),
+    textAlign: this.getTextAlign(),
+    textBaseline: this.getTextBaseline(),
+    fill: this.getFill() ? this.getFill().clone() : undefined,
+    stroke: this.getStroke() ? this.getStroke().clone() : undefined,
+    offsetX: this.getOffsetX(),
+    offsetY: this.getOffsetY(),
+    backgroundFill: this.getBackgroundFill() ? this.getBackgroundFill().clone() : undefined,
+    backgroundStroke: this.getBackgroundStroke() ? this.getBackgroundStroke().clone() : undefined
+  });
+};
+
+/**
+* Get the `overflow` configuration.
+* @return {boolean} Let text overflow the length of the path they follow.
+* @api
+*/
+Text.prototype.getOverflow = function getOverflow () {
+  return this.overflow_;
+};
+
+/**
+* Get the font name.
+* @return {string|undefined} Font.
+* @api
+*/
+Text.prototype.getFont = function getFont () {
+  return this.font_;
+};
+
+/**
+* Get the maximum angle between adjacent characters.
+* @return {number} Angle in radians.
+* @api
+*/
+Text.prototype.getMaxAngle = function getMaxAngle () {
+  return this.maxAngle_;
+};
+
+/**
+* Get the label placement.
+* @return {import("./TextPlacement.js").default|string} Text placement.
+* @api
+*/
+Text.prototype.getPlacement = function getPlacement () {
+  return this.placement_;
+};
+
+/**
+* Get the x-offset for the text.
+* @return {number} Horizontal text offset.
+* @api
+*/
+Text.prototype.getOffsetX = function getOffsetX () {
+  return this.offsetX_;
+};
+
+/**
+* Get the y-offset for the text.
+* @return {number} Vertical text offset.
+* @api
+*/
+Text.prototype.getOffsetY = function getOffsetY () {
+  return this.offsetY_;
+};
+
+/**
+* Get the fill style for the text.
+* @return {import("./Fill.js").default} Fill style.
+* @api
+*/
+Text.prototype.getFill = function getFill () {
+  return this.fill_;
+};
+
+/**
+* Determine whether the text rotates with the map.
+* @return {boolean|undefined} Rotate with map.
+* @api
+*/
+Text.prototype.getRotateWithView = function getRotateWithView () {
+  return this.rotateWithView_;
+};
+
+/**
+* Get the text rotation.
+* @return {number|undefined} Rotation.
+* @api
+*/
+Text.prototype.getRotation = function getRotation () {
+  return this.rotation_;
+};
+
+/**
+* Get the text scale.
+* @return {number|undefined} Scale.
+* @api
+*/
+Text.prototype.getScale = function getScale () {
+  return this.scale_;
+};
+
+/**
+* Get the stroke style for the text.
+* @return {import("./Stroke.js").default} Stroke style.
+* @api
+*/
+Text.prototype.getStroke = function getStroke () {
+  return this.stroke_;
+};
+
+/**
+* Get the text to be rendered.
+* @return {string|undefined} Text.
+* @api
+*/
+Text.prototype.getText = function getText () {
+  return this.text_;
+};
+
+/**
+* Get the text alignment.
+* @return {string|undefined} Text align.
+* @api
+*/
+Text.prototype.getTextAlign = function getTextAlign () {
+  return this.textAlign_;
+};
+
+/**
+* Get the text baseline.
+* @return {string|undefined} Text baseline.
+* @api
+*/
+Text.prototype.getTextBaseline = function getTextBaseline () {
+  return this.textBaseline_;
+};
+
+/**
+* Get the background fill style for the text.
+* @return {import("./Fill.js").default} Fill style.
+* @api
+*/
+Text.prototype.getBackgroundFill = function getBackgroundFill () {
+  return this.backgroundFill_;
+};
+
+/**
+* Get the background stroke style for the text.
+* @return {import("./Stroke.js").default} Stroke style.
+* @api
+*/
+Text.prototype.getBackgroundStroke = function getBackgroundStroke () {
+  return this.backgroundStroke_;
+};
+
+/**
+* Get the padding for the text.
+* @return {Array<number>} Padding.
+* @api
+*/
+Text.prototype.getPadding = function getPadding () {
+  return this.padding_;
+};
+
+/**
+* Set the `overflow` property.
+*
+* @param {boolean} overflow Let text overflow the path that it follows.
+* @api
+*/
+Text.prototype.setOverflow = function setOverflow (overflow) {
+  this.overflow_ = overflow;
+};
+
+/**
+* Set the font.
+*
+* @param {string|undefined} font Font.
+* @api
+*/
+Text.prototype.setFont = function setFont (font) {
+  this.font_ = font;
+};
+
+/**
+* Set the maximum angle between adjacent characters.
+*
+* @param {number} maxAngle Angle in radians.
+* @api
+*/
+Text.prototype.setMaxAngle = function setMaxAngle (maxAngle) {
+  this.maxAngle_ = maxAngle;
+};
+
+/**
+* Set the x offset.
+*
+* @param {number} offsetX Horizontal text offset.
+* @api
+*/
+Text.prototype.setOffsetX = function setOffsetX (offsetX) {
+  this.offsetX_ = offsetX;
+};
+
+/**
+* Set the y offset.
+*
+* @param {number} offsetY Vertical text offset.
+* @api
+*/
+Text.prototype.setOffsetY = function setOffsetY (offsetY) {
+  this.offsetY_ = offsetY;
+};
+
+/**
+* Set the text placement.
+*
+* @param {import("./TextPlacement.js").default|string} placement Placement.
+* @api
+*/
+Text.prototype.setPlacement = function setPlacement (placement) {
+  this.placement_ = placement;
+};
+
+/**
+* Set the fill.
+*
+* @param {import("./Fill.js").default} fill Fill style.
+* @api
+*/
+Text.prototype.setFill = function setFill (fill) {
+  this.fill_ = fill;
+};
+
+/**
+* Set the rotation.
+*
+* @param {number|undefined} rotation Rotation.
+* @api
+*/
+Text.prototype.setRotation = function setRotation (rotation) {
+  this.rotation_ = rotation;
+};
+
+/**
+* Set the scale.
+*
+* @param {number|undefined} scale Scale.
+* @api
+*/
+Text.prototype.setScale = function setScale (scale) {
+  this.scale_ = scale;
+};
+
+/**
+* Set the stroke.
+*
+* @param {import("./Stroke.js").default} stroke Stroke style.
+* @api
+*/
+Text.prototype.setStroke = function setStroke (stroke) {
+  this.stroke_ = stroke;
+};
+
+/**
+* Set the text.
+*
+* @param {string|undefined} text Text.
+* @api
+*/
+Text.prototype.setText = function setText (text) {
+  this.text_ = text;
+};
+
+/**
+* Set the text alignment.
+*
+* @param {string|undefined} textAlign Text align.
+* @api
+*/
+Text.prototype.setTextAlign = function setTextAlign (textAlign) {
+  this.textAlign_ = textAlign;
+};
+
+/**
+* Set the text baseline.
+*
+* @param {string|undefined} textBaseline Text baseline.
+* @api
+*/
+Text.prototype.setTextBaseline = function setTextBaseline (textBaseline) {
+  this.textBaseline_ = textBaseline;
+};
+
+/**
+* Set the background fill.
+*
+* @param {import("./Fill.js").default} fill Fill style.
+* @api
+*/
+Text.prototype.setBackgroundFill = function setBackgroundFill (fill) {
+  this.backgroundFill_ = fill;
+};
+
+/**
+* Set the background stroke.
+*
+* @param {import("./Stroke.js").default} stroke Stroke style.
+* @api
+*/
+Text.prototype.setBackgroundStroke = function setBackgroundStroke (stroke) {
+  this.backgroundStroke_ = stroke;
+};
+
+/**
+* Set the padding (`[top, right, bottom, left]`).
+*
+* @param {!Array<number>} padding Padding.
+* @api
+*/
+Text.prototype.setPadding = function setPadding (padding) {
+  this.padding_ = padding;
+};
+
 /* harmony default export */ __webpack_exports__["default"] = (Text);
+
 //# sourceMappingURL=Text.js.map
 
 /***/ }),
@@ -19388,6 +19956,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * @module ol/style/TextPlacement
  */
+
 /**
  * Text placement. One of `'point'`, `'line'`. Default is `'point'`. Note that
  * `'line'` requires the underlying geometry to be a {@link module:ol/geom/LineString~LineString},
@@ -19396,9 +19965,10 @@ __webpack_require__.r(__webpack_exports__);
  * @enum {string}
  */
 /* harmony default export */ __webpack_exports__["default"] = ({
-    POINT: 'point',
-    LINE: 'line'
+  POINT: 'point',
+  LINE: 'line'
 });
+
 //# sourceMappingURL=TextPlacement.js.map
 
 /***/ }),
@@ -19407,7 +19977,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!**************************************!*\
   !*** ./node_modules/ol/transform.js ***!
   \**************************************/
-/*! exports provided: create, reset, multiply, set, setFromArray, apply, rotate, scale, makeScale, translate, compose, invert, makeInverse, determinant, toString */
+/*! exports provided: create, reset, multiply, set, setFromArray, apply, rotate, scale, translate, compose, invert, determinant */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -19420,23 +19990,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "apply", function() { return apply; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "rotate", function() { return rotate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "scale", function() { return scale; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "makeScale", function() { return makeScale; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "translate", function() { return translate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compose", function() { return compose; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "invert", function() { return invert; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "makeInverse", function() { return makeInverse; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "determinant", function() { return determinant; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toString", function() { return toString; });
 /* harmony import */ var _asserts_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./asserts.js */ "./node_modules/ol/asserts.js");
 /**
  * @module ol/transform
  */
+
+
 
 /**
  * An array representing an affine 2d transformation for use with
  * {@link module:ol/transform} functions. The array has 6 elements.
  * @typedef {!Array<number>} Transform
  */
+
+
 /**
  * Collection of affine 2d transformation functions. The functions work on an
  * array of 6 elements. The element order is compatible with the [SVGMatrix
@@ -19448,26 +20019,34 @@ __webpack_require__.r(__webpack_exports__);
  * [ 0 0 1 ]
  * ```
  */
+
+
 /**
  * @private
  * @type {Transform}
  */
 var tmp_ = new Array(6);
+
+
 /**
  * Create an identity transform.
  * @return {!Transform} Identity transform.
  */
 function create() {
-    return [1, 0, 0, 1, 0, 0];
+  return [1, 0, 0, 1, 0, 0];
 }
+
+
 /**
  * Resets the given transform to an identity transform.
  * @param {!Transform} transform Transform.
  * @return {!Transform} Transform.
  */
 function reset(transform) {
-    return set(transform, 1, 0, 0, 1, 0, 0);
+  return set(transform, 1, 0, 0, 1, 0, 0);
 }
+
+
 /**
  * Multiply the underlying matrices of two transforms and return the result in
  * the first transform.
@@ -19476,26 +20055,29 @@ function reset(transform) {
  * @return {!Transform} transform1 multiplied with transform2.
  */
 function multiply(transform1, transform2) {
-    var a1 = transform1[0];
-    var b1 = transform1[1];
-    var c1 = transform1[2];
-    var d1 = transform1[3];
-    var e1 = transform1[4];
-    var f1 = transform1[5];
-    var a2 = transform2[0];
-    var b2 = transform2[1];
-    var c2 = transform2[2];
-    var d2 = transform2[3];
-    var e2 = transform2[4];
-    var f2 = transform2[5];
-    transform1[0] = a1 * a2 + c1 * b2;
-    transform1[1] = b1 * a2 + d1 * b2;
-    transform1[2] = a1 * c2 + c1 * d2;
-    transform1[3] = b1 * c2 + d1 * d2;
-    transform1[4] = a1 * e2 + c1 * f2 + e1;
-    transform1[5] = b1 * e2 + d1 * f2 + f1;
-    return transform1;
+  var a1 = transform1[0];
+  var b1 = transform1[1];
+  var c1 = transform1[2];
+  var d1 = transform1[3];
+  var e1 = transform1[4];
+  var f1 = transform1[5];
+  var a2 = transform2[0];
+  var b2 = transform2[1];
+  var c2 = transform2[2];
+  var d2 = transform2[3];
+  var e2 = transform2[4];
+  var f2 = transform2[5];
+
+  transform1[0] = a1 * a2 + c1 * b2;
+  transform1[1] = b1 * a2 + d1 * b2;
+  transform1[2] = a1 * c2 + c1 * d2;
+  transform1[3] = b1 * c2 + d1 * d2;
+  transform1[4] = a1 * e2 + c1 * f2 + e1;
+  transform1[5] = b1 * e2 + d1 * f2 + f1;
+
+  return transform1;
 }
+
 /**
  * Set the transform components a-f on a given transform.
  * @param {!Transform} transform Transform.
@@ -19508,14 +20090,16 @@ function multiply(transform1, transform2) {
  * @return {!Transform} Matrix with transform applied.
  */
 function set(transform, a, b, c, d, e, f) {
-    transform[0] = a;
-    transform[1] = b;
-    transform[2] = c;
-    transform[3] = d;
-    transform[4] = e;
-    transform[5] = f;
-    return transform;
+  transform[0] = a;
+  transform[1] = b;
+  transform[2] = c;
+  transform[3] = d;
+  transform[4] = e;
+  transform[5] = f;
+  return transform;
 }
+
+
 /**
  * Set transform on one matrix from another matrix.
  * @param {!Transform} transform1 Matrix to set transform to.
@@ -19523,14 +20107,16 @@ function set(transform, a, b, c, d, e, f) {
  * @return {!Transform} transform1 with transform from transform2 applied.
  */
 function setFromArray(transform1, transform2) {
-    transform1[0] = transform2[0];
-    transform1[1] = transform2[1];
-    transform1[2] = transform2[2];
-    transform1[3] = transform2[3];
-    transform1[4] = transform2[4];
-    transform1[5] = transform2[5];
-    return transform1;
+  transform1[0] = transform2[0];
+  transform1[1] = transform2[1];
+  transform1[2] = transform2[2];
+  transform1[3] = transform2[3];
+  transform1[4] = transform2[4];
+  transform1[5] = transform2[5];
+  return transform1;
 }
+
+
 /**
  * Transforms the given coordinate with the given transform returning the
  * resulting, transformed coordinate. The coordinate will be modified in-place.
@@ -19541,12 +20127,14 @@ function setFromArray(transform1, transform2) {
  *     chained together.
  */
 function apply(transform, coordinate) {
-    var x = coordinate[0];
-    var y = coordinate[1];
-    coordinate[0] = transform[0] * x + transform[2] * y + transform[4];
-    coordinate[1] = transform[1] * x + transform[3] * y + transform[5];
-    return coordinate;
+  var x = coordinate[0];
+  var y = coordinate[1];
+  coordinate[0] = transform[0] * x + transform[2] * y + transform[4];
+  coordinate[1] = transform[1] * x + transform[3] * y + transform[5];
+  return coordinate;
 }
+
+
 /**
  * Applies rotation to the given transform.
  * @param {!Transform} transform Transform.
@@ -19554,10 +20142,12 @@ function apply(transform, coordinate) {
  * @return {!Transform} The rotated transform.
  */
 function rotate(transform, angle) {
-    var cos = Math.cos(angle);
-    var sin = Math.sin(angle);
-    return multiply(transform, set(tmp_, cos, sin, -sin, cos, 0, 0));
+  var cos = Math.cos(angle);
+  var sin = Math.sin(angle);
+  return multiply(transform, set(tmp_, cos, sin, -sin, cos, 0, 0));
 }
+
+
 /**
  * Applies scale to a given transform.
  * @param {!Transform} transform Transform.
@@ -19566,18 +20156,10 @@ function rotate(transform, angle) {
  * @return {!Transform} The scaled transform.
  */
 function scale(transform, x, y) {
-    return multiply(transform, set(tmp_, x, 0, 0, y, 0, 0));
+  return multiply(transform, set(tmp_, x, 0, 0, y, 0, 0));
 }
-/**
- * Creates a scale transform.
- * @param {!Transform} target Transform to overwrite.
- * @param {number} x Scale factor x.
- * @param {number} y Scale factor y.
- * @return {!Transform} The scale transform.
- */
-function makeScale(target, x, y) {
-    return set(target, x, 0, 0, y, 0, 0);
-}
+
+
 /**
  * Applies translation to the given transform.
  * @param {!Transform} transform Transform.
@@ -19586,8 +20168,10 @@ function makeScale(target, x, y) {
  * @return {!Transform} The translated transform.
  */
 function translate(transform, dx, dy) {
-    return multiply(transform, set(tmp_, 1, 0, 0, 1, dx, dy));
+  return multiply(transform, set(tmp_, 1, 0, 0, 1, dx, dy));
 }
+
+
 /**
  * Creates a composite transform given an initial translation, scale, rotation, and
  * final translation (in that order only, not commutative).
@@ -19602,65 +20186,54 @@ function translate(transform, dx, dy) {
  * @return {!Transform} The composite transform.
  */
 function compose(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
-    var sin = Math.sin(angle);
-    var cos = Math.cos(angle);
-    transform[0] = sx * cos;
-    transform[1] = sy * sin;
-    transform[2] = -sx * sin;
-    transform[3] = sy * cos;
-    transform[4] = dx2 * sx * cos - dy2 * sx * sin + dx1;
-    transform[5] = dx2 * sy * sin + dy2 * sy * cos + dy1;
-    return transform;
+  var sin = Math.sin(angle);
+  var cos = Math.cos(angle);
+  transform[0] = sx * cos;
+  transform[1] = sy * sin;
+  transform[2] = -sx * sin;
+  transform[3] = sy * cos;
+  transform[4] = dx2 * sx * cos - dy2 * sx * sin + dx1;
+  transform[5] = dx2 * sy * sin + dy2 * sy * cos + dy1;
+  return transform;
 }
+
+
 /**
  * Invert the given transform.
- * @param {!Transform} source The source transform to invert.
- * @return {!Transform} The inverted (source) transform.
+ * @param {!Transform} transform Transform.
+ * @return {!Transform} Inverse of the transform.
  */
-function invert(source) {
-    return makeInverse(source, source);
+function invert(transform) {
+  var det = determinant(transform);
+  Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(det !== 0, 32); // Transformation matrix cannot be inverted
+
+  var a = transform[0];
+  var b = transform[1];
+  var c = transform[2];
+  var d = transform[3];
+  var e = transform[4];
+  var f = transform[5];
+
+  transform[0] = d / det;
+  transform[1] = -b / det;
+  transform[2] = -c / det;
+  transform[3] = a / det;
+  transform[4] = (c * f - d * e) / det;
+  transform[5] = -(a * f - b * e) / det;
+
+  return transform;
 }
-/**
- * Invert the given transform.
- * @param {!Transform} target Transform to be set as the inverse of
- *     the source transform.
- * @param {!Transform} source The source transform to invert.
- * @return {!Transform} The inverted (target) transform.
- */
-function makeInverse(target, source) {
-    var det = determinant(source);
-    Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(det !== 0, 32); // Transformation matrix cannot be inverted
-    var a = source[0];
-    var b = source[1];
-    var c = source[2];
-    var d = source[3];
-    var e = source[4];
-    var f = source[5];
-    target[0] = d / det;
-    target[1] = -b / det;
-    target[2] = -c / det;
-    target[3] = a / det;
-    target[4] = (c * f - d * e) / det;
-    target[5] = -(a * f - b * e) / det;
-    return target;
-}
+
+
 /**
  * Returns the determinant of the given matrix.
  * @param {!Transform} mat Matrix.
  * @return {number} Determinant.
  */
 function determinant(mat) {
-    return mat[0] * mat[3] - mat[1] * mat[2];
+  return mat[0] * mat[3] - mat[1] * mat[2];
 }
-/**
- * A string version of the transform.  This can be used
- * for CSS transforms.
- * @param {!Transform} mat Matrix.
- * @return {string} The transform as a string.
- */
-function toString(mat) {
-    return 'matrix(' + mat.join(', ') + ')';
-}
+
 //# sourceMappingURL=transform.js.map
 
 /***/ }),
@@ -19669,31 +20242,63 @@ function toString(mat) {
 /*!*********************************!*\
   !*** ./node_modules/ol/util.js ***!
   \*********************************/
-/*! exports provided: abstract, getUid, VERSION */
+/*! exports provided: abstract, inherits, getUid, VERSION */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "abstract", function() { return abstract; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "inherits", function() { return inherits; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getUid", function() { return getUid; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return VERSION; });
 /**
  * @module ol/util
  */
+
 /**
  * @return {?} Any return.
  */
 function abstract() {
-    return /** @type {?} */ ((function () {
-        throw new Error('Unimplemented abstract method.');
-    })());
+  return /** @type {?} */ ((function() {
+    throw new Error('Unimplemented abstract method.');
+  })());
 }
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * Usage:
+ *
+ *     function ParentClass(a, b) { }
+ *     ParentClass.prototype.foo = function(a) { }
+ *
+ *     function ChildClass(a, b, c) {
+ *       // Call parent constructor
+ *       ParentClass.call(this, a, b);
+ *     }
+ *     inherits(ChildClass, ParentClass);
+ *
+ *     var child = new ChildClass('a', 'b', 'see');
+ *     child.foo(); // This works.
+ *
+ * @param {!Function} childCtor Child constructor.
+ * @param {!Function} parentCtor Parent constructor.
+ * @function module:ol.inherits
+ * @deprecated
+ * @api
+ */
+function inherits(childCtor, parentCtor) {
+  childCtor.prototype = Object.create(parentCtor.prototype);
+  childCtor.prototype.constructor = childCtor;
+}
+
 /**
  * Counter for getUid.
  * @type {number}
  * @private
  */
 var uidCounter_ = 0;
+
 /**
  * Gets a unique ID for an object. This mutates the object so that further calls
  * with the same object as a parameter returns the same value. Unique IDs are generated
@@ -19705,13 +20310,15 @@ var uidCounter_ = 0;
  * @api
  */
 function getUid(obj) {
-    return obj.ol_uid || (obj.ol_uid = String(++uidCounter_));
+  return obj.ol_uid || (obj.ol_uid = String(++uidCounter_));
 }
+
 /**
  * OpenLayers version.
  * @type {string}
  */
-var VERSION = '6.0.0-beta.7';
+var VERSION = '5.3.2';
+
 //# sourceMappingURL=util.js.map
 
 /***/ }),
@@ -20314,7 +20921,7 @@ function fromTemplate(text, properties) {
                 style.setImage(iconImg);
                 text = style.getText();
                 style.setText(undefined);
-                style.setZIndex(index);
+                style.setZIndex(99999 - index);
                 hasImage = true;
                 skipLabel = false;
               } else {
@@ -20338,7 +20945,7 @@ function fromTemplate(text, properties) {
             circleColor + '.' + circleStrokeWidth;
           iconImg = iconImageCache[cache_key];
           if (!iconImg) {
-            iconImg = iconImageCache[cache_key] = new ol_style_Circle__WEBPACK_IMPORTED_MODULE_5___default.a({
+            iconImg = new ol_style_Circle__WEBPACK_IMPORTED_MODULE_5___default.a({
               radius: circleRadius,
               stroke: circleStrokeColor && circleStrokeWidth > 0 ? new ol_style_Stroke__WEBPACK_IMPORTED_MODULE_2___default.a({
                 width: circleStrokeWidth,
@@ -20353,7 +20960,7 @@ function fromTemplate(text, properties) {
           text = style.getText();
           style.setText(undefined);
           style.setGeometry(undefined);
-          style.setZIndex(index);
+          style.setZIndex(99999 - index);
           hasImage = true;
         }
 
@@ -20400,7 +21007,6 @@ function fromTemplate(text, properties) {
           text.setPlacement(placement$1);
           var textHaloWidth = getValue(layer, 'paint', 'text-halo-width', zoom, f);
           var textOffset = getValue(layer, 'layout', 'text-offset', zoom, f);
-          var textTranslate = getValue(layer, 'paint', 'text-translate', zoom, f);
           // Text offset has to take halo width and line height into account
           var vOffset = 0;
           var hOffset = 0;
@@ -20414,12 +21020,9 @@ function fromTemplate(text, properties) {
               hOffset = -textHaloWidth;
             }
             text.setTextAlign(textAlign);
-            var textRotationAlignment = getValue(layer, 'layout', 'text-rotation-alignment', zoom, f);
-            text.setRotateWithView(textRotationAlignment == 'map');
           } else {
-            text.setMaxAngle(Object(_util__WEBPACK_IMPORTED_MODULE_11__["deg2rad"])(getValue(layer, 'layout', 'text-max-angle', zoom, f)) * label.length / wrappedLabel.length);
+            text.setMaxAngle(Object(_util__WEBPACK_IMPORTED_MODULE_11__["deg2rad"])(getValue(layer, 'layout', 'text-max-angle', zoom, f)));
             text.setTextAlign();
-            text.setRotateWithView(false);
           }
           var textBaseline = 'middle';
           if (textAnchor.indexOf('bottom') == 0) {
@@ -20430,8 +21033,8 @@ function fromTemplate(text, properties) {
             vOffset = textHaloWidth + (0.5 * (textLineHeight - 1)) * textSize;
           }
           text.setTextBaseline(textBaseline);
-          text.setOffsetX(textOffset[0] * textSize + hOffset + textTranslate[0]);
-          text.setOffsetY(textOffset[1] * textSize + vOffset + textTranslate[1]);
+          text.setOffsetX(textOffset[0] * textSize + hOffset);
+          text.setOffsetY(textOffset[1] * textSize + vOffset);
           textColor.setColor(colorWithOpacity(getValue(layer, 'paint', 'text-color', zoom, f), opacity));
           text.setFill(textColor);
           var haloColor = colorWithOpacity(getValue(layer, 'paint', 'text-halo-color', zoom, f), opacity);
@@ -20452,7 +21055,7 @@ function fromTemplate(text, properties) {
           if (textPadding !== padding[0]) {
             padding[0] = padding[1] = padding[2] = padding[3] = textPadding;
           }
-          style.setZIndex(index);
+          style.setZIndex(99999 - index);
         }
       }
     }
