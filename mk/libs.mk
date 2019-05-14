@@ -37,9 +37,56 @@ polyfill: .build-artefacts/polyfill
 	cp $</polyfill.js src/lib/
 	cp $</polyfill.min.js src/lib/
 
+# This should be run once when starting working
+.PHONY: init-submodules
+init-submodules:
+	git config --global status.submoduleSummary true
+	git config --global submodule.recurse true
+	git submodule init
+	git submodule update
 
-.PHONY: libs
-libs:
+.PHONY: build-cesium
+build-cesium:
+	$(MAKE) -C libs build-cesium
+
+.PHONY: install-cesium
+install-cesium: build-cesium
+	rm -r src/lib/Cesium; \
+	cp -r libs/cesium/Build/CesiumUnminified src/lib/Cesium; \
+	cp libs/cesium/Build/Cesium/Cesium.js src/lib/Cesium.min.js; \
+	$(call moveto,libs/cesium/Build/Cesium/Workers/*.js,src/lib/Cesium/Workers/,'.js','.min.js') \
+	$(call moveto,libs/cesium/Build/Cesium/ThirdParty/Workers/*.js,src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js')
+
+.PHONY: build-ol-cesium
+build-ol-cesium: build-openlayers
+	$(MAKE) -C libs build-ol-cesium
+
+.PHONY: install-ol-cesium
+install-ol-cesium: build-ol-cesium
+	cp libs/ol-cesium/dist/olcesium.js src/lib/olcesium.js; \
+	cp libs/ol-cesium/dist/olcesium-debug.js src/lib/olcesium-debug.js;
+
+.PHONY: build-openlayers
+build-openlayers:
+	$(MAKE) -C libs build-openlayers
+
+.PHONY: install-openlayers
+install-openlayers: build-openlayers
+	cp libs/openlayers/build/legacy/ol.js src/lib/ol.js; \
+	cp libs/openlayers/build/legacy/ol.js.map src/lib/ol.js.map;
+
+.PHONY: clean-libs
+clean-libs:
+	$(MAKE) -C libs clean
+
+.PHONY: build-libs
+build-libs:
+	$(MAKE) -C libs all
+
+.PHONY: install-libs
+install-libs: install-cesium \
+              install-openlayers \
+              install-ol-cesium
 	npm install;
 	cp -f $(addprefix node_modules/angular/, angular.js angular.min.js) src/lib/;
 	cp -f $(addprefix node_modules/angular-translate/dist/, angular-translate.js angular-translate.min.js) src/lib/;

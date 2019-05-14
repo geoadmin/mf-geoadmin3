@@ -29,7 +29,7 @@ help:
 	@echo "- cleanall            Remove all the build artefacts"
 	@echo "- cesium              Update Cesium.min.js and Cesium folder. Needs Node js version >= 6."
 	@echo "- olcesium            Update olcesium.js, olcesium-debug.js. Needs Node js version >= 6 and java >=8."
-	@echo "- libs                Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
+	@echo "- install-libs        Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json and git submodules"
 	@echo "- translate           Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
 	@echo "- help                Display this help"
 	@echo
