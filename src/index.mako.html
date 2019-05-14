@@ -204,7 +204,7 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-vector-tile-feedback-ol3d="::ol3d">
       </div>
     </div>
-    <div tabindex="1" ga-map ga-map-map="map" ga-map-ol3d="::ol3d">
+    <div tabindex="1" id="map" class="map" ga-map ga-map-map="map" ga-map-ol3d="::ol3d"></div>
 
     <!-- TEST Ribbon -->
     <div class="corner-ribbon">TEST</div>
@@ -720,6 +720,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script src="${s3basepath}lib/gyronorm.complete.js"></script>
     <script src="${s3basepath}lib/tinycolor.js"></script>
     <script src="${s3basepath}lib/Cesium/Cesium.js"></script>
+    <script src="${s3basepath}lib/mapbox-gl.js"></script>
 
 
     <!-- Use Closure to load the application scripts -->

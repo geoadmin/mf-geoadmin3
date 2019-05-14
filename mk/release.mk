@@ -58,6 +58,7 @@ prd/lib/build.js: src/lib/polyfill.min.js \
                   src/lib/filesaver.min.js \
                   src/lib/gyronorm.complete.min.js \
                   src/lib/tinycolor.min.js \
+                  src/lib/mapbox-gl.js \
                   .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*\.map//' > $@

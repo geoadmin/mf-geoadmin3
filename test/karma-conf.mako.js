@@ -52,6 +52,7 @@ module.exports = function(config) {
     '${basePath}/lib/gyronorm.complete.js',
     '${basePath}/lib/tinycolor.js',
     '${basePath}/lib/Cesium/Cesium.js',
+    '${basePath}/lib/mapbox-gl.js',
     'test/closure-loader-globals.js',
     '${basePath}/lib/ol.js',
     '${basePath}/lib/olcesium-debug.js',

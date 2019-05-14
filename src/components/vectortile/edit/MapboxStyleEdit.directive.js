@@ -62,24 +62,24 @@ goog.require('ga_layers_service');
             if (!dataString) {
               return;
             }
-            if (gaVectorTileLayerService.getVectorTileLayersCount() === 0) {
+            if (!gaVectorTileLayerService.getVectorTileLayer()) {
               return;
             }
 
-            var firstLayer = gaVectorTileLayerService.getVectorTileLayers()[0];
+            var mapboxLayer = gaVectorTileLayerService.getVectorTileLayer();
 
             // Get the id to use by the glStyleStorage, if no id
             // the service will create a new one.
-            var id = firstLayer.adminId;
+            var id = mapboxLayer.adminId;
             gaMapboxStyleStorage.save(id, dataString).then(function(data) {
               scope.statusMsgId = 'edit_file_saved';
 
               // If a file has been created we set the correct id to the
               // layer
-              if (data.adminId && firstLayer) {
-                firstLayer.adminId = data.adminId;
-                firstLayer.externalStyleUrl = data.fileUrl;
-                firstLayer.useThirdPartyData = true;
+              if (data.adminId && mapboxLayer) {
+                mapboxLayer.adminId = data.adminId;
+                mapboxLayer.externalStyleUrl = data.fileUrl;
+                mapboxLayer.useThirdPartyData = true;
               }
             }
             );
@@ -92,8 +92,8 @@ goog.require('ga_layers_service');
         /// ////////////////////////////////
 
         scope.canExportOrShare = function() {
-          return gaVectorTileLayerService.getVectorTileLayersCount() > 0 &&
-          gaVectorTileLayerService.getVectorTileLayers()[0].externalStyleUrl
+          return gaVectorTileLayerService.getVectorTileLayer() &&
+            gaVectorTileLayerService.getVectorTileLayer().externalStyleUrl
         };
 
         scope.export = function(evt, style) {
@@ -121,18 +121,18 @@ goog.require('ga_layers_service');
         // Show share modal
         /// /////////////////////////////////
         scope.canShare = function(style) {
-          return gaVectorTileLayerService.getVectorTileLayersCount() > 0 &&
-            gaVectorTileLayerService.getVectorTileLayers()[0].externalStyleUrl;
+          return gaVectorTileLayerService.getVectorTileLayer() &&
+            gaVectorTileLayerService.getVectorTileLayer().externalStyleUrl;
         };
         scope.share = function(evt, style) {
           if (evt.currentTarget.attributes.disabled) {
             return;
           }
-          var mvtLayer = gaVectorTileLayerService.getVectorTileLayers()[0];
+          var mapboxLayer = gaVectorTileLayerService.getVectorTileLayer();
           var fakeLayer = {
             id: gaVectorTileLayerService.getVectorLayerBodId(),
-            externalStyleUrl: mvtLayer.externalStyleUrl,
-            adminId: mvtLayer.adminId,
+            externalStyleUrl: mapboxLayer.externalStyleUrl,
+            adminId: mapboxLayer.adminId,
             glStyle: style
           }
           $rootScope.$broadcast('gaShareDrawActive', fakeLayer);
