@@ -10,7 +10,6 @@ goog.require('ga_urlutils_service');
 goog.require('ga_vector_service');
 goog.require('ga_wms_service');
 goog.require('ga_wmts_service');
-goog.require('ga_vector_tile_layer_service');
 
 (function() {
 
@@ -26,8 +25,7 @@ goog.require('ga_vector_tile_layer_service');
     'ga_urlutils_service',
     'ga_vector_service',
     'ga_wms_service',
-    'ga_wmts_service',
-    'ga_vector_tile_layer_service'
+    'ga_wmts_service'
   ]);
 
   /**
@@ -47,8 +45,7 @@ goog.require('ga_vector_tile_layer_service');
 
     this.$get = function($rootScope, gaLayers, gaPermalink,
         gaVector, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage,
-        gaTopic, gaGlobalOptions, $q, gaTime, $log, gaWmts,
-        gaVectorTileLayerService) {
+        gaTopic, gaGlobalOptions, $q, gaTime, $log, gaWmts) {
 
       // split by commas only not between || (WMS layers) (see #4592)
       const splitLayerPattern = /,(?![^|]* )/g;
