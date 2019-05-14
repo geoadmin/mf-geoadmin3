@@ -22,6 +22,7 @@ module.exports = function(config) {
     {pattern: '${basePath}/checker', watched: false, included: false, served: true},
     'test/lib/expect.js',
     'test/lib/sinon.js',
+    '${basePath}/lib/ol.js',
   % if mode == 'release':
     '${basePath}/style/app.css',
     '${basePath}/lib/d3.min.js',

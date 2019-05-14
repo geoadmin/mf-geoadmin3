@@ -11,11 +11,12 @@ prd/robots_prod.txt: scripts/robots.mako-dot-txt .build-artefacts/last-version
 	    --var "deploy_target=prod" $< > $@
 
 prd/lib/: src/lib/d3.min.js \
-	    src/lib/bootstrap-datetimepicker.min.js  \
-	    src/lib/IE9Fixes.js \
-	    src/lib/jquery.xdomainrequest.min.js \
-	    src/lib/Cesium.min.js \
-	    src/lib/olcesium.js
+          src/lib/bootstrap-datetimepicker.min.js  \
+          src/lib/IE9Fixes.js \
+          src/lib/jquery.xdomainrequest.min.js \
+          src/lib/Cesium.min.js \
+          src/lib/ol.js \
+          src/lib/olcesium.js
 	mkdir -p $@
 	cp -rf  $^ $@
 
@@ -35,25 +36,26 @@ prd/lib/Cesium/ThirdParty/Workers/: src/lib/Cesium/ThirdParty/Workers/*.min.js
 	$(call moveto,$^,$@,'.min.js','.js')
 
 prd/lib/build.js: src/lib/polyfill.min.js \
-	    src/lib/jquery.min.js \
-	    src/lib/slip.min.js \
-	    src/lib/bootstrap.min.js \
-	    src/lib/moment-with-customlocales.min.js \
-	    src/lib/typeahead.jquery.min.js \
-	    src/lib/angular.min.js \
-	    src/lib/proj4js-compressed.js \
-	    src/lib/EPSG21781.js \
-	    src/lib/EPSG2056.js \
-	    src/lib/EPSG32631.js \
-	    src/lib/EPSG32632.js \
-	    src/lib/olcesium.js \
-	    src/lib/angular-translate.min.js \
-	    src/lib/angular-translate-loader-static-files.min.js \
-	    src/lib/fastclick.min.js \
-	    src/lib/localforage.min.js \
-	    src/lib/filesaver.min.js \
-	    src/lib/gyronorm.complete.min.js \
-	    .build-artefacts/app.js
+                  src/lib/jquery.min.js \
+                  src/lib/slip.min.js \
+                  src/lib/bootstrap.min.js \
+                  src/lib/moment-with-customlocales.min.js \
+                  src/lib/typeahead.jquery.min.js \
+                  src/lib/angular.min.js \
+                  src/lib/proj4js-compressed.js \
+                  src/lib/EPSG21781.js \
+                  src/lib/EPSG2056.js \
+                  src/lib/EPSG32631.js \
+                  src/lib/EPSG32632.js \
+                  src/lib/ol.js \
+                  src/lib/olcesium-debug.js \
+                  src/lib/angular-translate.min.js \
+                  src/lib/angular-translate-loader-static-files.min.js \
+                  src/lib/fastclick.min.js \
+                  src/lib/localforage.min.js \
+                  src/lib/filesaver.min.js \
+                  src/lib/gyronorm.complete.min.js \
+                  .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*\.map//' > $@
 
@@ -139,26 +141,25 @@ prd/checker: src/checker
 
 .PHONY: release
 release: showVariables \
-	.build-artefacts/devlibs \
-	prd/lib/ \
-	prd/lib/Cesium/ \
-	prd/lib/Cesium/Cesium.js \
-	prd/lib/Cesium/Workers/ \
-	prd/lib/Cesium/ThirdParty/Workers/ \
-	prd/lib/build.js \
-	prd/style/app.css \
-	prd/geoadmin.$(GIT_COMMIT_SHORT).appcache \
-	prd/index.html \
-	prd/mobile.html \
-	prd/embed.html \
-	prd/404.html \
-	prd/img/ \
-	prd/style/font-awesome-4.5.0/font/ \
-	prd/locales/ \
-	prd/checker \
-	configs/ \
-	appconfig \
-	prd/info.json \
-	prd/robots.txt \
-	prd/robots_prod.txt
-
+         .build-artefacts/devlibs \
+         prd/lib/ \
+         prd/lib/Cesium/ \
+         prd/lib/Cesium/Cesium.js \
+         prd/lib/Cesium/Workers/ \
+         prd/lib/Cesium/ThirdParty/Workers/ \
+         prd/lib/build.js \
+         prd/style/app.css \
+         prd/geoadmin.$(GIT_COMMIT_SHORT).appcache \
+         prd/index.html \
+         prd/mobile.html \
+         prd/embed.html \
+         prd/404.html \
+         prd/img/ \
+         prd/style/font-awesome-4.5.0/font/ \
+         prd/locales/ \
+         prd/checker \
+         configs/ \
+         appconfig \
+         prd/info.json \
+         prd/robots.txt \
+         prd/robots_prod.txt

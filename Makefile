@@ -151,7 +151,11 @@ test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.j
 	cp -f node_modules/google-closure-compiler/contrib/externs/angular-1.4.js externs/angular.js;
 	cp -f node_modules/google-closure-compiler/contrib/externs/jquery-1.9.js externs/jquery.js;
 
-.build-artefacts/devlibs: test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.js externs/jquery.js
+.build-artefacts/devlibs: test/lib/angular-mocks.js \
+                          test/lib/expect.js \
+                          test/lib/sinon.js \
+                          externs/angular.js \
+                          externs/jquery.js
 	mkdir -p $(dir $@)
 	touch $@
 
@@ -201,4 +205,3 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	fi
 	cp scripts/cmd.py ${PYTHON_VENV}/local/lib/python2.7/site-packages/mako/cmd.py
 	touch $@
-
