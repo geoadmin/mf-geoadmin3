@@ -228,9 +228,9 @@ goog.require('ga_vector_tile_layer_service');
                 'ch.swisstopo.vegetation.3d'
               ];
               var tilesetTs = [
+                '20190313',
                 '20180716',
-                '20180716',
-                '20180716'
+                '20190313'
               ];
               var tilesetStyle = [
                 undefined,
