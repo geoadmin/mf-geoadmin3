@@ -1,34 +1,4 @@
 ###################################################
-#                 OL-Mapbox style
-###################################################
-
-# This has just to be done if the submodule
-# has never been checked out before
-ol-mapbox-style/.git:
-	git submodule init && git submodule update
-
-# Steps to build olms.js and olms-debug.js
-ol-mapbox-style/node_modules/: ol-mapbox-style/.git
-	cd ol-mapbox-style && npm install;
-
-ol-mapbox-style/dist/olms.js: ol-mapbox-style/node_modules/
-	cd ol-mapbox-style && npm run build
-
-ol-mapbox-style/dist/olms-debug.js: ol-mapbox-style/node_modules/
-	cd ol-mapbox-style && webpack-cli --mode=development --config ./webpack.config.olms.js --output-filename olms-debug.js
-
-.PHONY: build-ol-mapbox-style
-build-ol-mapbox-style: ol-mapbox-style/dist/olms.js \
-                       ol-mapbox-style/dist/olms-debug.js
-
-.PHONY: clean-ol-mapbox-style
-clean-ol-mapbox-style:
-	@echo "Cleaning ol-mapbox-style..."
-	rm -rf ol-mapbox-style/node_modules/ && \
-	rm -rf ol-mapbox-style/dist/ 
-
-
-###################################################
 #                CesiumJS
 ###################################################
 
@@ -136,13 +106,11 @@ clean-ol-cesium:
 # Build all libraries
 .PHONY: all
 all: build-openlayers \
-     build-ol-mapbox-style \
      build-cesium \
      build-ol-cesium
 
 .PHONY: clean
 clean: clean-openlayers \
-       clean-ol-mapbox-style \
        clean-cesium \
        clean-ol-cesium
 	@echo "Cleanup finished!"

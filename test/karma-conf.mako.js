@@ -56,7 +56,6 @@ module.exports = function(config) {
     'test/closure-loader-globals.js',
     '${basePath}/lib/ol.js',
     '${basePath}/lib/olcesium-debug.js',
-    '${basePath}/lib/olms.js',
     '.build-artefacts/app-whitespace.js',
   % endif
     'test/lib/angular-mocks.js',

@@ -36,12 +36,6 @@ itemscope itemtype="http://schema.org/WebApplication"
     <link rel="apple-touch-icon" sizes="120x120" href="${s3basepath}${versionslashed}img/touch-icon-bund-120x120.png"/>
     <link rel="apple-touch-icon" sizes="152x152" href="${s3basepath}${versionslashed}img/touch-icon-bund-152x152.png"/>
 
-    ## HACK: load Roboto font from googleapi since olms is not capable of loading font from
-    ## source defined in style
-    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed" rel="stylesheet"> 
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400normal" rel="stylesheet"> 
-    <link href="https://fonts.googleapis.com/css?family=Roboto:normalitalic" rel="stylesheet"> 
-
     <!-- Description is translated 'by hand' in the MainController -->
     <meta name="description" translate-attr="{content: 'page_description'}" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
     <meta name="keywords" content="maps Switzerland, map viewer, Confederation, geodata, public platform, geographical information, geoportal, orthophotos, geolocation, geoinformation, Geodaten, Geoinformation, Bund, Plattform, Karte, Kartendienst, Kartenviewer"/>
@@ -730,7 +724,6 @@ itemscope itemtype="http://schema.org/WebApplication"
 
     <script src="${s3basepath}lib/ol.js"></script>
     <script src="${s3basepath}lib/olcesium-debug.js"></script>
-    <script src="${s3basepath}lib/olms.js"></script>
     <script src="${s3basepath}deps.js"></script>
     <script>
       goog.require('geoadmin');

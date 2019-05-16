@@ -189,14 +189,6 @@ install-ol-cesium: build-ol-cesium
 	cp libs/ol-cesium/dist/olcesium.js src/lib/olcesium.js; \
 	cp libs/ol-cesium/dist/olcesium-debug.js src/lib/olcesium-debug.js;
 
-.PHONY: build-olms
-build-olms:
-	$(MAKE) -C libs build-ol-mapbox-style
-
-.PHONY: install-olms
-install-olms: build-olms
-	cp libs/ol-mapbox-style/dist/olms-debug.js src/lib/olms.js
-
 .PHONY: build-openlayers
 build-openlayers:
 	$(MAKE) -C libs build-openlayers
@@ -218,7 +210,6 @@ build-libs:
 install-libs: install-cesium \
               install-openlayers \
               install-ol-cesium \
-              install-olms
 
 .build-artefacts/app.js: .build-artefacts/js-files
 	mkdir -p $(dir $@)
