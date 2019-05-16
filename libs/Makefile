@@ -44,7 +44,7 @@ openlayers/build/legacy/ol.js: openlayers/node_modules
 
 openlayers/build/legacy/ol-debug.js: openlayers/node_modules
 	cd openlayers/; \
-	webpack-cli --mode=development --config config/webpack-config-legacy-build.js --output-filename ol-debug.js
+	npm run build-index && npx webpack --config config/webpack-config-legacy-build.js --mode=development -o build/legacy/ol-debug.js
 
 .PHONY: build-openlayers
 build-openlayers: openlayers/build/legacy/ol.js \

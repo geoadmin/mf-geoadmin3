@@ -27,7 +27,7 @@ module.exports = function(config) {
     '${basePath}/lib/d3.min.js',
     '${basePath}/lib/Cesium.min.js',
     '${basePath}/lib/ol.js',
-    '${basePath}/lib/olcesium-debug.js',
+    '${basePath}/lib/olcesium.js',
     '${basePath}/lib/build.js',
   % else:
     '${basePath}/style/app.css',
@@ -54,7 +54,7 @@ module.exports = function(config) {
     '${basePath}/lib/Cesium/Cesium.js',
     '${basePath}/lib/mapbox-gl.js',
     'test/closure-loader-globals.js',
-    '${basePath}/lib/ol.js',
+    '${basePath}/lib/ol-debug.js',
     '${basePath}/lib/olcesium-debug.js',
     '.build-artefacts/app-whitespace.js',
   % endif

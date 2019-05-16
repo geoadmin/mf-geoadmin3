@@ -196,7 +196,8 @@ build-openlayers:
 .PHONY: install-openlayers
 install-openlayers: build-openlayers
 	cp libs/openlayers/build/legacy/ol.js src/lib/ol.js; \
-	cp libs/openlayers/build/legacy/ol.js.map src/lib/ol.js.map;
+	cp libs/openlayers/build/legacy/ol.js.map src/lib/ol.js.map; \
+	cp libs/openlayers/build/legacy/ol-debug.js src/lib/ol-debug.js;
 
 .PHONY: clean-libs
 clean-libs:
@@ -218,7 +219,6 @@ install-libs: install-cesium \
 	    --jscomp_error checkVars \
 	    --externs externs/ol.js \
 	    --externs externs/olcesium.js \
-	    --externs externs/olms.js \
 	    --externs externs/Cesium.externs.js \
 	    --externs externs/slip.js \
 	    --externs externs/angular.js \
