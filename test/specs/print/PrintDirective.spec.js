@@ -1,4 +1,4 @@
-// /* eslint-disable max-len */
+/* eslint-disable max-len */
 // describe('ga_print_directive', function() {
 
 //   describe('gaPrint', function() {

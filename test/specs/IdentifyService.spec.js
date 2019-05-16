@@ -1,4 +1,4 @@
-// /* eslint-disable max-len */
+/* eslint-disable max-len */
 // describe('ga_identify_service', function() {
 
 //   describe('gaIdentify', function() {
