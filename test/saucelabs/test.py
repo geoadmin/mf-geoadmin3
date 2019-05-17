@@ -13,7 +13,7 @@ from print_test import runPrintTest
 from wms_test import runWmsTest
 from tooltip_test import runTooltipTest
 
-DEFAULT_WAIT_FOUND = 5
+DEFAULT_WAIT_FOUND = 15
 HELP =  '''
     test.py --url <url to test>
             --tests <list of tests: start,search,kml,print,tooltip,wms,checker>
