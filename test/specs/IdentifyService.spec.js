@@ -1,128 +1,128 @@
 /* eslint-disable max-len */
-// describe('ga_identify_service', function() {
+describe('ga_identify_service', function() {
 
-//   describe('gaIdentify', function() {
-//     var gaIdentify, $httpBackend, $rootScope, map, point, gaTime;
+  describe('gaIdentify', function() {
+    var gaIdentify, $httpBackend, $rootScope, map, point, gaTime;
 
-//     var expectedNoGeomRequest = window.location.protocol + '//api3.geo.admin.ch/rest/services/all/MapServer/identify?geometryFormat=geojson&imageDisplay=600,300,96&lang=custom&layers=all:mybodid&mapExtent=-46910337.58884987,-23455168.794424936,46910337.58884987,23455168.794424936&returnGeometry=false&sr=2056&tolerance=0';
+    var expectedNoGeomRequest = window.location.protocol + '//api3.geo.admin.ch/rest/services/all/MapServer/identify?geometryFormat=geojson&imageDisplay=600,300,96&lang=custom&layers=all:mybodid&mapExtent=-46910337.58884987,-23455168.794424936,46910337.58884987,23455168.794424936&returnGeometry=false&sr=2056&tolerance=0';
 
-//     var expectedDfltRequest = window.location.protocol + '//api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=0,0&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=600,300,96&lang=custom&layers=all:mybodid&mapExtent=-46910337.58884987,-23455168.794424936,46910337.58884987,23455168.794424936&returnGeometry=false&sr=2056&tolerance=0';
+    var expectedDfltRequest = window.location.protocol + '//api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=0,0&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=600,300,96&lang=custom&layers=all:mybodid&mapExtent=-46910337.58884987,-23455168.794424936,46910337.58884987,23455168.794424936&returnGeometry=false&sr=2056&tolerance=0';
 
-//     var expectedComplexRequest = window.location.protocol + '//api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=0,0&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=600,300,96&lang=custom&layers=all:mybodid,bodtelayer&limit=1&mapExtent=-46910337.58884987,-23455168.794424936,46910337.58884987,23455168.794424936&returnGeometry=false&timeInstant=,2012&sr=2056&tolerance=28';
+    var expectedComplexRequest = window.location.protocol + '//api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=0,0&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=600,300,96&lang=custom&layers=all:mybodid,bodtelayer&limit=1&mapExtent=-46910337.58884987,-23455168.794424936,46910337.58884987,23455168.794424936&returnGeometry=false&timeInstant=,2012&sr=2056&tolerance=28';
 
-//     var getBodLayer = function(bodId) {
-//       var layer = getNonBodLayer();
-//       layer.bodId = bodId;
-//       return layer;
-//     };
+    var getBodLayer = function(bodId) {
+      var layer = getNonBodLayer();
+      layer.bodId = bodId;
+      return layer;
+    };
 
-//     var getBodTimeEnabledLayer = function(bodId) {
-//       var layer = getBodLayer(bodId);
-//       layer.time = '20121231';
-//       layer.timeEnabled = true;
-//       return layer;
-//     };
+    var getBodTimeEnabledLayer = function(bodId) {
+      var layer = getBodLayer(bodId);
+      layer.time = '20121231';
+      layer.timeEnabled = true;
+      return layer;
+    };
 
-//     var getNonBodLayer = function() {
-//       var layer = new ol.layer.Tile();
-//       return layer;
-//     };
+    var getNonBodLayer = function() {
+      var layer = new ol.layer.Tile();
+      return layer;
+    };
 
-//     beforeEach(function() {
-//       module(function($provide) {
-//         $provide.value('gaTopic', {
-//           get: function() {}
-//         });
-//         $provide.value('gaLang', {
-//           get: function() {
-//             return 'custom';
-//           }
-//         });
-//       });
+    beforeEach(function() {
+      module(function($provide) {
+        $provide.value('gaTopic', {
+          get: function() {}
+        });
+        $provide.value('gaLang', {
+          get: function() {
+            return 'custom';
+          }
+        });
+      });
 
-//       inject(function($injector, gaGlobalOptions) {
-//         gaIdentify = $injector.get('gaIdentify');
-//         $httpBackend = $injector.get('$httpBackend');
-//         $rootScope = $injector.get('$rootScope');
-//         gaTime = $injector.get('gaTime');
-//       });
+      inject(function($injector, gaGlobalOptions) {
+        gaIdentify = $injector.get('gaIdentify');
+        $httpBackend = $injector.get('$httpBackend');
+        $rootScope = $injector.get('$rootScope');
+        gaTime = $injector.get('gaTime');
+      });
 
-//       map = new ol.Map({
-//         view: new ol.View({
-//           projection: ol.proj.get('EPSG:2056')
-//         })
-//       });
-//       map.setSize([600, 300]);
-//       map.getView().fit([-20000000, -20000000, 20000000, 20000000]);
-//       map.addLayer(getBodLayer('mybodid'));
-//       point = new ol.geom.Point([0, 0]);
-//     });
+      map = new ol.Map({
+        view: new ol.View({
+          projection: ol.proj.get('EPSG:2056')
+        })
+      });
+      map.setSize([600, 300]);
+      map.getView().fit([-20000000, -20000000, 20000000, 20000000]);
+      map.addLayer(getBodLayer('mybodid'));
+      point = new ol.geom.Point([0, 0]);
+    });
 
-//     afterEach(function() {
-//       $httpBackend.verifyNoOutstandingExpectation();
-//       $httpBackend.verifyNoOutstandingRequest();
-//     });
+    afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+    });
 
-//     describe('#get()', function() {
+    describe('#get()', function() {
 
-//       describe('fails', function() {
-//         var expectErr = function(msg, done) {
-//           expect(msg).to.eql('Missing required parameters');
-//           done();
-//         };
+      describe('fails', function() {
+        var expectErr = function(msg, done) {
+          expect(msg).to.eql('Missing required parameters');
+          done();
+        };
 
-//         it('if parameters are not defined', function(done) {
-//           gaIdentify.get().catch(function(msg) {
-//             expectErr(msg, done);
-//           });
-//           $rootScope.$digest();
-//         });
+        it('if parameters are not defined', function(done) {
+          gaIdentify.get().catch(function(msg) {
+            expectErr(msg, done);
+          });
+          $rootScope.$digest();
+        });
 
-//         it('if map parameter is not defined', function(done) {
-//           gaIdentify.get(null, map.getLayers().getArray(), point).catch(function(msg) {
-//             expectErr(msg, done);
-//           });
-//           $rootScope.$digest();
-//         });
+        it('if map parameter is not defined', function(done) {
+          gaIdentify.get(null, map.getLayers().getArray(), point).catch(function(msg) {
+            expectErr(msg, done);
+          });
+          $rootScope.$digest();
+        });
 
-//         it('if layers arr parameter is not defined', function(done) {
-//           gaIdentify.get(map, null, point).catch(function(msg) {
-//             expectErr(msg, done);
-//           });
-//           $rootScope.$digest();
-//         });
-//       });
+        it('if layers arr parameter is not defined', function(done) {
+          gaIdentify.get(map, null, point).catch(function(msg) {
+            expectErr(msg, done);
+          });
+          $rootScope.$digest();
+        });
+      });
 
-//       it('sends request with geometryFormat if no geometry provided', function(done) {
-//         $httpBackend.expectGET(expectedNoGeomRequest).respond({});
-//         gaIdentify.get(map, map.getLayers().getArray()).then(function(msg) {
-//           done();
-//         });
-//         $httpBackend.flush();
-//         $rootScope.$digest();
-//       });
+      it('sends request with geometryFormat if no geometry provided', function(done) {
+        $httpBackend.expectGET(expectedNoGeomRequest).respond({});
+        gaIdentify.get(map, map.getLayers().getArray()).then(function(msg) {
+          done();
+        });
+        $httpBackend.flush();
+        $rootScope.$digest();
+      });
 
-//       it('sends request with default optional parameters if not defined', function(done) {
-//         $httpBackend.expectGET(expectedDfltRequest).respond({});
-//         gaIdentify.get(map, map.getLayers().getArray(), point).then(function(msg) {
-//           done();
-//         });
-//         $httpBackend.flush();
-//         $rootScope.$digest();
-//       });
+      it('sends request with default optional parameters if not defined', function(done) {
+        $httpBackend.expectGET(expectedDfltRequest).respond({});
+        gaIdentify.get(map, map.getLayers().getArray(), point).then(function(msg) {
+          done();
+        });
+        $httpBackend.flush();
+        $rootScope.$digest();
+      });
 
-//       it('sends request with complex parameters', function(done) {
-//         map.addLayer(getNonBodLayer());
-//         map.addLayer(getBodTimeEnabledLayer('bodtelayer'));
-//         var gaTimeGet = sinon.spy(gaTime, 'get');
-//         $httpBackend.expectGET(expectedComplexRequest).respond({});
-//         gaIdentify.get(map, map.getLayers().getArray(), point, 28, false, 10000, 1).then(function(msg) {
-//           expect(gaTimeGet.calledOnce).to.eql(true);
-//           done();
-//         });
-//         $httpBackend.flush();
-//         $rootScope.$digest();
-//       });
-//     });
-//   });
-// });
+      it('sends request with complex parameters', function(done) {
+        map.addLayer(getNonBodLayer());
+        map.addLayer(getBodTimeEnabledLayer('bodtelayer'));
+        var gaTimeGet = sinon.spy(gaTime, 'get');
+        $httpBackend.expectGET(expectedComplexRequest).respond({});
+        gaIdentify.get(map, map.getLayers().getArray(), point, 28, false, 10000, 1).then(function(msg) {
+          expect(gaTimeGet.calledOnce).to.eql(true);
+          done();
+        });
+        $httpBackend.flush();
+        $rootScope.$digest();
+      });
+    });
+  });
+});
