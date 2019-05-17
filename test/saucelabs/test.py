@@ -13,7 +13,7 @@ from print_test import runPrintTest
 from wms_test import runWmsTest
 from tooltip_test import runTooltipTest
 
-DEFAULT_WAIT_FOUND = 15
+DEFAULT_WAIT_FOUND = 5
 HELP =  '''
     test.py --url <url to test>
             --tests <list of tests: start,search,kml,print,tooltip,wms,checker>
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     browsers = [
         # Chrome
         {'platform': "Windows 10", 'browserName': "chrome",
-            'version': "58.0", 'screenResolution': "1280x1024"},
+            'version': "latest", 'screenResolution': "1280x1024"},
         # FireFox
         # FF 48+ driver is bugged
         {'platform': "Windows 10", 'browserName': "firefox",
