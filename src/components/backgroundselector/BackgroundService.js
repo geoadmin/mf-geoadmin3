@@ -214,14 +214,14 @@ goog.require('ga_vector_tile_layer_service');
           }
         };
 
-        function removeBackgroundLayersIfNotOlms(map) {
+        function removeBackgroundLayersIfNotMapbox(map) {
           var layersArray = [];
           map.getLayers().forEach(function(layer) {
             layersArray.push(layer);
           })
           for (var i = 0; i < layersArray.length; i++) {
             var layer = layersArray[i];
-            if (!!layer.background && !layer.olmsLayer) {
+            if (!!layer.background && !layer.mapboxLayer) {
               map.removeLayer(layer);
             }
           }
@@ -232,25 +232,17 @@ goog.require('ga_vector_tile_layer_service');
             var newBg = getBgById(newBgId);
             if (newBg) {
               var layers = map.getLayers();
+              removeBackgroundLayersIfNotMapbox(map);
               if (newBg.id === 'voidLayer') {
-                // Remove the bg from the map
-                removeBackgroundLayersIfNotOlms(map);
                 // hidding vector tile layers
                 gaVectorTileLayerService.hideVectorTileLayers();
               } else {
-
-                removeBackgroundLayersIfNotOlms(map);
                 if (newBg.id ===
                     gaVectorTileLayerService.getVectorLayerBodId()) {
-                  // removing any background layer present (other than olms)
                   gaVectorTileLayerService.showVectorTileLayers();
                 } else {
-                  // if new bg layer is not vector tile, we add it on top
-                  // of OLMS layers (hidden)
                   gaVectorTileLayerService.hideVectorTileLayers();
-                  // looking for latest olms layer index
-                  var layer = createOlLayer(newBg);
-                  layers.insertAt(1, layer);
+                  layers.insertAt(1, createOlLayer(newBg));
                 }
               }
               bg = newBg;

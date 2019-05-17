@@ -318,8 +318,9 @@ goog.require('ga_browsersniffer_service');
           container: olMap.getTarget(),
           style: style
         });
+        // useful for BackgroundService
+        mbLayer.mapboxLayer = true;
         // mimicing LayersService output
-        mbLayer.olmsLayer = true;
         mbLayer.parentLayerId = getVectorLayerBodId();
         mbLayer.id = getVectorLayerBodId();
         mbLayer.bodId = getVectorLayerBodId();
@@ -381,11 +382,8 @@ goog.require('ga_browsersniffer_service');
       }
     }
 
-    // This will call ol-mapbox-style (olms) on the map, with current style
-    // and will then gather all layers created by this library. It will then
-    // bundle them into a LayerGroup, in order to make hidding and other
-    // manipulation easier throughout the application (it was the way it was
-    // done before, when we were creating mapbox layers ourselves)
+    // This will call create a custom layer on the map, that will add Mapbox
+    // renderer as a OL layer.
     function init(map) {
       olMap = map;
 

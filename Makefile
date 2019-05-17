@@ -189,14 +189,6 @@ install-ol-cesium: build-ol-cesium
 	cp libs/ol-cesium/dist/olcesium.js src/lib/olcesium.js; \
 	cp libs/ol-cesium/dist/olcesium-debug.js src/lib/olcesium-debug.js;
 
-.PHONY: build-olms
-build-olms:
-	$(MAKE) -C libs build-ol-mapbox-style
-
-.PHONY: install-olms
-install-olms: build-olms
-	cp libs/ol-mapbox-style/dist/olms-debug.js src/lib/olms.js
-
 .PHONY: build-openlayers
 build-openlayers:
 	$(MAKE) -C libs build-openlayers
@@ -204,7 +196,8 @@ build-openlayers:
 .PHONY: install-openlayers
 install-openlayers: build-openlayers
 	cp libs/openlayers/build/legacy/ol.js src/lib/ol.js; \
-	cp libs/openlayers/build/legacy/ol.js.map src/lib/ol.js.map;
+	cp libs/openlayers/build/legacy/ol.js.map src/lib/ol.js.map; \
+	cp libs/openlayers/build/legacy/ol-debug.js src/lib/ol-debug.js;
 
 .PHONY: clean-libs
 clean-libs:
@@ -218,7 +211,6 @@ build-libs:
 install-libs: install-cesium \
               install-openlayers \
               install-ol-cesium \
-              install-olms
 
 .build-artefacts/app.js: .build-artefacts/js-files
 	mkdir -p $(dir $@)
@@ -227,7 +219,6 @@ install-libs: install-cesium \
 	    --jscomp_error checkVars \
 	    --externs externs/ol.js \
 	    --externs externs/olcesium.js \
-	    --externs externs/olms.js \
 	    --externs externs/Cesium.externs.js \
 	    --externs externs/slip.js \
 	    --externs externs/angular.js \

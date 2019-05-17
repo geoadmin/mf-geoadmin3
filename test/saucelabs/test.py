@@ -68,7 +68,7 @@ if __name__ == '__main__':
     browsers = [
         # Chrome
         {'platform': "Windows 10", 'browserName': "chrome",
-            'version': "58.0", 'screenResolution': "1280x1024"},
+            'version': "latest", 'screenResolution': "1280x1024"},
         # FireFox
         # FF 48+ driver is bugged
         {'platform': "Windows 10", 'browserName': "firefox",
