@@ -85,13 +85,13 @@ goog.require('ga_browsersniffer_service');
             return document.getElementsByClassName(className)[0].remove();
           });
         }.bind(this));
-        this.mbmap.on('mousemove', function (e) {
+        this.mbmap.on('mousemove', function(e) {
           this.featuresUnderMousePointer =
             this.mbmap.queryRenderedFeatures(e.point);
         }.bind(this));
       };
 
-      Mapbox.prototype.getFeaturesUnderMousePointer = function () {
+      Mapbox.prototype.getFeaturesUnderMousePointer = function() {
         return this.featuresUnderMousePointer;
       };
 
@@ -458,7 +458,7 @@ goog.require('ga_browsersniffer_service');
       return deferred.promise;
     }
 
-    getFeaturesUnderMousePointer = function () {
+    function getFeaturesUnderMousePointer() {
       if (mbLayer) {
         return mbLayer.getFeaturesUnderMousePointer();
       } else {

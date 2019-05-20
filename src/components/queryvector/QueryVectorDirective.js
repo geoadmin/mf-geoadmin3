@@ -8,7 +8,7 @@ goog.require('ga_vector_tile_layer_service');
     'ga_browsersniffer_service'
   ]);
 
-  var registerPointerMove = function(scope, map, overlay, mobile, 
+  var registerPointerMove = function(scope, map, overlay, mobile,
       gaVectorTileLayerService) {
     var evtType = mobile ? 'singleclick' : 'pointermove';
     return map.on(evtType, function(evt) {
@@ -68,7 +68,7 @@ goog.require('ga_vector_tile_layer_service');
         var activate = function() {
           pointerMoveListeners.push(
               registerPointerMove(scope, map, overlay, mobile,
-                gaVectorTileLayerService));
+                  gaVectorTileLayerService));
           pointerMoveListeners.push(registerMouseOut(map, overlay));
         };
 
