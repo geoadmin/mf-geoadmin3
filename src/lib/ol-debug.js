@@ -6133,7 +6133,7 @@ var TileCache = /** @class */ (function (_super) {
                 this.remove(Object(_tilecoord_js__WEBPACK_IMPORTED_MODULE_1__["getKey"])(tile.tileCoord));
                 tile.dispose();
             }
-        }, this);
+        }.bind(this));
     };
     return TileCache;
 }(_structs_LRUCache_js__WEBPACK_IMPORTED_MODULE_0__["default"]));
@@ -7731,13 +7731,9 @@ var View = /** @class */ (function (_super) {
         var center = /** @type {import("./coordinate.js").Coordinate} */ (this.getCenter());
         var projection = this.getProjection();
         var resolution = /** @type {number} */ (this.getResolution());
-        var pixelResolution = resolution / pixelRatio;
         var rotation = this.getRotation();
         return {
-            center: [
-                Math.round(center[0] / pixelResolution) * pixelResolution,
-                Math.round(center[1] / pixelResolution) * pixelResolution
-            ],
+            center: center.slice(0),
             projection: projection !== undefined ? projection : null,
             resolution: resolution,
             rotation: rotation,
@@ -13904,26 +13900,25 @@ function extendXY(extent, x, y) {
  * callback returns a truthy value the function returns that value
  * immediately. Otherwise the function returns `false`.
  * @param {Extent} extent Extent.
- * @param {function(this:T, import("./coordinate.js").Coordinate): S} callback Callback.
- * @param {T=} opt_this Value to use as `this` when executing `callback`.
+ * @param {function(import("./coordinate.js").Coordinate): S} callback Callback.
  * @return {S|boolean} Value.
- * @template S, T
+ * @template S
  */
-function forEachCorner(extent, callback, opt_this) {
+function forEachCorner(extent, callback) {
     var val;
-    val = callback.call(opt_this, getBottomLeft(extent));
+    val = callback(getBottomLeft(extent));
     if (val) {
         return val;
     }
-    val = callback.call(opt_this, getBottomRight(extent));
+    val = callback(getBottomRight(extent));
     if (val) {
         return val;
     }
-    val = callback.call(opt_this, getTopRight(extent));
+    val = callback(getTopRight(extent));
     if (val) {
         return val;
     }
-    val = callback.call(opt_this, getTopLeft(extent));
+    val = callback(getTopLeft(extent));
     if (val) {
         return val;
     }
@@ -29086,6 +29081,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _GeometryType_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GeometryType.js */ "./build/ol/geom/GeometryType.js");
 /* harmony import */ var _SimpleGeometry_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SimpleGeometry.js */ "./build/ol/geom/SimpleGeometry.js");
 /* harmony import */ var _flat_deflate_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./flat/deflate.js */ "./build/ol/geom/flat/deflate.js");
+/* harmony import */ var _flat_transform_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./flat/transform.js */ "./build/ol/geom/flat/transform.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -29102,6 +29098,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
 /**
  * @module ol/geom/Circle
  */
+
 
 
 
@@ -29233,7 +29230,7 @@ var Circle = /** @class */ (function (_super) {
             if (extent[1] <= center[1] && extent[3] >= center[1]) {
                 return true;
             }
-            return Object(_extent_js__WEBPACK_IMPORTED_MODULE_0__["forEachCorner"])(extent, this.intersectsCoordinate, this);
+            return Object(_extent_js__WEBPACK_IMPORTED_MODULE_0__["forEachCorner"])(extent, this.intersectsCoordinate.bind(this));
         }
         return false;
     };
@@ -29293,6 +29290,26 @@ var Circle = /** @class */ (function (_super) {
      */
     Circle.prototype.setRadius = function (radius) {
         this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
+        this.changed();
+    };
+    /**
+     * @inheritDoc
+     * @api
+     */
+    Circle.prototype.rotate = function (angle, anchor) {
+        var center = this.getCenter();
+        var stride = this.getStride();
+        this.setCenter(Object(_flat_transform_js__WEBPACK_IMPORTED_MODULE_4__["rotate"])(center, 0, center.length, stride, angle, anchor, center));
+        this.changed();
+    };
+    /**
+     * @inheritDoc
+     * @api
+     */
+    Circle.prototype.translate = function (deltaX, deltaY) {
+        var center = this.getCenter();
+        var stride = this.getStride();
+        this.setCenter(Object(_flat_transform_js__WEBPACK_IMPORTED_MODULE_4__["translate"])(center, 0, center.length, stride, deltaX, deltaY, center));
         this.changed();
     };
     return Circle;
@@ -39144,11 +39161,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 
 /**
- * Maximum mouse wheel delta.
- * @type {number}
- */
-var MAX_DELTA = 1;
-/**
  * @enum {string}
  */
 var Mode = {
@@ -39161,6 +39173,7 @@ var Mode = {
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. Default is
  * {@link module:ol/events/condition~always}.
+ * @property {number} [maxDelta=1] Maximum mouse wheel delta.
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {number} [timeout=80] Mouse wheel timeout duration in milliseconds.
  * @property {boolean} [useAnchor=true] Enable zooming using the mouse's
@@ -39191,6 +39204,11 @@ var MouseWheelZoom = /** @class */ (function (_super) {
          * @type {number}
          */
         _this.lastDelta_ = 0;
+        /**
+         * @private
+         * @type {number}
+         */
+        _this.maxDelta_ = options.maxDelta !== undefined ? options.maxDelta : 1;
         /**
          * @private
          * @type {number}
@@ -39338,8 +39356,7 @@ var MouseWheelZoom = /** @class */ (function (_super) {
         if (view.getAnimating()) {
             view.cancelAnimations();
         }
-        var maxDelta = MAX_DELTA;
-        var delta = Object(_math_js__WEBPACK_IMPORTED_MODULE_4__["clamp"])(this.totalDelta_, -maxDelta, maxDelta);
+        var delta = Object(_math_js__WEBPACK_IMPORTED_MODULE_4__["clamp"])(this.totalDelta_, -this.maxDelta_, this.maxDelta_);
         Object(_Interaction_js__WEBPACK_IMPORTED_MODULE_3__["zoomByDelta"])(view, -delta, this.lastAnchor_, this.duration_);
         this.mode_ = undefined;
         this.totalDelta_ = 0;
@@ -43092,7 +43109,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
  * of the heatmap, specified as an array of CSS color strings.
  * @property {number} [radius=8] Radius size in pixels.
  * @property {number} [blur=15] Blur size in pixels.
- * @property {number} [shadow=250] Shadow size in pixels.
  * @property {string|function(import("../Feature.js").default):number} [weight='weight'] The feature
  * attribute to use for the weight or a function that returns a weight from a feature. Weight values
  * should range from 0 to 1 (and values outside will be clamped to that range).
@@ -43134,7 +43150,6 @@ var Heatmap = /** @class */ (function (_super) {
         delete baseOptions.gradient;
         delete baseOptions.radius;
         delete baseOptions.blur;
-        delete baseOptions.shadow;
         delete baseOptions.weight;
         _this = _super.call(this, baseOptions) || this;
         /**
@@ -43142,21 +43157,6 @@ var Heatmap = /** @class */ (function (_super) {
          * @type {HTMLCanvasElement}
          */
         _this.gradient_ = null;
-        /**
-         * @private
-         * @type {number}
-         */
-        _this.shadow_ = options.shadow !== undefined ? options.shadow : 250;
-        /**
-         * @private
-         * @type {string|undefined}
-         */
-        _this.circleImage_ = undefined;
-        /**
-         * @private
-         * @type {Array<Array<import("../style/Style.js").default>>}
-         */
-        _this.styleCache_ = null;
         Object(_events_js__WEBPACK_IMPORTED_MODULE_0__["listen"])(_this, Object(_Object_js__WEBPACK_IMPORTED_MODULE_1__["getChangeEventType"])(Property.GRADIENT), _this.handleGradientChanged_, _this);
         _this.setGradient(options.gradient ? options.gradient : DEFAULT_GRADIENT);
         _this.setBlur(options.blur !== undefined ? options.blur : 15);
@@ -43240,8 +43240,8 @@ var Heatmap = /** @class */ (function (_super) {
      */
     Heatmap.prototype.createRenderer = function () {
         return new _renderer_webgl_PointsLayer__WEBPACK_IMPORTED_MODULE_5__["default"](this, {
-            vertexShader: "\n        precision mediump float;\n        attribute vec2 a_position;\n        attribute vec2 a_texCoord;\n        attribute float a_rotateWithView;\n        attribute vec2 a_offsets;\n        attribute float a_opacity;\n        \n        uniform mat4 u_projectionMatrix;\n        uniform mat4 u_offsetScaleMatrix;\n        uniform mat4 u_offsetRotateMatrix;\n        uniform float u_size;\n        \n        varying vec2 v_texCoord;\n        varying float v_opacity;\n        \n        void main(void) {\n          mat4 offsetMatrix = u_offsetScaleMatrix;\n          if (a_rotateWithView == 1.0) {\n            offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n          }\n          vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);\n          gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets * u_size;\n          v_texCoord = a_texCoord;\n          v_opacity = a_opacity;\n        }",
-            fragmentShader: "\n        precision mediump float;\n        uniform float u_resolution;\n        uniform float u_blurSlope;\n        \n        varying vec2 v_texCoord;\n        varying float v_opacity;\n        \n        void main(void) {\n          vec2 texCoord = v_texCoord * 2.0 - vec2(1.0, 1.0);\n          float sqRadius = texCoord.x * texCoord.x + texCoord.y * texCoord.y;\n          float value = (1.0 - sqrt(sqRadius)) * u_blurSlope;\n          float alpha = smoothstep(0.0, 1.0, value) * v_opacity;\n          gl_FragColor = vec4(alpha, alpha, alpha, alpha);\n        }",
+            vertexShader: "\n        precision mediump float;\n        attribute vec2 a_position;\n        attribute vec2 a_texCoord;\n        attribute float a_rotateWithView;\n        attribute vec2 a_offsets;\n        attribute float a_opacity;\n\n        uniform mat4 u_projectionMatrix;\n        uniform mat4 u_offsetScaleMatrix;\n        uniform mat4 u_offsetRotateMatrix;\n        uniform float u_size;\n\n        varying vec2 v_texCoord;\n        varying float v_opacity;\n\n        void main(void) {\n          mat4 offsetMatrix = u_offsetScaleMatrix;\n          if (a_rotateWithView == 1.0) {\n            offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n          }\n          vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);\n          gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets * u_size;\n          v_texCoord = a_texCoord;\n          v_opacity = a_opacity;\n        }",
+            fragmentShader: "\n        precision mediump float;\n        uniform float u_resolution;\n        uniform float u_blurSlope;\n\n        varying vec2 v_texCoord;\n        varying float v_opacity;\n\n        void main(void) {\n          vec2 texCoord = v_texCoord * 2.0 - vec2(1.0, 1.0);\n          float sqRadius = texCoord.x * texCoord.x + texCoord.y * texCoord.y;\n          float value = (1.0 - sqrt(sqRadius)) * u_blurSlope;\n          float alpha = smoothstep(0.0, 1.0, value) * v_opacity;\n          gl_FragColor = vec4(alpha, alpha, alpha, alpha);\n        }",
             uniforms: {
                 u_size: function () {
                     return (this.get(Property.RADIUS) + this.get(Property.BLUR)) * 2;
@@ -43261,9 +43261,7 @@ var Heatmap = /** @class */ (function (_super) {
                     }
                 }
             ],
-            opacityCallback: function (feature) {
-                return this.weightFunction_(feature);
-            }.bind(this)
+            opacityCallback: this.weightFunction_
         });
     };
     return Heatmap;
@@ -60055,8 +60053,7 @@ var RasterSource = /** @class */ (function (_super) {
         frameState.focus = center;
         frameState.size[0] = Math.round(Object(_extent_js__WEBPACK_IMPORTED_MODULE_7__["getWidth"])(extent) / resolution);
         frameState.size[1] = Math.round(Object(_extent_js__WEBPACK_IMPORTED_MODULE_7__["getHeight"])(extent) / resolution);
-        frameState.time = Date.now();
-        frameState.animate = false;
+        frameState.time = Infinity;
         var viewState = frameState.viewState;
         viewState.center = center;
         viewState.projection = projection;
@@ -63661,7 +63658,7 @@ var VectorSource = /** @class */ (function (_super) {
         }
         else {
             if (this.featuresRtree_) {
-                this.featuresRtree_.forEach(this.removeFeatureInternal, this);
+                this.featuresRtree_.forEach(this.removeFeatureInternal.bind(this));
                 for (var id in this.nullGeometryFeatures_) {
                     this.removeFeatureInternal(this.nullGeometryFeatures_[id]);
                 }
@@ -65979,17 +65976,15 @@ var LRUCache = /** @class */ (function (_super) {
         return this.entries_.hasOwnProperty(key);
     };
     /**
-     * @param {function(this: S, T, string, LRUCache): ?} f The function
+     * @param {function(T, string, LRUCache): ?} f The function
      *     to call for every entry from the oldest to the newer. This function takes
      *     3 arguments (the entry value, the entry key and the LRUCache object).
      *     The return value is ignored.
-     * @param {S=} opt_this The object to use as `this` in `f`.
-     * @template S
      */
-    LRUCache.prototype.forEach = function (f, opt_this) {
+    LRUCache.prototype.forEach = function (f) {
         var entry = this.oldest_;
         while (entry) {
-            f.call(opt_this, entry.value_, entry.key_, this);
+            f(entry.value_, entry.key_, this);
             entry = entry.newer;
         }
     };
@@ -66562,37 +66557,31 @@ var RBush = /** @class */ (function () {
      * Calls a callback function with each value in the tree.
      * If the callback returns a truthy value, this value is returned without
      * checking the rest of the tree.
-     * @param {function(this: S, T): *} callback Callback.
-     * @param {S=} opt_this The object to use as `this` in `callback`.
+     * @param {function(T): *} callback Callback.
      * @return {*} Callback return value.
-     * @template S
      */
-    RBush.prototype.forEach = function (callback, opt_this) {
-        return this.forEach_(this.getAll(), callback, opt_this);
+    RBush.prototype.forEach = function (callback) {
+        return this.forEach_(this.getAll(), callback);
     };
     /**
      * Calls a callback function with each value in the provided extent.
      * @param {import("../extent.js").Extent} extent Extent.
-     * @param {function(this: S, T): *} callback Callback.
-     * @param {S=} opt_this The object to use as `this` in `callback`.
+     * @param {function(T): *} callback Callback.
      * @return {*} Callback return value.
-     * @template S
      */
-    RBush.prototype.forEachInExtent = function (extent, callback, opt_this) {
-        return this.forEach_(this.getInExtent(extent), callback, opt_this);
+    RBush.prototype.forEachInExtent = function (extent, callback) {
+        return this.forEach_(this.getInExtent(extent), callback);
     };
     /**
      * @param {Array<T>} values Values.
-     * @param {function(this: S, T): *} callback Callback.
-     * @param {S=} opt_this The object to use as `this` in `callback`.
+     * @param {function(T): *} callback Callback.
      * @private
      * @return {*} Callback return value.
-     * @template S
      */
-    RBush.prototype.forEach_ = function (values, callback, opt_this) {
+    RBush.prototype.forEach_ = function (values, callback) {
         var result;
         for (var i = 0, l = values.length; i < l; i++) {
-            result = callback.call(opt_this, values[i]);
+            result = callback(values[i]);
             if (result) {
                 return result;
             }
@@ -66736,7 +66725,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 /**
  * @typedef {Object} Options
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color] A color, gradient or pattern.
+ * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color=null] A color, gradient or pattern.
  * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
  * Default null; if null, the Canvas/renderer default black will be used.
  */
@@ -66840,14 +66829,14 @@ var __extends = (undefined && undefined.__extends) || (function () {
 /**
  * @typedef {Object} Options
  * @property {Array<number>} [anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
- * @property {import("./IconOrigin.js").default} [anchorOrigin] Origin of the anchor: `bottom-left`, `bottom-right`,
- * `top-left` or `top-right`. Default is `top-left`.
- * @property {import("./IconAnchorUnits.js").default} [anchorXUnits] Units in which the anchor x value is
+ * @property {import("./IconOrigin.js").default} [anchorOrigin='top-left'] Origin of the anchor: `bottom-left`, `bottom-right`,
+ * `top-left` or `top-right`.
+ * @property {import("./IconAnchorUnits.js").default} [anchorXUnits='fraction'] Units in which the anchor x value is
  * specified. A value of `'fraction'` indicates the x value is a fraction of the icon. A value of `'pixels'` indicates
- * the x value in pixels. Default is `'fraction'`.
- * @property {import("./IconAnchorUnits.js").default} [anchorYUnits] Units in which the anchor y value is
+ * the x value in pixels.
+ * @property {import("./IconAnchorUnits.js").default} [anchorYUnits='fraction'] Units in which the anchor y value is
  * specified. A value of `'fraction'` indicates the y value is a fraction of the icon. A value of `'pixels'` indicates
- * the y value in pixels. Default is `'fraction'`.
+ * the y value in pixels.
  * @property {import("../color.js").Color|string} [color] Color to tint the icon. If not specified,
  * the icon will be left as is.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images. Note that you must provide a
@@ -66858,8 +66847,8 @@ var __extends = (undefined && undefined.__extends) || (function () {
  * to provide the size of the image, with the `imgSize` option.
  * @property {Array<number>} [offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
  * sub-rectangle to use from the original icon image.
- * @property {import("./IconOrigin.js").default} [offsetOrigin] Origin of the offset: `bottom-left`, `bottom-right`,
- * `top-left` or `top-right`. Default is `top-left`.
+ * @property {import("./IconOrigin.js").default} [offsetOrigin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
+ * `top-left` or `top-right`.
  * @property {number} [opacity=1] Opacity of the icon.
  * @property {number} [scale=1] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the icon with the view.
@@ -69084,13 +69073,13 @@ var DEFAULT_FILL_COLOR = '#333';
  * @typedef {Object} Options
  * @property {string} [font] Font style as CSS 'font' value, see:
  * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font. Default is '10px sans-serif'
- * @property {number} [maxAngle] When `placement` is set to `'line'`, allow a maximum angle between adjacent characters.
+ * @property {number} [maxAngle=Math.PI/4] When `placement` is set to `'line'`, allow a maximum angle between adjacent characters.
  * The expected value is in radians, and the default is 45° (`Math.PI / 4`).
  * @property {number} [offsetX=0] Horizontal text offset in pixels. A positive will shift the text right.
  * @property {number} [offsetY=0] Vertical text offset in pixels. A positive will shift the text down.
  * @property {boolean} [overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
  * the width of the polygon at the label position or the length of the path that it follows.
- * @property {import("./TextPlacement.js").default|string} [placement] Text placement.
+ * @property {import("./TextPlacement.js").default|string} [placement='point'] Text placement.
  * @property {number} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
@@ -71062,7 +71051,7 @@ function getUid(obj) {
  * OpenLayers version.
  * @type {string}
  */
-var VERSION = '6.0.0-beta.5';
+var VERSION = '6.0.0-beta.6';
 //# sourceMappingURL=util.js.map
 
 /***/ }),
