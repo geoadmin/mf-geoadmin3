@@ -5934,6 +5934,9 @@ var Tile = /** @class */ (function (_super) {
         // cleaned up by refreshInterimChain)
         do {
             if (tile.getState() == _TileState_js__WEBPACK_IMPORTED_MODULE_0__["default"].LOADED) {
+                // Show tile immediately instead of fading it in after loading, because
+                // the interim tile is in place already
+                this.transition_ = 0;
                 return tile;
             }
             tile = tile.interimTile;
@@ -7130,7 +7133,6 @@ var View = /** @class */ (function (_super) {
          * @type {number|undefined}
          */
         _this.updateAnimationKey_;
-        _this.updateAnimations_ = _this.updateAnimations_.bind(_this);
         /**
          * @private
          * @const
@@ -7275,6 +7277,16 @@ var View = /** @class */ (function (_super) {
      * @api
      */
     View.prototype.animate = function (var_args) {
+        if (this.isDef() && !this.getAnimating()) {
+            this.resolveConstraints(0);
+        }
+        this.animate_.apply(this, arguments);
+    };
+    /**
+     * @private
+     * @param {...(AnimationOptions|function(boolean): void)} var_args Animation options.
+     */
+    View.prototype.animate_ = function (var_args) {
         var animationCount = arguments.length;
         var callback;
         if (animationCount > 1 && typeof arguments[animationCount - 1] === 'function') {
@@ -7458,10 +7470,7 @@ var View = /** @class */ (function (_super) {
         // prune completed series
         this.animations_ = this.animations_.filter(Boolean);
         if (more && this.updateAnimationKey_ === undefined) {
-            this.updateAnimationKey_ = requestAnimationFrame(this.updateAnimations_);
-        }
-        if (!this.getAnimating()) {
-            setTimeout(this.resolveConstraints.bind(this), 0);
+            this.updateAnimationKey_ = requestAnimationFrame(this.updateAnimations_.bind(this));
         }
     };
     /**
@@ -7872,7 +7881,7 @@ var View = /** @class */ (function (_super) {
         var center = [centerX, centerY];
         var callback = options.callback ? options.callback : _functions_js__WEBPACK_IMPORTED_MODULE_2__["VOID"];
         if (options.duration !== undefined) {
-            this.animate({
+            this.animate_({
                 resolution: resolution,
                 center: this.getConstrainedCenter(center, resolution),
                 duration: options.duration,
@@ -8075,7 +8084,7 @@ var View = /** @class */ (function (_super) {
             if (this.getAnimating()) {
                 this.cancelAnimations();
             }
-            this.animate({
+            this.animate_({
                 rotation: newRotation,
                 center: newCenter,
                 resolution: newResolution,
@@ -8087,9 +8096,12 @@ var View = /** @class */ (function (_super) {
     };
     /**
      * Notify the View that an interaction has started.
+     * The view state will be resolved to a stable one if needed
+     * (depending on its constraints).
      * @api
      */
     View.prototype.beginInteraction = function () {
+        this.resolveConstraints(0);
         this.setHint(_ViewHint_js__WEBPACK_IMPORTED_MODULE_7__["default"].INTERACTING, 1);
     };
     /**
@@ -37603,7 +37615,7 @@ function pan(view, delta, opt_duration) {
     var currentCenter = view.getCenter();
     if (currentCenter) {
         var center = [currentCenter[0] + delta[0], currentCenter[1] + delta[1]];
-        view.animate({
+        view.animate_({
             duration: opt_duration !== undefined ? opt_duration : 250,
             easing: _easing_js__WEBPACK_IMPORTED_MODULE_1__["linear"],
             center: view.getConstrainedCenter(center)
@@ -43229,7 +43241,7 @@ var Heatmap = /** @class */ (function (_super) {
     Heatmap.prototype.createRenderer = function () {
         return new _renderer_webgl_PointsLayer__WEBPACK_IMPORTED_MODULE_5__["default"](this, {
             vertexShader: "\n        precision mediump float;\n        attribute vec2 a_position;\n        attribute vec2 a_texCoord;\n        attribute float a_rotateWithView;\n        attribute vec2 a_offsets;\n        attribute float a_opacity;\n        \n        uniform mat4 u_projectionMatrix;\n        uniform mat4 u_offsetScaleMatrix;\n        uniform mat4 u_offsetRotateMatrix;\n        uniform float u_size;\n        \n        varying vec2 v_texCoord;\n        varying float v_opacity;\n        \n        void main(void) {\n          mat4 offsetMatrix = u_offsetScaleMatrix;\n          if (a_rotateWithView == 1.0) {\n            offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n          }\n          vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);\n          gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets * u_size;\n          v_texCoord = a_texCoord;\n          v_opacity = a_opacity;\n        }",
-            fragmentShader: "\n        precision mediump float;\n        uniform float u_resolution;\n        uniform float u_blurSlope;\n        \n        varying vec2 v_texCoord;\n        varying float v_opacity;\n        \n        void main(void) {\n          vec2 texCoord = v_texCoord * 2.0 - vec2(1.0, 1.0);\n          float sqRadius = texCoord.x * texCoord.x + texCoord.y * texCoord.y;\n          float value = (1.0 - sqrt(sqRadius)) * u_blurSlope;\n          float alpha = smoothstep(0.0, 1.0, value) * v_opacity;\n          gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);\n        }",
+            fragmentShader: "\n        precision mediump float;\n        uniform float u_resolution;\n        uniform float u_blurSlope;\n        \n        varying vec2 v_texCoord;\n        varying float v_opacity;\n        \n        void main(void) {\n          vec2 texCoord = v_texCoord * 2.0 - vec2(1.0, 1.0);\n          float sqRadius = texCoord.x * texCoord.x + texCoord.y * texCoord.y;\n          float value = (1.0 - sqrt(sqRadius)) * u_blurSlope;\n          float alpha = smoothstep(0.0, 1.0, value) * v_opacity;\n          gl_FragColor = vec4(alpha, alpha, alpha, alpha);\n        }",
             uniforms: {
                 u_size: function () {
                     return (this.get(Property.RADIUS) + this.get(Property.BLUR)) * 2;
@@ -55831,8 +55843,7 @@ var FRAGMENT_SHADER = "\n  precision mediump float;\n  \n  uniform sampler2D u_t
  *
  * The following uniform is used for the main texture: `u_texture`.
  *
- * Please note that the main shader output should have premultiplied alpha, otherwise the colors will be blended
- * additively.
+ * Please note that the main shader output should have premultiplied alpha, otherwise visual anomalies may occur.
  *
  * Points are rendered as quads with the following structure:
  *
@@ -56017,6 +56028,8 @@ var WebGLPointsLayerRenderer = /** @class */ (function (_super) {
                 _this.verticesBuffer_.getArray().push(x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, v0_r, v0_g, v0_b, v0_a, x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, v1_r, v1_g, v1_b, v1_a, x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, v2_r, v2_g, v2_b, v2_a, x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, v3_r, v3_g, v3_b, v3_a);
                 _this.indicesBuffer_.getArray().push(baseIndex, baseIndex + 1, baseIndex + 3, baseIndex + 1, baseIndex + 2, baseIndex + 3);
             });
+            this.helper_.flushBufferData(_webgl__WEBPACK_IMPORTED_MODULE_2__["ARRAY_BUFFER"], this.verticesBuffer_);
+            this.helper_.flushBufferData(_webgl__WEBPACK_IMPORTED_MODULE_2__["ELEMENT_ARRAY_BUFFER"], this.indicesBuffer_);
         }
         // write new data
         this.helper_.bindBuffer(_webgl__WEBPACK_IMPORTED_MODULE_2__["ARRAY_BUFFER"], this.verticesBuffer_);
@@ -71049,7 +71062,7 @@ function getUid(obj) {
  * OpenLayers version.
  * @type {string}
  */
-var VERSION = '6.0.0-beta.4';
+var VERSION = '6.0.0-beta.5';
 //# sourceMappingURL=util.js.map
 
 /***/ }),
@@ -71530,8 +71543,8 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 /**
  * @typedef {Object} BufferCacheEntry
- * @property {import("./Buffer.js").default} buf
- * @property {WebGLBuffer} buffer
+ * @property {import("./Buffer.js").default} buffer
+ * @property {WebGLBuffer} webGlBuffer
  */
 /**
  * Shader types, either `FRAGMENT_SHADER` or `VERTEX_SHADER`
@@ -71651,14 +71664,23 @@ var DefaultAttrib = {
  * ### Binding WebGL buffers and flushing data into them:
  *
  *   Data that must be passed to the GPU has to be transferred using `WebGLArrayBuffer` objects.
- *   A buffer has to be created only once, but must be bound everytime the data it holds is changed. Using `WebGLHelper.bindBuffer`
- *   will bind the buffer and flush the new data to the GPU.
+ *   A buffer has to be created only once, but must be bound everytime the buffer content should be used for rendering.
+ *   This is done using `WebGLHelper.bindBuffer`.
+ *   When the buffer's array content has changed, the new data has to be flushed to the GPU memory; this is done using
+ *   `WebGLHelper.flushBufferData`. Note: this operation is expensive and should be done as infrequently as possible.
  *
- *   For now, the `WebGLHelper` class expects {@link module:ol/webgl/Buffer~WebGLArrayBuffer} objects.
+ *   When binding a `WebGLArrayBuffer`, a `target` parameter must be given: it should be either {@link module:ol/webgl~ARRAY_BUFFER}
+ *   (if the buffer contains vertices data) or {@link module:ol/webgl~ELEMENT_ARRAY_BUFFER} (if the buffer contains indices data).
+ *
+ *   Examples below:
  *   ```js
  *   // at initialization phase
  *   this.verticesBuffer = new WebGLArrayBuffer([], DYNAMIC_DRAW);
  *   this.indicesBuffer = new WebGLArrayBuffer([], DYNAMIC_DRAW);
+ *
+ *   // when array values have changed
+ *   this.context.flushBufferData(ARRAY_BUFFER, this.verticesBuffer);
+ *   this.context.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
  *
  *   // at rendering phase
  *   this.context.bindBuffer(ARRAY_BUFFER, this.verticesBuffer);
@@ -71820,24 +71842,34 @@ var WebGLHelper = /** @class */ (function (_super) {
      * Just bind the buffer if it's in the cache. Otherwise create
      * the WebGL buffer, bind it, populate it, and add an entry to
      * the cache.
-     * TODO: improve this, the logic is unclear: we want A/ to bind a buffer and B/ to flush data in it
-     * @param {number} target Target.
-     * @param {import("./Buffer").default} buf Buffer.
+     * @param {number} target Target, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
+     * @param {import("./Buffer").default} buffer Buffer.
      * @api
      */
-    WebGLHelper.prototype.bindBuffer = function (target, buf) {
+    WebGLHelper.prototype.bindBuffer = function (target, buffer) {
         var gl = this.getGL();
-        var arr = buf.getArray();
-        var bufferKey = Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["getUid"])(buf);
+        var bufferKey = Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["getUid"])(buffer);
         var bufferCache = this.bufferCache_[bufferKey];
         if (!bufferCache) {
-            var buffer = gl.createBuffer();
+            var webGlBuffer = gl.createBuffer();
             bufferCache = this.bufferCache_[bufferKey] = {
-                buf: buf,
-                buffer: buffer
+                buffer: buffer,
+                webGlBuffer: webGlBuffer
             };
         }
-        gl.bindBuffer(target, bufferCache.buffer);
+        gl.bindBuffer(target, bufferCache.webGlBuffer);
+    };
+    /**
+     * Update the data contained in the buffer array; this is required for the
+     * new data to be rendered
+     * @param {number} target Target, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
+     * @param {import("./Buffer").default} buffer Buffer.
+     * @api
+     */
+    WebGLHelper.prototype.flushBufferData = function (target, buffer) {
+        var gl = this.getGL();
+        var arr = buffer.getArray();
+        this.bindBuffer(target, buffer);
         var /** @type {ArrayBufferView} */ arrayBuffer;
         if (target == _webgl_js__WEBPACK_IMPORTED_MODULE_1__["ARRAY_BUFFER"]) {
             arrayBuffer = new Float32Array(arr);
@@ -71846,7 +71878,7 @@ var WebGLHelper = /** @class */ (function (_super) {
             arrayBuffer = this.hasOESElementIndexUint ?
                 new Uint32Array(arr) : new Uint16Array(arr);
         }
-        gl.bufferData(target, arrayBuffer, buf.getUsage());
+        gl.bufferData(target, arrayBuffer, buffer.getUsage());
     };
     /**
      * @param {import("./Buffer.js").default} buf Buffer.
@@ -72235,7 +72267,7 @@ __webpack_require__.r(__webpack_exports__);
  * @module ol/webgl/PostProcessingPass
  */
 var DEFAULT_VERTEX_SHADER = "\n  precision mediump float;\n  \n  attribute vec2 a_position;\n  varying vec2 v_texCoord;\n  varying vec2 v_screenCoord;\n  \n  uniform vec2 u_screenSize;\n   \n  void main() {\n    v_texCoord = a_position * 0.5 + 0.5;\n    v_screenCoord = v_texCoord * u_screenSize;\n    gl_Position = vec4(a_position, 0.0, 1.0);\n  }\n";
-var DEFAULT_FRAGMENT_SHADER = "\n  precision mediump float;\n   \n  uniform sampler2D u_image;\n   \n  varying vec2 v_texCoord;\n  varying vec2 v_screenCoord;\n   \n  void main() {\n    gl_FragColor = texture2D(u_image, v_texCoord);\n    gl_FragColor.rgb *= gl_FragColor.a;\n  }\n";
+var DEFAULT_FRAGMENT_SHADER = "\n  precision mediump float;\n   \n  uniform sampler2D u_image;\n   \n  varying vec2 v_texCoord;\n  varying vec2 v_screenCoord;\n   \n  void main() {\n    gl_FragColor = texture2D(u_image, v_texCoord);\n  }\n";
 /**
  * @typedef {Object} Options
  * @property {WebGLRenderingContext} webGlContext WebGL context; mandatory.
@@ -72260,6 +72292,9 @@ var DEFAULT_FRAGMENT_SHADER = "\n  precision mediump float;\n   \n  uniform samp
  * Please note that the final output on the DOM canvas is expected to have premultiplied alpha, which means that
  * a pixel which is 100% red with an opacity of 50% must have a color of (r=0.5, g=0, b=0, a=0.5).
  * Failing to provide pixel colors with premultiplied alpha will result in render anomalies.
+ *
+ * The default post-processing pass does *not* multiply color values with alpha value, it expects color values to be
+ * premultiplied.
  *
  * Default shaders are shown hereafter:
  *
@@ -72293,7 +72328,6 @@ var DEFAULT_FRAGMENT_SHADER = "\n  precision mediump float;\n   \n  uniform samp
  *
  *   void main() {
  *     gl_FragColor = texture2D(u_image, v_texCoord);
- *     gl_FragColor.rgb *= gl_FragColor.a;
  *   }
  *   ```
  *
