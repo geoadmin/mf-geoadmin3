@@ -34842,7 +34842,7 @@ function translate(flatCoordinates, offset, end, stride, deltaX, deltaY, opt_des
 /*!*************************!*\
   !*** ./build/ol/has.js ***!
   \*************************/
-/*! exports provided: FIREFOX, SAFARI, WEBKIT, MAC, DEVICE_PIXEL_RATIO, WEBGL */
+/*! exports provided: FIREFOX, SAFARI, WEBKIT, MAC, DEVICE_PIXEL_RATIO */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -34852,9 +34852,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WEBKIT", function() { return WEBKIT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAC", function() { return MAC; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEVICE_PIXEL_RATIO", function() { return DEVICE_PIXEL_RATIO; });
-/* harmony import */ var _webgl_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./webgl.js */ "./build/ol/webgl.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "WEBGL", function() { return _webgl_js__WEBPACK_IMPORTED_MODULE_0__["HAS"]; });
-
 /**
  * @module ol/has
  */
@@ -34888,7 +34885,6 @@ var MAC = ua.indexOf('macintosh') !== -1;
  * @api
  */
 var DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
-
 //# sourceMappingURL=has.js.map
 
 /***/ }),
@@ -48269,9 +48265,8 @@ var RenderEvent = /** @class */ (function (_super) {
      *     CSS pixels to rendered pixels.
      * @param {import("../PluggableMap.js").FrameState=} opt_frameState Frame state.
      * @param {?CanvasRenderingContext2D=} opt_context Context.
-     * @param {?import("../webgl/Helper.js").default=} opt_glContext WebGL Context.
      */
-    function RenderEvent(type, opt_inversePixelTransform, opt_frameState, opt_context, opt_glContext) {
+    function RenderEvent(type, opt_inversePixelTransform, opt_frameState, opt_context) {
         var _this = _super.call(this, type) || this;
         /**
          * Transform from CSS pixels (relative to the top-left corner of the map viewport)
@@ -48293,13 +48288,6 @@ var RenderEvent = /** @class */ (function (_super) {
          * @api
          */
         _this.context = opt_context;
-        /**
-         * WebGL context. Only available when a WebGL renderer is used, null
-         * otherwise.
-         * @type {import("../webgl/Helper.js").default|null|undefined}
-         * @api
-         */
-        _this.glContext = opt_glContext;
         return _this;
     }
     return RenderEvent;
@@ -54073,7 +54061,7 @@ var CanvasLayerRenderer = /** @class */ (function (_super) {
     CanvasLayerRenderer.prototype.dispatchRenderEvent_ = function (type, context, frameState) {
         var layer = this.getLayer();
         if (layer.hasListener(type)) {
-            var event_1 = new _render_Event_js__WEBPACK_IMPORTED_MODULE_2__["default"](type, this.inversePixelTransform, frameState, context, null);
+            var event_1 = new _render_Event_js__WEBPACK_IMPORTED_MODULE_2__["default"](type, this.inversePixelTransform, frameState, context);
             layer.dispatchEvent(event_1);
         }
     };
@@ -72096,92 +72084,28 @@ function fromTransform(mat4, transform) {
 /*!***************************!*\
   !*** ./build/ol/webgl.js ***!
   \***************************/
-/*! exports provided: ONE, SRC_ALPHA, COLOR_ATTACHMENT0, COLOR_BUFFER_BIT, TRIANGLES, TRIANGLE_STRIP, ONE_MINUS_SRC_ALPHA, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, STREAM_DRAW, STATIC_DRAW, DYNAMIC_DRAW, CULL_FACE, BLEND, STENCIL_TEST, DEPTH_TEST, SCISSOR_TEST, UNSIGNED_BYTE, UNSIGNED_SHORT, UNSIGNED_INT, FLOAT, RGBA, FRAGMENT_SHADER, VERTEX_SHADER, LINK_STATUS, LINEAR, TEXTURE_MAG_FILTER, TEXTURE_MIN_FILTER, TEXTURE_WRAP_S, TEXTURE_WRAP_T, TEXTURE_2D, TEXTURE0, CLAMP_TO_EDGE, COMPILE_STATUS, FRAMEBUFFER, getContext, DEBUG, HAS, MAX_TEXTURE_SIZE, EXTENSIONS */
+/*! exports provided: ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, STREAM_DRAW, STATIC_DRAW, DYNAMIC_DRAW, UNSIGNED_BYTE, UNSIGNED_SHORT, UNSIGNED_INT, FLOAT, getContext, getSupportedExtensions */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ONE", function() { return ONE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SRC_ALPHA", function() { return SRC_ALPHA; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "COLOR_ATTACHMENT0", function() { return COLOR_ATTACHMENT0; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "COLOR_BUFFER_BIT", function() { return COLOR_BUFFER_BIT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TRIANGLES", function() { return TRIANGLES; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TRIANGLE_STRIP", function() { return TRIANGLE_STRIP; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ONE_MINUS_SRC_ALPHA", function() { return ONE_MINUS_SRC_ALPHA; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ARRAY_BUFFER", function() { return ARRAY_BUFFER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ELEMENT_ARRAY_BUFFER", function() { return ELEMENT_ARRAY_BUFFER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "STREAM_DRAW", function() { return STREAM_DRAW; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "STATIC_DRAW", function() { return STATIC_DRAW; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DYNAMIC_DRAW", function() { return DYNAMIC_DRAW; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CULL_FACE", function() { return CULL_FACE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BLEND", function() { return BLEND; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "STENCIL_TEST", function() { return STENCIL_TEST; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEPTH_TEST", function() { return DEPTH_TEST; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SCISSOR_TEST", function() { return SCISSOR_TEST; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UNSIGNED_BYTE", function() { return UNSIGNED_BYTE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UNSIGNED_SHORT", function() { return UNSIGNED_SHORT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UNSIGNED_INT", function() { return UNSIGNED_INT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FLOAT", function() { return FLOAT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RGBA", function() { return RGBA; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FRAGMENT_SHADER", function() { return FRAGMENT_SHADER; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VERTEX_SHADER", function() { return VERTEX_SHADER; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LINK_STATUS", function() { return LINK_STATUS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LINEAR", function() { return LINEAR; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TEXTURE_MAG_FILTER", function() { return TEXTURE_MAG_FILTER; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TEXTURE_MIN_FILTER", function() { return TEXTURE_MIN_FILTER; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TEXTURE_WRAP_S", function() { return TEXTURE_WRAP_S; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TEXTURE_WRAP_T", function() { return TEXTURE_WRAP_T; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TEXTURE_2D", function() { return TEXTURE_2D; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TEXTURE0", function() { return TEXTURE0; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CLAMP_TO_EDGE", function() { return CLAMP_TO_EDGE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "COMPILE_STATUS", function() { return COMPILE_STATUS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FRAMEBUFFER", function() { return FRAMEBUFFER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getContext", function() { return getContext; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEBUG", function() { return DEBUG; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HAS", function() { return HAS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAX_TEXTURE_SIZE", function() { return MAX_TEXTURE_SIZE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EXTENSIONS", function() { return EXTENSIONS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSupportedExtensions", function() { return getSupportedExtensions; });
 /**
  * @module ol/webgl
  */
 /**
  * Constants taken from goog.webgl
  */
-/**
- * @const
- * @type {number}
- */
-var ONE = 1;
-/**
- * @const
- * @type {number}
- */
-var SRC_ALPHA = 0x0302;
-/**
- * @const
- * @type {number}
- */
-var COLOR_ATTACHMENT0 = 0x8CE0;
-/**
- * @const
- * @type {number}
- */
-var COLOR_BUFFER_BIT = 0x00004000;
-/**
- * @const
- * @type {number}
- */
-var TRIANGLES = 0x0004;
-/**
- * @const
- * @type {number}
- */
-var TRIANGLE_STRIP = 0x0005;
-/**
- * @const
- * @type {number}
- */
-var ONE_MINUS_SRC_ALPHA = 0x0303;
 /**
  * Used by {@link module:ol/webgl/Helper~WebGLHelper} for buffers containing vertices data, such as
  * position, color, texture coordinate, etc. These vertices are then referenced by an index buffer
@@ -72225,31 +72149,6 @@ var DYNAMIC_DRAW = 0x88E8;
  * @const
  * @type {number}
  */
-var CULL_FACE = 0x0B44;
-/**
- * @const
- * @type {number}
- */
-var BLEND = 0x0BE2;
-/**
- * @const
- * @type {number}
- */
-var STENCIL_TEST = 0x0B90;
-/**
- * @const
- * @type {number}
- */
-var DEPTH_TEST = 0x0B71;
-/**
- * @const
- * @type {number}
- */
-var SCISSOR_TEST = 0x0C11;
-/**
- * @const
- * @type {number}
- */
 var UNSIGNED_BYTE = 0x1401;
 /**
  * @const
@@ -72266,76 +72165,6 @@ var UNSIGNED_INT = 0x1405;
  * @type {number}
  */
 var FLOAT = 0x1406;
-/**
- * @const
- * @type {number}
- */
-var RGBA = 0x1908;
-/**
- * @const
- * @type {number}
- */
-var FRAGMENT_SHADER = 0x8B30;
-/**
- * @const
- * @type {number}
- */
-var VERTEX_SHADER = 0x8B31;
-/**
- * @const
- * @type {number}
- */
-var LINK_STATUS = 0x8B82;
-/**
- * @const
- * @type {number}
- */
-var LINEAR = 0x2601;
-/**
- * @const
- * @type {number}
- */
-var TEXTURE_MAG_FILTER = 0x2800;
-/**
- * @const
- * @type {number}
- */
-var TEXTURE_MIN_FILTER = 0x2801;
-/**
- * @const
- * @type {number}
- */
-var TEXTURE_WRAP_S = 0x2802;
-/**
- * @const
- * @type {number}
- */
-var TEXTURE_WRAP_T = 0x2803;
-/**
- * @const
- * @type {number}
- */
-var TEXTURE_2D = 0x0DE1;
-/**
- * @const
- * @type {number}
- */
-var TEXTURE0 = 0x84C0;
-/**
- * @const
- * @type {number}
- */
-var CLAMP_TO_EDGE = 0x812F;
-/**
- * @const
- * @type {number}
- */
-var COMPILE_STATUS = 0x8B81;
-/**
- * @const
- * @type {number}
- */
-var FRAMEBUFFER = 0x8D40;
 /** end of goog.webgl constants
  */
 /**
@@ -72369,44 +72198,22 @@ function getContext(canvas, opt_attributes) {
     return null;
 }
 /**
- * Include debuggable shader sources.  Default is `true`. This should be set to
- * `false` for production builds.
- * @type {boolean}
- */
-var DEBUG = true;
-/**
- * The maximum supported WebGL texture size in pixels. If WebGL is not
- * supported, the value is set to `undefined`.
- * @type {number|undefined}
- */
-var MAX_TEXTURE_SIZE; // value is set below
-/**
- * List of supported WebGL extensions.
  * @type {Array<string>}
  */
-var EXTENSIONS; // value is set below
+var supportedExtensions;
 /**
- * True if both OpenLayers and browser support WebGL.
- * @type {boolean}
- * @api
+ * @return {Array<string>} List of supported WebGL extensions.
  */
-var HAS = false;
-//TODO Remove side effects
-if (typeof window !== 'undefined' && 'WebGLRenderingContext' in window) {
-    try {
+function getSupportedExtensions() {
+    if (!supportedExtensions) {
         var canvas = document.createElement('canvas');
         var gl = getContext(canvas);
         if (gl) {
-            HAS = true;
-            MAX_TEXTURE_SIZE = /** @type {number} */ (gl.getParameter(gl.MAX_TEXTURE_SIZE));
-            EXTENSIONS = gl.getSupportedExtensions();
+            supportedExtensions = gl.getSupportedExtensions();
         }
     }
-    catch (e) {
-        // pass
-    }
+    return supportedExtensions;
 }
-
 //# sourceMappingURL=webgl.js.map
 
 /***/ }),
@@ -72581,11 +72388,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Disposable_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Disposable.js */ "./build/ol/Disposable.js");
 /* harmony import */ var _events_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../events.js */ "./build/ol/events.js");
 /* harmony import */ var _obj_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../obj.js */ "./build/ol/obj.js");
-/* harmony import */ var _webgl_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../webgl.js */ "./build/ol/webgl.js");
-/* harmony import */ var _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../webgl/ContextEventType.js */ "./build/ol/webgl/ContextEventType.js");
-/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../transform.js */ "./build/ol/transform.js");
-/* harmony import */ var _vec_mat4_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../vec/mat4.js */ "./build/ol/vec/mat4.js");
-/* harmony import */ var _PostProcessingPass_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./PostProcessingPass.js */ "./build/ol/webgl/PostProcessingPass.js");
+/* harmony import */ var _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../webgl/ContextEventType.js */ "./build/ol/webgl/ContextEventType.js");
+/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../transform.js */ "./build/ol/transform.js");
+/* harmony import */ var _vec_mat4_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../vec/mat4.js */ "./build/ol/vec/mat4.js");
+/* harmony import */ var _PostProcessingPass_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./PostProcessingPass.js */ "./build/ol/webgl/PostProcessingPass.js");
+/* harmony import */ var _webgl_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../webgl.js */ "./build/ol/webgl.js");
 /* harmony import */ var _array_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../array.js */ "./build/ol/array.js");
 /* harmony import */ var _asserts_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../asserts.js */ "./build/ol/asserts.js");
 var __extends = (undefined && undefined.__extends) || (function () {
@@ -72604,7 +72411,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
 /**
  * @module ol/webgl/Helper
  */
-
 
 
 
@@ -72815,7 +72621,7 @@ var WebGLHelper = /** @class */ (function (_super) {
          * @private
          * @type {WebGLRenderingContext}
          */
-        _this.gl_ = Object(_webgl_js__WEBPACK_IMPORTED_MODULE_4__["getContext"])(_this.canvas_);
+        _this.gl_ = Object(_webgl_js__WEBPACK_IMPORTED_MODULE_8__["getContext"])(_this.canvas_);
         var gl = _this.getGL();
         /**
          * @private
@@ -72837,25 +72643,25 @@ var WebGLHelper = /** @class */ (function (_super) {
          * @type {WebGLProgram}
          */
         _this.currentProgram_ = null;
-        Object(_asserts_js__WEBPACK_IMPORTED_MODULE_10__["assert"])(Object(_array_js__WEBPACK_IMPORTED_MODULE_9__["includes"])(_webgl_js__WEBPACK_IMPORTED_MODULE_4__["EXTENSIONS"], 'OES_element_index_uint'), 63);
+        Object(_asserts_js__WEBPACK_IMPORTED_MODULE_10__["assert"])(Object(_array_js__WEBPACK_IMPORTED_MODULE_9__["includes"])(Object(_webgl_js__WEBPACK_IMPORTED_MODULE_8__["getSupportedExtensions"])(), 'OES_element_index_uint'), 63);
         gl.getExtension('OES_element_index_uint');
-        Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["listen"])(_this.canvas_, _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_5__["default"].LOST, _this.handleWebGLContextLost, _this);
-        Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["listen"])(_this.canvas_, _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_5__["default"].RESTORED, _this.handleWebGLContextRestored, _this);
+        Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["listen"])(_this.canvas_, _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_4__["default"].LOST, _this.handleWebGLContextLost, _this);
+        Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["listen"])(_this.canvas_, _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_4__["default"].RESTORED, _this.handleWebGLContextRestored, _this);
         /**
          * @private
          * @type {import("../transform.js").Transform}
          */
-        _this.offsetRotateMatrix_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["create"])();
+        _this.offsetRotateMatrix_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["create"])();
         /**
          * @private
          * @type {import("../transform.js").Transform}
          */
-        _this.offsetScaleMatrix_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["create"])();
+        _this.offsetScaleMatrix_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["create"])();
         /**
          * @private
          * @type {Array<number>}
          */
-        _this.tmpMat4_ = Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_7__["create"])();
+        _this.tmpMat4_ = Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_6__["create"])();
         /**
          * @private
          * @type {Object.<string, WebGLUniformLocation>}
@@ -72889,14 +72695,14 @@ var WebGLHelper = /** @class */ (function (_super) {
          * @private
          */
         _this.postProcessPasses_ = options.postProcesses ? options.postProcesses.map(function (options) {
-            return new _PostProcessingPass_js__WEBPACK_IMPORTED_MODULE_8__["default"]({
+            return new _PostProcessingPass_js__WEBPACK_IMPORTED_MODULE_7__["default"]({
                 webGlContext: gl,
                 scaleRatio: options.scaleRatio,
                 vertexShader: options.vertexShader,
                 fragmentShader: options.fragmentShader,
                 uniforms: options.uniforms
             });
-        }) : [new _PostProcessingPass_js__WEBPACK_IMPORTED_MODULE_8__["default"]({ webGlContext: gl })];
+        }) : [new _PostProcessingPass_js__WEBPACK_IMPORTED_MODULE_7__["default"]({ webGlContext: gl })];
         /**
          * @type {string|null}
          * @private
@@ -73042,14 +72848,14 @@ var WebGLHelper = /** @class */ (function (_super) {
     WebGLHelper.prototype.applyFrameState = function (frameState) {
         var size = frameState.size;
         var rotation = frameState.viewState.rotation;
-        var offsetScaleMatrix = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["reset"])(this.offsetScaleMatrix_);
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["scale"])(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
-        var offsetRotateMatrix = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["reset"])(this.offsetRotateMatrix_);
+        var offsetScaleMatrix = Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["reset"])(this.offsetScaleMatrix_);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["scale"])(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
+        var offsetRotateMatrix = Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["reset"])(this.offsetRotateMatrix_);
         if (rotation !== 0) {
-            Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["rotate"])(offsetRotateMatrix, -rotation);
+            Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["rotate"])(offsetRotateMatrix, -rotation);
         }
-        this.setUniformMatrixValue(DefaultUniform.OFFSET_SCALE_MATRIX, Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_7__["fromTransform"])(this.tmpMat4_, offsetScaleMatrix));
-        this.setUniformMatrixValue(DefaultUniform.OFFSET_ROTATION_MATRIX, Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_7__["fromTransform"])(this.tmpMat4_, offsetRotateMatrix));
+        this.setUniformMatrixValue(DefaultUniform.OFFSET_SCALE_MATRIX, Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_6__["fromTransform"])(this.tmpMat4_, offsetScaleMatrix));
+        this.setUniformMatrixValue(DefaultUniform.OFFSET_ROTATION_MATRIX, Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_6__["fromTransform"])(this.tmpMat4_, offsetRotateMatrix));
     };
     /**
      * Sets the custom uniforms based on what was given in the constructor. This is called internally in `prepareDraw`.
@@ -73078,7 +72884,7 @@ var WebGLHelper = /** @class */ (function (_super) {
                 gl.uniform1i(this.getUniformLocation(uniform.name), textureSlot++);
             }
             else if (Array.isArray(value) && value.length === 6) {
-                this.setUniformMatrixValue(uniform.name, Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_7__["fromTransform"])(this.tmpMat4_, value));
+                this.setUniformMatrixValue(uniform.name, Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_6__["fromTransform"])(this.tmpMat4_, value));
             }
             else if (Array.isArray(value) && value.length <= 4) {
                 switch (value.length) {
@@ -73209,8 +73015,8 @@ var WebGLHelper = /** @class */ (function (_super) {
         var rotation = frameState.viewState.rotation;
         var resolution = frameState.viewState.resolution;
         var center = frameState.viewState.center;
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["reset"])(transform);
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["compose"])(transform, 0, 0, 2 / (resolution * size[0]), 2 / (resolution * size[1]), -rotation, -center[0], -center[1]);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["reset"])(transform);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["compose"])(transform, 0, 0, 2 / (resolution * size[0]), 2 / (resolution * size[1]), -rotation, -center[0], -center[1]);
         return transform;
     };
     /**
@@ -73279,10 +73085,10 @@ var WebGLHelper = /** @class */ (function (_super) {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         if (opt_wrapS !== undefined) {
-            gl.texParameteri(_webgl_js__WEBPACK_IMPORTED_MODULE_4__["TEXTURE_2D"], _webgl_js__WEBPACK_IMPORTED_MODULE_4__["TEXTURE_WRAP_S"], opt_wrapS);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, opt_wrapS);
         }
         if (opt_wrapT !== undefined) {
-            gl.texParameteri(_webgl_js__WEBPACK_IMPORTED_MODULE_4__["TEXTURE_2D"], _webgl_js__WEBPACK_IMPORTED_MODULE_4__["TEXTURE_WRAP_T"], opt_wrapT);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, opt_wrapT);
         }
         return texture;
     };
@@ -73593,7 +73399,7 @@ var WebGLPostProcessingPass = /** @class */ (function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create", function() { return create; });
-var source = "var e=\"function\"==typeof Object.assign?Object.assign:function(e,n){if(null==e)throw new TypeError(\"Cannot convert undefined or null to object\");for(var t=Object(e),r=1,o=arguments.length;r<o;++r){var i=arguments[r];if(null!=i)for(var f in i)i.hasOwnProperty(f)&&(t[f]=i[f])}return t},n=[\"experimental-webgl\",\"webgl\",\"webkit-3d\",\"moz-webgl\"];if(\"undefined\"!=typeof window&&\"WebGLRenderingContext\"in window)try{var t=function(e,t){for(var r=n.length,o=0;o<r;++o)try{var i=e.getContext(n[o],t);if(i)return i}catch(e){}return null}(document.createElement(\"canvas\"));t&&(!0,t.getParameter(t.MAX_TEXTURE_SIZE),t.getSupportedExtensions())}catch(e){}var r=\"GENERATE_BUFFERS\",o=[],i={vertexPosition:0,indexPosition:0},f=13,a=12;function u(e,n,t,r,o,i,f,a,u,s,l,c,v,g){e[n+0]=t,e[n+1]=r,e[n+2]=o,e[n+3]=i,e[n+4]=f,e[n+5]=a,e[n+6]=u,e[n+7]=s,e[n+8]=l,e[n+9]=c,e[n+10]=v,e[n+11]=g}function s(e,n,t){t.length&&e.set(t,n)}function l(e,n,t,r,l,c){var v=c>f?c:f,g=e[n+0],d=e[n+1],b=e[n+2],w=e[n+3],x=e[n+4],h=e[n+5],y=e[n+6],E=e[n+7],p=e[n+8],P=e[n+9],m=e[n+10],A=e[n+11],j=e[n+12],C=a,F=C+v-f,O=o;O.length=v-f;for(var R=0;R<O.length;R++)O[R]=e[n+f+R];var T=l?l.vertexPosition:0,B=l?l.indexPosition:0,I=T/F;return u(t,T,g,d,-y/2,-y/2,b,w,E,p,P,m,A,j),s(t,T+C,O),u(t,T+=F,g,d,+y/2,-y/2,x,w,E,p,P,m,A,j),s(t,T+C,O),u(t,T+=F,g,d,+y/2,+y/2,x,h,E,p,P,m,A,j),s(t,T+C,O),u(t,T+=F,g,d,-y/2,+y/2,b,h,E,p,P,m,A,j),s(t,T+C,O),T+=F,r[B++]=I,r[B++]=I+1,r[B++]=I+3,r[B++]=I+1,r[B++]=I+2,r[B++]=I+3,i.vertexPosition=T,i.indexPosition=B,i}onmessage=function(n){var t=n.data;if(t.type===r){for(var o=new Float32Array(t.renderInstructions),i=t.customAttributesCount||0,u=f+i,s=o.length/u,c=4*s*(a+i),v=new Uint32Array(6*s),g=new Float32Array(c),d=null,b=0;b<o.length;b+=u)d=l(o,b,g,v,d,u);var w=e({vertexBuffer:g.buffer,indexBuffer:v.buffer,renderInstructions:o.buffer},t);postMessage(w,[g.buffer,v.buffer,o.buffer])}};";
+var source = "var n=\"function\"==typeof Object.assign?Object.assign:function(n,e){if(null==n)throw new TypeError(\"Cannot convert undefined or null to object\");for(var r=Object(n),t=1,o=arguments.length;t<o;++t){var i=arguments[t];if(null!=i)for(var f in i)i.hasOwnProperty(f)&&(r[f]=i[f])}return r};var e=\"GENERATE_BUFFERS\",r=[],t={vertexPosition:0,indexPosition:0},o=13,i=12;function f(n,e,r,t,o,i,f,u,a,s,l,v,c,b){n[e+0]=r,n[e+1]=t,n[e+2]=o,n[e+3]=i,n[e+4]=f,n[e+5]=u,n[e+6]=a,n[e+7]=s,n[e+8]=l,n[e+9]=v,n[e+10]=c,n[e+11]=b}function u(n,e,r){r.length&&n.set(r,e)}function a(n,e,a,s,l,v){var c=v>o?v:o,b=n[e+0],g=n[e+1],d=n[e+2],h=n[e+3],x=n[e+4],y=n[e+5],P=n[e+6],w=n[e+7],p=n[e+8],A=n[e+9],E=n[e+10],j=n[e+11],F=n[e+12],O=i,B=O+c-o,m=r;m.length=c-o;for(var C=0;C<m.length;C++)m[C]=n[e+o+C];var I=l?l.vertexPosition:0,R=l?l.indexPosition:0,T=I/B;return f(a,I,b,g,-P/2,-P/2,d,h,w,p,A,E,j,F),u(a,I+O,m),f(a,I+=B,b,g,+P/2,-P/2,x,h,w,p,A,E,j,F),u(a,I+O,m),f(a,I+=B,b,g,+P/2,+P/2,x,y,w,p,A,E,j,F),u(a,I+O,m),f(a,I+=B,b,g,-P/2,+P/2,d,y,w,p,A,E,j,F),u(a,I+O,m),I+=B,s[R++]=T,s[R++]=T+1,s[R++]=T+3,s[R++]=T+1,s[R++]=T+2,s[R++]=T+3,t.vertexPosition=I,t.indexPosition=R,t}onmessage=function(r){var t=r.data;if(t.type===e){for(var f=new Float32Array(t.renderInstructions),u=t.customAttributesCount||0,s=o+u,l=f.length/s,v=4*l*(i+u),c=new Uint32Array(6*l),b=new Float32Array(v),g=null,d=0;d<f.length;d+=s)g=a(f,d,b,c,g,s);var h=n({vertexBuffer:b.buffer,indexBuffer:c.buffer,renderInstructions:f.buffer},t);postMessage(h,[b.buffer,c.buffer,f.buffer])}};";
 var blob = new Blob([source], { type: 'application/javascript' });
 var url = URL.createObjectURL(blob);
 function create() {
