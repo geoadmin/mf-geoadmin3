@@ -11,7 +11,6 @@ describe('ga_marker_overlay_service', function() {
         gaStyleFactory = $injector.get('gaStyleFactory');
         gaMarkerOverlay = $injector.get('gaMarkerOverlay');
       });
-      console.log(this.currentTest.title, map ? map.getLayers().getLength() : 0);
       map = new ol.Map({});
       map.getView().setZoom(4);
     });

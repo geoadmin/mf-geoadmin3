@@ -1,28 +1,25 @@
 goog.provide('ga_query_vector_directive');
 
 goog.require('ga_browsersniffer_service');
+goog.require('ga_vector_tile_layer_service');
 
 (function() {
   var module = angular.module('ga_query_vector_directive', [
     'ga_browsersniffer_service'
   ]);
 
-  var registerPointerMove = function(scope, map, overlay, mobile) {
+  var registerPointerMove = function(scope, map, overlay, mobile,
+      gaVectorTileLayerService) {
     var evtType = mobile ? 'singleclick' : 'pointermove';
     return map.on(evtType, function(evt) {
       var coord = evt.coordinate;
       overlay.setPosition(coord);
-      var features = map.getFeaturesAtPixel(evt.pixel, {
-        layerFilter: function(layer) {
-          return layer instanceof ol.layer.VectorTile;
-        },
-        hitTolerance: 1
-      });
+      var features = gaVectorTileLayerService.getFeaturesUnderMousePointer();
       if (features) {
         var flatFeatures = [];
         features.forEach(function(feature) {
           var flatProperties = [];
-          var properties = feature.getProperties();
+          var properties = feature.properties;
           var keys = Object.keys(properties);
           angular.forEach(keys, function(key) {
             flatProperties.push([key, properties[key]]);
@@ -45,7 +42,8 @@ goog.require('ga_browsersniffer_service');
     });
   };
 
-  module.directive('gaQueryVector', function($rootScope, gaBrowserSniffer) {
+  module.directive('gaQueryVector', function($rootScope, gaBrowserSniffer,
+      gaVectorTileLayerService) {
     return {
       restrict: 'A',
       templateUrl: 'components/queryvector/partials/queryvector.html',
@@ -69,7 +67,8 @@ goog.require('ga_browsersniffer_service');
 
         var activate = function() {
           pointerMoveListeners.push(
-              registerPointerMove(scope, map, overlay, mobile));
+              registerPointerMove(scope, map, overlay, mobile,
+                  gaVectorTileLayerService));
           pointerMoveListeners.push(registerMouseOut(map, overlay));
         };
 
