@@ -1,0 +1,6 @@
+{
+  "version": "${version}",
+  "layersconfig_version": "${layersconfig_version}",
+  "api_url": "${api_url}",
+  "build_date": "${build_date}"
+}
