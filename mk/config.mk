@@ -141,6 +141,8 @@ NVM_VERSION ?= v0.33.8
 LAST_NVM_VERSION := $(call lastvalue,nvm-version)
 NODE_VERSION ?= 10.15.3
 LAST_NODE_VERSION := $(call lastvalue,node-version)
+LAYERSCONFIG_VERSION ?= $(shell date +%Y%m%d%H%M%S)
+LAST_LAYERSCONFIG_VERSION := $(call lastvalue,layersconfig-version)
 
 
 ## Python interpreter can't have space in path name

@@ -4,12 +4,24 @@
 
 # Configs
 CONFIG_FILES := $(wildcard configs/**/*.json)
-CONFIG_FILES += configs/services.json
+CONFIG_FILES += configs/services.json configs/layersconfiginfo.json
 S3_UPLOAD_HEADERS = --content-encoding gzip --acl public-read --cache-control 'max-age=60' --content-type 'application/json'
+
+
+
+configs/layersconfiginfo.json: src/layersconfiginfo.mako.json                                                                                                                             
+		@mkdir -p $(@D)
+		${PYTHON_CMD} ${MAKO_CMD} \
+    --var "version=$(VERSION)" \
+    --var "api_url=$(API_URL)" \
+    --var "layersconfig_version=$(LAYERSCONFIG_VERSION)" \
+    --var "build_date=$(CURRENT_DATE)"  $< > $@
 
 
 configs/: .build-artefacts/last-version \
 			.build-artefacts/last-api-url \
+			.build-artefacts/last-layersconfig-version \
+			configs/layersconfiginfo.json \
 			.build-artefacts/last-config-url
 	mkdir -p $@
 	curl -s -q -o configs/services.json http:$(API_URL)/rest/services
@@ -30,4 +42,27 @@ src/config.%.mako: src/config.mako \
 
 # Upload the configs to s3://mf-geoadmin3-(dev|int|prod)-dublin/configs/
 s3uploadconfig%: configs $(CONFIG_FILES)
-		$(foreach json,$^, gzip -c $(json) | ${AWS_CMD} s3 cp  $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_$(shell echo $(*)| tr a-z A-Z))/$(json);)
+		@echo $(LAYERSCONFIG_VERSION)
+		@echo $(LAST_LAYERSCONFIG_VERSION)
+		$(foreach json,$^, gzip -c $(json) | ${AWS_CMD} s3 cp  $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_$(shell echo $(*)| tr a-z A-Z))/$(LAST_LAYERSCONFIG_VERSION)/$(json);)
+
+# Display current version number
+s3currentconfig%:
+		${AWS_CMD} s3 cp  s3://$(S3_MF_GEOADMIN3_$(shell echo $(*)| tr a-z A-Z))/configs/layersconfiginfo.json - | gunzip | jq -r '"LAYERSCONFIG_VERSION=" + .layersconfig_version'
+
+# List the various layersconfig on s3://mf-geoadmin3-(dev|int|prod)-dublin/<YYYYMMDDHHmmSS>/configs/
+s3listconfig%:
+		 ${AWS_CMD} s3 ls  s3://$(S3_MF_GEOADMIN3_$(shell echo $(*)| tr a-z A-Z))/ | grep -E 'PRE [0-9]{14}'
+
+
+# Activate, i.e. copy the layersconfig from it timestamped configs directory to the 'active' one
+s3activateconfig := $(patsubst %,s3activateconfig%,dev,int,prod)                                                                                                          
+PHONY: $(s3activateconfig)
+s3activateconfig%: guard-LAYERSCONFIG
+		${AWS_CMD} s3 cp --recursive  s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/$(LAYERSCONFIG)/configs/ s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/configs/
+
+# Delete a previous layersconfig
+s3deleteconfig := $(patsubst %,s3deleteconfig%,int,prod)
+PHONY: $(s3deleteconfig)
+s3deleteconfig%: guard-LAYERSCONFIG
+		${AWS_CMD} s3 rm --recursive  s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/$(LAYERSCONFIG);

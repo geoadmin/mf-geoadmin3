@@ -76,6 +76,8 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 .build-artefacts/last-node-version::
 	$(call cachelastvariable,$@,$(NODE_VERSION),$(LAST_NODE_VERSION),node-version)
 
+.build-artefacts/last-layersconfig-version::
+	$(call cachelastvariable,$@,$(LAYERSCONFIG_VERSION),$(LAST_LAYERSCONFIG_VERSION),layersconfig-version)
 
 #.build-artefacts/last-GIT_COMMIT_HASH.$(GIT_COMMIT_HASH):
 #	@rm -f .build-artefacts/last-GIT_COMMIT_HASH.*
