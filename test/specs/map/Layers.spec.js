@@ -768,7 +768,6 @@ describe('ga_layers_service', function() {
           expect(source.getParams()).to.eql({
             LAYERS: 'serverLayerName',
             FORMAT: 'image/png',
-            LANG: 'somelang',
             TIME: '20180101'
           });
           expectCommonProperties(layer, 'wms');
@@ -790,7 +789,6 @@ describe('ga_layers_service', function() {
           expect(source.getParams()).to.eql({
             LAYERS: 'serverLayerName',
             FORMAT: 'image/png',
-            LANG: 'somelang',
             TIME: '20180101'
           });
           expect(source.getTileLoadFunction()).to.be.a(Function);

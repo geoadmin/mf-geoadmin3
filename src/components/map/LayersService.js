@@ -550,8 +550,7 @@ goog.require('ga_urlutils_service');
           } else if (config.type === 'wms') {
             var wmsParams = {
               LAYERS: config.wmsLayers,
-              FORMAT: 'image/' + config.format,
-              LANG: gaLang.get()
+              FORMAT: 'image/' + config.format
             };
             if (config.singleTile === true) {
               if (!olSource) {
