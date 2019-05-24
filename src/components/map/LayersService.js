@@ -872,7 +872,10 @@ goog.require('ga_vector_tile_layer_service');
          * exist in currently loaded topic/layers
          */
         this.getLayerProperty = function(bodId, prop) {
-          return layers[bodId][prop];
+          var layer = this.getLayer(bodId);
+          if (layer) {
+            return layer[prop];
+          }
         };
 
         /**

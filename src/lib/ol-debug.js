@@ -118,164 +118,167 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ol_array__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./ol/array */ "./build/ol/array.js");
 /* harmony import */ var _ol_color__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./ol/color */ "./build/ol/color.js");
 /* harmony import */ var _ol_colorlike__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./ol/colorlike */ "./build/ol/colorlike.js");
-/* harmony import */ var _ol_coordinate__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./ol/coordinate */ "./build/ol/coordinate.js");
-/* harmony import */ var _ol_easing__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./ol/easing */ "./build/ol/easing.js");
-/* harmony import */ var _ol_extent__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./ol/extent */ "./build/ol/extent.js");
-/* harmony import */ var _ol_featureloader__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./ol/featureloader */ "./build/ol/featureloader.js");
-/* harmony import */ var _ol_has__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./ol/has */ "./build/ol/has.js");
-/* harmony import */ var _ol_interaction__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./ol/interaction */ "./build/ol/interaction.js");
-/* harmony import */ var _ol_loadingstrategy__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./ol/loadingstrategy */ "./build/ol/loadingstrategy.js");
-/* harmony import */ var _ol_proj__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./ol/proj */ "./build/ol/proj.js");
-/* harmony import */ var _ol_render__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./ol/render */ "./build/ol/render.js");
-/* harmony import */ var _ol_size__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./ol/size */ "./build/ol/size.js");
-/* harmony import */ var _ol_sphere__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./ol/sphere */ "./build/ol/sphere.js");
-/* harmony import */ var _ol_tilegrid__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./ol/tilegrid */ "./build/ol/tilegrid.js");
-/* harmony import */ var _ol__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./ol */ "./build/ol/index.js");
-/* harmony import */ var _ol_webgl__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./ol/webgl */ "./build/ol/webgl.js");
-/* harmony import */ var _ol_xml__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./ol/xml */ "./build/ol/xml.js");
-/* harmony import */ var _ol_webgl_Buffer__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./ol/webgl/Buffer */ "./build/ol/webgl/Buffer.js");
-/* harmony import */ var _ol_webgl_Helper__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./ol/webgl/Helper */ "./build/ol/webgl/Helper.js");
-/* harmony import */ var _ol_webgl_PostProcessingPass__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./ol/webgl/PostProcessingPass */ "./build/ol/webgl/PostProcessingPass.js");
-/* harmony import */ var _ol_tilegrid_TileGrid__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./ol/tilegrid/TileGrid */ "./build/ol/tilegrid/TileGrid.js");
-/* harmony import */ var _ol_tilegrid_WMTS__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./ol/tilegrid/WMTS */ "./build/ol/tilegrid/WMTS.js");
-/* harmony import */ var _ol_style_Circle__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./ol/style/Circle */ "./build/ol/style/Circle.js");
-/* harmony import */ var _ol_style_Fill__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./ol/style/Fill */ "./build/ol/style/Fill.js");
-/* harmony import */ var _ol_style_Icon__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ./ol/style/Icon */ "./build/ol/style/Icon.js");
-/* harmony import */ var _ol_style_IconImageCache__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! ./ol/style/IconImageCache */ "./build/ol/style/IconImageCache.js");
-/* harmony import */ var _ol_style_Image__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! ./ol/style/Image */ "./build/ol/style/Image.js");
-/* harmony import */ var _ol_style_RegularShape__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! ./ol/style/RegularShape */ "./build/ol/style/RegularShape.js");
-/* harmony import */ var _ol_style_Stroke__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ./ol/style/Stroke */ "./build/ol/style/Stroke.js");
-/* harmony import */ var _ol_style_Style__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./ol/style/Style */ "./build/ol/style/Style.js");
-/* harmony import */ var _ol_style_Text__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ./ol/style/Text */ "./build/ol/style/Text.js");
-/* harmony import */ var _ol_source_BingMaps__WEBPACK_IMPORTED_MODULE_42__ = __webpack_require__(/*! ./ol/source/BingMaps */ "./build/ol/source/BingMaps.js");
-/* harmony import */ var _ol_source_CartoDB__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ./ol/source/CartoDB */ "./build/ol/source/CartoDB.js");
-/* harmony import */ var _ol_source_Cluster__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./ol/source/Cluster */ "./build/ol/source/Cluster.js");
-/* harmony import */ var _ol_source_IIIF__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./ol/source/IIIF */ "./build/ol/source/IIIF.js");
-/* harmony import */ var _ol_source_Image__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./ol/source/Image */ "./build/ol/source/Image.js");
-/* harmony import */ var _ol_source_ImageArcGISRest__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./ol/source/ImageArcGISRest */ "./build/ol/source/ImageArcGISRest.js");
-/* harmony import */ var _ol_source_ImageCanvas__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./ol/source/ImageCanvas */ "./build/ol/source/ImageCanvas.js");
-/* harmony import */ var _ol_source_ImageMapGuide__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./ol/source/ImageMapGuide */ "./build/ol/source/ImageMapGuide.js");
-/* harmony import */ var _ol_source_ImageStatic__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./ol/source/ImageStatic */ "./build/ol/source/ImageStatic.js");
-/* harmony import */ var _ol_source_ImageWMS__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./ol/source/ImageWMS */ "./build/ol/source/ImageWMS.js");
-/* harmony import */ var _ol_source_OSM__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./ol/source/OSM */ "./build/ol/source/OSM.js");
-/* harmony import */ var _ol_source_Raster__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./ol/source/Raster */ "./build/ol/source/Raster.js");
-/* harmony import */ var _ol_source_Source__WEBPACK_IMPORTED_MODULE_54__ = __webpack_require__(/*! ./ol/source/Source */ "./build/ol/source/Source.js");
-/* harmony import */ var _ol_source_Stamen__WEBPACK_IMPORTED_MODULE_55__ = __webpack_require__(/*! ./ol/source/Stamen */ "./build/ol/source/Stamen.js");
-/* harmony import */ var _ol_source_Tile__WEBPACK_IMPORTED_MODULE_56__ = __webpack_require__(/*! ./ol/source/Tile */ "./build/ol/source/Tile.js");
-/* harmony import */ var _ol_source_TileArcGISRest__WEBPACK_IMPORTED_MODULE_57__ = __webpack_require__(/*! ./ol/source/TileArcGISRest */ "./build/ol/source/TileArcGISRest.js");
-/* harmony import */ var _ol_source_TileDebug__WEBPACK_IMPORTED_MODULE_58__ = __webpack_require__(/*! ./ol/source/TileDebug */ "./build/ol/source/TileDebug.js");
-/* harmony import */ var _ol_source_TileImage__WEBPACK_IMPORTED_MODULE_59__ = __webpack_require__(/*! ./ol/source/TileImage */ "./build/ol/source/TileImage.js");
-/* harmony import */ var _ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_60__ = __webpack_require__(/*! ./ol/source/TileJSON */ "./build/ol/source/TileJSON.js");
-/* harmony import */ var _ol_source_TileWMS__WEBPACK_IMPORTED_MODULE_61__ = __webpack_require__(/*! ./ol/source/TileWMS */ "./build/ol/source/TileWMS.js");
-/* harmony import */ var _ol_source_UTFGrid__WEBPACK_IMPORTED_MODULE_62__ = __webpack_require__(/*! ./ol/source/UTFGrid */ "./build/ol/source/UTFGrid.js");
-/* harmony import */ var _ol_source_Vector__WEBPACK_IMPORTED_MODULE_63__ = __webpack_require__(/*! ./ol/source/Vector */ "./build/ol/source/Vector.js");
-/* harmony import */ var _ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_64__ = __webpack_require__(/*! ./ol/source/VectorTile */ "./build/ol/source/VectorTile.js");
-/* harmony import */ var _ol_source_WMTS__WEBPACK_IMPORTED_MODULE_65__ = __webpack_require__(/*! ./ol/source/WMTS */ "./build/ol/source/WMTS.js");
-/* harmony import */ var _ol_source_XYZ__WEBPACK_IMPORTED_MODULE_66__ = __webpack_require__(/*! ./ol/source/XYZ */ "./build/ol/source/XYZ.js");
-/* harmony import */ var _ol_source_Zoomify__WEBPACK_IMPORTED_MODULE_67__ = __webpack_require__(/*! ./ol/source/Zoomify */ "./build/ol/source/Zoomify.js");
-/* harmony import */ var _ol_renderer_Composite__WEBPACK_IMPORTED_MODULE_68__ = __webpack_require__(/*! ./ol/renderer/Composite */ "./build/ol/renderer/Composite.js");
-/* harmony import */ var _ol_renderer_webgl_PointsLayer__WEBPACK_IMPORTED_MODULE_69__ = __webpack_require__(/*! ./ol/renderer/webgl/PointsLayer */ "./build/ol/renderer/webgl/PointsLayer.js");
-/* harmony import */ var _ol_renderer_canvas_ImageLayer__WEBPACK_IMPORTED_MODULE_70__ = __webpack_require__(/*! ./ol/renderer/canvas/ImageLayer */ "./build/ol/renderer/canvas/ImageLayer.js");
-/* harmony import */ var _ol_renderer_canvas_TileLayer__WEBPACK_IMPORTED_MODULE_71__ = __webpack_require__(/*! ./ol/renderer/canvas/TileLayer */ "./build/ol/renderer/canvas/TileLayer.js");
-/* harmony import */ var _ol_renderer_canvas_VectorLayer__WEBPACK_IMPORTED_MODULE_72__ = __webpack_require__(/*! ./ol/renderer/canvas/VectorLayer */ "./build/ol/renderer/canvas/VectorLayer.js");
-/* harmony import */ var _ol_renderer_canvas_VectorTileLayer__WEBPACK_IMPORTED_MODULE_73__ = __webpack_require__(/*! ./ol/renderer/canvas/VectorTileLayer */ "./build/ol/renderer/canvas/VectorTileLayer.js");
-/* harmony import */ var _ol_render_VectorContext__WEBPACK_IMPORTED_MODULE_74__ = __webpack_require__(/*! ./ol/render/VectorContext */ "./build/ol/render/VectorContext.js");
-/* harmony import */ var _ol_render_canvas__WEBPACK_IMPORTED_MODULE_75__ = __webpack_require__(/*! ./ol/render/canvas */ "./build/ol/render/canvas.js");
-/* harmony import */ var _ol_proj_Projection__WEBPACK_IMPORTED_MODULE_76__ = __webpack_require__(/*! ./ol/proj/Projection */ "./build/ol/proj/Projection.js");
-/* harmony import */ var _ol_proj_Units__WEBPACK_IMPORTED_MODULE_77__ = __webpack_require__(/*! ./ol/proj/Units */ "./build/ol/proj/Units.js");
-/* harmony import */ var _ol_proj_proj4__WEBPACK_IMPORTED_MODULE_78__ = __webpack_require__(/*! ./ol/proj/proj4 */ "./build/ol/proj/proj4.js");
-/* harmony import */ var _ol_layer_Base__WEBPACK_IMPORTED_MODULE_79__ = __webpack_require__(/*! ./ol/layer/Base */ "./build/ol/layer/Base.js");
-/* harmony import */ var _ol_layer_BaseImage__WEBPACK_IMPORTED_MODULE_80__ = __webpack_require__(/*! ./ol/layer/BaseImage */ "./build/ol/layer/BaseImage.js");
-/* harmony import */ var _ol_layer_BaseTile__WEBPACK_IMPORTED_MODULE_81__ = __webpack_require__(/*! ./ol/layer/BaseTile */ "./build/ol/layer/BaseTile.js");
-/* harmony import */ var _ol_layer_BaseVector__WEBPACK_IMPORTED_MODULE_82__ = __webpack_require__(/*! ./ol/layer/BaseVector */ "./build/ol/layer/BaseVector.js");
-/* harmony import */ var _ol_layer_Graticule__WEBPACK_IMPORTED_MODULE_83__ = __webpack_require__(/*! ./ol/layer/Graticule */ "./build/ol/layer/Graticule.js");
-/* harmony import */ var _ol_layer_Group__WEBPACK_IMPORTED_MODULE_84__ = __webpack_require__(/*! ./ol/layer/Group */ "./build/ol/layer/Group.js");
-/* harmony import */ var _ol_layer_Heatmap__WEBPACK_IMPORTED_MODULE_85__ = __webpack_require__(/*! ./ol/layer/Heatmap */ "./build/ol/layer/Heatmap.js");
-/* harmony import */ var _ol_layer_Image__WEBPACK_IMPORTED_MODULE_86__ = __webpack_require__(/*! ./ol/layer/Image */ "./build/ol/layer/Image.js");
-/* harmony import */ var _ol_layer_Tile__WEBPACK_IMPORTED_MODULE_87__ = __webpack_require__(/*! ./ol/layer/Tile */ "./build/ol/layer/Tile.js");
-/* harmony import */ var _ol_layer_Vector__WEBPACK_IMPORTED_MODULE_88__ = __webpack_require__(/*! ./ol/layer/Vector */ "./build/ol/layer/Vector.js");
-/* harmony import */ var _ol_layer_VectorImage__WEBPACK_IMPORTED_MODULE_89__ = __webpack_require__(/*! ./ol/layer/VectorImage */ "./build/ol/layer/VectorImage.js");
-/* harmony import */ var _ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_90__ = __webpack_require__(/*! ./ol/layer/VectorTile */ "./build/ol/layer/VectorTile.js");
-/* harmony import */ var _ol_interaction_DoubleClickZoom__WEBPACK_IMPORTED_MODULE_91__ = __webpack_require__(/*! ./ol/interaction/DoubleClickZoom */ "./build/ol/interaction/DoubleClickZoom.js");
-/* harmony import */ var _ol_interaction_DragAndDrop__WEBPACK_IMPORTED_MODULE_92__ = __webpack_require__(/*! ./ol/interaction/DragAndDrop */ "./build/ol/interaction/DragAndDrop.js");
-/* harmony import */ var _ol_interaction_DragBox__WEBPACK_IMPORTED_MODULE_93__ = __webpack_require__(/*! ./ol/interaction/DragBox */ "./build/ol/interaction/DragBox.js");
-/* harmony import */ var _ol_interaction_DragPan__WEBPACK_IMPORTED_MODULE_94__ = __webpack_require__(/*! ./ol/interaction/DragPan */ "./build/ol/interaction/DragPan.js");
-/* harmony import */ var _ol_interaction_DragRotate__WEBPACK_IMPORTED_MODULE_95__ = __webpack_require__(/*! ./ol/interaction/DragRotate */ "./build/ol/interaction/DragRotate.js");
-/* harmony import */ var _ol_interaction_DragRotateAndZoom__WEBPACK_IMPORTED_MODULE_96__ = __webpack_require__(/*! ./ol/interaction/DragRotateAndZoom */ "./build/ol/interaction/DragRotateAndZoom.js");
-/* harmony import */ var _ol_interaction_DragZoom__WEBPACK_IMPORTED_MODULE_97__ = __webpack_require__(/*! ./ol/interaction/DragZoom */ "./build/ol/interaction/DragZoom.js");
-/* harmony import */ var _ol_interaction_Draw__WEBPACK_IMPORTED_MODULE_98__ = __webpack_require__(/*! ./ol/interaction/Draw */ "./build/ol/interaction/Draw.js");
-/* harmony import */ var _ol_interaction_Extent__WEBPACK_IMPORTED_MODULE_99__ = __webpack_require__(/*! ./ol/interaction/Extent */ "./build/ol/interaction/Extent.js");
-/* harmony import */ var _ol_interaction_Interaction__WEBPACK_IMPORTED_MODULE_100__ = __webpack_require__(/*! ./ol/interaction/Interaction */ "./build/ol/interaction/Interaction.js");
-/* harmony import */ var _ol_interaction_KeyboardPan__WEBPACK_IMPORTED_MODULE_101__ = __webpack_require__(/*! ./ol/interaction/KeyboardPan */ "./build/ol/interaction/KeyboardPan.js");
-/* harmony import */ var _ol_interaction_KeyboardZoom__WEBPACK_IMPORTED_MODULE_102__ = __webpack_require__(/*! ./ol/interaction/KeyboardZoom */ "./build/ol/interaction/KeyboardZoom.js");
-/* harmony import */ var _ol_interaction_Modify__WEBPACK_IMPORTED_MODULE_103__ = __webpack_require__(/*! ./ol/interaction/Modify */ "./build/ol/interaction/Modify.js");
-/* harmony import */ var _ol_interaction_MouseWheelZoom__WEBPACK_IMPORTED_MODULE_104__ = __webpack_require__(/*! ./ol/interaction/MouseWheelZoom */ "./build/ol/interaction/MouseWheelZoom.js");
-/* harmony import */ var _ol_interaction_PinchRotate__WEBPACK_IMPORTED_MODULE_105__ = __webpack_require__(/*! ./ol/interaction/PinchRotate */ "./build/ol/interaction/PinchRotate.js");
-/* harmony import */ var _ol_interaction_PinchZoom__WEBPACK_IMPORTED_MODULE_106__ = __webpack_require__(/*! ./ol/interaction/PinchZoom */ "./build/ol/interaction/PinchZoom.js");
-/* harmony import */ var _ol_interaction_Pointer__WEBPACK_IMPORTED_MODULE_107__ = __webpack_require__(/*! ./ol/interaction/Pointer */ "./build/ol/interaction/Pointer.js");
-/* harmony import */ var _ol_interaction_Select__WEBPACK_IMPORTED_MODULE_108__ = __webpack_require__(/*! ./ol/interaction/Select */ "./build/ol/interaction/Select.js");
-/* harmony import */ var _ol_interaction_Snap__WEBPACK_IMPORTED_MODULE_109__ = __webpack_require__(/*! ./ol/interaction/Snap */ "./build/ol/interaction/Snap.js");
-/* harmony import */ var _ol_interaction_Translate__WEBPACK_IMPORTED_MODULE_110__ = __webpack_require__(/*! ./ol/interaction/Translate */ "./build/ol/interaction/Translate.js");
-/* harmony import */ var _ol_geom_Circle__WEBPACK_IMPORTED_MODULE_111__ = __webpack_require__(/*! ./ol/geom/Circle */ "./build/ol/geom/Circle.js");
-/* harmony import */ var _ol_geom_Geometry__WEBPACK_IMPORTED_MODULE_112__ = __webpack_require__(/*! ./ol/geom/Geometry */ "./build/ol/geom/Geometry.js");
-/* harmony import */ var _ol_geom_GeometryCollection__WEBPACK_IMPORTED_MODULE_113__ = __webpack_require__(/*! ./ol/geom/GeometryCollection */ "./build/ol/geom/GeometryCollection.js");
-/* harmony import */ var _ol_geom_LineString__WEBPACK_IMPORTED_MODULE_114__ = __webpack_require__(/*! ./ol/geom/LineString */ "./build/ol/geom/LineString.js");
-/* harmony import */ var _ol_geom_LinearRing__WEBPACK_IMPORTED_MODULE_115__ = __webpack_require__(/*! ./ol/geom/LinearRing */ "./build/ol/geom/LinearRing.js");
-/* harmony import */ var _ol_geom_MultiLineString__WEBPACK_IMPORTED_MODULE_116__ = __webpack_require__(/*! ./ol/geom/MultiLineString */ "./build/ol/geom/MultiLineString.js");
-/* harmony import */ var _ol_geom_MultiPoint__WEBPACK_IMPORTED_MODULE_117__ = __webpack_require__(/*! ./ol/geom/MultiPoint */ "./build/ol/geom/MultiPoint.js");
-/* harmony import */ var _ol_geom_MultiPolygon__WEBPACK_IMPORTED_MODULE_118__ = __webpack_require__(/*! ./ol/geom/MultiPolygon */ "./build/ol/geom/MultiPolygon.js");
-/* harmony import */ var _ol_geom_Point__WEBPACK_IMPORTED_MODULE_119__ = __webpack_require__(/*! ./ol/geom/Point */ "./build/ol/geom/Point.js");
-/* harmony import */ var _ol_geom_Polygon__WEBPACK_IMPORTED_MODULE_120__ = __webpack_require__(/*! ./ol/geom/Polygon */ "./build/ol/geom/Polygon.js");
-/* harmony import */ var _ol_geom_SimpleGeometry__WEBPACK_IMPORTED_MODULE_121__ = __webpack_require__(/*! ./ol/geom/SimpleGeometry */ "./build/ol/geom/SimpleGeometry.js");
-/* harmony import */ var _ol_format_EsriJSON__WEBPACK_IMPORTED_MODULE_122__ = __webpack_require__(/*! ./ol/format/EsriJSON */ "./build/ol/format/EsriJSON.js");
-/* harmony import */ var _ol_format_Feature__WEBPACK_IMPORTED_MODULE_123__ = __webpack_require__(/*! ./ol/format/Feature */ "./build/ol/format/Feature.js");
-/* harmony import */ var _ol_format_GML__WEBPACK_IMPORTED_MODULE_124__ = __webpack_require__(/*! ./ol/format/GML */ "./build/ol/format/GML.js");
-/* harmony import */ var _ol_format_GML2__WEBPACK_IMPORTED_MODULE_125__ = __webpack_require__(/*! ./ol/format/GML2 */ "./build/ol/format/GML2.js");
-/* harmony import */ var _ol_format_GML3__WEBPACK_IMPORTED_MODULE_126__ = __webpack_require__(/*! ./ol/format/GML3 */ "./build/ol/format/GML3.js");
-/* harmony import */ var _ol_format_GML32__WEBPACK_IMPORTED_MODULE_127__ = __webpack_require__(/*! ./ol/format/GML32 */ "./build/ol/format/GML32.js");
-/* harmony import */ var _ol_format_GPX__WEBPACK_IMPORTED_MODULE_128__ = __webpack_require__(/*! ./ol/format/GPX */ "./build/ol/format/GPX.js");
-/* harmony import */ var _ol_format_GeoJSON__WEBPACK_IMPORTED_MODULE_129__ = __webpack_require__(/*! ./ol/format/GeoJSON */ "./build/ol/format/GeoJSON.js");
-/* harmony import */ var _ol_format_IGC__WEBPACK_IMPORTED_MODULE_130__ = __webpack_require__(/*! ./ol/format/IGC */ "./build/ol/format/IGC.js");
-/* harmony import */ var _ol_format_IIIFInfo__WEBPACK_IMPORTED_MODULE_131__ = __webpack_require__(/*! ./ol/format/IIIFInfo */ "./build/ol/format/IIIFInfo.js");
-/* harmony import */ var _ol_format_KML__WEBPACK_IMPORTED_MODULE_132__ = __webpack_require__(/*! ./ol/format/KML */ "./build/ol/format/KML.js");
-/* harmony import */ var _ol_format_MVT__WEBPACK_IMPORTED_MODULE_133__ = __webpack_require__(/*! ./ol/format/MVT */ "./build/ol/format/MVT.js");
-/* harmony import */ var _ol_format_OSMXML__WEBPACK_IMPORTED_MODULE_134__ = __webpack_require__(/*! ./ol/format/OSMXML */ "./build/ol/format/OSMXML.js");
-/* harmony import */ var _ol_format_Polyline__WEBPACK_IMPORTED_MODULE_135__ = __webpack_require__(/*! ./ol/format/Polyline */ "./build/ol/format/Polyline.js");
-/* harmony import */ var _ol_format_TopoJSON__WEBPACK_IMPORTED_MODULE_136__ = __webpack_require__(/*! ./ol/format/TopoJSON */ "./build/ol/format/TopoJSON.js");
-/* harmony import */ var _ol_format_WFS__WEBPACK_IMPORTED_MODULE_137__ = __webpack_require__(/*! ./ol/format/WFS */ "./build/ol/format/WFS.js");
-/* harmony import */ var _ol_format_WKT__WEBPACK_IMPORTED_MODULE_138__ = __webpack_require__(/*! ./ol/format/WKT */ "./build/ol/format/WKT.js");
-/* harmony import */ var _ol_format_WMSCapabilities__WEBPACK_IMPORTED_MODULE_139__ = __webpack_require__(/*! ./ol/format/WMSCapabilities */ "./build/ol/format/WMSCapabilities.js");
-/* harmony import */ var _ol_format_WMSGetFeatureInfo__WEBPACK_IMPORTED_MODULE_140__ = __webpack_require__(/*! ./ol/format/WMSGetFeatureInfo */ "./build/ol/format/WMSGetFeatureInfo.js");
-/* harmony import */ var _ol_format_WMTSCapabilities__WEBPACK_IMPORTED_MODULE_141__ = __webpack_require__(/*! ./ol/format/WMTSCapabilities */ "./build/ol/format/WMTSCapabilities.js");
-/* harmony import */ var _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__ = __webpack_require__(/*! ./ol/format/filter */ "./build/ol/format/filter.js");
-/* harmony import */ var _ol_format_filter_Bbox__WEBPACK_IMPORTED_MODULE_143__ = __webpack_require__(/*! ./ol/format/filter/Bbox */ "./build/ol/format/filter/Bbox.js");
-/* harmony import */ var _ol_format_filter_Contains__WEBPACK_IMPORTED_MODULE_144__ = __webpack_require__(/*! ./ol/format/filter/Contains */ "./build/ol/format/filter/Contains.js");
-/* harmony import */ var _ol_format_filter_During__WEBPACK_IMPORTED_MODULE_145__ = __webpack_require__(/*! ./ol/format/filter/During */ "./build/ol/format/filter/During.js");
-/* harmony import */ var _ol_format_filter_EqualTo__WEBPACK_IMPORTED_MODULE_146__ = __webpack_require__(/*! ./ol/format/filter/EqualTo */ "./build/ol/format/filter/EqualTo.js");
-/* harmony import */ var _ol_format_filter_GreaterThan__WEBPACK_IMPORTED_MODULE_147__ = __webpack_require__(/*! ./ol/format/filter/GreaterThan */ "./build/ol/format/filter/GreaterThan.js");
-/* harmony import */ var _ol_format_filter_GreaterThanOrEqualTo__WEBPACK_IMPORTED_MODULE_148__ = __webpack_require__(/*! ./ol/format/filter/GreaterThanOrEqualTo */ "./build/ol/format/filter/GreaterThanOrEqualTo.js");
-/* harmony import */ var _ol_format_filter_Intersects__WEBPACK_IMPORTED_MODULE_149__ = __webpack_require__(/*! ./ol/format/filter/Intersects */ "./build/ol/format/filter/Intersects.js");
-/* harmony import */ var _ol_format_filter_IsBetween__WEBPACK_IMPORTED_MODULE_150__ = __webpack_require__(/*! ./ol/format/filter/IsBetween */ "./build/ol/format/filter/IsBetween.js");
-/* harmony import */ var _ol_format_filter_IsLike__WEBPACK_IMPORTED_MODULE_151__ = __webpack_require__(/*! ./ol/format/filter/IsLike */ "./build/ol/format/filter/IsLike.js");
-/* harmony import */ var _ol_format_filter_IsNull__WEBPACK_IMPORTED_MODULE_152__ = __webpack_require__(/*! ./ol/format/filter/IsNull */ "./build/ol/format/filter/IsNull.js");
-/* harmony import */ var _ol_format_filter_LessThan__WEBPACK_IMPORTED_MODULE_153__ = __webpack_require__(/*! ./ol/format/filter/LessThan */ "./build/ol/format/filter/LessThan.js");
-/* harmony import */ var _ol_format_filter_LessThanOrEqualTo__WEBPACK_IMPORTED_MODULE_154__ = __webpack_require__(/*! ./ol/format/filter/LessThanOrEqualTo */ "./build/ol/format/filter/LessThanOrEqualTo.js");
-/* harmony import */ var _ol_format_filter_Not__WEBPACK_IMPORTED_MODULE_155__ = __webpack_require__(/*! ./ol/format/filter/Not */ "./build/ol/format/filter/Not.js");
-/* harmony import */ var _ol_format_filter_NotEqualTo__WEBPACK_IMPORTED_MODULE_156__ = __webpack_require__(/*! ./ol/format/filter/NotEqualTo */ "./build/ol/format/filter/NotEqualTo.js");
-/* harmony import */ var _ol_format_filter_Or__WEBPACK_IMPORTED_MODULE_157__ = __webpack_require__(/*! ./ol/format/filter/Or */ "./build/ol/format/filter/Or.js");
-/* harmony import */ var _ol_format_filter_Within__WEBPACK_IMPORTED_MODULE_158__ = __webpack_require__(/*! ./ol/format/filter/Within */ "./build/ol/format/filter/Within.js");
-/* harmony import */ var _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__ = __webpack_require__(/*! ./ol/events/condition */ "./build/ol/events/condition.js");
-/* harmony import */ var _ol_control_Attribution__WEBPACK_IMPORTED_MODULE_160__ = __webpack_require__(/*! ./ol/control/Attribution */ "./build/ol/control/Attribution.js");
-/* harmony import */ var _ol_control_Control__WEBPACK_IMPORTED_MODULE_161__ = __webpack_require__(/*! ./ol/control/Control */ "./build/ol/control/Control.js");
-/* harmony import */ var _ol_control_FullScreen__WEBPACK_IMPORTED_MODULE_162__ = __webpack_require__(/*! ./ol/control/FullScreen */ "./build/ol/control/FullScreen.js");
-/* harmony import */ var _ol_control_MousePosition__WEBPACK_IMPORTED_MODULE_163__ = __webpack_require__(/*! ./ol/control/MousePosition */ "./build/ol/control/MousePosition.js");
-/* harmony import */ var _ol_control_OverviewMap__WEBPACK_IMPORTED_MODULE_164__ = __webpack_require__(/*! ./ol/control/OverviewMap */ "./build/ol/control/OverviewMap.js");
-/* harmony import */ var _ol_control_Rotate__WEBPACK_IMPORTED_MODULE_165__ = __webpack_require__(/*! ./ol/control/Rotate */ "./build/ol/control/Rotate.js");
-/* harmony import */ var _ol_control_ScaleLine__WEBPACK_IMPORTED_MODULE_166__ = __webpack_require__(/*! ./ol/control/ScaleLine */ "./build/ol/control/ScaleLine.js");
-/* harmony import */ var _ol_control_Zoom__WEBPACK_IMPORTED_MODULE_167__ = __webpack_require__(/*! ./ol/control/Zoom */ "./build/ol/control/Zoom.js");
-/* harmony import */ var _ol_control_ZoomSlider__WEBPACK_IMPORTED_MODULE_168__ = __webpack_require__(/*! ./ol/control/ZoomSlider */ "./build/ol/control/ZoomSlider.js");
-/* harmony import */ var _ol_control_ZoomToExtent__WEBPACK_IMPORTED_MODULE_169__ = __webpack_require__(/*! ./ol/control/ZoomToExtent */ "./build/ol/control/ZoomToExtent.js");
-/* harmony import */ var _ol_control__WEBPACK_IMPORTED_MODULE_170__ = __webpack_require__(/*! ./ol/control */ "./build/ol/control.js");
+/* harmony import */ var _ol_control__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./ol/control */ "./build/ol/control.js");
+/* harmony import */ var _ol_coordinate__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./ol/coordinate */ "./build/ol/coordinate.js");
+/* harmony import */ var _ol_easing__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./ol/easing */ "./build/ol/easing.js");
+/* harmony import */ var _ol_extent__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./ol/extent */ "./build/ol/extent.js");
+/* harmony import */ var _ol_featureloader__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./ol/featureloader */ "./build/ol/featureloader.js");
+/* harmony import */ var _ol_has__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./ol/has */ "./build/ol/has.js");
+/* harmony import */ var _ol_interaction__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./ol/interaction */ "./build/ol/interaction.js");
+/* harmony import */ var _ol_loadingstrategy__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./ol/loadingstrategy */ "./build/ol/loadingstrategy.js");
+/* harmony import */ var _ol_proj__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./ol/proj */ "./build/ol/proj.js");
+/* harmony import */ var _ol_render__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./ol/render */ "./build/ol/render.js");
+/* harmony import */ var _ol_size__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./ol/size */ "./build/ol/size.js");
+/* harmony import */ var _ol_sphere__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./ol/sphere */ "./build/ol/sphere.js");
+/* harmony import */ var _ol_tilegrid__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./ol/tilegrid */ "./build/ol/tilegrid.js");
+/* harmony import */ var _ol_util__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./ol/util */ "./build/ol/util.js");
+/* harmony import */ var _ol_webgl__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./ol/webgl */ "./build/ol/webgl.js");
+/* harmony import */ var _ol_xml__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./ol/xml */ "./build/ol/xml.js");
+/* harmony import */ var _ol_webgl_Buffer__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./ol/webgl/Buffer */ "./build/ol/webgl/Buffer.js");
+/* harmony import */ var _ol_webgl_Helper__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./ol/webgl/Helper */ "./build/ol/webgl/Helper.js");
+/* harmony import */ var _ol_webgl_PostProcessingPass__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./ol/webgl/PostProcessingPass */ "./build/ol/webgl/PostProcessingPass.js");
+/* harmony import */ var _ol_tilegrid_TileGrid__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./ol/tilegrid/TileGrid */ "./build/ol/tilegrid/TileGrid.js");
+/* harmony import */ var _ol_tilegrid_WMTS__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./ol/tilegrid/WMTS */ "./build/ol/tilegrid/WMTS.js");
+/* harmony import */ var _ol_style_Circle__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./ol/style/Circle */ "./build/ol/style/Circle.js");
+/* harmony import */ var _ol_style_Fill__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ./ol/style/Fill */ "./build/ol/style/Fill.js");
+/* harmony import */ var _ol_style_Icon__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! ./ol/style/Icon */ "./build/ol/style/Icon.js");
+/* harmony import */ var _ol_style_IconImageCache__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! ./ol/style/IconImageCache */ "./build/ol/style/IconImageCache.js");
+/* harmony import */ var _ol_style_Image__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! ./ol/style/Image */ "./build/ol/style/Image.js");
+/* harmony import */ var _ol_style_RegularShape__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ./ol/style/RegularShape */ "./build/ol/style/RegularShape.js");
+/* harmony import */ var _ol_style_Stroke__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./ol/style/Stroke */ "./build/ol/style/Stroke.js");
+/* harmony import */ var _ol_style_Style__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ./ol/style/Style */ "./build/ol/style/Style.js");
+/* harmony import */ var _ol_style_Text__WEBPACK_IMPORTED_MODULE_42__ = __webpack_require__(/*! ./ol/style/Text */ "./build/ol/style/Text.js");
+/* harmony import */ var _ol_source_BingMaps__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ./ol/source/BingMaps */ "./build/ol/source/BingMaps.js");
+/* harmony import */ var _ol_source_CartoDB__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./ol/source/CartoDB */ "./build/ol/source/CartoDB.js");
+/* harmony import */ var _ol_source_Cluster__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./ol/source/Cluster */ "./build/ol/source/Cluster.js");
+/* harmony import */ var _ol_source_IIIF__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./ol/source/IIIF */ "./build/ol/source/IIIF.js");
+/* harmony import */ var _ol_source_Image__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./ol/source/Image */ "./build/ol/source/Image.js");
+/* harmony import */ var _ol_source_ImageArcGISRest__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./ol/source/ImageArcGISRest */ "./build/ol/source/ImageArcGISRest.js");
+/* harmony import */ var _ol_source_ImageCanvas__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./ol/source/ImageCanvas */ "./build/ol/source/ImageCanvas.js");
+/* harmony import */ var _ol_source_ImageMapGuide__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./ol/source/ImageMapGuide */ "./build/ol/source/ImageMapGuide.js");
+/* harmony import */ var _ol_source_ImageStatic__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./ol/source/ImageStatic */ "./build/ol/source/ImageStatic.js");
+/* harmony import */ var _ol_source_ImageWMS__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./ol/source/ImageWMS */ "./build/ol/source/ImageWMS.js");
+/* harmony import */ var _ol_source_OSM__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./ol/source/OSM */ "./build/ol/source/OSM.js");
+/* harmony import */ var _ol_source_Raster__WEBPACK_IMPORTED_MODULE_54__ = __webpack_require__(/*! ./ol/source/Raster */ "./build/ol/source/Raster.js");
+/* harmony import */ var _ol_source_Source__WEBPACK_IMPORTED_MODULE_55__ = __webpack_require__(/*! ./ol/source/Source */ "./build/ol/source/Source.js");
+/* harmony import */ var _ol_source_Stamen__WEBPACK_IMPORTED_MODULE_56__ = __webpack_require__(/*! ./ol/source/Stamen */ "./build/ol/source/Stamen.js");
+/* harmony import */ var _ol_source_Tile__WEBPACK_IMPORTED_MODULE_57__ = __webpack_require__(/*! ./ol/source/Tile */ "./build/ol/source/Tile.js");
+/* harmony import */ var _ol_source_TileArcGISRest__WEBPACK_IMPORTED_MODULE_58__ = __webpack_require__(/*! ./ol/source/TileArcGISRest */ "./build/ol/source/TileArcGISRest.js");
+/* harmony import */ var _ol_source_TileDebug__WEBPACK_IMPORTED_MODULE_59__ = __webpack_require__(/*! ./ol/source/TileDebug */ "./build/ol/source/TileDebug.js");
+/* harmony import */ var _ol_source_TileImage__WEBPACK_IMPORTED_MODULE_60__ = __webpack_require__(/*! ./ol/source/TileImage */ "./build/ol/source/TileImage.js");
+/* harmony import */ var _ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_61__ = __webpack_require__(/*! ./ol/source/TileJSON */ "./build/ol/source/TileJSON.js");
+/* harmony import */ var _ol_source_TileWMS__WEBPACK_IMPORTED_MODULE_62__ = __webpack_require__(/*! ./ol/source/TileWMS */ "./build/ol/source/TileWMS.js");
+/* harmony import */ var _ol_source_UTFGrid__WEBPACK_IMPORTED_MODULE_63__ = __webpack_require__(/*! ./ol/source/UTFGrid */ "./build/ol/source/UTFGrid.js");
+/* harmony import */ var _ol_source_Vector__WEBPACK_IMPORTED_MODULE_64__ = __webpack_require__(/*! ./ol/source/Vector */ "./build/ol/source/Vector.js");
+/* harmony import */ var _ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_65__ = __webpack_require__(/*! ./ol/source/VectorTile */ "./build/ol/source/VectorTile.js");
+/* harmony import */ var _ol_source_WMTS__WEBPACK_IMPORTED_MODULE_66__ = __webpack_require__(/*! ./ol/source/WMTS */ "./build/ol/source/WMTS.js");
+/* harmony import */ var _ol_source_XYZ__WEBPACK_IMPORTED_MODULE_67__ = __webpack_require__(/*! ./ol/source/XYZ */ "./build/ol/source/XYZ.js");
+/* harmony import */ var _ol_source_Zoomify__WEBPACK_IMPORTED_MODULE_68__ = __webpack_require__(/*! ./ol/source/Zoomify */ "./build/ol/source/Zoomify.js");
+/* harmony import */ var _ol_renderer_Composite__WEBPACK_IMPORTED_MODULE_69__ = __webpack_require__(/*! ./ol/renderer/Composite */ "./build/ol/renderer/Composite.js");
+/* harmony import */ var _ol_renderer_webgl_PointsLayer__WEBPACK_IMPORTED_MODULE_70__ = __webpack_require__(/*! ./ol/renderer/webgl/PointsLayer */ "./build/ol/renderer/webgl/PointsLayer.js");
+/* harmony import */ var _ol_renderer_canvas_ImageLayer__WEBPACK_IMPORTED_MODULE_71__ = __webpack_require__(/*! ./ol/renderer/canvas/ImageLayer */ "./build/ol/renderer/canvas/ImageLayer.js");
+/* harmony import */ var _ol_renderer_canvas_TileLayer__WEBPACK_IMPORTED_MODULE_72__ = __webpack_require__(/*! ./ol/renderer/canvas/TileLayer */ "./build/ol/renderer/canvas/TileLayer.js");
+/* harmony import */ var _ol_renderer_canvas_VectorImageLayer__WEBPACK_IMPORTED_MODULE_73__ = __webpack_require__(/*! ./ol/renderer/canvas/VectorImageLayer */ "./build/ol/renderer/canvas/VectorImageLayer.js");
+/* harmony import */ var _ol_renderer_canvas_VectorLayer__WEBPACK_IMPORTED_MODULE_74__ = __webpack_require__(/*! ./ol/renderer/canvas/VectorLayer */ "./build/ol/renderer/canvas/VectorLayer.js");
+/* harmony import */ var _ol_renderer_canvas_VectorTileLayer__WEBPACK_IMPORTED_MODULE_75__ = __webpack_require__(/*! ./ol/renderer/canvas/VectorTileLayer */ "./build/ol/renderer/canvas/VectorTileLayer.js");
+/* harmony import */ var _ol_render_VectorContext__WEBPACK_IMPORTED_MODULE_76__ = __webpack_require__(/*! ./ol/render/VectorContext */ "./build/ol/render/VectorContext.js");
+/* harmony import */ var _ol_render_canvas__WEBPACK_IMPORTED_MODULE_77__ = __webpack_require__(/*! ./ol/render/canvas */ "./build/ol/render/canvas.js");
+/* harmony import */ var _ol_proj_Projection__WEBPACK_IMPORTED_MODULE_78__ = __webpack_require__(/*! ./ol/proj/Projection */ "./build/ol/proj/Projection.js");
+/* harmony import */ var _ol_proj_Units__WEBPACK_IMPORTED_MODULE_79__ = __webpack_require__(/*! ./ol/proj/Units */ "./build/ol/proj/Units.js");
+/* harmony import */ var _ol_proj_proj4__WEBPACK_IMPORTED_MODULE_80__ = __webpack_require__(/*! ./ol/proj/proj4 */ "./build/ol/proj/proj4.js");
+/* harmony import */ var _ol_layer_Base__WEBPACK_IMPORTED_MODULE_81__ = __webpack_require__(/*! ./ol/layer/Base */ "./build/ol/layer/Base.js");
+/* harmony import */ var _ol_layer_BaseImage__WEBPACK_IMPORTED_MODULE_82__ = __webpack_require__(/*! ./ol/layer/BaseImage */ "./build/ol/layer/BaseImage.js");
+/* harmony import */ var _ol_layer_BaseTile__WEBPACK_IMPORTED_MODULE_83__ = __webpack_require__(/*! ./ol/layer/BaseTile */ "./build/ol/layer/BaseTile.js");
+/* harmony import */ var _ol_layer_BaseVector__WEBPACK_IMPORTED_MODULE_84__ = __webpack_require__(/*! ./ol/layer/BaseVector */ "./build/ol/layer/BaseVector.js");
+/* harmony import */ var _ol_layer_Graticule__WEBPACK_IMPORTED_MODULE_85__ = __webpack_require__(/*! ./ol/layer/Graticule */ "./build/ol/layer/Graticule.js");
+/* harmony import */ var _ol_layer_Group__WEBPACK_IMPORTED_MODULE_86__ = __webpack_require__(/*! ./ol/layer/Group */ "./build/ol/layer/Group.js");
+/* harmony import */ var _ol_layer_Heatmap__WEBPACK_IMPORTED_MODULE_87__ = __webpack_require__(/*! ./ol/layer/Heatmap */ "./build/ol/layer/Heatmap.js");
+/* harmony import */ var _ol_layer_Image__WEBPACK_IMPORTED_MODULE_88__ = __webpack_require__(/*! ./ol/layer/Image */ "./build/ol/layer/Image.js");
+/* harmony import */ var _ol_layer_Layer__WEBPACK_IMPORTED_MODULE_89__ = __webpack_require__(/*! ./ol/layer/Layer */ "./build/ol/layer/Layer.js");
+/* harmony import */ var _ol_layer_Tile__WEBPACK_IMPORTED_MODULE_90__ = __webpack_require__(/*! ./ol/layer/Tile */ "./build/ol/layer/Tile.js");
+/* harmony import */ var _ol_layer_Vector__WEBPACK_IMPORTED_MODULE_91__ = __webpack_require__(/*! ./ol/layer/Vector */ "./build/ol/layer/Vector.js");
+/* harmony import */ var _ol_layer_VectorImage__WEBPACK_IMPORTED_MODULE_92__ = __webpack_require__(/*! ./ol/layer/VectorImage */ "./build/ol/layer/VectorImage.js");
+/* harmony import */ var _ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_93__ = __webpack_require__(/*! ./ol/layer/VectorTile */ "./build/ol/layer/VectorTile.js");
+/* harmony import */ var _ol_interaction_DoubleClickZoom__WEBPACK_IMPORTED_MODULE_94__ = __webpack_require__(/*! ./ol/interaction/DoubleClickZoom */ "./build/ol/interaction/DoubleClickZoom.js");
+/* harmony import */ var _ol_interaction_DragAndDrop__WEBPACK_IMPORTED_MODULE_95__ = __webpack_require__(/*! ./ol/interaction/DragAndDrop */ "./build/ol/interaction/DragAndDrop.js");
+/* harmony import */ var _ol_interaction_DragBox__WEBPACK_IMPORTED_MODULE_96__ = __webpack_require__(/*! ./ol/interaction/DragBox */ "./build/ol/interaction/DragBox.js");
+/* harmony import */ var _ol_interaction_DragPan__WEBPACK_IMPORTED_MODULE_97__ = __webpack_require__(/*! ./ol/interaction/DragPan */ "./build/ol/interaction/DragPan.js");
+/* harmony import */ var _ol_interaction_DragRotate__WEBPACK_IMPORTED_MODULE_98__ = __webpack_require__(/*! ./ol/interaction/DragRotate */ "./build/ol/interaction/DragRotate.js");
+/* harmony import */ var _ol_interaction_DragRotateAndZoom__WEBPACK_IMPORTED_MODULE_99__ = __webpack_require__(/*! ./ol/interaction/DragRotateAndZoom */ "./build/ol/interaction/DragRotateAndZoom.js");
+/* harmony import */ var _ol_interaction_DragZoom__WEBPACK_IMPORTED_MODULE_100__ = __webpack_require__(/*! ./ol/interaction/DragZoom */ "./build/ol/interaction/DragZoom.js");
+/* harmony import */ var _ol_interaction_Draw__WEBPACK_IMPORTED_MODULE_101__ = __webpack_require__(/*! ./ol/interaction/Draw */ "./build/ol/interaction/Draw.js");
+/* harmony import */ var _ol_interaction_Extent__WEBPACK_IMPORTED_MODULE_102__ = __webpack_require__(/*! ./ol/interaction/Extent */ "./build/ol/interaction/Extent.js");
+/* harmony import */ var _ol_interaction_Interaction__WEBPACK_IMPORTED_MODULE_103__ = __webpack_require__(/*! ./ol/interaction/Interaction */ "./build/ol/interaction/Interaction.js");
+/* harmony import */ var _ol_interaction_KeyboardPan__WEBPACK_IMPORTED_MODULE_104__ = __webpack_require__(/*! ./ol/interaction/KeyboardPan */ "./build/ol/interaction/KeyboardPan.js");
+/* harmony import */ var _ol_interaction_KeyboardZoom__WEBPACK_IMPORTED_MODULE_105__ = __webpack_require__(/*! ./ol/interaction/KeyboardZoom */ "./build/ol/interaction/KeyboardZoom.js");
+/* harmony import */ var _ol_interaction_Modify__WEBPACK_IMPORTED_MODULE_106__ = __webpack_require__(/*! ./ol/interaction/Modify */ "./build/ol/interaction/Modify.js");
+/* harmony import */ var _ol_interaction_MouseWheelZoom__WEBPACK_IMPORTED_MODULE_107__ = __webpack_require__(/*! ./ol/interaction/MouseWheelZoom */ "./build/ol/interaction/MouseWheelZoom.js");
+/* harmony import */ var _ol_interaction_PinchRotate__WEBPACK_IMPORTED_MODULE_108__ = __webpack_require__(/*! ./ol/interaction/PinchRotate */ "./build/ol/interaction/PinchRotate.js");
+/* harmony import */ var _ol_interaction_PinchZoom__WEBPACK_IMPORTED_MODULE_109__ = __webpack_require__(/*! ./ol/interaction/PinchZoom */ "./build/ol/interaction/PinchZoom.js");
+/* harmony import */ var _ol_interaction_Pointer__WEBPACK_IMPORTED_MODULE_110__ = __webpack_require__(/*! ./ol/interaction/Pointer */ "./build/ol/interaction/Pointer.js");
+/* harmony import */ var _ol_interaction_Select__WEBPACK_IMPORTED_MODULE_111__ = __webpack_require__(/*! ./ol/interaction/Select */ "./build/ol/interaction/Select.js");
+/* harmony import */ var _ol_interaction_Snap__WEBPACK_IMPORTED_MODULE_112__ = __webpack_require__(/*! ./ol/interaction/Snap */ "./build/ol/interaction/Snap.js");
+/* harmony import */ var _ol_interaction_Translate__WEBPACK_IMPORTED_MODULE_113__ = __webpack_require__(/*! ./ol/interaction/Translate */ "./build/ol/interaction/Translate.js");
+/* harmony import */ var _ol_geom_Circle__WEBPACK_IMPORTED_MODULE_114__ = __webpack_require__(/*! ./ol/geom/Circle */ "./build/ol/geom/Circle.js");
+/* harmony import */ var _ol_geom_Geometry__WEBPACK_IMPORTED_MODULE_115__ = __webpack_require__(/*! ./ol/geom/Geometry */ "./build/ol/geom/Geometry.js");
+/* harmony import */ var _ol_geom_GeometryCollection__WEBPACK_IMPORTED_MODULE_116__ = __webpack_require__(/*! ./ol/geom/GeometryCollection */ "./build/ol/geom/GeometryCollection.js");
+/* harmony import */ var _ol_geom_LineString__WEBPACK_IMPORTED_MODULE_117__ = __webpack_require__(/*! ./ol/geom/LineString */ "./build/ol/geom/LineString.js");
+/* harmony import */ var _ol_geom_LinearRing__WEBPACK_IMPORTED_MODULE_118__ = __webpack_require__(/*! ./ol/geom/LinearRing */ "./build/ol/geom/LinearRing.js");
+/* harmony import */ var _ol_geom_MultiLineString__WEBPACK_IMPORTED_MODULE_119__ = __webpack_require__(/*! ./ol/geom/MultiLineString */ "./build/ol/geom/MultiLineString.js");
+/* harmony import */ var _ol_geom_MultiPoint__WEBPACK_IMPORTED_MODULE_120__ = __webpack_require__(/*! ./ol/geom/MultiPoint */ "./build/ol/geom/MultiPoint.js");
+/* harmony import */ var _ol_geom_MultiPolygon__WEBPACK_IMPORTED_MODULE_121__ = __webpack_require__(/*! ./ol/geom/MultiPolygon */ "./build/ol/geom/MultiPolygon.js");
+/* harmony import */ var _ol_geom_Point__WEBPACK_IMPORTED_MODULE_122__ = __webpack_require__(/*! ./ol/geom/Point */ "./build/ol/geom/Point.js");
+/* harmony import */ var _ol_geom_Polygon__WEBPACK_IMPORTED_MODULE_123__ = __webpack_require__(/*! ./ol/geom/Polygon */ "./build/ol/geom/Polygon.js");
+/* harmony import */ var _ol_geom_SimpleGeometry__WEBPACK_IMPORTED_MODULE_124__ = __webpack_require__(/*! ./ol/geom/SimpleGeometry */ "./build/ol/geom/SimpleGeometry.js");
+/* harmony import */ var _ol_format_EsriJSON__WEBPACK_IMPORTED_MODULE_125__ = __webpack_require__(/*! ./ol/format/EsriJSON */ "./build/ol/format/EsriJSON.js");
+/* harmony import */ var _ol_format_Feature__WEBPACK_IMPORTED_MODULE_126__ = __webpack_require__(/*! ./ol/format/Feature */ "./build/ol/format/Feature.js");
+/* harmony import */ var _ol_format_GML__WEBPACK_IMPORTED_MODULE_127__ = __webpack_require__(/*! ./ol/format/GML */ "./build/ol/format/GML.js");
+/* harmony import */ var _ol_format_GML2__WEBPACK_IMPORTED_MODULE_128__ = __webpack_require__(/*! ./ol/format/GML2 */ "./build/ol/format/GML2.js");
+/* harmony import */ var _ol_format_GML3__WEBPACK_IMPORTED_MODULE_129__ = __webpack_require__(/*! ./ol/format/GML3 */ "./build/ol/format/GML3.js");
+/* harmony import */ var _ol_format_GML32__WEBPACK_IMPORTED_MODULE_130__ = __webpack_require__(/*! ./ol/format/GML32 */ "./build/ol/format/GML32.js");
+/* harmony import */ var _ol_format_GPX__WEBPACK_IMPORTED_MODULE_131__ = __webpack_require__(/*! ./ol/format/GPX */ "./build/ol/format/GPX.js");
+/* harmony import */ var _ol_format_GeoJSON__WEBPACK_IMPORTED_MODULE_132__ = __webpack_require__(/*! ./ol/format/GeoJSON */ "./build/ol/format/GeoJSON.js");
+/* harmony import */ var _ol_format_IGC__WEBPACK_IMPORTED_MODULE_133__ = __webpack_require__(/*! ./ol/format/IGC */ "./build/ol/format/IGC.js");
+/* harmony import */ var _ol_format_IIIFInfo__WEBPACK_IMPORTED_MODULE_134__ = __webpack_require__(/*! ./ol/format/IIIFInfo */ "./build/ol/format/IIIFInfo.js");
+/* harmony import */ var _ol_format_KML__WEBPACK_IMPORTED_MODULE_135__ = __webpack_require__(/*! ./ol/format/KML */ "./build/ol/format/KML.js");
+/* harmony import */ var _ol_format_MVT__WEBPACK_IMPORTED_MODULE_136__ = __webpack_require__(/*! ./ol/format/MVT */ "./build/ol/format/MVT.js");
+/* harmony import */ var _ol_format_OSMXML__WEBPACK_IMPORTED_MODULE_137__ = __webpack_require__(/*! ./ol/format/OSMXML */ "./build/ol/format/OSMXML.js");
+/* harmony import */ var _ol_format_Polyline__WEBPACK_IMPORTED_MODULE_138__ = __webpack_require__(/*! ./ol/format/Polyline */ "./build/ol/format/Polyline.js");
+/* harmony import */ var _ol_format_TopoJSON__WEBPACK_IMPORTED_MODULE_139__ = __webpack_require__(/*! ./ol/format/TopoJSON */ "./build/ol/format/TopoJSON.js");
+/* harmony import */ var _ol_format_WFS__WEBPACK_IMPORTED_MODULE_140__ = __webpack_require__(/*! ./ol/format/WFS */ "./build/ol/format/WFS.js");
+/* harmony import */ var _ol_format_WKT__WEBPACK_IMPORTED_MODULE_141__ = __webpack_require__(/*! ./ol/format/WKT */ "./build/ol/format/WKT.js");
+/* harmony import */ var _ol_format_WMSCapabilities__WEBPACK_IMPORTED_MODULE_142__ = __webpack_require__(/*! ./ol/format/WMSCapabilities */ "./build/ol/format/WMSCapabilities.js");
+/* harmony import */ var _ol_format_WMSGetFeatureInfo__WEBPACK_IMPORTED_MODULE_143__ = __webpack_require__(/*! ./ol/format/WMSGetFeatureInfo */ "./build/ol/format/WMSGetFeatureInfo.js");
+/* harmony import */ var _ol_format_WMTSCapabilities__WEBPACK_IMPORTED_MODULE_144__ = __webpack_require__(/*! ./ol/format/WMTSCapabilities */ "./build/ol/format/WMTSCapabilities.js");
+/* harmony import */ var _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__ = __webpack_require__(/*! ./ol/format/filter */ "./build/ol/format/filter.js");
+/* harmony import */ var _ol_format_filter_Bbox__WEBPACK_IMPORTED_MODULE_146__ = __webpack_require__(/*! ./ol/format/filter/Bbox */ "./build/ol/format/filter/Bbox.js");
+/* harmony import */ var _ol_format_filter_Contains__WEBPACK_IMPORTED_MODULE_147__ = __webpack_require__(/*! ./ol/format/filter/Contains */ "./build/ol/format/filter/Contains.js");
+/* harmony import */ var _ol_format_filter_During__WEBPACK_IMPORTED_MODULE_148__ = __webpack_require__(/*! ./ol/format/filter/During */ "./build/ol/format/filter/During.js");
+/* harmony import */ var _ol_format_filter_EqualTo__WEBPACK_IMPORTED_MODULE_149__ = __webpack_require__(/*! ./ol/format/filter/EqualTo */ "./build/ol/format/filter/EqualTo.js");
+/* harmony import */ var _ol_format_filter_GreaterThan__WEBPACK_IMPORTED_MODULE_150__ = __webpack_require__(/*! ./ol/format/filter/GreaterThan */ "./build/ol/format/filter/GreaterThan.js");
+/* harmony import */ var _ol_format_filter_GreaterThanOrEqualTo__WEBPACK_IMPORTED_MODULE_151__ = __webpack_require__(/*! ./ol/format/filter/GreaterThanOrEqualTo */ "./build/ol/format/filter/GreaterThanOrEqualTo.js");
+/* harmony import */ var _ol_format_filter_Intersects__WEBPACK_IMPORTED_MODULE_152__ = __webpack_require__(/*! ./ol/format/filter/Intersects */ "./build/ol/format/filter/Intersects.js");
+/* harmony import */ var _ol_format_filter_IsBetween__WEBPACK_IMPORTED_MODULE_153__ = __webpack_require__(/*! ./ol/format/filter/IsBetween */ "./build/ol/format/filter/IsBetween.js");
+/* harmony import */ var _ol_format_filter_IsLike__WEBPACK_IMPORTED_MODULE_154__ = __webpack_require__(/*! ./ol/format/filter/IsLike */ "./build/ol/format/filter/IsLike.js");
+/* harmony import */ var _ol_format_filter_IsNull__WEBPACK_IMPORTED_MODULE_155__ = __webpack_require__(/*! ./ol/format/filter/IsNull */ "./build/ol/format/filter/IsNull.js");
+/* harmony import */ var _ol_format_filter_LessThan__WEBPACK_IMPORTED_MODULE_156__ = __webpack_require__(/*! ./ol/format/filter/LessThan */ "./build/ol/format/filter/LessThan.js");
+/* harmony import */ var _ol_format_filter_LessThanOrEqualTo__WEBPACK_IMPORTED_MODULE_157__ = __webpack_require__(/*! ./ol/format/filter/LessThanOrEqualTo */ "./build/ol/format/filter/LessThanOrEqualTo.js");
+/* harmony import */ var _ol_format_filter_Not__WEBPACK_IMPORTED_MODULE_158__ = __webpack_require__(/*! ./ol/format/filter/Not */ "./build/ol/format/filter/Not.js");
+/* harmony import */ var _ol_format_filter_NotEqualTo__WEBPACK_IMPORTED_MODULE_159__ = __webpack_require__(/*! ./ol/format/filter/NotEqualTo */ "./build/ol/format/filter/NotEqualTo.js");
+/* harmony import */ var _ol_format_filter_Or__WEBPACK_IMPORTED_MODULE_160__ = __webpack_require__(/*! ./ol/format/filter/Or */ "./build/ol/format/filter/Or.js");
+/* harmony import */ var _ol_format_filter_Within__WEBPACK_IMPORTED_MODULE_161__ = __webpack_require__(/*! ./ol/format/filter/Within */ "./build/ol/format/filter/Within.js");
+/* harmony import */ var _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__ = __webpack_require__(/*! ./ol/events/condition */ "./build/ol/events/condition.js");
+/* harmony import */ var _ol_control_Attribution__WEBPACK_IMPORTED_MODULE_163__ = __webpack_require__(/*! ./ol/control/Attribution */ "./build/ol/control/Attribution.js");
+/* harmony import */ var _ol_control_Control__WEBPACK_IMPORTED_MODULE_164__ = __webpack_require__(/*! ./ol/control/Control */ "./build/ol/control/Control.js");
+/* harmony import */ var _ol_control_FullScreen__WEBPACK_IMPORTED_MODULE_165__ = __webpack_require__(/*! ./ol/control/FullScreen */ "./build/ol/control/FullScreen.js");
+/* harmony import */ var _ol_control_MousePosition__WEBPACK_IMPORTED_MODULE_166__ = __webpack_require__(/*! ./ol/control/MousePosition */ "./build/ol/control/MousePosition.js");
+/* harmony import */ var _ol_control_OverviewMap__WEBPACK_IMPORTED_MODULE_167__ = __webpack_require__(/*! ./ol/control/OverviewMap */ "./build/ol/control/OverviewMap.js");
+/* harmony import */ var _ol_control_Rotate__WEBPACK_IMPORTED_MODULE_168__ = __webpack_require__(/*! ./ol/control/Rotate */ "./build/ol/control/Rotate.js");
+/* harmony import */ var _ol_control_ScaleLine__WEBPACK_IMPORTED_MODULE_169__ = __webpack_require__(/*! ./ol/control/ScaleLine */ "./build/ol/control/ScaleLine.js");
+/* harmony import */ var _ol_control_Zoom__WEBPACK_IMPORTED_MODULE_170__ = __webpack_require__(/*! ./ol/control/Zoom */ "./build/ol/control/Zoom.js");
+/* harmony import */ var _ol_control_ZoomSlider__WEBPACK_IMPORTED_MODULE_171__ = __webpack_require__(/*! ./ol/control/ZoomSlider */ "./build/ol/control/ZoomSlider.js");
+/* harmony import */ var _ol_control_ZoomToExtent__WEBPACK_IMPORTED_MODULE_172__ = __webpack_require__(/*! ./ol/control/ZoomToExtent */ "./build/ol/control/ZoomToExtent.js");
+
 
 
 
@@ -586,6 +589,7 @@ ol.sphere = {};
 ol.style = {};
 ol.style.IconImageCache = {};
 ol.tilegrid = {};
+ol.util = {};
 ol.webgl = {};
 ol.xml = {};
 ol.Collection = _ol_Collection__WEBPACK_IMPORTED_MODULE_0__["default"];
@@ -603,268 +607,268 @@ ol.array.stableSort = _ol_array__WEBPACK_IMPORTED_MODULE_10__["stableSort"];
 ol.color.asArray = _ol_color__WEBPACK_IMPORTED_MODULE_11__["asArray"];
 ol.color.asString = _ol_color__WEBPACK_IMPORTED_MODULE_11__["asString"];
 ol.colorlike.asColorLike = _ol_colorlike__WEBPACK_IMPORTED_MODULE_12__["asColorLike"];
-ol.control.Attribution = _ol_control_Attribution__WEBPACK_IMPORTED_MODULE_160__["default"];
-ol.control.Attribution.render = _ol_control_Attribution__WEBPACK_IMPORTED_MODULE_160__["render"];
-ol.control.Control = _ol_control_Control__WEBPACK_IMPORTED_MODULE_161__["default"];
-ol.control.FullScreen = _ol_control_FullScreen__WEBPACK_IMPORTED_MODULE_162__["default"];
-ol.control.MousePosition = _ol_control_MousePosition__WEBPACK_IMPORTED_MODULE_163__["default"];
-ol.control.MousePosition.render = _ol_control_MousePosition__WEBPACK_IMPORTED_MODULE_163__["render"];
-ol.control.OverviewMap = _ol_control_OverviewMap__WEBPACK_IMPORTED_MODULE_164__["default"];
-ol.control.OverviewMap.render = _ol_control_OverviewMap__WEBPACK_IMPORTED_MODULE_164__["render"];
-ol.control.Rotate = _ol_control_Rotate__WEBPACK_IMPORTED_MODULE_165__["default"];
-ol.control.Rotate.render = _ol_control_Rotate__WEBPACK_IMPORTED_MODULE_165__["render"];
-ol.control.ScaleLine = _ol_control_ScaleLine__WEBPACK_IMPORTED_MODULE_166__["default"];
-ol.control.ScaleLine.render = _ol_control_ScaleLine__WEBPACK_IMPORTED_MODULE_166__["render"];
-ol.control.Zoom = _ol_control_Zoom__WEBPACK_IMPORTED_MODULE_167__["default"];
-ol.control.ZoomSlider = _ol_control_ZoomSlider__WEBPACK_IMPORTED_MODULE_168__["default"];
-ol.control.ZoomSlider.render = _ol_control_ZoomSlider__WEBPACK_IMPORTED_MODULE_168__["render"];
-ol.control.ZoomToExtent = _ol_control_ZoomToExtent__WEBPACK_IMPORTED_MODULE_169__["default"];
-ol.control.defaults = _ol_control__WEBPACK_IMPORTED_MODULE_170__["defaults"];
-ol.coordinate.add = _ol_coordinate__WEBPACK_IMPORTED_MODULE_13__["add"];
-ol.coordinate.createStringXY = _ol_coordinate__WEBPACK_IMPORTED_MODULE_13__["createStringXY"];
-ol.coordinate.format = _ol_coordinate__WEBPACK_IMPORTED_MODULE_13__["format"];
-ol.coordinate.rotate = _ol_coordinate__WEBPACK_IMPORTED_MODULE_13__["rotate"];
-ol.coordinate.toStringHDMS = _ol_coordinate__WEBPACK_IMPORTED_MODULE_13__["toStringHDMS"];
-ol.coordinate.toStringXY = _ol_coordinate__WEBPACK_IMPORTED_MODULE_13__["toStringXY"];
-ol.easing.easeIn = _ol_easing__WEBPACK_IMPORTED_MODULE_14__["easeIn"];
-ol.easing.easeOut = _ol_easing__WEBPACK_IMPORTED_MODULE_14__["easeOut"];
-ol.easing.inAndOut = _ol_easing__WEBPACK_IMPORTED_MODULE_14__["inAndOut"];
-ol.easing.linear = _ol_easing__WEBPACK_IMPORTED_MODULE_14__["linear"];
-ol.easing.upAndDown = _ol_easing__WEBPACK_IMPORTED_MODULE_14__["upAndDown"];
-ol.events.condition.altKeyOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["altKeyOnly"];
-ol.events.condition.altShiftKeysOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["altShiftKeysOnly"];
-ol.events.condition.always = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["always"];
-ol.events.condition.click = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["click"];
-ol.events.condition.doubleClick = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["doubleClick"];
-ol.events.condition.focus = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["focus"];
-ol.events.condition.mouseOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["mouseOnly"];
-ol.events.condition.never = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["never"];
-ol.events.condition.noModifierKeys = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["noModifierKeys"];
-ol.events.condition.penOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["penOnly"];
-ol.events.condition.platformModifierKeyOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["platformModifierKeyOnly"];
-ol.events.condition.pointerMove = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["pointerMove"];
-ol.events.condition.primaryAction = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["primaryAction"];
-ol.events.condition.shiftKeyOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["shiftKeyOnly"];
-ol.events.condition.singleClick = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["singleClick"];
-ol.events.condition.targetNotEditable = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["targetNotEditable"];
-ol.events.condition.touchOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_159__["touchOnly"];
-ol.extent.applyTransform = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["applyTransform"];
-ol.extent.boundingExtent = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["boundingExtent"];
-ol.extent.buffer = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["buffer"];
-ol.extent.containsCoordinate = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["containsCoordinate"];
-ol.extent.containsExtent = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["containsExtent"];
-ol.extent.containsXY = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["containsXY"];
-ol.extent.createEmpty = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["createEmpty"];
-ol.extent.equals = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["equals"];
-ol.extent.extend = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["extend"];
-ol.extent.getArea = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["getArea"];
-ol.extent.getBottomLeft = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["getBottomLeft"];
-ol.extent.getBottomRight = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["getBottomRight"];
-ol.extent.getCenter = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["getCenter"];
-ol.extent.getHeight = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["getHeight"];
-ol.extent.getIntersection = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["getIntersection"];
-ol.extent.getSize = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["getSize"];
-ol.extent.getTopLeft = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["getTopLeft"];
-ol.extent.getTopRight = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["getTopRight"];
-ol.extent.getWidth = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["getWidth"];
-ol.extent.intersects = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["intersects"];
-ol.extent.isEmpty = _ol_extent__WEBPACK_IMPORTED_MODULE_15__["isEmpty"];
-ol.featureloader.xhr = _ol_featureloader__WEBPACK_IMPORTED_MODULE_16__["xhr"];
-ol.format.EsriJSON = _ol_format_EsriJSON__WEBPACK_IMPORTED_MODULE_122__["default"];
-ol.format.Feature = _ol_format_Feature__WEBPACK_IMPORTED_MODULE_123__["default"];
-ol.format.GML = _ol_format_GML__WEBPACK_IMPORTED_MODULE_124__["default"];
-ol.format.GML2 = _ol_format_GML2__WEBPACK_IMPORTED_MODULE_125__["default"];
-ol.format.GML3 = _ol_format_GML3__WEBPACK_IMPORTED_MODULE_126__["default"];
-ol.format.GML32 = _ol_format_GML32__WEBPACK_IMPORTED_MODULE_127__["default"];
-ol.format.GPX = _ol_format_GPX__WEBPACK_IMPORTED_MODULE_128__["default"];
-ol.format.GeoJSON = _ol_format_GeoJSON__WEBPACK_IMPORTED_MODULE_129__["default"];
-ol.format.IGC = _ol_format_IGC__WEBPACK_IMPORTED_MODULE_130__["default"];
-ol.format.IIIFInfo = _ol_format_IIIFInfo__WEBPACK_IMPORTED_MODULE_131__["default"];
-ol.format.KML = _ol_format_KML__WEBPACK_IMPORTED_MODULE_132__["default"];
-ol.format.MVT = _ol_format_MVT__WEBPACK_IMPORTED_MODULE_133__["default"];
-ol.format.OSMXML = _ol_format_OSMXML__WEBPACK_IMPORTED_MODULE_134__["default"];
-ol.format.Polyline = _ol_format_Polyline__WEBPACK_IMPORTED_MODULE_135__["default"];
-ol.format.Polyline.decodeDeltas = _ol_format_Polyline__WEBPACK_IMPORTED_MODULE_135__["decodeDeltas"];
-ol.format.Polyline.decodeFloats = _ol_format_Polyline__WEBPACK_IMPORTED_MODULE_135__["decodeFloats"];
-ol.format.Polyline.encodeDeltas = _ol_format_Polyline__WEBPACK_IMPORTED_MODULE_135__["encodeDeltas"];
-ol.format.Polyline.encodeFloats = _ol_format_Polyline__WEBPACK_IMPORTED_MODULE_135__["encodeFloats"];
-ol.format.TopoJSON = _ol_format_TopoJSON__WEBPACK_IMPORTED_MODULE_136__["default"];
-ol.format.WFS = _ol_format_WFS__WEBPACK_IMPORTED_MODULE_137__["default"];
-ol.format.WFS.writeFilter = _ol_format_WFS__WEBPACK_IMPORTED_MODULE_137__["writeFilter"];
-ol.format.WKT = _ol_format_WKT__WEBPACK_IMPORTED_MODULE_138__["default"];
-ol.format.WMSCapabilities = _ol_format_WMSCapabilities__WEBPACK_IMPORTED_MODULE_139__["default"];
-ol.format.WMSGetFeatureInfo = _ol_format_WMSGetFeatureInfo__WEBPACK_IMPORTED_MODULE_140__["default"];
-ol.format.WMTSCapabilities = _ol_format_WMTSCapabilities__WEBPACK_IMPORTED_MODULE_141__["default"];
-ol.format.filter.Bbox = _ol_format_filter_Bbox__WEBPACK_IMPORTED_MODULE_143__["default"];
-ol.format.filter.Contains = _ol_format_filter_Contains__WEBPACK_IMPORTED_MODULE_144__["default"];
-ol.format.filter.During = _ol_format_filter_During__WEBPACK_IMPORTED_MODULE_145__["default"];
-ol.format.filter.EqualTo = _ol_format_filter_EqualTo__WEBPACK_IMPORTED_MODULE_146__["default"];
-ol.format.filter.GreaterThan = _ol_format_filter_GreaterThan__WEBPACK_IMPORTED_MODULE_147__["default"];
-ol.format.filter.GreaterThanOrEqualTo = _ol_format_filter_GreaterThanOrEqualTo__WEBPACK_IMPORTED_MODULE_148__["default"];
-ol.format.filter.Intersects = _ol_format_filter_Intersects__WEBPACK_IMPORTED_MODULE_149__["default"];
-ol.format.filter.IsBetween = _ol_format_filter_IsBetween__WEBPACK_IMPORTED_MODULE_150__["default"];
-ol.format.filter.IsLike = _ol_format_filter_IsLike__WEBPACK_IMPORTED_MODULE_151__["default"];
-ol.format.filter.IsNull = _ol_format_filter_IsNull__WEBPACK_IMPORTED_MODULE_152__["default"];
-ol.format.filter.LessThan = _ol_format_filter_LessThan__WEBPACK_IMPORTED_MODULE_153__["default"];
-ol.format.filter.LessThanOrEqualTo = _ol_format_filter_LessThanOrEqualTo__WEBPACK_IMPORTED_MODULE_154__["default"];
-ol.format.filter.Not = _ol_format_filter_Not__WEBPACK_IMPORTED_MODULE_155__["default"];
-ol.format.filter.NotEqualTo = _ol_format_filter_NotEqualTo__WEBPACK_IMPORTED_MODULE_156__["default"];
-ol.format.filter.Or = _ol_format_filter_Or__WEBPACK_IMPORTED_MODULE_157__["default"];
-ol.format.filter.Within = _ol_format_filter_Within__WEBPACK_IMPORTED_MODULE_158__["default"];
-ol.format.filter.and = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["and"];
-ol.format.filter.bbox = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["bbox"];
-ol.format.filter.between = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["between"];
-ol.format.filter.contains = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["contains"];
-ol.format.filter.during = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["during"];
-ol.format.filter.equalTo = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["equalTo"];
-ol.format.filter.greaterThan = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["greaterThan"];
-ol.format.filter.greaterThanOrEqualTo = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["greaterThanOrEqualTo"];
-ol.format.filter.intersects = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["intersects"];
-ol.format.filter.isNull = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["isNull"];
-ol.format.filter.lessThan = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["lessThan"];
-ol.format.filter.lessThanOrEqualTo = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["lessThanOrEqualTo"];
-ol.format.filter.like = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["like"];
-ol.format.filter.not = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["not"];
-ol.format.filter.notEqualTo = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["notEqualTo"];
-ol.format.filter.or = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["or"];
-ol.format.filter.within = _ol_format_filter__WEBPACK_IMPORTED_MODULE_142__["within"];
-ol.geom.Circle = _ol_geom_Circle__WEBPACK_IMPORTED_MODULE_111__["default"];
-ol.geom.Geometry = _ol_geom_Geometry__WEBPACK_IMPORTED_MODULE_112__["default"];
-ol.geom.GeometryCollection = _ol_geom_GeometryCollection__WEBPACK_IMPORTED_MODULE_113__["default"];
-ol.geom.LineString = _ol_geom_LineString__WEBPACK_IMPORTED_MODULE_114__["default"];
-ol.geom.LinearRing = _ol_geom_LinearRing__WEBPACK_IMPORTED_MODULE_115__["default"];
-ol.geom.MultiLineString = _ol_geom_MultiLineString__WEBPACK_IMPORTED_MODULE_116__["default"];
-ol.geom.MultiPoint = _ol_geom_MultiPoint__WEBPACK_IMPORTED_MODULE_117__["default"];
-ol.geom.MultiPolygon = _ol_geom_MultiPolygon__WEBPACK_IMPORTED_MODULE_118__["default"];
-ol.geom.Point = _ol_geom_Point__WEBPACK_IMPORTED_MODULE_119__["default"];
-ol.geom.Polygon = _ol_geom_Polygon__WEBPACK_IMPORTED_MODULE_120__["default"];
-ol.geom.Polygon.circular = _ol_geom_Polygon__WEBPACK_IMPORTED_MODULE_120__["circular"];
-ol.geom.Polygon.fromCircle = _ol_geom_Polygon__WEBPACK_IMPORTED_MODULE_120__["fromCircle"];
-ol.geom.Polygon.fromExtent = _ol_geom_Polygon__WEBPACK_IMPORTED_MODULE_120__["fromExtent"];
-ol.geom.SimpleGeometry = _ol_geom_SimpleGeometry__WEBPACK_IMPORTED_MODULE_121__["default"];
-ol.getUid = _ol__WEBPACK_IMPORTED_MODULE_25__["getUid"];
-ol.has.DEVICE_PIXEL_RATIO = _ol_has__WEBPACK_IMPORTED_MODULE_17__["DEVICE_PIXEL_RATIO"];
-ol.has.GEOLOCATION = _ol_has__WEBPACK_IMPORTED_MODULE_17__["GEOLOCATION"];
-ol.has.TOUCH = _ol_has__WEBPACK_IMPORTED_MODULE_17__["TOUCH"];
-ol.interaction.DoubleClickZoom = _ol_interaction_DoubleClickZoom__WEBPACK_IMPORTED_MODULE_91__["default"];
-ol.interaction.DragAndDrop = _ol_interaction_DragAndDrop__WEBPACK_IMPORTED_MODULE_92__["default"];
-ol.interaction.DragBox = _ol_interaction_DragBox__WEBPACK_IMPORTED_MODULE_93__["default"];
-ol.interaction.DragPan = _ol_interaction_DragPan__WEBPACK_IMPORTED_MODULE_94__["default"];
-ol.interaction.DragRotate = _ol_interaction_DragRotate__WEBPACK_IMPORTED_MODULE_95__["default"];
-ol.interaction.DragRotateAndZoom = _ol_interaction_DragRotateAndZoom__WEBPACK_IMPORTED_MODULE_96__["default"];
-ol.interaction.DragZoom = _ol_interaction_DragZoom__WEBPACK_IMPORTED_MODULE_97__["default"];
-ol.interaction.Draw = _ol_interaction_Draw__WEBPACK_IMPORTED_MODULE_98__["default"];
-ol.interaction.Draw.createBox = _ol_interaction_Draw__WEBPACK_IMPORTED_MODULE_98__["createBox"];
-ol.interaction.Draw.createRegularPolygon = _ol_interaction_Draw__WEBPACK_IMPORTED_MODULE_98__["createRegularPolygon"];
-ol.interaction.Extent = _ol_interaction_Extent__WEBPACK_IMPORTED_MODULE_99__["default"];
-ol.interaction.Interaction = _ol_interaction_Interaction__WEBPACK_IMPORTED_MODULE_100__["default"];
-ol.interaction.KeyboardPan = _ol_interaction_KeyboardPan__WEBPACK_IMPORTED_MODULE_101__["default"];
-ol.interaction.KeyboardZoom = _ol_interaction_KeyboardZoom__WEBPACK_IMPORTED_MODULE_102__["default"];
-ol.interaction.Modify = _ol_interaction_Modify__WEBPACK_IMPORTED_MODULE_103__["default"];
-ol.interaction.MouseWheelZoom = _ol_interaction_MouseWheelZoom__WEBPACK_IMPORTED_MODULE_104__["default"];
-ol.interaction.PinchRotate = _ol_interaction_PinchRotate__WEBPACK_IMPORTED_MODULE_105__["default"];
-ol.interaction.PinchZoom = _ol_interaction_PinchZoom__WEBPACK_IMPORTED_MODULE_106__["default"];
-ol.interaction.Pointer = _ol_interaction_Pointer__WEBPACK_IMPORTED_MODULE_107__["default"];
-ol.interaction.Select = _ol_interaction_Select__WEBPACK_IMPORTED_MODULE_108__["default"];
-ol.interaction.Snap = _ol_interaction_Snap__WEBPACK_IMPORTED_MODULE_109__["default"];
-ol.interaction.Translate = _ol_interaction_Translate__WEBPACK_IMPORTED_MODULE_110__["default"];
-ol.interaction.defaults = _ol_interaction__WEBPACK_IMPORTED_MODULE_18__["defaults"];
-ol.layer.Base = _ol_layer_Base__WEBPACK_IMPORTED_MODULE_79__["default"];
-ol.layer.BaseImage = _ol_layer_BaseImage__WEBPACK_IMPORTED_MODULE_80__["default"];
-ol.layer.BaseTile = _ol_layer_BaseTile__WEBPACK_IMPORTED_MODULE_81__["default"];
-ol.layer.BaseVector = _ol_layer_BaseVector__WEBPACK_IMPORTED_MODULE_82__["default"];
-ol.layer.Graticule = _ol_layer_Graticule__WEBPACK_IMPORTED_MODULE_83__["default"];
-ol.layer.Group = _ol_layer_Group__WEBPACK_IMPORTED_MODULE_84__["default"];
-ol.layer.Heatmap = _ol_layer_Heatmap__WEBPACK_IMPORTED_MODULE_85__["default"];
-ol.layer.Image = _ol_layer_Image__WEBPACK_IMPORTED_MODULE_86__["default"];
-ol.layer.Tile = _ol_layer_Tile__WEBPACK_IMPORTED_MODULE_87__["default"];
-ol.layer.Vector = _ol_layer_Vector__WEBPACK_IMPORTED_MODULE_88__["default"];
-ol.layer.VectorImage = _ol_layer_VectorImage__WEBPACK_IMPORTED_MODULE_89__["default"];
-ol.layer.VectorTile = _ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_90__["default"];
-ol.loadingstrategy.all = _ol_loadingstrategy__WEBPACK_IMPORTED_MODULE_19__["all"];
-ol.loadingstrategy.bbox = _ol_loadingstrategy__WEBPACK_IMPORTED_MODULE_19__["bbox"];
-ol.loadingstrategy.tile = _ol_loadingstrategy__WEBPACK_IMPORTED_MODULE_19__["tile"];
-ol.proj.Projection = _ol_proj_Projection__WEBPACK_IMPORTED_MODULE_76__["default"];
-ol.proj.Units.METERS_PER_UNIT = _ol_proj_Units__WEBPACK_IMPORTED_MODULE_77__["METERS_PER_UNIT"];
-ol.proj.addCoordinateTransforms = _ol_proj__WEBPACK_IMPORTED_MODULE_20__["addCoordinateTransforms"];
-ol.proj.addEquivalentProjections = _ol_proj__WEBPACK_IMPORTED_MODULE_20__["addEquivalentProjections"];
-ol.proj.addProjection = _ol_proj__WEBPACK_IMPORTED_MODULE_20__["addProjection"];
-ol.proj.equivalent = _ol_proj__WEBPACK_IMPORTED_MODULE_20__["equivalent"];
-ol.proj.fromLonLat = _ol_proj__WEBPACK_IMPORTED_MODULE_20__["fromLonLat"];
-ol.proj.get = _ol_proj__WEBPACK_IMPORTED_MODULE_20__["get"];
-ol.proj.getPointResolution = _ol_proj__WEBPACK_IMPORTED_MODULE_20__["getPointResolution"];
-ol.proj.getTransform = _ol_proj__WEBPACK_IMPORTED_MODULE_20__["getTransform"];
-ol.proj.proj4.register = _ol_proj_proj4__WEBPACK_IMPORTED_MODULE_78__["register"];
-ol.proj.toLonLat = _ol_proj__WEBPACK_IMPORTED_MODULE_20__["toLonLat"];
-ol.proj.transform = _ol_proj__WEBPACK_IMPORTED_MODULE_20__["transform"];
-ol.proj.transformExtent = _ol_proj__WEBPACK_IMPORTED_MODULE_20__["transformExtent"];
-ol.render.VectorContext = _ol_render_VectorContext__WEBPACK_IMPORTED_MODULE_74__["default"];
-ol.render.canvas.labelCache = _ol_render_canvas__WEBPACK_IMPORTED_MODULE_75__["labelCache"];
-ol.render.getRenderPixel = _ol_render__WEBPACK_IMPORTED_MODULE_21__["getRenderPixel"];
-ol.render.getVectorContext = _ol_render__WEBPACK_IMPORTED_MODULE_21__["getVectorContext"];
-ol.render.toContext = _ol_render__WEBPACK_IMPORTED_MODULE_21__["toContext"];
-ol.renderer.Composite = _ol_renderer_Composite__WEBPACK_IMPORTED_MODULE_68__["default"];
-ol.renderer.canvas.ImageLayer = _ol_renderer_canvas_ImageLayer__WEBPACK_IMPORTED_MODULE_70__["default"];
-ol.renderer.canvas.ImageLayer = _ol_renderer_canvas_ImageLayer__WEBPACK_IMPORTED_MODULE_70__["default"];
-ol.renderer.canvas.TileLayer = _ol_renderer_canvas_TileLayer__WEBPACK_IMPORTED_MODULE_71__["default"];
-ol.renderer.canvas.VectorLayer = _ol_renderer_canvas_VectorLayer__WEBPACK_IMPORTED_MODULE_72__["default"];
-ol.renderer.canvas.VectorTileLayer = _ol_renderer_canvas_VectorTileLayer__WEBPACK_IMPORTED_MODULE_73__["default"];
-ol.renderer.webgl.PointsLayer = _ol_renderer_webgl_PointsLayer__WEBPACK_IMPORTED_MODULE_69__["default"];
-ol.size.toSize = _ol_size__WEBPACK_IMPORTED_MODULE_22__["toSize"];
-ol.source.BingMaps = _ol_source_BingMaps__WEBPACK_IMPORTED_MODULE_42__["default"];
-ol.source.CartoDB = _ol_source_CartoDB__WEBPACK_IMPORTED_MODULE_43__["default"];
-ol.source.Cluster = _ol_source_Cluster__WEBPACK_IMPORTED_MODULE_44__["default"];
-ol.source.IIIF = _ol_source_IIIF__WEBPACK_IMPORTED_MODULE_45__["default"];
-ol.source.Image = _ol_source_Image__WEBPACK_IMPORTED_MODULE_46__["default"];
-ol.source.ImageArcGISRest = _ol_source_ImageArcGISRest__WEBPACK_IMPORTED_MODULE_47__["default"];
-ol.source.ImageCanvas = _ol_source_ImageCanvas__WEBPACK_IMPORTED_MODULE_48__["default"];
-ol.source.ImageMapGuide = _ol_source_ImageMapGuide__WEBPACK_IMPORTED_MODULE_49__["default"];
-ol.source.ImageStatic = _ol_source_ImageStatic__WEBPACK_IMPORTED_MODULE_50__["default"];
-ol.source.ImageWMS = _ol_source_ImageWMS__WEBPACK_IMPORTED_MODULE_51__["default"];
-ol.source.OSM = _ol_source_OSM__WEBPACK_IMPORTED_MODULE_52__["default"];
-ol.source.OSM.ATTRIBUTION = _ol_source_OSM__WEBPACK_IMPORTED_MODULE_52__["ATTRIBUTION"];
-ol.source.Raster = _ol_source_Raster__WEBPACK_IMPORTED_MODULE_53__["default"];
-ol.source.Source = _ol_source_Source__WEBPACK_IMPORTED_MODULE_54__["default"];
-ol.source.Stamen = _ol_source_Stamen__WEBPACK_IMPORTED_MODULE_55__["default"];
-ol.source.Tile = _ol_source_Tile__WEBPACK_IMPORTED_MODULE_56__["default"];
-ol.source.TileArcGISRest = _ol_source_TileArcGISRest__WEBPACK_IMPORTED_MODULE_57__["default"];
-ol.source.TileDebug = _ol_source_TileDebug__WEBPACK_IMPORTED_MODULE_58__["default"];
-ol.source.TileImage = _ol_source_TileImage__WEBPACK_IMPORTED_MODULE_59__["default"];
-ol.source.TileJSON = _ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_60__["default"];
-ol.source.TileWMS = _ol_source_TileWMS__WEBPACK_IMPORTED_MODULE_61__["default"];
-ol.source.UTFGrid = _ol_source_UTFGrid__WEBPACK_IMPORTED_MODULE_62__["default"];
-ol.source.Vector = _ol_source_Vector__WEBPACK_IMPORTED_MODULE_63__["default"];
-ol.source.VectorTile = _ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_64__["default"];
-ol.source.WMTS = _ol_source_WMTS__WEBPACK_IMPORTED_MODULE_65__["default"];
-ol.source.WMTS.optionsFromCapabilities = _ol_source_WMTS__WEBPACK_IMPORTED_MODULE_65__["optionsFromCapabilities"];
-ol.source.XYZ = _ol_source_XYZ__WEBPACK_IMPORTED_MODULE_66__["default"];
-ol.source.Zoomify = _ol_source_Zoomify__WEBPACK_IMPORTED_MODULE_67__["default"];
-ol.sphere.getArea = _ol_sphere__WEBPACK_IMPORTED_MODULE_23__["getArea"];
-ol.sphere.getDistance = _ol_sphere__WEBPACK_IMPORTED_MODULE_23__["getDistance"];
-ol.sphere.getLength = _ol_sphere__WEBPACK_IMPORTED_MODULE_23__["getLength"];
-ol.style.Circle = _ol_style_Circle__WEBPACK_IMPORTED_MODULE_33__["default"];
-ol.style.Fill = _ol_style_Fill__WEBPACK_IMPORTED_MODULE_34__["default"];
-ol.style.Icon = _ol_style_Icon__WEBPACK_IMPORTED_MODULE_35__["default"];
-ol.style.IconImageCache.shared = _ol_style_IconImageCache__WEBPACK_IMPORTED_MODULE_36__["shared"];
-ol.style.Image = _ol_style_Image__WEBPACK_IMPORTED_MODULE_37__["default"];
-ol.style.RegularShape = _ol_style_RegularShape__WEBPACK_IMPORTED_MODULE_38__["default"];
-ol.style.Stroke = _ol_style_Stroke__WEBPACK_IMPORTED_MODULE_39__["default"];
-ol.style.Style = _ol_style_Style__WEBPACK_IMPORTED_MODULE_40__["default"];
-ol.style.Text = _ol_style_Text__WEBPACK_IMPORTED_MODULE_41__["default"];
-ol.tilegrid.TileGrid = _ol_tilegrid_TileGrid__WEBPACK_IMPORTED_MODULE_31__["default"];
-ol.tilegrid.WMTS = _ol_tilegrid_WMTS__WEBPACK_IMPORTED_MODULE_32__["default"];
-ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = _ol_tilegrid_WMTS__WEBPACK_IMPORTED_MODULE_32__["createFromCapabilitiesMatrixSet"];
-ol.tilegrid.createXYZ = _ol_tilegrid__WEBPACK_IMPORTED_MODULE_24__["createXYZ"];
-ol.webgl.ARRAY_BUFFER = _ol_webgl__WEBPACK_IMPORTED_MODULE_26__["ARRAY_BUFFER"];
-ol.webgl.Buffer = _ol_webgl_Buffer__WEBPACK_IMPORTED_MODULE_28__["default"];
-ol.webgl.DYNAMIC_DRAW = _ol_webgl__WEBPACK_IMPORTED_MODULE_26__["DYNAMIC_DRAW"];
-ol.webgl.ELEMENT_ARRAY_BUFFER = _ol_webgl__WEBPACK_IMPORTED_MODULE_26__["ELEMENT_ARRAY_BUFFER"];
-ol.webgl.Helper = _ol_webgl_Helper__WEBPACK_IMPORTED_MODULE_29__["default"];
-ol.webgl.PostProcessingPass = _ol_webgl_PostProcessingPass__WEBPACK_IMPORTED_MODULE_30__["default"];
-ol.webgl.STATIC_DRAW = _ol_webgl__WEBPACK_IMPORTED_MODULE_26__["STATIC_DRAW"];
-ol.webgl.STREAM_DRAW = _ol_webgl__WEBPACK_IMPORTED_MODULE_26__["STREAM_DRAW"];
-ol.xml.getAllTextContent = _ol_xml__WEBPACK_IMPORTED_MODULE_27__["getAllTextContent"];
-ol.xml.parse = _ol_xml__WEBPACK_IMPORTED_MODULE_27__["parse"];
+ol.control.Attribution = _ol_control_Attribution__WEBPACK_IMPORTED_MODULE_163__["default"];
+ol.control.Attribution.render = _ol_control_Attribution__WEBPACK_IMPORTED_MODULE_163__["render"];
+ol.control.Control = _ol_control_Control__WEBPACK_IMPORTED_MODULE_164__["default"];
+ol.control.FullScreen = _ol_control_FullScreen__WEBPACK_IMPORTED_MODULE_165__["default"];
+ol.control.MousePosition = _ol_control_MousePosition__WEBPACK_IMPORTED_MODULE_166__["default"];
+ol.control.MousePosition.render = _ol_control_MousePosition__WEBPACK_IMPORTED_MODULE_166__["render"];
+ol.control.OverviewMap = _ol_control_OverviewMap__WEBPACK_IMPORTED_MODULE_167__["default"];
+ol.control.OverviewMap.render = _ol_control_OverviewMap__WEBPACK_IMPORTED_MODULE_167__["render"];
+ol.control.Rotate = _ol_control_Rotate__WEBPACK_IMPORTED_MODULE_168__["default"];
+ol.control.Rotate.render = _ol_control_Rotate__WEBPACK_IMPORTED_MODULE_168__["render"];
+ol.control.ScaleLine = _ol_control_ScaleLine__WEBPACK_IMPORTED_MODULE_169__["default"];
+ol.control.ScaleLine.render = _ol_control_ScaleLine__WEBPACK_IMPORTED_MODULE_169__["render"];
+ol.control.Zoom = _ol_control_Zoom__WEBPACK_IMPORTED_MODULE_170__["default"];
+ol.control.ZoomSlider = _ol_control_ZoomSlider__WEBPACK_IMPORTED_MODULE_171__["default"];
+ol.control.ZoomSlider.render = _ol_control_ZoomSlider__WEBPACK_IMPORTED_MODULE_171__["render"];
+ol.control.ZoomToExtent = _ol_control_ZoomToExtent__WEBPACK_IMPORTED_MODULE_172__["default"];
+ol.control.defaults = _ol_control__WEBPACK_IMPORTED_MODULE_13__["defaults"];
+ol.coordinate.add = _ol_coordinate__WEBPACK_IMPORTED_MODULE_14__["add"];
+ol.coordinate.createStringXY = _ol_coordinate__WEBPACK_IMPORTED_MODULE_14__["createStringXY"];
+ol.coordinate.format = _ol_coordinate__WEBPACK_IMPORTED_MODULE_14__["format"];
+ol.coordinate.rotate = _ol_coordinate__WEBPACK_IMPORTED_MODULE_14__["rotate"];
+ol.coordinate.toStringHDMS = _ol_coordinate__WEBPACK_IMPORTED_MODULE_14__["toStringHDMS"];
+ol.coordinate.toStringXY = _ol_coordinate__WEBPACK_IMPORTED_MODULE_14__["toStringXY"];
+ol.easing.easeIn = _ol_easing__WEBPACK_IMPORTED_MODULE_15__["easeIn"];
+ol.easing.easeOut = _ol_easing__WEBPACK_IMPORTED_MODULE_15__["easeOut"];
+ol.easing.inAndOut = _ol_easing__WEBPACK_IMPORTED_MODULE_15__["inAndOut"];
+ol.easing.linear = _ol_easing__WEBPACK_IMPORTED_MODULE_15__["linear"];
+ol.easing.upAndDown = _ol_easing__WEBPACK_IMPORTED_MODULE_15__["upAndDown"];
+ol.events.condition.altKeyOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["altKeyOnly"];
+ol.events.condition.altShiftKeysOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["altShiftKeysOnly"];
+ol.events.condition.always = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["always"];
+ol.events.condition.click = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["click"];
+ol.events.condition.doubleClick = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["doubleClick"];
+ol.events.condition.focus = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["focus"];
+ol.events.condition.mouseOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["mouseOnly"];
+ol.events.condition.never = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["never"];
+ol.events.condition.noModifierKeys = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["noModifierKeys"];
+ol.events.condition.penOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["penOnly"];
+ol.events.condition.platformModifierKeyOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["platformModifierKeyOnly"];
+ol.events.condition.pointerMove = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["pointerMove"];
+ol.events.condition.primaryAction = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["primaryAction"];
+ol.events.condition.shiftKeyOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["shiftKeyOnly"];
+ol.events.condition.singleClick = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["singleClick"];
+ol.events.condition.targetNotEditable = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["targetNotEditable"];
+ol.events.condition.touchOnly = _ol_events_condition__WEBPACK_IMPORTED_MODULE_162__["touchOnly"];
+ol.extent.applyTransform = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["applyTransform"];
+ol.extent.boundingExtent = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["boundingExtent"];
+ol.extent.buffer = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["buffer"];
+ol.extent.containsCoordinate = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["containsCoordinate"];
+ol.extent.containsExtent = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["containsExtent"];
+ol.extent.containsXY = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["containsXY"];
+ol.extent.createEmpty = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["createEmpty"];
+ol.extent.equals = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["equals"];
+ol.extent.extend = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["extend"];
+ol.extent.getArea = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["getArea"];
+ol.extent.getBottomLeft = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["getBottomLeft"];
+ol.extent.getBottomRight = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["getBottomRight"];
+ol.extent.getCenter = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["getCenter"];
+ol.extent.getHeight = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["getHeight"];
+ol.extent.getIntersection = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["getIntersection"];
+ol.extent.getSize = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["getSize"];
+ol.extent.getTopLeft = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["getTopLeft"];
+ol.extent.getTopRight = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["getTopRight"];
+ol.extent.getWidth = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["getWidth"];
+ol.extent.intersects = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["intersects"];
+ol.extent.isEmpty = _ol_extent__WEBPACK_IMPORTED_MODULE_16__["isEmpty"];
+ol.featureloader.xhr = _ol_featureloader__WEBPACK_IMPORTED_MODULE_17__["xhr"];
+ol.format.EsriJSON = _ol_format_EsriJSON__WEBPACK_IMPORTED_MODULE_125__["default"];
+ol.format.Feature = _ol_format_Feature__WEBPACK_IMPORTED_MODULE_126__["default"];
+ol.format.GML = _ol_format_GML__WEBPACK_IMPORTED_MODULE_127__["default"];
+ol.format.GML2 = _ol_format_GML2__WEBPACK_IMPORTED_MODULE_128__["default"];
+ol.format.GML3 = _ol_format_GML3__WEBPACK_IMPORTED_MODULE_129__["default"];
+ol.format.GML32 = _ol_format_GML32__WEBPACK_IMPORTED_MODULE_130__["default"];
+ol.format.GPX = _ol_format_GPX__WEBPACK_IMPORTED_MODULE_131__["default"];
+ol.format.GeoJSON = _ol_format_GeoJSON__WEBPACK_IMPORTED_MODULE_132__["default"];
+ol.format.IGC = _ol_format_IGC__WEBPACK_IMPORTED_MODULE_133__["default"];
+ol.format.IIIFInfo = _ol_format_IIIFInfo__WEBPACK_IMPORTED_MODULE_134__["default"];
+ol.format.KML = _ol_format_KML__WEBPACK_IMPORTED_MODULE_135__["default"];
+ol.format.MVT = _ol_format_MVT__WEBPACK_IMPORTED_MODULE_136__["default"];
+ol.format.OSMXML = _ol_format_OSMXML__WEBPACK_IMPORTED_MODULE_137__["default"];
+ol.format.Polyline = _ol_format_Polyline__WEBPACK_IMPORTED_MODULE_138__["default"];
+ol.format.Polyline.decodeDeltas = _ol_format_Polyline__WEBPACK_IMPORTED_MODULE_138__["decodeDeltas"];
+ol.format.Polyline.decodeFloats = _ol_format_Polyline__WEBPACK_IMPORTED_MODULE_138__["decodeFloats"];
+ol.format.Polyline.encodeDeltas = _ol_format_Polyline__WEBPACK_IMPORTED_MODULE_138__["encodeDeltas"];
+ol.format.Polyline.encodeFloats = _ol_format_Polyline__WEBPACK_IMPORTED_MODULE_138__["encodeFloats"];
+ol.format.TopoJSON = _ol_format_TopoJSON__WEBPACK_IMPORTED_MODULE_139__["default"];
+ol.format.WFS = _ol_format_WFS__WEBPACK_IMPORTED_MODULE_140__["default"];
+ol.format.WFS.writeFilter = _ol_format_WFS__WEBPACK_IMPORTED_MODULE_140__["writeFilter"];
+ol.format.WKT = _ol_format_WKT__WEBPACK_IMPORTED_MODULE_141__["default"];
+ol.format.WMSCapabilities = _ol_format_WMSCapabilities__WEBPACK_IMPORTED_MODULE_142__["default"];
+ol.format.WMSGetFeatureInfo = _ol_format_WMSGetFeatureInfo__WEBPACK_IMPORTED_MODULE_143__["default"];
+ol.format.WMTSCapabilities = _ol_format_WMTSCapabilities__WEBPACK_IMPORTED_MODULE_144__["default"];
+ol.format.filter.Bbox = _ol_format_filter_Bbox__WEBPACK_IMPORTED_MODULE_146__["default"];
+ol.format.filter.Contains = _ol_format_filter_Contains__WEBPACK_IMPORTED_MODULE_147__["default"];
+ol.format.filter.During = _ol_format_filter_During__WEBPACK_IMPORTED_MODULE_148__["default"];
+ol.format.filter.EqualTo = _ol_format_filter_EqualTo__WEBPACK_IMPORTED_MODULE_149__["default"];
+ol.format.filter.GreaterThan = _ol_format_filter_GreaterThan__WEBPACK_IMPORTED_MODULE_150__["default"];
+ol.format.filter.GreaterThanOrEqualTo = _ol_format_filter_GreaterThanOrEqualTo__WEBPACK_IMPORTED_MODULE_151__["default"];
+ol.format.filter.Intersects = _ol_format_filter_Intersects__WEBPACK_IMPORTED_MODULE_152__["default"];
+ol.format.filter.IsBetween = _ol_format_filter_IsBetween__WEBPACK_IMPORTED_MODULE_153__["default"];
+ol.format.filter.IsLike = _ol_format_filter_IsLike__WEBPACK_IMPORTED_MODULE_154__["default"];
+ol.format.filter.IsNull = _ol_format_filter_IsNull__WEBPACK_IMPORTED_MODULE_155__["default"];
+ol.format.filter.LessThan = _ol_format_filter_LessThan__WEBPACK_IMPORTED_MODULE_156__["default"];
+ol.format.filter.LessThanOrEqualTo = _ol_format_filter_LessThanOrEqualTo__WEBPACK_IMPORTED_MODULE_157__["default"];
+ol.format.filter.Not = _ol_format_filter_Not__WEBPACK_IMPORTED_MODULE_158__["default"];
+ol.format.filter.NotEqualTo = _ol_format_filter_NotEqualTo__WEBPACK_IMPORTED_MODULE_159__["default"];
+ol.format.filter.Or = _ol_format_filter_Or__WEBPACK_IMPORTED_MODULE_160__["default"];
+ol.format.filter.Within = _ol_format_filter_Within__WEBPACK_IMPORTED_MODULE_161__["default"];
+ol.format.filter.and = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["and"];
+ol.format.filter.bbox = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["bbox"];
+ol.format.filter.between = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["between"];
+ol.format.filter.contains = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["contains"];
+ol.format.filter.during = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["during"];
+ol.format.filter.equalTo = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["equalTo"];
+ol.format.filter.greaterThan = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["greaterThan"];
+ol.format.filter.greaterThanOrEqualTo = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["greaterThanOrEqualTo"];
+ol.format.filter.intersects = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["intersects"];
+ol.format.filter.isNull = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["isNull"];
+ol.format.filter.lessThan = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["lessThan"];
+ol.format.filter.lessThanOrEqualTo = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["lessThanOrEqualTo"];
+ol.format.filter.like = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["like"];
+ol.format.filter.not = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["not"];
+ol.format.filter.notEqualTo = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["notEqualTo"];
+ol.format.filter.or = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["or"];
+ol.format.filter.within = _ol_format_filter__WEBPACK_IMPORTED_MODULE_145__["within"];
+ol.geom.Circle = _ol_geom_Circle__WEBPACK_IMPORTED_MODULE_114__["default"];
+ol.geom.Geometry = _ol_geom_Geometry__WEBPACK_IMPORTED_MODULE_115__["default"];
+ol.geom.GeometryCollection = _ol_geom_GeometryCollection__WEBPACK_IMPORTED_MODULE_116__["default"];
+ol.geom.LineString = _ol_geom_LineString__WEBPACK_IMPORTED_MODULE_117__["default"];
+ol.geom.LinearRing = _ol_geom_LinearRing__WEBPACK_IMPORTED_MODULE_118__["default"];
+ol.geom.MultiLineString = _ol_geom_MultiLineString__WEBPACK_IMPORTED_MODULE_119__["default"];
+ol.geom.MultiPoint = _ol_geom_MultiPoint__WEBPACK_IMPORTED_MODULE_120__["default"];
+ol.geom.MultiPolygon = _ol_geom_MultiPolygon__WEBPACK_IMPORTED_MODULE_121__["default"];
+ol.geom.Point = _ol_geom_Point__WEBPACK_IMPORTED_MODULE_122__["default"];
+ol.geom.Polygon = _ol_geom_Polygon__WEBPACK_IMPORTED_MODULE_123__["default"];
+ol.geom.Polygon.circular = _ol_geom_Polygon__WEBPACK_IMPORTED_MODULE_123__["circular"];
+ol.geom.Polygon.fromCircle = _ol_geom_Polygon__WEBPACK_IMPORTED_MODULE_123__["fromCircle"];
+ol.geom.Polygon.fromExtent = _ol_geom_Polygon__WEBPACK_IMPORTED_MODULE_123__["fromExtent"];
+ol.geom.SimpleGeometry = _ol_geom_SimpleGeometry__WEBPACK_IMPORTED_MODULE_124__["default"];
+ol.has.DEVICE_PIXEL_RATIO = _ol_has__WEBPACK_IMPORTED_MODULE_18__["DEVICE_PIXEL_RATIO"];
+ol.has.TOUCH = _ol_has__WEBPACK_IMPORTED_MODULE_18__["TOUCH"];
+ol.interaction.DoubleClickZoom = _ol_interaction_DoubleClickZoom__WEBPACK_IMPORTED_MODULE_94__["default"];
+ol.interaction.DragAndDrop = _ol_interaction_DragAndDrop__WEBPACK_IMPORTED_MODULE_95__["default"];
+ol.interaction.DragBox = _ol_interaction_DragBox__WEBPACK_IMPORTED_MODULE_96__["default"];
+ol.interaction.DragPan = _ol_interaction_DragPan__WEBPACK_IMPORTED_MODULE_97__["default"];
+ol.interaction.DragRotate = _ol_interaction_DragRotate__WEBPACK_IMPORTED_MODULE_98__["default"];
+ol.interaction.DragRotateAndZoom = _ol_interaction_DragRotateAndZoom__WEBPACK_IMPORTED_MODULE_99__["default"];
+ol.interaction.DragZoom = _ol_interaction_DragZoom__WEBPACK_IMPORTED_MODULE_100__["default"];
+ol.interaction.Draw = _ol_interaction_Draw__WEBPACK_IMPORTED_MODULE_101__["default"];
+ol.interaction.Draw.createBox = _ol_interaction_Draw__WEBPACK_IMPORTED_MODULE_101__["createBox"];
+ol.interaction.Draw.createRegularPolygon = _ol_interaction_Draw__WEBPACK_IMPORTED_MODULE_101__["createRegularPolygon"];
+ol.interaction.Extent = _ol_interaction_Extent__WEBPACK_IMPORTED_MODULE_102__["default"];
+ol.interaction.Interaction = _ol_interaction_Interaction__WEBPACK_IMPORTED_MODULE_103__["default"];
+ol.interaction.KeyboardPan = _ol_interaction_KeyboardPan__WEBPACK_IMPORTED_MODULE_104__["default"];
+ol.interaction.KeyboardZoom = _ol_interaction_KeyboardZoom__WEBPACK_IMPORTED_MODULE_105__["default"];
+ol.interaction.Modify = _ol_interaction_Modify__WEBPACK_IMPORTED_MODULE_106__["default"];
+ol.interaction.MouseWheelZoom = _ol_interaction_MouseWheelZoom__WEBPACK_IMPORTED_MODULE_107__["default"];
+ol.interaction.PinchRotate = _ol_interaction_PinchRotate__WEBPACK_IMPORTED_MODULE_108__["default"];
+ol.interaction.PinchZoom = _ol_interaction_PinchZoom__WEBPACK_IMPORTED_MODULE_109__["default"];
+ol.interaction.Pointer = _ol_interaction_Pointer__WEBPACK_IMPORTED_MODULE_110__["default"];
+ol.interaction.Select = _ol_interaction_Select__WEBPACK_IMPORTED_MODULE_111__["default"];
+ol.interaction.Snap = _ol_interaction_Snap__WEBPACK_IMPORTED_MODULE_112__["default"];
+ol.interaction.Translate = _ol_interaction_Translate__WEBPACK_IMPORTED_MODULE_113__["default"];
+ol.interaction.defaults = _ol_interaction__WEBPACK_IMPORTED_MODULE_19__["defaults"];
+ol.layer.Base = _ol_layer_Base__WEBPACK_IMPORTED_MODULE_81__["default"];
+ol.layer.BaseImage = _ol_layer_BaseImage__WEBPACK_IMPORTED_MODULE_82__["default"];
+ol.layer.BaseTile = _ol_layer_BaseTile__WEBPACK_IMPORTED_MODULE_83__["default"];
+ol.layer.BaseVector = _ol_layer_BaseVector__WEBPACK_IMPORTED_MODULE_84__["default"];
+ol.layer.Graticule = _ol_layer_Graticule__WEBPACK_IMPORTED_MODULE_85__["default"];
+ol.layer.Group = _ol_layer_Group__WEBPACK_IMPORTED_MODULE_86__["default"];
+ol.layer.Heatmap = _ol_layer_Heatmap__WEBPACK_IMPORTED_MODULE_87__["default"];
+ol.layer.Image = _ol_layer_Image__WEBPACK_IMPORTED_MODULE_88__["default"];
+ol.layer.Layer = _ol_layer_Layer__WEBPACK_IMPORTED_MODULE_89__["default"];
+ol.layer.Tile = _ol_layer_Tile__WEBPACK_IMPORTED_MODULE_90__["default"];
+ol.layer.Vector = _ol_layer_Vector__WEBPACK_IMPORTED_MODULE_91__["default"];
+ol.layer.VectorImage = _ol_layer_VectorImage__WEBPACK_IMPORTED_MODULE_92__["default"];
+ol.layer.VectorTile = _ol_layer_VectorTile__WEBPACK_IMPORTED_MODULE_93__["default"];
+ol.loadingstrategy.all = _ol_loadingstrategy__WEBPACK_IMPORTED_MODULE_20__["all"];
+ol.loadingstrategy.bbox = _ol_loadingstrategy__WEBPACK_IMPORTED_MODULE_20__["bbox"];
+ol.loadingstrategy.tile = _ol_loadingstrategy__WEBPACK_IMPORTED_MODULE_20__["tile"];
+ol.proj.Projection = _ol_proj_Projection__WEBPACK_IMPORTED_MODULE_78__["default"];
+ol.proj.Units.METERS_PER_UNIT = _ol_proj_Units__WEBPACK_IMPORTED_MODULE_79__["METERS_PER_UNIT"];
+ol.proj.addCoordinateTransforms = _ol_proj__WEBPACK_IMPORTED_MODULE_21__["addCoordinateTransforms"];
+ol.proj.addEquivalentProjections = _ol_proj__WEBPACK_IMPORTED_MODULE_21__["addEquivalentProjections"];
+ol.proj.addProjection = _ol_proj__WEBPACK_IMPORTED_MODULE_21__["addProjection"];
+ol.proj.equivalent = _ol_proj__WEBPACK_IMPORTED_MODULE_21__["equivalent"];
+ol.proj.fromLonLat = _ol_proj__WEBPACK_IMPORTED_MODULE_21__["fromLonLat"];
+ol.proj.get = _ol_proj__WEBPACK_IMPORTED_MODULE_21__["get"];
+ol.proj.getPointResolution = _ol_proj__WEBPACK_IMPORTED_MODULE_21__["getPointResolution"];
+ol.proj.getTransform = _ol_proj__WEBPACK_IMPORTED_MODULE_21__["getTransform"];
+ol.proj.proj4.register = _ol_proj_proj4__WEBPACK_IMPORTED_MODULE_80__["register"];
+ol.proj.toLonLat = _ol_proj__WEBPACK_IMPORTED_MODULE_21__["toLonLat"];
+ol.proj.transform = _ol_proj__WEBPACK_IMPORTED_MODULE_21__["transform"];
+ol.proj.transformExtent = _ol_proj__WEBPACK_IMPORTED_MODULE_21__["transformExtent"];
+ol.render.VectorContext = _ol_render_VectorContext__WEBPACK_IMPORTED_MODULE_76__["default"];
+ol.render.canvas.labelCache = _ol_render_canvas__WEBPACK_IMPORTED_MODULE_77__["labelCache"];
+ol.render.getRenderPixel = _ol_render__WEBPACK_IMPORTED_MODULE_22__["getRenderPixel"];
+ol.render.getVectorContext = _ol_render__WEBPACK_IMPORTED_MODULE_22__["getVectorContext"];
+ol.render.toContext = _ol_render__WEBPACK_IMPORTED_MODULE_22__["toContext"];
+ol.renderer.Composite = _ol_renderer_Composite__WEBPACK_IMPORTED_MODULE_69__["default"];
+ol.renderer.canvas.ImageLayer = _ol_renderer_canvas_ImageLayer__WEBPACK_IMPORTED_MODULE_71__["default"];
+ol.renderer.canvas.TileLayer = _ol_renderer_canvas_TileLayer__WEBPACK_IMPORTED_MODULE_72__["default"];
+ol.renderer.canvas.VectorImageLayer = _ol_renderer_canvas_VectorImageLayer__WEBPACK_IMPORTED_MODULE_73__["default"];
+ol.renderer.canvas.VectorLayer = _ol_renderer_canvas_VectorLayer__WEBPACK_IMPORTED_MODULE_74__["default"];
+ol.renderer.canvas.VectorTileLayer = _ol_renderer_canvas_VectorTileLayer__WEBPACK_IMPORTED_MODULE_75__["default"];
+ol.renderer.webgl.PointsLayer = _ol_renderer_webgl_PointsLayer__WEBPACK_IMPORTED_MODULE_70__["default"];
+ol.size.toSize = _ol_size__WEBPACK_IMPORTED_MODULE_23__["toSize"];
+ol.source.BingMaps = _ol_source_BingMaps__WEBPACK_IMPORTED_MODULE_43__["default"];
+ol.source.CartoDB = _ol_source_CartoDB__WEBPACK_IMPORTED_MODULE_44__["default"];
+ol.source.Cluster = _ol_source_Cluster__WEBPACK_IMPORTED_MODULE_45__["default"];
+ol.source.IIIF = _ol_source_IIIF__WEBPACK_IMPORTED_MODULE_46__["default"];
+ol.source.Image = _ol_source_Image__WEBPACK_IMPORTED_MODULE_47__["default"];
+ol.source.ImageArcGISRest = _ol_source_ImageArcGISRest__WEBPACK_IMPORTED_MODULE_48__["default"];
+ol.source.ImageCanvas = _ol_source_ImageCanvas__WEBPACK_IMPORTED_MODULE_49__["default"];
+ol.source.ImageMapGuide = _ol_source_ImageMapGuide__WEBPACK_IMPORTED_MODULE_50__["default"];
+ol.source.ImageStatic = _ol_source_ImageStatic__WEBPACK_IMPORTED_MODULE_51__["default"];
+ol.source.ImageWMS = _ol_source_ImageWMS__WEBPACK_IMPORTED_MODULE_52__["default"];
+ol.source.OSM = _ol_source_OSM__WEBPACK_IMPORTED_MODULE_53__["default"];
+ol.source.OSM.ATTRIBUTION = _ol_source_OSM__WEBPACK_IMPORTED_MODULE_53__["ATTRIBUTION"];
+ol.source.Raster = _ol_source_Raster__WEBPACK_IMPORTED_MODULE_54__["default"];
+ol.source.Source = _ol_source_Source__WEBPACK_IMPORTED_MODULE_55__["default"];
+ol.source.Stamen = _ol_source_Stamen__WEBPACK_IMPORTED_MODULE_56__["default"];
+ol.source.Tile = _ol_source_Tile__WEBPACK_IMPORTED_MODULE_57__["default"];
+ol.source.TileArcGISRest = _ol_source_TileArcGISRest__WEBPACK_IMPORTED_MODULE_58__["default"];
+ol.source.TileDebug = _ol_source_TileDebug__WEBPACK_IMPORTED_MODULE_59__["default"];
+ol.source.TileImage = _ol_source_TileImage__WEBPACK_IMPORTED_MODULE_60__["default"];
+ol.source.TileJSON = _ol_source_TileJSON__WEBPACK_IMPORTED_MODULE_61__["default"];
+ol.source.TileWMS = _ol_source_TileWMS__WEBPACK_IMPORTED_MODULE_62__["default"];
+ol.source.UTFGrid = _ol_source_UTFGrid__WEBPACK_IMPORTED_MODULE_63__["default"];
+ol.source.Vector = _ol_source_Vector__WEBPACK_IMPORTED_MODULE_64__["default"];
+ol.source.VectorTile = _ol_source_VectorTile__WEBPACK_IMPORTED_MODULE_65__["default"];
+ol.source.WMTS = _ol_source_WMTS__WEBPACK_IMPORTED_MODULE_66__["default"];
+ol.source.WMTS.optionsFromCapabilities = _ol_source_WMTS__WEBPACK_IMPORTED_MODULE_66__["optionsFromCapabilities"];
+ol.source.XYZ = _ol_source_XYZ__WEBPACK_IMPORTED_MODULE_67__["default"];
+ol.source.Zoomify = _ol_source_Zoomify__WEBPACK_IMPORTED_MODULE_68__["default"];
+ol.sphere.getArea = _ol_sphere__WEBPACK_IMPORTED_MODULE_24__["getArea"];
+ol.sphere.getDistance = _ol_sphere__WEBPACK_IMPORTED_MODULE_24__["getDistance"];
+ol.sphere.getLength = _ol_sphere__WEBPACK_IMPORTED_MODULE_24__["getLength"];
+ol.style.Circle = _ol_style_Circle__WEBPACK_IMPORTED_MODULE_34__["default"];
+ol.style.Fill = _ol_style_Fill__WEBPACK_IMPORTED_MODULE_35__["default"];
+ol.style.Icon = _ol_style_Icon__WEBPACK_IMPORTED_MODULE_36__["default"];
+ol.style.IconImageCache.shared = _ol_style_IconImageCache__WEBPACK_IMPORTED_MODULE_37__["shared"];
+ol.style.Image = _ol_style_Image__WEBPACK_IMPORTED_MODULE_38__["default"];
+ol.style.RegularShape = _ol_style_RegularShape__WEBPACK_IMPORTED_MODULE_39__["default"];
+ol.style.Stroke = _ol_style_Stroke__WEBPACK_IMPORTED_MODULE_40__["default"];
+ol.style.Style = _ol_style_Style__WEBPACK_IMPORTED_MODULE_41__["default"];
+ol.style.Text = _ol_style_Text__WEBPACK_IMPORTED_MODULE_42__["default"];
+ol.tilegrid.TileGrid = _ol_tilegrid_TileGrid__WEBPACK_IMPORTED_MODULE_32__["default"];
+ol.tilegrid.WMTS = _ol_tilegrid_WMTS__WEBPACK_IMPORTED_MODULE_33__["default"];
+ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = _ol_tilegrid_WMTS__WEBPACK_IMPORTED_MODULE_33__["createFromCapabilitiesMatrixSet"];
+ol.tilegrid.createXYZ = _ol_tilegrid__WEBPACK_IMPORTED_MODULE_25__["createXYZ"];
+ol.util.getUid = _ol_util__WEBPACK_IMPORTED_MODULE_26__["getUid"];
+ol.webgl.ARRAY_BUFFER = _ol_webgl__WEBPACK_IMPORTED_MODULE_27__["ARRAY_BUFFER"];
+ol.webgl.Buffer = _ol_webgl_Buffer__WEBPACK_IMPORTED_MODULE_29__["default"];
+ol.webgl.DYNAMIC_DRAW = _ol_webgl__WEBPACK_IMPORTED_MODULE_27__["DYNAMIC_DRAW"];
+ol.webgl.ELEMENT_ARRAY_BUFFER = _ol_webgl__WEBPACK_IMPORTED_MODULE_27__["ELEMENT_ARRAY_BUFFER"];
+ol.webgl.Helper = _ol_webgl_Helper__WEBPACK_IMPORTED_MODULE_30__["default"];
+ol.webgl.PostProcessingPass = _ol_webgl_PostProcessingPass__WEBPACK_IMPORTED_MODULE_31__["default"];
+ol.webgl.STATIC_DRAW = _ol_webgl__WEBPACK_IMPORTED_MODULE_27__["STATIC_DRAW"];
+ol.webgl.STREAM_DRAW = _ol_webgl__WEBPACK_IMPORTED_MODULE_27__["STREAM_DRAW"];
+ol.xml.getAllTextContent = _ol_xml__WEBPACK_IMPORTED_MODULE_28__["getAllTextContent"];
+ol.xml.parse = _ol_xml__WEBPACK_IMPORTED_MODULE_28__["parse"];
 
 /* harmony default export */ __webpack_exports__["default"] = (ol);
 
@@ -1635,9 +1639,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _events_Event_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./events/Event.js */ "./build/ol/events/Event.js");
 /* harmony import */ var _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./events/EventType.js */ "./build/ol/events/EventType.js");
 /* harmony import */ var _geom_Polygon_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./geom/Polygon.js */ "./build/ol/geom/Polygon.js");
-/* harmony import */ var _has_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./has.js */ "./build/ol/has.js");
-/* harmony import */ var _math_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./math.js */ "./build/ol/math.js");
-/* harmony import */ var _proj_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./proj.js */ "./build/ol/proj.js");
+/* harmony import */ var _math_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./math.js */ "./build/ol/math.js");
+/* harmony import */ var _proj_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./proj.js */ "./build/ol/proj.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -1654,7 +1657,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
 /**
  * @module ol/Geolocation
  */
-
 
 
 
@@ -1729,7 +1731,7 @@ var GeolocationError = /** @class */ (function (_super) {
  *       window.console.log(geolocation.getPosition());
  *     });
  *
- * @fires error
+ * @fires module:ol/events/Event~Event#event:error
  * @api
  */
 var Geolocation = /** @class */ (function (_super) {
@@ -1750,7 +1752,7 @@ var Geolocation = /** @class */ (function (_super) {
          * @private
          * @type {import("./proj.js").TransformFunction}
          */
-        _this.transform_ = _proj_js__WEBPACK_IMPORTED_MODULE_7__["identityTransform"];
+        _this.transform_ = _proj_js__WEBPACK_IMPORTED_MODULE_6__["identityTransform"];
         /**
          * @private
          * @type {number|undefined}
@@ -1780,7 +1782,7 @@ var Geolocation = /** @class */ (function (_super) {
     Geolocation.prototype.handleProjectionChanged_ = function () {
         var projection = this.getProjection();
         if (projection) {
-            this.transform_ = Object(_proj_js__WEBPACK_IMPORTED_MODULE_7__["getTransformFromProjections"])(Object(_proj_js__WEBPACK_IMPORTED_MODULE_7__["get"])('EPSG:4326'), projection);
+            this.transform_ = Object(_proj_js__WEBPACK_IMPORTED_MODULE_6__["getTransformFromProjections"])(Object(_proj_js__WEBPACK_IMPORTED_MODULE_6__["get"])('EPSG:4326'), projection);
             if (this.position_) {
                 this.set(Property.POSITION, this.transform_(this.position_));
             }
@@ -1790,7 +1792,7 @@ var Geolocation = /** @class */ (function (_super) {
      * @private
      */
     Geolocation.prototype.handleTrackingChanged_ = function () {
-        if (_has_js__WEBPACK_IMPORTED_MODULE_5__["GEOLOCATION"]) {
+        if ('geolocation' in navigator) {
             var tracking = this.getTracking();
             if (tracking && this.watchId_ === undefined) {
                 this.watchId_ = navigator.geolocation.watchPosition(this.positionChange_.bind(this), this.positionError_.bind(this), this.getTrackingOptions());
@@ -1812,7 +1814,7 @@ var Geolocation = /** @class */ (function (_super) {
         this.set(Property.ALTITUDE_ACCURACY, coords.altitudeAccuracy === null ?
             undefined : coords.altitudeAccuracy);
         this.set(Property.HEADING, coords.heading === null ?
-            undefined : Object(_math_js__WEBPACK_IMPORTED_MODULE_6__["toRadians"])(coords.heading));
+            undefined : Object(_math_js__WEBPACK_IMPORTED_MODULE_5__["toRadians"])(coords.heading));
         if (!this.position_) {
             this.position_ = [coords.longitude, coords.latitude];
         }
@@ -1828,11 +1830,6 @@ var Geolocation = /** @class */ (function (_super) {
         this.set(Property.ACCURACY_GEOMETRY, geometry);
         this.changed();
     };
-    /**
-     * Triggered when the Geolocation returns an error.
-     * @event error
-     * @api
-     */
     /**
      * @private
      * @param {PositionError} error error object.
@@ -1953,7 +1950,7 @@ var Geolocation = /** @class */ (function (_super) {
      * @api
      */
     Geolocation.prototype.setProjection = function (projection) {
-        this.set(Property.PROJECTION, Object(_proj_js__WEBPACK_IMPORTED_MODULE_7__["get"])(projection));
+        this.set(Property.PROJECTION, Object(_proj_js__WEBPACK_IMPORTED_MODULE_6__["get"])(projection));
     };
     /**
      * Enable or disable tracking.
@@ -1987,11 +1984,12 @@ var Geolocation = /** @class */ (function (_super) {
 /*!***************************!*\
   !*** ./build/ol/Image.js ***!
   \***************************/
-/*! exports provided: default */
+/*! exports provided: listenImage, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "listenImage", function() { return listenImage; });
 /* harmony import */ var _ImageBase_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ImageBase.js */ "./build/ol/ImageBase.js");
 /* harmony import */ var _ImageState_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ImageState.js */ "./build/ol/ImageState.js");
 /* harmony import */ var _events_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./events.js */ "./build/ol/events.js");
@@ -2062,9 +2060,9 @@ var ImageWrapper = /** @class */ (function (_super) {
         }
         /**
          * @private
-         * @type {Array<import("./events.js").EventsKey>}
+         * @type {function():void}
          */
-        _this.imageListenerKeys_ = null;
+        _this.unlisten_ = null;
         /**
          * @protected
          * @type {ImageState}
@@ -2118,11 +2116,8 @@ var ImageWrapper = /** @class */ (function (_super) {
         if (this.state == _ImageState_js__WEBPACK_IMPORTED_MODULE_1__["default"].IDLE || this.state == _ImageState_js__WEBPACK_IMPORTED_MODULE_1__["default"].ERROR) {
             this.state = _ImageState_js__WEBPACK_IMPORTED_MODULE_1__["default"].LOADING;
             this.changed();
-            this.imageListenerKeys_ = [
-                Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["listenOnce"])(this.image_, _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].ERROR, this.handleImageError_, this),
-                Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["listenOnce"])(this.image_, _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].LOAD, this.handleImageLoad_, this)
-            ];
             this.imageLoadFunction_(this, this.src_);
+            this.unlisten_ = listenImage(this.image_, this.handleImageLoad_.bind(this), this.handleImageError_.bind(this));
         }
     };
     /**
@@ -2137,11 +2132,46 @@ var ImageWrapper = /** @class */ (function (_super) {
      * @private
      */
     ImageWrapper.prototype.unlistenImage_ = function () {
-        this.imageListenerKeys_.forEach(_events_js__WEBPACK_IMPORTED_MODULE_2__["unlistenByKey"]);
-        this.imageListenerKeys_ = null;
+        if (this.unlisten_) {
+            this.unlisten_();
+            this.unlisten_ = null;
+        }
     };
     return ImageWrapper;
 }(_ImageBase_js__WEBPACK_IMPORTED_MODULE_0__["default"]));
+/**
+ * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image element.
+ * @param {function():any} loadHandler Load callback function.
+ * @param {function():any} errorHandler Error callback function.
+ * @return {function():void} Callback to stop listening.
+ */
+function listenImage(image, loadHandler, errorHandler) {
+    var img = /** @type {HTMLImageElement} */ (image);
+    if (img.decode) {
+        var promise = img.decode();
+        var listening_1 = true;
+        var unlisten = function () {
+            listening_1 = false;
+        };
+        promise.then(function () {
+            if (listening_1) {
+                loadHandler();
+            }
+        }).catch(function (error) {
+            if (listening_1) {
+                errorHandler();
+            }
+        });
+        return unlisten;
+    }
+    var listenerKeys = [
+        Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["listenOnce"])(img, _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].LOAD, loadHandler),
+        Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["listenOnce"])(img, _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].ERROR, errorHandler)
+    ];
+    return function unlisten() {
+        listenerKeys.forEach(_events_js__WEBPACK_IMPORTED_MODULE_2__["unlistenByKey"]);
+    };
+}
 /* harmony default export */ __webpack_exports__["default"] = (ImageWrapper);
 //# sourceMappingURL=Image.js.map
 
@@ -2415,8 +2445,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Tile_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Tile.js */ "./build/ol/Tile.js");
 /* harmony import */ var _TileState_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TileState.js */ "./build/ol/TileState.js");
 /* harmony import */ var _dom_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dom.js */ "./build/ol/dom.js");
-/* harmony import */ var _events_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./events.js */ "./build/ol/events.js");
-/* harmony import */ var _events_EventType_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./events/EventType.js */ "./build/ol/events/EventType.js");
+/* harmony import */ var _Image_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Image.js */ "./build/ol/Image.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -2433,7 +2462,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
 /**
  * @module ol/ImageTile
  */
-
 
 
 
@@ -2472,9 +2500,9 @@ var ImageTile = /** @class */ (function (_super) {
         }
         /**
          * @private
-         * @type {Array<import("./events.js").EventsKey>}
+         * @type {function():void}
          */
-        _this.imageListenerKeys_ = null;
+        _this.unlisten_ = null;
         /**
          * @private
          * @type {import("./Tile.js").LoadFunction}
@@ -2553,11 +2581,8 @@ var ImageTile = /** @class */ (function (_super) {
         if (this.state == _TileState_js__WEBPACK_IMPORTED_MODULE_1__["default"].IDLE) {
             this.state = _TileState_js__WEBPACK_IMPORTED_MODULE_1__["default"].LOADING;
             this.changed();
-            this.imageListenerKeys_ = [
-                Object(_events_js__WEBPACK_IMPORTED_MODULE_3__["listenOnce"])(this.image_, _events_EventType_js__WEBPACK_IMPORTED_MODULE_4__["default"].ERROR, this.handleImageError_, this),
-                Object(_events_js__WEBPACK_IMPORTED_MODULE_3__["listenOnce"])(this.image_, _events_EventType_js__WEBPACK_IMPORTED_MODULE_4__["default"].LOAD, this.handleImageLoad_, this)
-            ];
             this.tileLoadFunction_(this, this.src_);
+            this.unlisten_ = Object(_Image_js__WEBPACK_IMPORTED_MODULE_3__["listenImage"])(this.image_, this.handleImageLoad_.bind(this), this.handleImageError_.bind(this));
         }
     };
     /**
@@ -2566,8 +2591,10 @@ var ImageTile = /** @class */ (function (_super) {
      * @private
      */
     ImageTile.prototype.unlistenImage_ = function () {
-        this.imageListenerKeys_.forEach(_events_js__WEBPACK_IMPORTED_MODULE_3__["unlistenByKey"]);
-        this.imageListenerKeys_ = null;
+        if (this.unlisten_) {
+            this.unlisten_();
+            this.unlisten_ = null;
+        }
     };
     return ImageTile;
 }(_Tile_js__WEBPACK_IMPORTED_MODULE_0__["default"]));
@@ -2721,7 +2748,7 @@ var Kinetic = /** @class */ (function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _PluggableMap_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PluggableMap.js */ "./build/ol/PluggableMap.js");
-/* harmony import */ var _control_util_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./control/util.js */ "./build/ol/control/util.js");
+/* harmony import */ var _control_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./control.js */ "./build/ol/control.js");
 /* harmony import */ var _interaction_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./interaction.js */ "./build/ol/interaction.js");
 /* harmony import */ var _obj_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./obj.js */ "./build/ol/obj.js");
 /* harmony import */ var _renderer_Composite_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./renderer/Composite.js */ "./build/ol/renderer/Composite.js");
@@ -2802,7 +2829,7 @@ var Map = /** @class */ (function (_super) {
         var _this = this;
         options = Object(_obj_js__WEBPACK_IMPORTED_MODULE_3__["assign"])({}, options);
         if (!options.controls) {
-            options.controls = Object(_control_util_js__WEBPACK_IMPORTED_MODULE_1__["defaults"])();
+            options.controls = Object(_control_js__WEBPACK_IMPORTED_MODULE_1__["defaults"])();
         }
         if (!options.interactions) {
             options.interactions = Object(_interaction_js__WEBPACK_IMPORTED_MODULE_2__["defaults"])();
@@ -4773,6 +4800,10 @@ var PluggableMap = /** @class */ (function (_super) {
          */
         _this.interactions = optionsInternal.interactions || new _Collection_js__WEBPACK_IMPORTED_MODULE_1__["default"]();
         /**
+         * @type {import("./events.js").EventsKey}
+         */
+        _this.labelCacheListenerKey_;
+        /**
          * @type {Collection<import("./Overlay.js").default>}
          * @private
          */
@@ -4946,6 +4977,22 @@ var PluggableMap = /** @class */ (function (_super) {
         overlay.setMap(this);
     };
     /**
+     * Attach a label cache for listening to font changes.
+     * @param {import("./events/Target.js").default} labelCache Label cache.
+     */
+    PluggableMap.prototype.attachLabelCache = function (labelCache) {
+        this.detachLabelCache();
+        this.labelCacheListenerKey_ = Object(_events_js__WEBPACK_IMPORTED_MODULE_17__["listen"])(labelCache, _events_EventType_js__WEBPACK_IMPORTED_MODULE_18__["default"].CLEAR, this.redrawText.bind(this));
+    };
+    /**
+     * Detach the label cache, i.e. no longer listen to font changes.
+     */
+    PluggableMap.prototype.detachLabelCache = function () {
+        if (this.labelCacheListenerKey_) {
+            Object(_events_js__WEBPACK_IMPORTED_MODULE_17__["unlistenByKey"])(this.labelCacheListenerKey_);
+        }
+    };
+    /**
      *
      * @inheritDoc
      */
@@ -4962,6 +5009,7 @@ var PluggableMap = /** @class */ (function (_super) {
             cancelAnimationFrame(this.animationDelayKey_);
             this.animationDelayKey_ = undefined;
         }
+        this.detachLabelCache();
         this.setTarget(null);
         _super.prototype.disposeInternal.call(this);
     };
@@ -5192,6 +5240,20 @@ var PluggableMap = /** @class */ (function (_super) {
         return layers;
     };
     /**
+     * @return {boolean} Layers have sources that are still loading.
+     */
+    PluggableMap.prototype.getLoading = function () {
+        var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
+        for (var i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+            var layer = layerStatesArray[i].layer;
+            var source = /** @type {import("./layer/Layer.js").default} */ (layer).getSource();
+            if (source && source.loading) {
+                return true;
+            }
+        }
+        return false;
+    };
+    /**
      * Get the pixel for a coordinate.  This takes a coordinate in the map view
      * projection and returns the corresponding pixel.
      * @param {import("./coordinate.js").Coordinate} coordinate A map coordinate.
@@ -5364,7 +5426,7 @@ var PluggableMap = /** @class */ (function (_super) {
             }
         }
         if (frameState && this.hasListener(_render_EventType_js__WEBPACK_IMPORTED_MODULE_9__["default"].RENDERCOMPLETE) && !frameState.animate &&
-            !this.tileQueue_.getTilesLoading() && !getLoading(this.getLayers().getArray())) {
+            !this.tileQueue_.getTilesLoading() && !this.getLoading()) {
             this.renderer_.dispatchRenderEvent(_render_EventType_js__WEBPACK_IMPORTED_MODULE_9__["default"].RENDERCOMPLETE, frameState);
         }
         var postRenderFunctions = this.postRenderFunctions_;
@@ -5401,7 +5463,6 @@ var PluggableMap = /** @class */ (function (_super) {
             this.keyHandlerKeys_ = null;
         }
         if (!targetElement) {
-            this.renderer_.removeLayerRenderers();
             Object(_dom_js__WEBPACK_IMPORTED_MODULE_16__["removeNode"])(this.viewport_);
             if (this.handleResize_ !== undefined) {
                 removeEventListener(_events_EventType_js__WEBPACK_IMPORTED_MODULE_18__["default"].RESIZE, this.handleResize_, false);
@@ -5490,6 +5551,18 @@ var PluggableMap = /** @class */ (function (_super) {
             cancelAnimationFrame(this.animationDelayKey_);
         }
         this.animationDelay_();
+    };
+    /**
+     * Redraws all text after new fonts have loaded
+     */
+    PluggableMap.prototype.redrawText = function () {
+        var layerStates = this.getLayerGroup().getLayerStatesArray();
+        for (var i = 0, ii = layerStates.length; i < ii; ++i) {
+            var layer = layerStates[i].layer;
+            if (layer.hasRenderer()) {
+                layer.getRenderer().handleFontsChanged();
+            }
+        }
     };
     /**
      * Request a map rendering (at the next animation frame).
@@ -5753,25 +5826,6 @@ function createOptionsInternal(options) {
     };
 }
 /* harmony default export */ __webpack_exports__["default"] = (PluggableMap);
-/**
- * @param  {Array<import("./layer/Base.js").default>} layers Layers.
- * @return {boolean} Layers have sources that are still loading.
- */
-function getLoading(layers) {
-    for (var i = 0, ii = layers.length; i < ii; ++i) {
-        var layer = layers[i];
-        if (typeof /** @type {?} */ (layer).getLayers === 'function') {
-            return getLoading(/** @type {LayerGroup} */ (layer).getLayers().getArray());
-        }
-        else {
-            var source = /** @type {import("./layer/Layer.js").default} */ (layer).getSource();
-            if (source && source.loading) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
 //# sourceMappingURL=PluggableMap.js.map
 
 /***/ }),
@@ -8187,11 +8241,17 @@ function animationCallback(callback, returnValue) {
  */
 function createCenterConstraint(options) {
     if (options.extent !== undefined) {
-        return Object(_centerconstraint_js__WEBPACK_IMPORTED_MODULE_3__["createExtent"])(options.extent, options.constrainOnlyCenter, options.smoothExtentConstraint !== undefined ? options.smoothExtentConstraint : true);
+        var smooth = options.smoothExtentConstraint !== undefined ? options.smoothExtentConstraint : true;
+        return Object(_centerconstraint_js__WEBPACK_IMPORTED_MODULE_3__["createExtent"])(options.extent, options.constrainOnlyCenter, smooth);
     }
-    else {
-        return _centerconstraint_js__WEBPACK_IMPORTED_MODULE_3__["none"];
+    var projection = Object(_proj_js__WEBPACK_IMPORTED_MODULE_18__["createProjection"])(options.projection, 'EPSG:3857');
+    if (options.multiWorld !== true && projection.isGlobal()) {
+        var extent = projection.getExtent().slice();
+        extent[0] = -Infinity;
+        extent[2] = Infinity;
+        return Object(_centerconstraint_js__WEBPACK_IMPORTED_MODULE_3__["createExtent"])(extent, false, false);
     }
+    return _centerconstraint_js__WEBPACK_IMPORTED_MODULE_3__["none"];
 }
 /**
  * @param {ViewOptions} options View options.
@@ -9016,38 +9076,37 @@ function asColorLike(color) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _control_Attribution_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./control/Attribution.js */ "./build/ol/control/Attribution.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Attribution", function() { return _control_Attribution_js__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaults", function() { return defaults; });
+/* harmony import */ var _Collection_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Collection.js */ "./build/ol/Collection.js");
+/* harmony import */ var _control_Attribution_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./control/Attribution.js */ "./build/ol/control/Attribution.js");
+/* harmony import */ var _control_Rotate_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./control/Rotate.js */ "./build/ol/control/Rotate.js");
+/* harmony import */ var _control_Zoom_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./control/Zoom.js */ "./build/ol/control/Zoom.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Attribution", function() { return _control_Attribution_js__WEBPACK_IMPORTED_MODULE_1__["default"]; });
 
-/* harmony import */ var _control_Control_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./control/Control.js */ "./build/ol/control/Control.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Control", function() { return _control_Control_js__WEBPACK_IMPORTED_MODULE_1__["default"]; });
+/* harmony import */ var _control_Control_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./control/Control.js */ "./build/ol/control/Control.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Control", function() { return _control_Control_js__WEBPACK_IMPORTED_MODULE_4__["default"]; });
 
-/* harmony import */ var _control_FullScreen_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./control/FullScreen.js */ "./build/ol/control/FullScreen.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "FullScreen", function() { return _control_FullScreen_js__WEBPACK_IMPORTED_MODULE_2__["default"]; });
+/* harmony import */ var _control_FullScreen_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./control/FullScreen.js */ "./build/ol/control/FullScreen.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "FullScreen", function() { return _control_FullScreen_js__WEBPACK_IMPORTED_MODULE_5__["default"]; });
 
-/* harmony import */ var _control_MousePosition_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./control/MousePosition.js */ "./build/ol/control/MousePosition.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MousePosition", function() { return _control_MousePosition_js__WEBPACK_IMPORTED_MODULE_3__["default"]; });
+/* harmony import */ var _control_MousePosition_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./control/MousePosition.js */ "./build/ol/control/MousePosition.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MousePosition", function() { return _control_MousePosition_js__WEBPACK_IMPORTED_MODULE_6__["default"]; });
 
-/* harmony import */ var _control_OverviewMap_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./control/OverviewMap.js */ "./build/ol/control/OverviewMap.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "OverviewMap", function() { return _control_OverviewMap_js__WEBPACK_IMPORTED_MODULE_4__["default"]; });
+/* harmony import */ var _control_OverviewMap_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./control/OverviewMap.js */ "./build/ol/control/OverviewMap.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "OverviewMap", function() { return _control_OverviewMap_js__WEBPACK_IMPORTED_MODULE_7__["default"]; });
 
-/* harmony import */ var _control_Rotate_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./control/Rotate.js */ "./build/ol/control/Rotate.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Rotate", function() { return _control_Rotate_js__WEBPACK_IMPORTED_MODULE_5__["default"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Rotate", function() { return _control_Rotate_js__WEBPACK_IMPORTED_MODULE_2__["default"]; });
 
-/* harmony import */ var _control_ScaleLine_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./control/ScaleLine.js */ "./build/ol/control/ScaleLine.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ScaleLine", function() { return _control_ScaleLine_js__WEBPACK_IMPORTED_MODULE_6__["default"]; });
+/* harmony import */ var _control_ScaleLine_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./control/ScaleLine.js */ "./build/ol/control/ScaleLine.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ScaleLine", function() { return _control_ScaleLine_js__WEBPACK_IMPORTED_MODULE_8__["default"]; });
 
-/* harmony import */ var _control_Zoom_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./control/Zoom.js */ "./build/ol/control/Zoom.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Zoom", function() { return _control_Zoom_js__WEBPACK_IMPORTED_MODULE_7__["default"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Zoom", function() { return _control_Zoom_js__WEBPACK_IMPORTED_MODULE_3__["default"]; });
 
-/* harmony import */ var _control_ZoomSlider_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./control/ZoomSlider.js */ "./build/ol/control/ZoomSlider.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ZoomSlider", function() { return _control_ZoomSlider_js__WEBPACK_IMPORTED_MODULE_8__["default"]; });
+/* harmony import */ var _control_ZoomSlider_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./control/ZoomSlider.js */ "./build/ol/control/ZoomSlider.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ZoomSlider", function() { return _control_ZoomSlider_js__WEBPACK_IMPORTED_MODULE_9__["default"]; });
 
-/* harmony import */ var _control_ZoomToExtent_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./control/ZoomToExtent.js */ "./build/ol/control/ZoomToExtent.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ZoomToExtent", function() { return _control_ZoomToExtent_js__WEBPACK_IMPORTED_MODULE_9__["default"]; });
-
-/* harmony import */ var _control_util_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./control/util.js */ "./build/ol/control/util.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "defaults", function() { return _control_util_js__WEBPACK_IMPORTED_MODULE_10__["defaults"]; });
+/* harmony import */ var _control_ZoomToExtent_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./control/ZoomToExtent.js */ "./build/ol/control/ZoomToExtent.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ZoomToExtent", function() { return _control_ZoomToExtent_js__WEBPACK_IMPORTED_MODULE_10__["default"]; });
 
 /**
  * @module ol/control
@@ -9063,6 +9122,56 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
+/**
+ * @typedef {Object} DefaultsOptions
+ * @property {boolean} [attribution=true] Include
+ * {@link module:ol/control/Attribution~Attribution}.
+ * @property {import("./control/Attribution.js").Options} [attributionOptions]
+ * Options for {@link module:ol/control/Attribution~Attribution}.
+ * @property {boolean} [rotate=true] Include
+ * {@link module:ol/control/Rotate~Rotate}.
+ * @property {import("./control/Rotate.js").Options} [rotateOptions] Options
+ * for {@link module:ol/control/Rotate~Rotate}.
+ * @property {boolean} [zoom] Include {@link module:ol/control/Zoom~Zoom}.
+ * @property {import("./control/Zoom.js").Options} [zoomOptions] Options for
+ * {@link module:ol/control/Zoom~Zoom}.
+ * @api
+ */
+/**
+ * Set of controls included in maps by default. Unless configured otherwise,
+ * this returns a collection containing an instance of each of the following
+ * controls:
+ * * {@link module:ol/control/Zoom~Zoom}
+ * * {@link module:ol/control/Rotate~Rotate}
+ * * {@link module:ol/control/Attribution~Attribution}
+ *
+ * @param {DefaultsOptions=} opt_options
+ * Defaults options.
+ * @return {Collection<import("./control/Control.js").default>}
+ * Controls.
+ * @api
+ */
+function defaults(opt_options) {
+    var options = opt_options ? opt_options : {};
+    var controls = new _Collection_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
+    var zoomControl = options.zoom !== undefined ? options.zoom : true;
+    if (zoomControl) {
+        controls.push(new _control_Zoom_js__WEBPACK_IMPORTED_MODULE_3__["default"](options.zoomOptions));
+    }
+    var rotateControl = options.rotate !== undefined ? options.rotate : true;
+    if (rotateControl) {
+        controls.push(new _control_Rotate_js__WEBPACK_IMPORTED_MODULE_2__["default"](options.rotateOptions));
+    }
+    var attributionControl = options.attribution !== undefined ?
+        options.attribution : true;
+    if (attributionControl) {
+        controls.push(new _control_Attribution_js__WEBPACK_IMPORTED_MODULE_1__["default"](options.attributionOptions));
+    }
+    return controls;
+}
 //# sourceMappingURL=control.js.map
 
 /***/ }),
@@ -10111,8 +10220,8 @@ function render(mapEvent) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony import */ var _Collection_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Collection.js */ "./build/ol/Collection.js");
-/* harmony import */ var _Map_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Map.js */ "./build/ol/Map.js");
+/* harmony import */ var _PluggableMap_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../PluggableMap.js */ "./build/ol/PluggableMap.js");
+/* harmony import */ var _renderer_Composite_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../renderer/Composite.js */ "./build/ol/renderer/Composite.js");
 /* harmony import */ var _MapEventType_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../MapEventType.js */ "./build/ol/MapEventType.js");
 /* harmony import */ var _MapProperty_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../MapProperty.js */ "./build/ol/MapProperty.js");
 /* harmony import */ var _Object_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Object.js */ "./build/ol/Object.js");
@@ -10171,6 +10280,16 @@ var MAX_RATIO = 0.75;
  * @type {number}
  */
 var MIN_RATIO = 0.1;
+var ControlledMap = /** @class */ (function (_super) {
+    __extends(ControlledMap, _super);
+    function ControlledMap() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ControlledMap.prototype.createRenderer = function () {
+        return new _renderer_Composite_js__WEBPACK_IMPORTED_MODULE_1__["default"](this);
+    };
+    return ControlledMap;
+}(_PluggableMap_js__WEBPACK_IMPORTED_MODULE_0__["default"]));
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-overviewmap'] CSS class name.
@@ -10263,12 +10382,10 @@ var OverviewMap = /** @class */ (function (_super) {
         _this.ovmapDiv_ = document.createElement('div');
         _this.ovmapDiv_.className = 'ol-overviewmap-map';
         /**
-         * @type {import("../Map.js").default}
+         * @type {ControlledMap}
          * @private
          */
-        _this.ovmap_ = new _Map_js__WEBPACK_IMPORTED_MODULE_1__["default"]({
-            controls: new _Collection_js__WEBPACK_IMPORTED_MODULE_0__["default"](),
-            interactions: new _Collection_js__WEBPACK_IMPORTED_MODULE_0__["default"](),
+        _this.ovmap_ = new ControlledMap({
             view: options.view
         });
         var ovmap = _this.ovmap_;
@@ -11871,79 +11988,6 @@ var ZoomToExtent = /** @class */ (function (_super) {
 
 /***/ }),
 
-/***/ "./build/ol/control/util.js":
-/*!**********************************!*\
-  !*** ./build/ol/control/util.js ***!
-  \**********************************/
-/*! exports provided: defaults */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaults", function() { return defaults; });
-/* harmony import */ var _Collection_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Collection.js */ "./build/ol/Collection.js");
-/* harmony import */ var _Attribution_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Attribution.js */ "./build/ol/control/Attribution.js");
-/* harmony import */ var _Rotate_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Rotate.js */ "./build/ol/control/Rotate.js");
-/* harmony import */ var _Zoom_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Zoom.js */ "./build/ol/control/Zoom.js");
-/**
- * @module ol/control/util
- */
-
-
-
-
-/**
- * @typedef {Object} DefaultsOptions
- * @property {boolean} [attribution=true] Include
- * {@link module:ol/control/Attribution~Attribution}.
- * @property {import("./Attribution.js").Options} [attributionOptions]
- * Options for {@link module:ol/control/Attribution~Attribution}.
- * @property {boolean} [rotate=true] Include
- * {@link module:ol/control/Rotate~Rotate}.
- * @property {import("./Rotate.js").Options} [rotateOptions] Options
- * for {@link module:ol/control/Rotate~Rotate}.
- * @property {boolean} [zoom] Include {@link module:ol/control/Zoom~Zoom}.
- * @property {import("./Zoom.js").Options} [zoomOptions] Options for
- * {@link module:ol/control/Zoom~Zoom}.
- * @api
- */
-/**
- * Set of controls included in maps by default. Unless configured otherwise,
- * this returns a collection containing an instance of each of the following
- * controls:
- * * {@link module:ol/control/Zoom~Zoom}
- * * {@link module:ol/control/Rotate~Rotate}
- * * {@link module:ol/control/Attribution~Attribution}
- *
- * @param {DefaultsOptions=} opt_options
- * Defaults options.
- * @return {Collection<import("./Control.js").default>}
- * Controls.
- * @function module:ol/control.defaults
- * @api
- */
-function defaults(opt_options) {
-    var options = opt_options ? opt_options : {};
-    var controls = new _Collection_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
-    var zoomControl = options.zoom !== undefined ? options.zoom : true;
-    if (zoomControl) {
-        controls.push(new _Zoom_js__WEBPACK_IMPORTED_MODULE_3__["default"](options.zoomOptions));
-    }
-    var rotateControl = options.rotate !== undefined ? options.rotate : true;
-    if (rotateControl) {
-        controls.push(new _Rotate_js__WEBPACK_IMPORTED_MODULE_2__["default"](options.rotateOptions));
-    }
-    var attributionControl = options.attribution !== undefined ?
-        options.attribution : true;
-    if (attributionControl) {
-        controls.push(new _Attribution_js__WEBPACK_IMPORTED_MODULE_1__["default"](options.attributionOptions));
-    }
-    return controls;
-}
-//# sourceMappingURL=util.js.map
-
-/***/ }),
-
 /***/ "./build/ol/coordinate.js":
 /*!********************************!*\
   !*** ./build/ol/coordinate.js ***!
@@ -13000,6 +13044,12 @@ __webpack_require__.r(__webpack_exports__);
      * @api
      */
     CHANGE: 'change',
+    /**
+     * Generic error event. Triggered when an error occurs.
+     * @event module:ol/events/Event~Event#error
+     * @api
+     */
+    ERROR: 'error',
     CLEAR: 'clear',
     CONTEXTMENU: 'contextmenu',
     CLICK: 'click',
@@ -13007,7 +13057,6 @@ __webpack_require__.r(__webpack_exports__);
     DRAGENTER: 'dragenter',
     DRAGOVER: 'dragover',
     DROP: 'drop',
-    ERROR: 'error',
     KEYDOWN: 'keydown',
     KEYPRESS: 'keypress',
     LOAD: 'load',
@@ -19557,7 +19606,7 @@ var IGC = /** @class */ (function (_super) {
 /*!*************************************!*\
   !*** ./build/ol/format/IIIFInfo.js ***!
   \*************************************/
-/*! exports provided: Versions, default */
+/*! exports provided: default, Versions */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -19652,8 +19701,9 @@ __webpack_require__.r(__webpack_exports__);
  * is not indicated by the compliance level.
  */
 /**
-* @enum {string}
-*/
+ * Enum representing the major IIIF Image API versions
+ * @enum {string}
+ */
 var Versions = {
     VERSION1: 'version1',
     VERSION2: 'version2',
@@ -19813,15 +19863,16 @@ versionFunctions[Versions.VERSION3] = generateVersion3Options;
  */
 var IIIFInfo = /** @class */ (function () {
     /**
-     * @param {ImageInformationResponse1_0|ImageInformationResponse1_1|ImageInformationResponse2|ImageInformationResponse3|string} imageInfo
+     * @param {string|ImageInformationResponse1_0|ImageInformationResponse1_1|ImageInformationResponse2|ImageInformationResponse3} imageInfo
      * Deserialized image information JSON response object or JSON response as string
      */
     function IIIFInfo(imageInfo) {
         this.setImageInfo(imageInfo);
     }
     /**
-     * @param {Object|string} imageInfo Deserialized image information JSON response
-     * object or JSON response as string
+     * @param {string|ImageInformationResponse1_0|ImageInformationResponse1_1|ImageInformationResponse2|ImageInformationResponse3} imageInfo
+     * Deserialized image information JSON response object or JSON response as string
+     * @api
      */
     IIIFInfo.prototype.setImageInfo = function (imageInfo) {
         if (typeof imageInfo == 'string') {
@@ -19833,6 +19884,7 @@ var IIIFInfo = /** @class */ (function () {
     };
     /**
      * @returns {Versions} Major IIIF version.
+     * @api
      */
     IIIFInfo.prototype.getImageApiVersion = function () {
         if (this.imageInfo === undefined) {
@@ -19927,6 +19979,7 @@ var IIIFInfo = /** @class */ (function () {
     /**
      * @param {PreferredOptions} opt_preferredOptions Optional options for preferred format and quality.
      * @returns {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
+     * @api
      */
     IIIFInfo.prototype.getTileSourceOptions = function (opt_preferredOptions) {
         var options = opt_preferredOptions || {}, version = this.getImageApiVersion();
@@ -19955,6 +20008,7 @@ var IIIFInfo = /** @class */ (function () {
     return IIIFInfo;
 }());
 /* harmony default export */ __webpack_exports__["default"] = (IIIFInfo);
+
 //# sourceMappingURL=IIIFInfo.js.map
 
 /***/ }),
@@ -22505,11 +22559,6 @@ function writePlacemark(node, feature, objectStack) {
     var keys = Object.keys(properties || {}).sort().filter(function (v) {
         return !filter[v];
     });
-    if (keys.length > 0) {
-        var sequence = Object(_xml_js__WEBPACK_IMPORTED_MODULE_25__["makeSequence"])(properties, keys);
-        var namesAndValues = { names: keys, values: sequence };
-        Object(_xml_js__WEBPACK_IMPORTED_MODULE_25__["pushSerializeAndPop"])(context, PLACEMARK_SERIALIZERS, EXTENDEDDATA_NODE_FACTORY, [namesAndValues], objectStack);
-    }
     var styleFunction = feature.getStyleFunction();
     if (styleFunction) {
         // FIXME the styles returned by the style function are supposed to be
@@ -22530,6 +22579,11 @@ function writePlacemark(node, feature, objectStack) {
     var orderedKeys = PLACEMARK_SEQUENCE[parentNode.namespaceURI];
     var values = Object(_xml_js__WEBPACK_IMPORTED_MODULE_25__["makeSequence"])(properties, orderedKeys);
     Object(_xml_js__WEBPACK_IMPORTED_MODULE_25__["pushSerializeAndPop"])(context, PLACEMARK_SERIALIZERS, _xml_js__WEBPACK_IMPORTED_MODULE_25__["OBJECT_PROPERTY_NODE_FACTORY"], values, objectStack, orderedKeys);
+    if (keys.length > 0) {
+        var sequence = Object(_xml_js__WEBPACK_IMPORTED_MODULE_25__["makeSequence"])(properties, keys);
+        var namesAndValues = { names: keys, values: sequence };
+        Object(_xml_js__WEBPACK_IMPORTED_MODULE_25__["pushSerializeAndPop"])(context, PLACEMARK_SERIALIZERS, EXTENDEDDATA_NODE_FACTORY, [namesAndValues], objectStack);
+    }
     // serialize geometry
     var options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
     var geometry = feature.getGeometry();
@@ -34595,8 +34649,8 @@ __webpack_require__.r(__webpack_exports__);
  * @param {function(string, string, Object<string, number>):number} measureAndCacheTextWidth Measure and cache text width.
  * @param {string} font The font.
  * @param {Object<string, number>} cache A cache of measured widths.
- * @return {Array<Array<*>>} The result array of null if `maxAngle` was
- * exceeded. Entries of the array are x, y, anchorX, angle, chunk.
+ * @return {Array<Array<*>>} The result array (or null if `maxAngle` was
+ * exceeded). Entries of the array are x, y, anchorX, angle, chunk.
  */
 function drawTextOnPath(flatCoordinates, offset, end, stride, text, startM, maxAngle, scale, measureAndCacheTextWidth, font, cache) {
     var result = [];
@@ -34610,15 +34664,12 @@ function drawTextOnPath(flatCoordinates, offset, end, stride, text, startM, maxA
     var y2 = flatCoordinates[offset + 1];
     var segmentM = 0;
     var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-    var chunk = '';
-    var chunkLength = 0;
-    var data, index, previousAngle;
+    var angleChanged = false;
+    var index, previousAngle;
     for (var i = 0; i < numChars; ++i) {
         index = reverse ? numChars - i - 1 : i;
-        var char = text.charAt(index);
-        chunk = reverse ? char + chunk : chunk + char;
-        var charLength = scale * measureAndCacheTextWidth(font, chunk, cache) - chunkLength;
-        chunkLength += charLength;
+        var char = text[index];
+        var charLength = scale * measureAndCacheTextWidth(font, char, cache);
         var charM = startM + charLength / 2;
         while (offset < end - stride && segmentM + segmentLength < charM) {
             x1 = x2;
@@ -34636,37 +34687,20 @@ function drawTextOnPath(flatCoordinates, offset, end, stride, text, startM, maxA
         }
         if (previousAngle !== undefined) {
             var delta = angle - previousAngle;
+            angleChanged = angleChanged || delta !== 0;
             delta += (delta > Math.PI) ? -2 * Math.PI : (delta < -Math.PI) ? 2 * Math.PI : 0;
             if (Math.abs(delta) > maxAngle) {
                 return null;
             }
         }
+        previousAngle = angle;
         var interpolate = segmentPos / segmentLength;
         var x = Object(_math_js__WEBPACK_IMPORTED_MODULE_0__["lerp"])(x1, x2, interpolate);
         var y = Object(_math_js__WEBPACK_IMPORTED_MODULE_0__["lerp"])(y1, y2, interpolate);
-        if (previousAngle == angle) {
-            if (reverse) {
-                data[0] = x;
-                data[1] = y;
-                data[2] = charLength / 2;
-            }
-            data[4] = chunk;
-        }
-        else {
-            chunk = char;
-            chunkLength = charLength;
-            data = [x, y, charLength / 2, angle, chunk];
-            if (reverse) {
-                result.unshift(data);
-            }
-            else {
-                result.push(data);
-            }
-            previousAngle = angle;
-        }
+        result[index] = [x, y, charLength / 2, angle, char];
         startM += charLength;
     }
-    return result;
+    return angleChanged ? result : [[result[0][0], result[0][1], result[0][2], result[0][3], text]];
 }
 //# sourceMappingURL=textpath.js.map
 
@@ -34806,7 +34840,7 @@ function translate(flatCoordinates, offset, end, stride, deltaX, deltaY, opt_des
 /*!*************************!*\
   !*** ./build/ol/has.js ***!
   \*************************/
-/*! exports provided: FIREFOX, SAFARI, WEBKIT, MAC, DEVICE_PIXEL_RATIO, GEOLOCATION, TOUCH, POINTER, MSPOINTER, WEBGL */
+/*! exports provided: FIREFOX, SAFARI, WEBKIT, MAC, DEVICE_PIXEL_RATIO, TOUCH, POINTER, MSPOINTER, WEBGL */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -34816,7 +34850,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WEBKIT", function() { return WEBKIT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAC", function() { return MAC; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEVICE_PIXEL_RATIO", function() { return DEVICE_PIXEL_RATIO; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GEOLOCATION", function() { return GEOLOCATION; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TOUCH", function() { return TOUCH; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "POINTER", function() { return POINTER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MSPOINTER", function() { return MSPOINTER; });
@@ -34857,13 +34890,6 @@ var MAC = ua.indexOf('macintosh') !== -1;
  */
 var DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
 /**
- * Is HTML5 geolocation supported in the current browser?
- * @const
- * @type {boolean}
- * @api
- */
-var GEOLOCATION = 'geolocation' in navigator;
-/**
  * True if browser supports touch events.
  * @const
  * @type {boolean}
@@ -34884,136 +34910,6 @@ var POINTER = 'PointerEvent' in window;
 var MSPOINTER = !!(navigator.msPointerEnabled);
 
 //# sourceMappingURL=has.js.map
-
-/***/ }),
-
-/***/ "./build/ol/index.js":
-/*!***************************!*\
-  !*** ./build/ol/index.js ***!
-  \***************************/
-/*! exports provided: AssertionError, Collection, Disposable, Feature, Geolocation, Graticule, Image, ImageBase, ImageCanvas, ImageTile, Kinetic, Map, MapBrowserEvent, MapBrowserEventHandler, MapBrowserPointerEvent, MapEvent, Object, Observable, Overlay, PluggableMap, Tile, TileCache, TileQueue, TileRange, VectorRenderTile, VectorTile, View, getUid, VERSION */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _AssertionError_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AssertionError.js */ "./build/ol/AssertionError.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "AssertionError", function() { return _AssertionError_js__WEBPACK_IMPORTED_MODULE_0__["default"]; });
-
-/* harmony import */ var _Collection_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Collection.js */ "./build/ol/Collection.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Collection", function() { return _Collection_js__WEBPACK_IMPORTED_MODULE_1__["default"]; });
-
-/* harmony import */ var _Disposable_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Disposable.js */ "./build/ol/Disposable.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Disposable", function() { return _Disposable_js__WEBPACK_IMPORTED_MODULE_2__["default"]; });
-
-/* harmony import */ var _Feature_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Feature.js */ "./build/ol/Feature.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Feature", function() { return _Feature_js__WEBPACK_IMPORTED_MODULE_3__["default"]; });
-
-/* harmony import */ var _Geolocation_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Geolocation.js */ "./build/ol/Geolocation.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Geolocation", function() { return _Geolocation_js__WEBPACK_IMPORTED_MODULE_4__["default"]; });
-
-/* harmony import */ var _layer_Graticule_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./layer/Graticule.js */ "./build/ol/layer/Graticule.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Graticule", function() { return _layer_Graticule_js__WEBPACK_IMPORTED_MODULE_5__["default"]; });
-
-/* harmony import */ var _Image_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Image.js */ "./build/ol/Image.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Image", function() { return _Image_js__WEBPACK_IMPORTED_MODULE_6__["default"]; });
-
-/* harmony import */ var _ImageBase_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./ImageBase.js */ "./build/ol/ImageBase.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ImageBase", function() { return _ImageBase_js__WEBPACK_IMPORTED_MODULE_7__["default"]; });
-
-/* harmony import */ var _ImageCanvas_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./ImageCanvas.js */ "./build/ol/ImageCanvas.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ImageCanvas", function() { return _ImageCanvas_js__WEBPACK_IMPORTED_MODULE_8__["default"]; });
-
-/* harmony import */ var _ImageTile_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./ImageTile.js */ "./build/ol/ImageTile.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ImageTile", function() { return _ImageTile_js__WEBPACK_IMPORTED_MODULE_9__["default"]; });
-
-/* harmony import */ var _Kinetic_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Kinetic.js */ "./build/ol/Kinetic.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Kinetic", function() { return _Kinetic_js__WEBPACK_IMPORTED_MODULE_10__["default"]; });
-
-/* harmony import */ var _Map_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Map.js */ "./build/ol/Map.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Map", function() { return _Map_js__WEBPACK_IMPORTED_MODULE_11__["default"]; });
-
-/* harmony import */ var _MapBrowserEvent_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./MapBrowserEvent.js */ "./build/ol/MapBrowserEvent.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MapBrowserEvent", function() { return _MapBrowserEvent_js__WEBPACK_IMPORTED_MODULE_12__["default"]; });
-
-/* harmony import */ var _MapBrowserEventHandler_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./MapBrowserEventHandler.js */ "./build/ol/MapBrowserEventHandler.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MapBrowserEventHandler", function() { return _MapBrowserEventHandler_js__WEBPACK_IMPORTED_MODULE_13__["default"]; });
-
-/* harmony import */ var _MapBrowserPointerEvent_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./MapBrowserPointerEvent.js */ "./build/ol/MapBrowserPointerEvent.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MapBrowserPointerEvent", function() { return _MapBrowserPointerEvent_js__WEBPACK_IMPORTED_MODULE_14__["default"]; });
-
-/* harmony import */ var _MapEvent_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./MapEvent.js */ "./build/ol/MapEvent.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MapEvent", function() { return _MapEvent_js__WEBPACK_IMPORTED_MODULE_15__["default"]; });
-
-/* harmony import */ var _Object_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./Object.js */ "./build/ol/Object.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Object", function() { return _Object_js__WEBPACK_IMPORTED_MODULE_16__["default"]; });
-
-/* harmony import */ var _Observable_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./Observable.js */ "./build/ol/Observable.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Observable", function() { return _Observable_js__WEBPACK_IMPORTED_MODULE_17__["default"]; });
-
-/* harmony import */ var _Overlay_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./Overlay.js */ "./build/ol/Overlay.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Overlay", function() { return _Overlay_js__WEBPACK_IMPORTED_MODULE_18__["default"]; });
-
-/* harmony import */ var _PluggableMap_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./PluggableMap.js */ "./build/ol/PluggableMap.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PluggableMap", function() { return _PluggableMap_js__WEBPACK_IMPORTED_MODULE_19__["default"]; });
-
-/* harmony import */ var _Tile_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./Tile.js */ "./build/ol/Tile.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Tile", function() { return _Tile_js__WEBPACK_IMPORTED_MODULE_20__["default"]; });
-
-/* harmony import */ var _TileCache_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./TileCache.js */ "./build/ol/TileCache.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "TileCache", function() { return _TileCache_js__WEBPACK_IMPORTED_MODULE_21__["default"]; });
-
-/* harmony import */ var _TileQueue_js__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./TileQueue.js */ "./build/ol/TileQueue.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "TileQueue", function() { return _TileQueue_js__WEBPACK_IMPORTED_MODULE_22__["default"]; });
-
-/* harmony import */ var _TileRange_js__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./TileRange.js */ "./build/ol/TileRange.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "TileRange", function() { return _TileRange_js__WEBPACK_IMPORTED_MODULE_23__["default"]; });
-
-/* harmony import */ var _VectorRenderTile_js__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./VectorRenderTile.js */ "./build/ol/VectorRenderTile.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "VectorRenderTile", function() { return _VectorRenderTile_js__WEBPACK_IMPORTED_MODULE_24__["default"]; });
-
-/* harmony import */ var _VectorTile_js__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./VectorTile.js */ "./build/ol/VectorTile.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "VectorTile", function() { return _VectorTile_js__WEBPACK_IMPORTED_MODULE_25__["default"]; });
-
-/* harmony import */ var _View_js__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./View.js */ "./build/ol/View.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "View", function() { return _View_js__WEBPACK_IMPORTED_MODULE_26__["default"]; });
-
-/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./util.js */ "./build/ol/util.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "getUid", function() { return _util_js__WEBPACK_IMPORTED_MODULE_27__["getUid"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return _util_js__WEBPACK_IMPORTED_MODULE_27__["VERSION"]; });
-
-/**
- * @module ol
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//# sourceMappingURL=index.js.map
 
 /***/ }),
 
@@ -35864,7 +35760,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
  * @typedef {Object} Options
  * @property {import("../events/condition.js").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
- * Default is {@link module:ol/events/condition~noModifierKeys}.
+ * Default is {@link module:ol/events/condition~noModifierKeys} and {@link module:ol/events/condition~primaryAction}.
  * @property {import("../Kinetic.js").default} [kinetic] Kinetic inertia to apply to the pan.
  */
 /**
@@ -35903,7 +35799,7 @@ var DragPan = /** @class */ (function (_super) {
          * @private
          * @type {import("../events/condition.js").Condition}
          */
-        _this.condition_ = options.condition ? options.condition : _events_condition_js__WEBPACK_IMPORTED_MODULE_2__["noModifierKeys"];
+        _this.condition_ = options.condition ? options.condition : defaultCondition;
         /**
          * @private
          * @type {boolean}
@@ -36009,6 +35905,13 @@ var DragPan = /** @class */ (function (_super) {
     };
     return DragPan;
 }(_Pointer_js__WEBPACK_IMPORTED_MODULE_4__["default"]));
+/**
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Browser event.
+ * @return {boolean} Combined condition result.
+ */
+function defaultCondition(mapBrowserEvent) {
+    return Object(_events_condition_js__WEBPACK_IMPORTED_MODULE_2__["noModifierKeys"])(mapBrowserEvent) && Object(_events_condition_js__WEBPACK_IMPORTED_MODULE_2__["primaryAction"])(mapBrowserEvent);
+}
 /* harmony default export */ __webpack_exports__["default"] = (DragPan);
 //# sourceMappingURL=DragPan.js.map
 
@@ -43828,6 +43731,9 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 
 /**
+ * @typedef {function(import("../PluggableMap.js").FrameState):HTMLElement} RenderFunction
+ */
+/**
  * @typedef {Object} Options
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
@@ -43845,6 +43751,8 @@ var __extends = (undefined && undefined.__extends) || (function () {
  * the source can be set by calling {@link module:ol/layer/Layer#setSource layer.setSource(source)} after
  * construction.
  * @property {import("../PluggableMap.js").default} [map] Map.
+ * @property {RenderFunction} [render] Render function. Takes the frame state as input and is expected to return an
+ * HTML element. Will overwrite the default rendering for the layer.
  */
 /**
  * @typedef {Object} State
@@ -43860,8 +43768,10 @@ var __extends = (undefined && undefined.__extends) || (function () {
  */
 /**
  * @classdesc
- * Abstract base class; normally only used for creating subclasses and not
- * instantiated in apps.
+ * Base class from which all layer types are derived. This should only be instantiated
+ * in the case where a custom layer is be added to the map with a custom `render` function.
+ * Such a function can be specified in the `options` object, and is expected to return an HTML element.
+ *
  * A visual representation of raster or vector map data.
  * Layers group together those properties that pertain to how the data is to be
  * displayed, irrespective of the source of that data.
@@ -43877,6 +43787,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
  * @fires import("../render/Event.js").RenderEvent#postrender
  *
  * @template {import("../source/Source.js").default} SourceType
+ * @api
  */
 var Layer = /** @class */ (function (_super) {
     __extends(Layer, _super);
@@ -43908,6 +43819,10 @@ var Layer = /** @class */ (function (_super) {
          * @type {import("../renderer/Layer.js").default}
          */
         _this.renderer_ = null;
+        // Overwrite default render method with a custom one
+        if (options.render) {
+            _this.render = options.render;
+        }
         if (options.map) {
             _this.setMap(options.map);
         }
@@ -44032,6 +43947,12 @@ var Layer = /** @class */ (function (_super) {
             this.renderer_ = this.createRenderer();
         }
         return this.renderer_;
+    };
+    /**
+     * @return {boolean} The layer has a renderer.
+     */
+    Layer.prototype.hasRenderer = function () {
+        return !!this.renderer_;
     };
     /**
      * Create a renderer for this layer.
@@ -44646,14 +44567,13 @@ function tile(tileGrid) {
 /*!**************************!*\
   !*** ./build/ol/math.js ***!
   \**************************/
-/*! exports provided: clamp, cosh, roundUpToPowerOfTwo, squaredSegmentDistance, squaredDistance, solveLinearSystem, toDegrees, toRadians, modulo, lerp */
+/*! exports provided: clamp, cosh, squaredSegmentDistance, squaredDistance, solveLinearSystem, toDegrees, toRadians, modulo, lerp */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clamp", function() { return clamp; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cosh", function() { return cosh; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "roundUpToPowerOfTwo", function() { return roundUpToPowerOfTwo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "squaredSegmentDistance", function() { return squaredSegmentDistance; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "squaredDistance", function() { return squaredDistance; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "solveLinearSystem", function() { return solveLinearSystem; });
@@ -44661,11 +44581,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toRadians", function() { return toRadians; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "modulo", function() { return modulo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lerp", function() { return lerp; });
-/* harmony import */ var _asserts_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./asserts.js */ "./build/ol/asserts.js");
 /**
  * @module ol/math
  */
-
 /**
  * Takes a number and clamps it to within the provided bounds.
  * @param {number} value The input number.
@@ -44703,14 +44621,6 @@ var cosh = (function () {
     }
     return cosh;
 }());
-/**
- * @param {number} x X.
- * @return {number} The smallest power of two greater than or equal to x.
- */
-function roundUpToPowerOfTwo(x) {
-    Object(_asserts_js__WEBPACK_IMPORTED_MODULE_0__["assert"])(0 < x, 29); // `x` must be greater than `0`
-    return Math.pow(2, Math.ceil(Math.log(x) / Math.LN2));
-}
 /**
  * Returns the square of the closest distance between the point (x, y) and the
  * line segment (x1, y1) to (x2, y2).
@@ -49867,7 +49777,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../transform.js */ "./build/ol/transform.js");
 /* harmony import */ var _dom_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../dom.js */ "./build/ol/dom.js");
 /* harmony import */ var _Disposable_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../Disposable.js */ "./build/ol/Disposable.js");
-/* harmony import */ var rbush__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! rbush */ "./node_modules/rbush/index.js");
+/* harmony import */ var rbush__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! rbush */ "./node_modules/rbush/rbush.min.js");
 /* harmony import */ var rbush__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(rbush__WEBPACK_IMPORTED_MODULE_13__);
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -50045,8 +49955,10 @@ var Executor = /** @class */ (function (_super) {
             var width = Object(_canvas_js__WEBPACK_IMPORTED_MODULE_7__["measureTextWidths"])(textState.font, lines, widths);
             var lineHeight = Object(_canvas_js__WEBPACK_IMPORTED_MODULE_7__["measureTextHeight"])(textState.font);
             var height = lineHeight * numLines;
-            var renderWidth = (width + strokeWidth);
-            var context = Object(_dom_js__WEBPACK_IMPORTED_MODULE_11__["createCanvasContext2D"])(Math.ceil(renderWidth * scale), Math.ceil((height + strokeWidth) * scale));
+            var renderWidth = width + strokeWidth;
+            var context = Object(_dom_js__WEBPACK_IMPORTED_MODULE_11__["createCanvasContext2D"])(
+            // make canvas 2 pixels wider to account for italic text width measurement errors
+            Math.ceil((renderWidth + 2) * scale), Math.ceil((height + strokeWidth) * scale));
             label = context.canvas;
             _canvas_js__WEBPACK_IMPORTED_MODULE_7__["labelCache"].set(key, label);
             if (scale != 1) {
@@ -50070,7 +49982,7 @@ var Executor = /** @class */ (function (_super) {
             context.textBaseline = 'middle';
             context.textAlign = 'center';
             var leftRight = (0.5 - align);
-            var x = align * label.width / scale + leftRight * strokeWidth;
+            var x = align * renderWidth + leftRight * strokeWidth;
             var i = void 0;
             if (strokeKey) {
                 for (i = 0; i < numLines; ++i) {
@@ -50244,7 +50156,7 @@ var Executor = /** @class */ (function (_super) {
                     value: feature
                 };
                 if (!declutterTree) {
-                    declutterTree = rbush__WEBPACK_IMPORTED_MODULE_13___default()(9, undefined);
+                    declutterTree = new rbush__WEBPACK_IMPORTED_MODULE_13___default.a(9);
                 }
                 if (!declutterTree.collides(box)) {
                     declutterTree.insert(box);
@@ -50280,7 +50192,9 @@ var Executor = /** @class */ (function (_super) {
         var align = _TextBuilder_js__WEBPACK_IMPORTED_MODULE_9__["TEXT_ALIGN"][textState.textAlign || _canvas_js__WEBPACK_IMPORTED_MODULE_7__["defaultTextAlign"]];
         var baseline = _TextBuilder_js__WEBPACK_IMPORTED_MODULE_9__["TEXT_ALIGN"][textState.textBaseline || _canvas_js__WEBPACK_IMPORTED_MODULE_7__["defaultTextBaseline"]];
         var strokeWidth = strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
-        var anchorX = align * label.width / pixelRatio + 2 * (0.5 - align) * strokeWidth;
+        // Remove the 2 pixels we added in getTextImage() for the anchor
+        var width = label.width / pixelRatio - 2 * textState.scale;
+        var anchorX = align * width + 2 * (0.5 - align) * strokeWidth;
         var anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;
         return {
             label: label,
@@ -50763,7 +50677,7 @@ var ExecutorGroup = /** @class */ (function (_super) {
          * @private
          * @type {CanvasRenderingContext2D}
          */
-        _this.hitDetectionContext_ = Object(_dom_js__WEBPACK_IMPORTED_MODULE_1__["createCanvasContext2D"])(1, 1);
+        _this.hitDetectionContext_ = null;
         /**
          * @private
          * @type {import("../../transform.js").Transform}
@@ -50813,8 +50727,10 @@ var ExecutorGroup = /** @class */ (function (_super) {
                 executors[key].disposeInternal();
             }
         }
-        var canvas = this.hitDetectionContext_.canvas;
-        canvas.width = canvas.height = 0;
+        if (this.hitDetectionContext_) {
+            var canvas = this.hitDetectionContext_.canvas;
+            canvas.width = canvas.height = 0;
+        }
         _super.prototype.disposeInternal.call(this);
     };
     /**
@@ -50847,6 +50763,9 @@ var ExecutorGroup = /** @class */ (function (_super) {
         hitTolerance = Math.round(hitTolerance);
         var contextSize = hitTolerance * 2 + 1;
         var transform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["compose"])(this.hitDetectionTransform_, hitTolerance + 0.5, hitTolerance + 0.5, 1 / resolution, -1 / resolution, -rotation, -coordinate[0], -coordinate[1]);
+        if (!this.hitDetectionContext_) {
+            this.hitDetectionContext_ = Object(_dom_js__WEBPACK_IMPORTED_MODULE_1__["createCanvasContext2D"])(contextSize, contextSize);
+        }
         var context = this.hitDetectionContext_;
         if (context.canvas.width !== contextSize || context.canvas.height !== contextSize) {
             context.canvas.width = contextSize;
@@ -53200,6 +53119,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Map_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Map.js */ "./build/ol/renderer/Map.js");
 /* harmony import */ var _source_State_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../source/State.js */ "./build/ol/source/State.js");
 /* harmony import */ var _dom_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../dom.js */ "./build/ol/dom.js");
+/* harmony import */ var _render_canvas_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../render/canvas.js */ "./build/ol/render/canvas.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -53223,6 +53143,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 
 
+
 /**
  * @classdesc
  * Canvas map renderer.
@@ -53235,6 +53156,7 @@ var CompositeMapRenderer = /** @class */ (function (_super) {
      */
     function CompositeMapRenderer(map) {
         var _this = _super.call(this, map) || this;
+        map.attachLabelCache(_render_canvas_js__WEBPACK_IMPORTED_MODULE_7__["labelCache"]);
         /**
          * @private
          * @type {HTMLDivElement}
@@ -53289,7 +53211,8 @@ var CompositeMapRenderer = /** @class */ (function (_super) {
         this.children_.length = 0;
         for (var i = 0, ii = layerStatesArray.length; i < ii; ++i) {
             var layerState = layerStatesArray[i];
-            if (!Object(_layer_Layer_js__WEBPACK_IMPORTED_MODULE_1__["visibleAtResolution"])(layerState, viewResolution) || layerState.sourceState != _source_State_js__WEBPACK_IMPORTED_MODULE_5__["default"].READY) {
+            if (!Object(_layer_Layer_js__WEBPACK_IMPORTED_MODULE_1__["visibleAtResolution"])(layerState, viewResolution) ||
+                (layerState.sourceState != _source_State_js__WEBPACK_IMPORTED_MODULE_5__["default"].READY && layerState.sourceState != _source_State_js__WEBPACK_IMPORTED_MODULE_5__["default"].UNDEFINED)) {
                 continue;
             }
             var layer = layerState.layer;
@@ -53309,7 +53232,6 @@ var CompositeMapRenderer = /** @class */ (function (_super) {
             this.element_.style.display = '';
             this.renderedVisible_ = true;
         }
-        this.scheduleRemoveUnusedLayerRenderers(frameState);
         this.scheduleExpireIconCache(frameState);
     };
     /**
@@ -53323,11 +53245,8 @@ var CompositeMapRenderer = /** @class */ (function (_super) {
         for (var i = numLayers - 1; i >= 0; --i) {
             var layerState = layerStates[i];
             var layer = layerState.layer;
-            if (Object(_layer_Layer_js__WEBPACK_IMPORTED_MODULE_1__["visibleAtResolution"])(layerState, viewResolution) && layerFilter(layer)) {
-                var layerRenderer = this.getLayerRenderer(layer);
-                if (!layerRenderer) {
-                    continue;
-                }
+            if (layer.hasRenderer() && Object(_layer_Layer_js__WEBPACK_IMPORTED_MODULE_1__["visibleAtResolution"])(layerState, viewResolution) && layerFilter(layer)) {
+                var layerRenderer = layer.getRenderer();
                 var data = layerRenderer.getDataAtPixel(pixel, frameState, hitTolerance);
                 if (data) {
                     var result = callback(layer, data);
@@ -53480,6 +53399,11 @@ var LayerRenderer = /** @class */ (function (_super) {
         return this.layer_;
     };
     /**
+     * Perform action necessary to get the layer rendered after new fonts have loaded
+     * @abstract
+     */
+    LayerRenderer.prototype.handleFontsChanged = function () { };
+    /**
      * Handle changes in image state.
      * @param {import("../events/Event.js").default} event Image change event.
      * @private
@@ -53543,14 +53467,12 @@ var LayerRenderer = /** @class */ (function (_super) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util.js */ "./build/ol/util.js");
 /* harmony import */ var _Disposable_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Disposable.js */ "./build/ol/Disposable.js");
-/* harmony import */ var _events_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../events.js */ "./build/ol/events.js");
-/* harmony import */ var _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../events/EventType.js */ "./build/ol/events/EventType.js");
-/* harmony import */ var _extent_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../extent.js */ "./build/ol/extent.js");
-/* harmony import */ var _functions_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../functions.js */ "./build/ol/functions.js");
-/* harmony import */ var _layer_Layer_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../layer/Layer.js */ "./build/ol/layer/Layer.js");
-/* harmony import */ var _style_IconImageCache_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../style/IconImageCache.js */ "./build/ol/style/IconImageCache.js");
-/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../transform.js */ "./build/ol/transform.js");
-/* harmony import */ var _render_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../render.js */ "./build/ol/render.js");
+/* harmony import */ var _extent_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../extent.js */ "./build/ol/extent.js");
+/* harmony import */ var _functions_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../functions.js */ "./build/ol/functions.js");
+/* harmony import */ var _layer_Layer_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layer/Layer.js */ "./build/ol/layer/Layer.js");
+/* harmony import */ var _style_IconImageCache_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../style/IconImageCache.js */ "./build/ol/style/IconImageCache.js");
+/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../transform.js */ "./build/ol/transform.js");
+/* harmony import */ var _render_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../render.js */ "./build/ol/render.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -53567,8 +53489,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
 /**
  * @module ol/renderer/Map
  */
-
-
 
 
 
@@ -53596,16 +53516,6 @@ var MapRenderer = /** @class */ (function (_super) {
          * @private
          */
         _this.declutterTree_ = null;
-        /**
-         * @private
-         * @type {!Object<string, import("./Layer.js").default>}
-         */
-        _this.layerRenderers_ = {};
-        /**
-         * @private
-         * @type {Object<string, import("../events.js").EventsKey>}
-         */
-        _this.layerRendererListeners_ = {};
         return _this;
     }
     /**
@@ -53624,16 +53534,8 @@ var MapRenderer = /** @class */ (function (_super) {
         var viewState = frameState.viewState;
         var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
         var pixelToCoordinateTransform = frameState.pixelToCoordinateTransform;
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_8__["compose"])(coordinateToPixelTransform, frameState.size[0] / 2, frameState.size[1] / 2, 1 / viewState.resolution, -1 / viewState.resolution, -viewState.rotation, -viewState.center[0], -viewState.center[1]);
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_8__["makeInverse"])(pixelToCoordinateTransform, coordinateToPixelTransform);
-    };
-    /**
-     * Removes all layer renderers.
-     */
-    MapRenderer.prototype.removeLayerRenderers = function () {
-        for (var key in this.layerRenderers_) {
-            this.removeLayerRendererByKey_(key).dispose();
-        }
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["compose"])(coordinateToPixelTransform, frameState.size[0] / 2, frameState.size[1] / 2, 1 / viewState.resolution, -1 / viewState.resolution, -viewState.rotation, -viewState.center[0], -viewState.center[1]);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["makeInverse"])(pixelToCoordinateTransform, coordinateToPixelTransform);
     };
     /**
      * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
@@ -53669,7 +53571,7 @@ var MapRenderer = /** @class */ (function (_super) {
         var translatedCoordinate = coordinate;
         if (projection.canWrapX()) {
             var projectionExtent = projection.getExtent();
-            var worldWidth = Object(_extent_js__WEBPACK_IMPORTED_MODULE_4__["getWidth"])(projectionExtent);
+            var worldWidth = Object(_extent_js__WEBPACK_IMPORTED_MODULE_2__["getWidth"])(projectionExtent);
             var x = coordinate[0];
             if (x < projectionExtent[0] || x > projectionExtent[2]) {
                 var worldsAway = Math.ceil((projectionExtent[0] - x) / worldWidth);
@@ -53688,8 +53590,8 @@ var MapRenderer = /** @class */ (function (_super) {
         for (i = numLayers - 1; i >= 0; --i) {
             var layerState = layerStates[i];
             var layer = /** @type {import("../layer/Layer.js").default} */ (layerState.layer);
-            if (Object(_layer_Layer_js__WEBPACK_IMPORTED_MODULE_6__["visibleAtResolution"])(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
-                var layerRenderer = this.getLayerRenderer(layer);
+            if (layer.hasRenderer() && Object(_layer_Layer_js__WEBPACK_IMPORTED_MODULE_4__["visibleAtResolution"])(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
+                var layerRenderer = layer.getRenderer();
                 var source = layer.getSource();
                 if (layerRenderer && source) {
                     var callback_1 = forEachFeatureAtCoordinate.bind(null, layerState.managed);
@@ -53732,33 +53634,8 @@ var MapRenderer = /** @class */ (function (_super) {
      * @template U
      */
     MapRenderer.prototype.hasFeatureAtCoordinate = function (coordinate, frameState, hitTolerance, layerFilter, thisArg) {
-        var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, _functions_js__WEBPACK_IMPORTED_MODULE_5__["TRUE"], this, layerFilter, thisArg);
+        var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, _functions_js__WEBPACK_IMPORTED_MODULE_3__["TRUE"], this, layerFilter, thisArg);
         return hasFeature !== undefined;
-    };
-    /**
-     * @param {import("../layer/Layer.js").default} layer Layer.
-     * @protected
-     * @return {import("./Layer.js").default} Layer renderer. May return null.
-     */
-    MapRenderer.prototype.getLayerRenderer = function (layer) {
-        var layerKey = Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["getUid"])(layer);
-        if (layerKey in this.layerRenderers_) {
-            return this.layerRenderers_[layerKey];
-        }
-        var renderer = layer.getRenderer();
-        if (!renderer) {
-            return null;
-        }
-        this.layerRenderers_[layerKey] = renderer;
-        this.layerRendererListeners_[layerKey] = Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["listen"])(renderer, _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].CHANGE, this.handleLayerRendererChange_, this);
-        return renderer;
-    };
-    /**
-     * @protected
-     * @return {Object<string, import("./Layer.js").default>} Layer renderers.
-     */
-    MapRenderer.prototype.getLayerRenderers = function () {
-        return this.layerRenderers_;
     };
     /**
      * @return {import("../PluggableMap.js").default} Map.
@@ -53767,56 +53644,19 @@ var MapRenderer = /** @class */ (function (_super) {
         return this.map_;
     };
     /**
-     * Handle changes in a layer renderer.
-     * @private
-     */
-    MapRenderer.prototype.handleLayerRendererChange_ = function () {
-        this.map_.render();
-    };
-    /**
-     * @param {string} layerKey Layer key.
-     * @return {import("./Layer.js").default} Layer renderer.
-     * @private
-     */
-    MapRenderer.prototype.removeLayerRendererByKey_ = function (layerKey) {
-        var layerRenderer = this.layerRenderers_[layerKey];
-        delete this.layerRenderers_[layerKey];
-        Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["unlistenByKey"])(this.layerRendererListeners_[layerKey]);
-        delete this.layerRendererListeners_[layerKey];
-        return layerRenderer;
-    };
-    /**
      * Render.
      * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
      */
     MapRenderer.prototype.renderFrame = function (frameState) {
-        this.declutterTree_ = Object(_render_js__WEBPACK_IMPORTED_MODULE_9__["renderDeclutterItems"])(frameState, this.declutterTree_);
+        this.declutterTree_ = Object(_render_js__WEBPACK_IMPORTED_MODULE_7__["renderDeclutterItems"])(frameState, this.declutterTree_);
     };
     /**
      * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
      * @protected
      */
     MapRenderer.prototype.scheduleExpireIconCache = function (frameState) {
-        if (_style_IconImageCache_js__WEBPACK_IMPORTED_MODULE_7__["shared"].canExpireCache()) {
+        if (_style_IconImageCache_js__WEBPACK_IMPORTED_MODULE_5__["shared"].canExpireCache()) {
             frameState.postRenderFunctions.push(expireIconCache);
-        }
-    };
-    /**
-     * @param {!import("../PluggableMap.js").FrameState} frameState Frame state.
-     * @protected
-     */
-    MapRenderer.prototype.scheduleRemoveUnusedLayerRenderers = function (frameState) {
-        var layerStatesMap = getLayerStatesMap(frameState.layerStatesArray);
-        var _loop_1 = function (layerKey) {
-            if (!(layerKey in layerStatesMap)) {
-                frameState.postRenderFunctions.push(function () {
-                    this.removeLayerRendererByKey_(layerKey).dispose();
-                }.bind(this_1));
-            }
-        };
-        var this_1 = this;
-        for (var layerKey in this.layerRenderers_) {
-            _loop_1(layerKey);
         }
     };
     return MapRenderer;
@@ -53826,17 +53666,7 @@ var MapRenderer = /** @class */ (function (_super) {
  * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
  */
 function expireIconCache(map, frameState) {
-    _style_IconImageCache_js__WEBPACK_IMPORTED_MODULE_7__["shared"].expire();
-}
-/**
- * @param {Array<import("../layer/Layer.js").State>} layerStatesArray Layer states array.
- * @return {Object<string, import("../layer/Layer.js").State>} States mapped by layer uid.
- */
-function getLayerStatesMap(layerStatesArray) {
-    return layerStatesArray.reduce(function (acc, state) {
-        acc[Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["getUid"])(state.layer)] = state;
-        return acc;
-    }, {});
+    _style_IconImageCache_js__WEBPACK_IMPORTED_MODULE_5__["shared"].expire();
 }
 /* harmony default export */ __webpack_exports__["default"] = (MapRenderer);
 //# sourceMappingURL=Map.js.map
@@ -54758,7 +54588,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
     };
 })();
 /**
- * @module ol/renderer/canvas/ImageLayer
+ * @module ol/renderer/canvas/VectorImageLayer
  */
 
 
@@ -54805,6 +54635,12 @@ var CanvasVectorImageLayerRenderer = /** @class */ (function (_super) {
     CanvasVectorImageLayerRenderer.prototype.disposeInternal = function () {
         this.vectorRenderer_.dispose();
         _super.prototype.disposeInternal.call(this);
+    };
+    /**
+     * @inheritDoc
+     */
+    CanvasVectorImageLayerRenderer.prototype.handleFontsChanged = function () {
+        this.vectorRenderer_.handleFontsChanged();
     };
     /**
      * @inheritDoc
@@ -54897,15 +54733,12 @@ var CanvasVectorImageLayerRenderer = /** @class */ (function (_super) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../util.js */ "./build/ol/util.js");
 /* harmony import */ var _ViewHint_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ViewHint.js */ "./build/ol/ViewHint.js");
-/* harmony import */ var _events_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../events.js */ "./build/ol/events.js");
-/* harmony import */ var _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../events/EventType.js */ "./build/ol/events/EventType.js");
-/* harmony import */ var _extent_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../extent.js */ "./build/ol/extent.js");
-/* harmony import */ var _render_canvas_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../render/canvas.js */ "./build/ol/render/canvas.js");
-/* harmony import */ var _render_canvas_BuilderGroup_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../render/canvas/BuilderGroup.js */ "./build/ol/render/canvas/BuilderGroup.js");
-/* harmony import */ var _render_canvas_ExecutorGroup_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../render/canvas/ExecutorGroup.js */ "./build/ol/render/canvas/ExecutorGroup.js");
-/* harmony import */ var _Layer_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Layer.js */ "./build/ol/renderer/canvas/Layer.js");
-/* harmony import */ var _vector_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../vector.js */ "./build/ol/renderer/vector.js");
-/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../transform.js */ "./build/ol/transform.js");
+/* harmony import */ var _extent_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../extent.js */ "./build/ol/extent.js");
+/* harmony import */ var _render_canvas_BuilderGroup_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../render/canvas/BuilderGroup.js */ "./build/ol/render/canvas/BuilderGroup.js");
+/* harmony import */ var _render_canvas_ExecutorGroup_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../render/canvas/ExecutorGroup.js */ "./build/ol/render/canvas/ExecutorGroup.js");
+/* harmony import */ var _Layer_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Layer.js */ "./build/ol/renderer/canvas/Layer.js");
+/* harmony import */ var _vector_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../vector.js */ "./build/ol/renderer/vector.js");
+/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../transform.js */ "./build/ol/transform.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -54922,9 +54755,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
 /**
  * @module ol/renderer/canvas/VectorLayer
  */
-
-
-
 
 
 
@@ -54964,7 +54794,7 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
          * @private
          * @type {import("../../extent.js").Extent}
          */
-        _this.renderedExtent_ = Object(_extent_js__WEBPACK_IMPORTED_MODULE_4__["createEmpty"])();
+        _this.renderedExtent_ = Object(_extent_js__WEBPACK_IMPORTED_MODULE_2__["createEmpty"])();
         /**
          * @private
          * @type {function(import("../../Feature.js").default, import("../../Feature.js").default): number|null}
@@ -54980,16 +54810,8 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
          * @type {boolean}
          */
         _this.replayGroupChanged = true;
-        Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["listen"])(_render_canvas_js__WEBPACK_IMPORTED_MODULE_5__["labelCache"], _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].CLEAR, _this.handleFontsChanged_, _this);
         return _this;
     }
-    /**
-     * @inheritDoc
-     */
-    CanvasVectorLayerRenderer.prototype.disposeInternal = function () {
-        Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["unlisten"])(_render_canvas_js__WEBPACK_IMPORTED_MODULE_5__["labelCache"], _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].CLEAR, this.handleFontsChanged_, this);
-        _super.prototype.disposeInternal.call(this);
-    };
     /**
      * @inheritDoc
      */
@@ -55005,15 +54827,15 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
         }
         var pixelRatio = frameState.pixelRatio;
         // set forward and inverse pixel transforms
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_10__["makeScale"])(this.pixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_10__["makeInverse"])(this.inversePixelTransform_, this.pixelTransform_);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["makeScale"])(this.pixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["makeInverse"])(this.inversePixelTransform_, this.pixelTransform_);
         // resize and clear
         var width = Math.round(frameState.size[0] * pixelRatio);
         var height = Math.round(frameState.size[1] * pixelRatio);
         if (canvas.width != width || canvas.height != height) {
             canvas.width = width;
             canvas.height = height;
-            var canvasTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_10__["toString"])(this.pixelTransform_);
+            var canvasTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["toString"])(this.pixelTransform_);
             if (canvas.style.transform !== canvasTransform) {
                 canvas.style.transform = canvasTransform;
             }
@@ -55040,9 +54862,9 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
         var skippedFeatureUids = layerState.managed ? frameState.skippedFeatureUids : {};
         var declutterReplays = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer()).getDeclutter() ? {} : null;
         replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel, undefined, declutterReplays);
-        if (vectorSource.getWrapX() && projection.canWrapX() && !Object(_extent_js__WEBPACK_IMPORTED_MODULE_4__["containsExtent"])(projectionExtent, extent)) {
+        if (vectorSource.getWrapX() && projection.canWrapX() && !Object(_extent_js__WEBPACK_IMPORTED_MODULE_2__["containsExtent"])(projectionExtent, extent)) {
             var startX = extent[0];
-            var worldWidth = Object(_extent_js__WEBPACK_IMPORTED_MODULE_4__["getWidth"])(projectionExtent);
+            var worldWidth = Object(_extent_js__WEBPACK_IMPORTED_MODULE_2__["getWidth"])(projectionExtent);
             var world = 0;
             var offsetX = void 0;
             while (startX < projectionExtent[0]) {
@@ -55065,7 +54887,7 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
         if (declutterReplays) {
             var viewHints_1 = frameState.viewHints;
             var hifi = !(viewHints_1[_ViewHint_js__WEBPACK_IMPORTED_MODULE_1__["default"].ANIMATING] || viewHints_1[_ViewHint_js__WEBPACK_IMPORTED_MODULE_1__["default"].INTERACTING]);
-            Object(_render_canvas_ExecutorGroup_js__WEBPACK_IMPORTED_MODULE_7__["replayDeclutter"])(declutterReplays, context, rotation, hifi, frameState.declutterItems);
+            Object(_render_canvas_ExecutorGroup_js__WEBPACK_IMPORTED_MODULE_4__["replayDeclutter"])(declutterReplays, context, rotation, hifi, frameState.declutterItems);
         }
         if (clipped) {
             context.restore();
@@ -55087,7 +54909,7 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
         else {
             var resolution = frameState.viewState.resolution;
             var rotation = frameState.viewState.rotation;
-            var layer_1 = this.getLayer();
+            var layer_1 = /** @type {import("../../layer/Vector").default} */ (this.getLayer());
             /** @type {!Object<string, boolean>} */
             var features_1 = {};
             var result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {}, 
@@ -55101,14 +54923,14 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
                     features_1[key] = true;
                     return callback(feature, layer_1);
                 }
-            }, declutteredFeatures);
+            }, layer_1.getDeclutter() ? declutteredFeatures : null);
             return result;
         }
     };
     /**
-     * @param {import("../../events/Event.js").default} event Event.
+     * @inheritDoc
      */
-    CanvasVectorLayerRenderer.prototype.handleFontsChanged_ = function (event) {
+    CanvasVectorLayerRenderer.prototype.handleFontsChanged = function () {
         var layer = this.getLayer();
         if (layer.getVisible() && this.replayGroup_) {
             layer.changed();
@@ -55145,19 +54967,19 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
         var vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
         var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
         if (vectorLayerRenderOrder === undefined) {
-            vectorLayerRenderOrder = _vector_js__WEBPACK_IMPORTED_MODULE_9__["defaultOrder"];
+            vectorLayerRenderOrder = _vector_js__WEBPACK_IMPORTED_MODULE_6__["defaultOrder"];
         }
-        var extent = Object(_extent_js__WEBPACK_IMPORTED_MODULE_4__["buffer"])(frameStateExtent, vectorLayerRenderBuffer * resolution);
+        var extent = Object(_extent_js__WEBPACK_IMPORTED_MODULE_2__["buffer"])(frameStateExtent, vectorLayerRenderBuffer * resolution);
         var projectionExtent = viewState.projection.getExtent();
         if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
-            !Object(_extent_js__WEBPACK_IMPORTED_MODULE_4__["containsExtent"])(projectionExtent, frameState.extent)) {
+            !Object(_extent_js__WEBPACK_IMPORTED_MODULE_2__["containsExtent"])(projectionExtent, frameState.extent)) {
             // For the replay group, we need an extent that intersects the real world
             // (-180° to +180°). To support geometries in a coordinate range from -540°
             // to +540°, we add at least 1 world width on each side of the projection
             // extent. If the viewport is wider than the world, we need to add half of
             // the viewport width to make sure we cover the whole viewport.
-            var worldWidth = Object(_extent_js__WEBPACK_IMPORTED_MODULE_4__["getWidth"])(projectionExtent);
-            var gutter = Math.max(Object(_extent_js__WEBPACK_IMPORTED_MODULE_4__["getWidth"])(extent) / 2, worldWidth);
+            var worldWidth = Object(_extent_js__WEBPACK_IMPORTED_MODULE_2__["getWidth"])(projectionExtent);
+            var gutter = Math.max(Object(_extent_js__WEBPACK_IMPORTED_MODULE_2__["getWidth"])(extent) / 2, worldWidth);
             extent[0] = projectionExtent[0] - gutter;
             extent[2] = projectionExtent[2] + gutter;
         }
@@ -55165,7 +54987,7 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
             this.renderedResolution_ == resolution &&
             this.renderedRevision_ == vectorLayerRevision &&
             this.renderedRenderOrder_ == vectorLayerRenderOrder &&
-            Object(_extent_js__WEBPACK_IMPORTED_MODULE_4__["containsExtent"])(this.renderedExtent_, extent)) {
+            Object(_extent_js__WEBPACK_IMPORTED_MODULE_2__["containsExtent"])(this.renderedExtent_, extent)) {
             this.replayGroupChanged = false;
             return true;
         }
@@ -55174,7 +54996,7 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
         }
         this.replayGroup_ = null;
         this.dirty_ = false;
-        var replayGroup = new _render_canvas_BuilderGroup_js__WEBPACK_IMPORTED_MODULE_6__["default"](Object(_vector_js__WEBPACK_IMPORTED_MODULE_9__["getTolerance"])(resolution, pixelRatio), extent, resolution, pixelRatio, vectorLayer.getDeclutter());
+        var replayGroup = new _render_canvas_BuilderGroup_js__WEBPACK_IMPORTED_MODULE_3__["default"](Object(_vector_js__WEBPACK_IMPORTED_MODULE_6__["getTolerance"])(resolution, pixelRatio), extent, resolution, pixelRatio, vectorLayer.getDeclutter());
         vectorSource.loadFeatures(extent, resolution, projection);
         /**
          * @param {import("../../Feature.js").default} feature Feature.
@@ -55210,7 +55032,7 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
             vectorSource.forEachFeatureInExtent(extent, render);
         }
         var replayGroupInstructions = replayGroup.finish();
-        var executorGroup = new _render_canvas_ExecutorGroup_js__WEBPACK_IMPORTED_MODULE_7__["default"](extent, resolution, pixelRatio, vectorSource.getOverlaps(), replayGroupInstructions, vectorLayer.getRenderBuffer());
+        var executorGroup = new _render_canvas_ExecutorGroup_js__WEBPACK_IMPORTED_MODULE_4__["default"](extent, resolution, pixelRatio, vectorSource.getOverlaps(), replayGroupInstructions, vectorLayer.getRenderBuffer());
         this.renderedResolution_ = resolution;
         this.renderedRevision_ = vectorLayerRevision;
         this.renderedRenderOrder_ = vectorLayerRenderOrder;
@@ -55234,16 +55056,16 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
         var loading = false;
         if (Array.isArray(styles)) {
             for (var i = 0, ii = styles.length; i < ii; ++i) {
-                loading = Object(_vector_js__WEBPACK_IMPORTED_MODULE_9__["renderFeature"])(builderGroup, feature, styles[i], Object(_vector_js__WEBPACK_IMPORTED_MODULE_9__["getSquaredTolerance"])(resolution, pixelRatio), this.handleStyleImageChange_, this) || loading;
+                loading = Object(_vector_js__WEBPACK_IMPORTED_MODULE_6__["renderFeature"])(builderGroup, feature, styles[i], Object(_vector_js__WEBPACK_IMPORTED_MODULE_6__["getSquaredTolerance"])(resolution, pixelRatio), this.handleStyleImageChange_, this) || loading;
             }
         }
         else {
-            loading = Object(_vector_js__WEBPACK_IMPORTED_MODULE_9__["renderFeature"])(builderGroup, feature, styles, Object(_vector_js__WEBPACK_IMPORTED_MODULE_9__["getSquaredTolerance"])(resolution, pixelRatio), this.handleStyleImageChange_, this);
+            loading = Object(_vector_js__WEBPACK_IMPORTED_MODULE_6__["renderFeature"])(builderGroup, feature, styles, Object(_vector_js__WEBPACK_IMPORTED_MODULE_6__["getSquaredTolerance"])(resolution, pixelRatio), this.handleStyleImageChange_, this);
         }
         return loading;
     };
     return CanvasVectorLayerRenderer;
-}(_Layer_js__WEBPACK_IMPORTED_MODULE_8__["default"]));
+}(_Layer_js__WEBPACK_IMPORTED_MODULE_5__["default"]));
 /* harmony default export */ __webpack_exports__["default"] = (CanvasVectorLayerRenderer);
 //# sourceMappingURL=VectorLayer.js.map
 
@@ -55267,13 +55089,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _extent_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../extent.js */ "./build/ol/extent.js");
 /* harmony import */ var _layer_VectorTileRenderType_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../layer/VectorTileRenderType.js */ "./build/ol/layer/VectorTileRenderType.js");
 /* harmony import */ var _render_canvas_BuilderType_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../render/canvas/BuilderType.js */ "./build/ol/render/canvas/BuilderType.js");
-/* harmony import */ var _render_canvas_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../render/canvas.js */ "./build/ol/render/canvas.js");
-/* harmony import */ var _render_canvas_BuilderGroup_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../render/canvas/BuilderGroup.js */ "./build/ol/render/canvas/BuilderGroup.js");
-/* harmony import */ var _TileLayer_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./TileLayer.js */ "./build/ol/renderer/canvas/TileLayer.js");
-/* harmony import */ var _vector_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../vector.js */ "./build/ol/renderer/vector.js");
-/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../transform.js */ "./build/ol/transform.js");
-/* harmony import */ var _render_canvas_ExecutorGroup_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../render/canvas/ExecutorGroup.js */ "./build/ol/render/canvas/ExecutorGroup.js");
-/* harmony import */ var _obj_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../obj.js */ "./build/ol/obj.js");
+/* harmony import */ var _render_canvas_BuilderGroup_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../render/canvas/BuilderGroup.js */ "./build/ol/render/canvas/BuilderGroup.js");
+/* harmony import */ var _TileLayer_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./TileLayer.js */ "./build/ol/renderer/canvas/TileLayer.js");
+/* harmony import */ var _vector_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../vector.js */ "./build/ol/renderer/vector.js");
+/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../transform.js */ "./build/ol/transform.js");
+/* harmony import */ var _render_canvas_ExecutorGroup_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../render/canvas/ExecutorGroup.js */ "./build/ol/render/canvas/ExecutorGroup.js");
+/* harmony import */ var _obj_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../obj.js */ "./build/ol/obj.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -55290,7 +55111,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
 /**
  * @module ol/renderer/canvas/VectorTileLayer
  */
-
 
 
 
@@ -55359,13 +55179,13 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
          * @private
          * @type {import("../../transform.js").Transform}
          */
-        _this.overlayPixelTransform_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_13__["create"])();
+        _this.overlayPixelTransform_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_12__["create"])();
         /**
          * The transform for viewport CSS pixels to rendered pixels for the overlay canvas.
          * @private
          * @type {import("../../transform.js").Transform}
          */
-        _this.inverseOverlayPixelTransform_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_13__["create"])();
+        _this.inverseOverlayPixelTransform_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_12__["create"])();
         /**
          * @private
          * @type {boolean}
@@ -55389,17 +55209,15 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
          * @private
          * @type {import("../../transform.js").Transform}
          */
-        _this.tmpTransform_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_13__["create"])();
+        _this.tmpTransform_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_12__["create"])();
         // Use nearest lower resolution.
         _this.zDirection = 1;
-        Object(_events_js__WEBPACK_IMPORTED_MODULE_4__["listen"])(_render_canvas_js__WEBPACK_IMPORTED_MODULE_9__["labelCache"], _events_EventType_js__WEBPACK_IMPORTED_MODULE_5__["default"].CLEAR, _this.handleFontsChanged_, _this);
         return _this;
     }
     /**
      * @inheritDoc
      */
     CanvasVectorTileLayerRenderer.prototype.disposeInternal = function () {
-        Object(_events_js__WEBPACK_IMPORTED_MODULE_4__["unlisten"])(_render_canvas_js__WEBPACK_IMPORTED_MODULE_9__["labelCache"], _events_EventType_js__WEBPACK_IMPORTED_MODULE_5__["default"].CLEAR, this.handleFontsChanged_, this);
         this.overlayContext_.canvas.width = this.overlayContext_.canvas.height = 0;
         _super.prototype.disposeInternal.call(this);
     };
@@ -55515,8 +55333,8 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
             var bufferedExtent = Object(_extent_js__WEBPACK_IMPORTED_MODULE_6__["equals"])(sourceTileExtent, sharedExtent) ? null :
                 Object(_extent_js__WEBPACK_IMPORTED_MODULE_6__["buffer"])(sharedExtent, layer.getRenderBuffer() * resolution, this_1.tmpExtent);
             builderState.dirty = false;
-            var builderGroup = new _render_canvas_BuilderGroup_js__WEBPACK_IMPORTED_MODULE_10__["default"](0, sharedExtent, resolution, pixelRatio, layer.getDeclutter());
-            var squaredTolerance = Object(_vector_js__WEBPACK_IMPORTED_MODULE_12__["getSquaredTolerance"])(resolution, pixelRatio);
+            var builderGroup = new _render_canvas_BuilderGroup_js__WEBPACK_IMPORTED_MODULE_9__["default"](0, sharedExtent, resolution, pixelRatio, layer.getDeclutter());
+            var squaredTolerance = Object(_vector_js__WEBPACK_IMPORTED_MODULE_11__["getSquaredTolerance"])(resolution, pixelRatio);
             /**
              * @param {import("../../Feature.js").FeatureLike} feature Feature.
              * @this {CanvasVectorTileLayerRenderer}
@@ -55548,7 +55366,7 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
             var replayExtent = layer.getDeclutter() && sourceTiles.length === 1 ?
                 null :
                 sharedExtent;
-            var renderingReplayGroup = new _render_canvas_ExecutorGroup_js__WEBPACK_IMPORTED_MODULE_14__["default"](replayExtent, resolution, pixelRatio, source.getOverlaps(), executorGroupInstructions, layer.getRenderBuffer());
+            var renderingReplayGroup = new _render_canvas_ExecutorGroup_js__WEBPACK_IMPORTED_MODULE_13__["default"](replayExtent, resolution, pixelRatio, source.getOverlaps(), executorGroupInstructions, layer.getRenderBuffer());
             tile.executorGroups[layerUid].push(renderingReplayGroup);
         };
         var this_1 = this;
@@ -55603,38 +55421,15 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
                         features[key] = true;
                         return callback(feature, layer);
                     }
-                }, declutteredFeatures);
+                }, layer.getDeclutter() ? declutteredFeatures : null);
             }
         }
         return found;
     };
     /**
-     * @param {import("../../VectorTile.js").default} tile Tile.
-     * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-     * @return {import("../../transform.js").Transform} transform Transform.
-     * @private
+     * @inheritDoc
      */
-    CanvasVectorTileLayerRenderer.prototype.getReplayTransform_ = function (tile, frameState) {
-        var layer = this.getLayer();
-        var source = layer.getSource();
-        var tileGrid = source.getTileGrid();
-        var tileCoord = tile.tileCoord;
-        var tileResolution = tileGrid.getResolution(tileCoord[0]);
-        var viewState = frameState.viewState;
-        var pixelRatio = frameState.pixelRatio;
-        var renderResolution = viewState.resolution / pixelRatio;
-        var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
-        var center = viewState.center;
-        var origin = Object(_extent_js__WEBPACK_IMPORTED_MODULE_6__["getTopLeft"])(tileExtent);
-        var size = frameState.size;
-        var offsetX = Math.round(pixelRatio * size[0] / 2);
-        var offsetY = Math.round(pixelRatio * size[1] / 2);
-        return Object(_transform_js__WEBPACK_IMPORTED_MODULE_13__["compose"])(this.tmpTransform_, offsetX, offsetY, tileResolution / renderResolution, tileResolution / renderResolution, viewState.rotation, (origin[0] - center[0]) / tileResolution, (center[1] - origin[1]) / tileResolution);
-    };
-    /**
-     * @param {import("../../events/Event.js").default} event Event.
-     */
-    CanvasVectorTileLayerRenderer.prototype.handleFontsChanged_ = function (event) {
+    CanvasVectorTileLayerRenderer.prototype.handleFontsChanged = function () {
         var layer = this.getLayer();
         if (layer.getVisible() && this.renderedLayerRevision_ !== undefined) {
             layer.changed();
@@ -55661,7 +55456,7 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
             this.renderTileImages_(hifi, frameState);
             return this.container_;
         }
-        if (!Object(_obj_js__WEBPACK_IMPORTED_MODULE_15__["isEmpty"])(this.renderTileImageQueue_) && !this.extentChanged) {
+        if (!Object(_obj_js__WEBPACK_IMPORTED_MODULE_14__["isEmpty"])(this.renderTileImageQueue_) && !this.extentChanged) {
             this.renderTileImages_(hifi, frameState);
             return this.container_;
         }
@@ -55673,8 +55468,8 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
         var rotation = frameState.viewState.rotation;
         var size = frameState.size;
         // set forward and inverse pixel transforms
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_13__["makeScale"])(this.overlayPixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_13__["makeInverse"])(this.inverseOverlayPixelTransform_, this.overlayPixelTransform_);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_12__["makeScale"])(this.overlayPixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_12__["makeInverse"])(this.inverseOverlayPixelTransform_, this.overlayPixelTransform_);
         // resize and clear
         var canvas = context.canvas;
         var width = Math.round(size[0] * pixelRatio);
@@ -55682,7 +55477,7 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
         if (canvas.width != width || canvas.height != height) {
             canvas.width = width;
             canvas.height = height;
-            var canvasTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_13__["toString"])(this.overlayPixelTransform_);
+            var canvasTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_12__["toString"])(this.overlayPixelTransform_);
             if (canvas.style.transform !== canvasTransform) {
                 canvas.style.transform = canvasTransform;
             }
@@ -55744,7 +55539,7 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
             }
         }
         if (declutterReplays) {
-            Object(_render_canvas_ExecutorGroup_js__WEBPACK_IMPORTED_MODULE_14__["replayDeclutter"])(declutterReplays, context, rotation, hifi, frameState.declutterItems);
+            Object(_render_canvas_ExecutorGroup_js__WEBPACK_IMPORTED_MODULE_13__["replayDeclutter"])(declutterReplays, context, rotation, hifi, frameState.declutterItems);
         }
         var opacity = layerState.opacity;
         if (opacity !== parseFloat(canvas.style.opacity)) {
@@ -55776,7 +55571,7 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
             var renderPixelRatio = frameState.pixelRatio / tile.wantedResolution * tileResolution;
             this.renderTileImage_(tile, frameState.pixelRatio, renderPixelRatio, viewState.projection);
         }
-        Object(_obj_js__WEBPACK_IMPORTED_MODULE_15__["clear"])(this.renderTileImageQueue_);
+        Object(_obj_js__WEBPACK_IMPORTED_MODULE_14__["clear"])(this.renderTileImageQueue_);
     };
     /**
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
@@ -55792,11 +55587,11 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
         var loading = false;
         if (Array.isArray(styles)) {
             for (var i = 0, ii = styles.length; i < ii; ++i) {
-                loading = Object(_vector_js__WEBPACK_IMPORTED_MODULE_12__["renderFeature"])(executorGroup, feature, styles[i], squaredTolerance, this.handleStyleImageChange_, this) || loading;
+                loading = Object(_vector_js__WEBPACK_IMPORTED_MODULE_11__["renderFeature"])(executorGroup, feature, styles[i], squaredTolerance, this.handleStyleImageChange_, this) || loading;
             }
         }
         else {
-            loading = Object(_vector_js__WEBPACK_IMPORTED_MODULE_12__["renderFeature"])(executorGroup, feature, styles, squaredTolerance, this.handleStyleImageChange_, this);
+            loading = Object(_vector_js__WEBPACK_IMPORTED_MODULE_11__["renderFeature"])(executorGroup, feature, styles, squaredTolerance, this.handleStyleImageChange_, this);
         }
         return loading;
     };
@@ -55840,17 +55635,19 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
         var size = source.getTilePixelSize(z, pixelRatio, projection);
         context.canvas.width = size[0];
         context.canvas.height = size[1];
-        var canvasTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_13__["reset"])(this.tmpTransform_);
         var renderScale = pixelRatio / renderPixelRatio;
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_13__["scale"])(canvasTransform, renderScale, renderScale);
-        context.setTransform.apply(context, canvasTransform);
+        if (renderScale !== 1) {
+            var canvasTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_12__["reset"])(this.tmpTransform_);
+            Object(_transform_js__WEBPACK_IMPORTED_MODULE_12__["scale"])(canvasTransform, renderScale, renderScale);
+            context.setTransform.apply(context, canvasTransform);
+        }
         var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
+        var pixelScale = renderPixelRatio / resolution;
+        var transform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_12__["reset"])(this.tmpTransform_);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_12__["scale"])(transform, pixelScale, -pixelScale);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_12__["translate"])(transform, -tileExtent[0], -tileExtent[3]);
         for (var i = 0, ii = executorGroups.length; i < ii; ++i) {
             var executorGroup = executorGroups[i];
-            var pixelScale = renderPixelRatio / resolution;
-            var transform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_13__["reset"])(this.tmpTransform_);
-            Object(_transform_js__WEBPACK_IMPORTED_MODULE_13__["scale"])(transform, pixelScale, -pixelScale);
-            Object(_transform_js__WEBPACK_IMPORTED_MODULE_13__["translate"])(transform, -tileExtent[0], -tileExtent[3]);
             executorGroup.execute(context, transform, 0, {}, true, IMAGE_REPLAYS[layer.getRenderMode()]);
         }
         replayState.renderedTileResolution = tile.wantedResolution;
@@ -55863,7 +55660,7 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
         if (data) {
             return data;
         }
-        var renderPixel = Object(_transform_js__WEBPACK_IMPORTED_MODULE_13__["apply"])(this.inverseOverlayPixelTransform_, pixel.slice());
+        var renderPixel = Object(_transform_js__WEBPACK_IMPORTED_MODULE_12__["apply"])(this.inverseOverlayPixelTransform_, pixel.slice());
         var context = this.overlayContext_;
         try {
             data = context.getImageData(Math.round(renderPixel[0]), Math.round(renderPixel[1]), 1, 1).data;
@@ -55881,7 +55678,7 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
         return data;
     };
     return CanvasVectorTileLayerRenderer;
-}(_TileLayer_js__WEBPACK_IMPORTED_MODULE_11__["default"]));
+}(_TileLayer_js__WEBPACK_IMPORTED_MODULE_10__["default"]));
 /* harmony default export */ __webpack_exports__["default"] = (CanvasVectorTileLayerRenderer);
 //# sourceMappingURL=VectorTileLayer.js.map
 
@@ -56192,6 +55989,176 @@ function renderPolygonGeometry(builderGroup, geometry, style, feature) {
 
 /***/ }),
 
+/***/ "./build/ol/renderer/webgl/Layer.js":
+/*!******************************************!*\
+  !*** ./build/ol/renderer/webgl/Layer.js ***!
+  \******************************************/
+/*! exports provided: pushFeatureToBuffer, getBlankTexture, default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pushFeatureToBuffer", function() { return pushFeatureToBuffer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getBlankTexture", function() { return getBlankTexture; });
+/* harmony import */ var _Layer_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Layer.js */ "./build/ol/renderer/Layer.js");
+/* harmony import */ var _webgl_Helper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../webgl/Helper */ "./build/ol/webgl/Helper.js");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+/**
+ * @module ol/renderer/webgl/Layer
+ */
+
+
+/**
+ * @typedef {Object} PostProcessesOptions
+ * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
+ * the main canvas that will then be sampled up (useful for saving resource on blur steps).
+ * @property {string} [vertexShader] Vertex shader source
+ * @property {string} [fragmentShader] Fragment shader source
+ * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
+ */
+/**
+ * @typedef {Object} Options
+ * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
+ * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
+ */
+/**
+ * @classdesc
+ * Base WebGL renderer class.
+ * Holds all logic related to data manipulation & some common rendering logic
+ */
+var WebGLLayerRenderer = /** @class */ (function (_super) {
+    __extends(WebGLLayerRenderer, _super);
+    /**
+     * @param {import("../../layer/Layer.js").default} layer Layer.
+     * @param {Options=} [opt_options] Options.
+     */
+    function WebGLLayerRenderer(layer, opt_options) {
+        var _this = _super.call(this, layer) || this;
+        var options = opt_options || {};
+        _this.helper_ = new _webgl_Helper__WEBPACK_IMPORTED_MODULE_1__["default"]({
+            postProcesses: options.postProcesses,
+            uniforms: options.uniforms
+        });
+        return _this;
+    }
+    /**
+     * @inheritDoc
+     */
+    WebGLLayerRenderer.prototype.disposeInternal = function () {
+        _super.prototype.disposeInternal.call(this);
+    };
+    /**
+     * Will return the last shader compilation errors. If no error happened, will return null;
+     * @return {string|null} Errors, or null if last compilation was successful
+     * @api
+     */
+    WebGLLayerRenderer.prototype.getShaderCompileErrors = function () {
+        return this.helper_.getShaderCompileErrors();
+    };
+    return WebGLLayerRenderer;
+}(_Layer_js__WEBPACK_IMPORTED_MODULE_0__["default"]));
+/**
+ * Pushes vertices and indices to the given buffers using the geometry coordinates and the following properties
+ * from the feature:
+ * - `color`
+ * - `opacity`
+ * - `size` (for points)
+ * - `u0`, `v0`, `u1`, `v1` (for points)
+ * - `rotateWithView` (for points)
+ * - `width` (for lines)
+ * Custom attributes can be designated using the `opt_attributes` argument, otherwise other properties on the
+ * feature will be ignored.
+ * @param {import("../../webgl/Buffer").default} vertexBuffer WebGL buffer in which new vertices will be pushed.
+ * @param {import("../../webgl/Buffer").default} indexBuffer WebGL buffer in which new indices will be pushed.
+ * @param {import("../../format/GeoJSON").GeoJSONFeature} geojsonFeature Feature in geojson format, coordinates
+ * expressed in EPSG:4326.
+ * @param {Array<string>} [opt_attributes] Custom attributes. An array of properties which will be read from the
+ * feature and pushed in the buffer in the given order. Note: attributes can only be numerical! Any other type or
+ * NaN will result in `0` being pushed in the buffer.
+ */
+function pushFeatureToBuffer(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
+    if (!geojsonFeature.geometry) {
+        return;
+    }
+    switch (geojsonFeature.geometry.type) {
+        case 'Point':
+            pushPointFeatureToBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes);
+            return;
+        default:
+            return;
+    }
+}
+var tmpArray_ = [];
+/**
+ * Pushes a quad (two triangles) based on a point geometry
+ * @param {import("../../webgl/Buffer").default} vertexBuffer WebGL buffer
+ * @param {import("../../webgl/Buffer").default} indexBuffer WebGL buffer
+ * @param {import("../../format/GeoJSON").GeoJSONFeature} geojsonFeature Feature
+ * @param {Array<string>} [opt_attributes] Custom attributes
+ * @private
+ */
+function pushPointFeatureToBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
+    var stride = 12 + (opt_attributes !== undefined ? opt_attributes.length : 0);
+    var x = geojsonFeature.geometry.coordinates[0];
+    var y = geojsonFeature.geometry.coordinates[1];
+    var u0 = geojsonFeature.properties.u0;
+    var v0 = geojsonFeature.properties.v0;
+    var u1 = geojsonFeature.properties.u1;
+    var v1 = geojsonFeature.properties.v1;
+    var size = geojsonFeature.properties.size;
+    var opacity = geojsonFeature.properties.opacity;
+    var rotateWithView = geojsonFeature.properties.rotateWithView;
+    var color = geojsonFeature.properties.color;
+    var red = color[0];
+    var green = color[1];
+    var blue = color[2];
+    var alpha = color[3];
+    var baseIndex = vertexBuffer.getArray().length / stride;
+    // read custom numerical attributes on the feature
+    var customAttributeValues = tmpArray_;
+    customAttributeValues.length = opt_attributes ? opt_attributes.length : 0;
+    for (var i = 0; i < customAttributeValues.length; i++) {
+        customAttributeValues[i] = parseFloat(geojsonFeature.properties[opt_attributes[i]]) || 0;
+    }
+    // push vertices for each of the four quad corners (first standard then custom attributes)
+    vertexBuffer.getArray().push(x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha);
+    Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
+    vertexBuffer.getArray().push(x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha);
+    Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
+    vertexBuffer.getArray().push(x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha);
+    Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
+    vertexBuffer.getArray().push(x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha);
+    Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
+    indexBuffer.getArray().push(baseIndex, baseIndex + 1, baseIndex + 3, baseIndex + 1, baseIndex + 2, baseIndex + 3);
+}
+/**
+ * Returns a texture of 1x1 pixel, white
+ * @private
+ * @return {ImageData} Image data.
+ */
+function getBlankTexture() {
+    var canvas = document.createElement('canvas');
+    var image = canvas.getContext('2d').createImageData(1, 1);
+    image.data[0] = image.data[1] = image.data[2] = image.data[3] = 255;
+    return image;
+}
+/* harmony default export */ __webpack_exports__["default"] = (WebGLLayerRenderer);
+//# sourceMappingURL=Layer.js.map
+
+/***/ }),
+
 /***/ "./build/ol/renderer/webgl/PointsLayer.js":
 /*!************************************************!*\
   !*** ./build/ol/renderer/webgl/PointsLayer.js ***!
@@ -56201,11 +56168,16 @@ function renderPolygonGeometry(builderGroup, geometry, style, feature) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Layer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Layer */ "./build/ol/renderer/Layer.js");
-/* harmony import */ var _webgl_Buffer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../webgl/Buffer */ "./build/ol/webgl/Buffer.js");
-/* harmony import */ var _webgl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../webgl */ "./build/ol/webgl.js");
-/* harmony import */ var _webgl_Helper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../webgl/Helper */ "./build/ol/webgl/Helper.js");
-/* harmony import */ var _geom_GeometryType__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../geom/GeometryType */ "./build/ol/geom/GeometryType.js");
+/* harmony import */ var _webgl_Buffer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../webgl/Buffer */ "./build/ol/webgl/Buffer.js");
+/* harmony import */ var _webgl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../webgl */ "./build/ol/webgl.js");
+/* harmony import */ var _webgl_Helper__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../webgl/Helper */ "./build/ol/webgl/Helper.js");
+/* harmony import */ var _geom_GeometryType__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../geom/GeometryType */ "./build/ol/geom/GeometryType.js");
+/* harmony import */ var _Layer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Layer */ "./build/ol/renderer/webgl/Layer.js");
+/* harmony import */ var _format_GeoJSON__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../format/GeoJSON */ "./build/ol/format/GeoJSON.js");
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../util */ "./build/ol/util.js");
+/* harmony import */ var _ViewHint__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../ViewHint */ "./build/ol/ViewHint.js");
+/* harmony import */ var _extent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../extent */ "./build/ol/extent.js");
+/* harmony import */ var _transform__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../transform */ "./build/ol/transform.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -56227,16 +56199,13 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 
 
+
+
+
+
+
 var VERTEX_SHADER = "\n  precision mediump float;\n  attribute vec2 a_position;\n  attribute vec2 a_texCoord;\n  attribute float a_rotateWithView;\n  attribute vec2 a_offsets;\n  attribute float a_opacity;\n  attribute vec4 a_color;\n  \n  uniform mat4 u_projectionMatrix;\n  uniform mat4 u_offsetScaleMatrix;\n  uniform mat4 u_offsetRotateMatrix;\n  \n  varying vec2 v_texCoord;\n  varying float v_opacity;\n  varying vec4 v_color;\n  \n  void main(void) {\n    mat4 offsetMatrix = u_offsetScaleMatrix;\n    if (a_rotateWithView == 1.0) {\n      offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n    }\n    vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);\n    gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;\n    v_texCoord = a_texCoord;\n    v_opacity = a_opacity;\n    v_color = a_color;\n  }";
 var FRAGMENT_SHADER = "\n  precision mediump float;\n  \n  uniform sampler2D u_texture;\n\n  varying vec2 v_texCoord;\n  varying float v_opacity;\n  varying vec4 v_color;\n  \n  void main(void) {\n    if (v_opacity == 0.0) {\n      discard;\n    }\n    vec4 textureColor = texture2D(u_texture, v_texCoord);\n    gl_FragColor = v_color * textureColor;\n    gl_FragColor.a *= v_opacity;\n    gl_FragColor.rgb *= gl_FragColor.a;\n  }";
-/**
- * @typedef {Object} PostProcessesOptions
- * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
- * the main canvas that will then be sampled up (useful for saving resource on blur steps).
- * @property {string} [vertexShader] Vertex shader source
- * @property {string} [fragmentShader] Fragment shader source
- * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
- */
 /**
  * @typedef {Object} Options
  * @property {function(import("../../Feature").default):number} [sizeCallback] Will be called on every feature in the
@@ -56264,7 +56233,7 @@ var FRAGMENT_SHADER = "\n  precision mediump float;\n  \n  uniform sampler2D u_t
  * @property {string} [fragmentShader] Fragment shader source
  * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * Please note that `u_texture` is reserved for the main texture slot.
- * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
+ * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
 /**
  * @classdesc
@@ -56365,17 +56334,19 @@ var WebGLPointsLayerRenderer = /** @class */ (function (_super) {
      * @param {Options=} [opt_options] Options.
      */
     function WebGLPointsLayerRenderer(vectorLayer, opt_options) {
-        var _this = _super.call(this, vectorLayer) || this;
+        var _this = this;
         var options = opt_options || {};
         var uniforms = options.uniforms || {};
-        uniforms.u_texture = options.texture || _this.getDefaultTexture();
-        _this.helper_ = new _webgl_Helper__WEBPACK_IMPORTED_MODULE_3__["default"]({
-            postProcesses: options.postProcesses,
-            uniforms: uniforms
-        });
+        uniforms.u_texture = options.texture || Object(_Layer__WEBPACK_IMPORTED_MODULE_4__["getBlankTexture"])();
+        var projectionMatrixTransform = Object(_transform__WEBPACK_IMPORTED_MODULE_9__["create"])();
+        uniforms[_webgl_Helper__WEBPACK_IMPORTED_MODULE_2__["DefaultUniform"].PROJECTION_MATRIX] = projectionMatrixTransform;
+        _this = _super.call(this, vectorLayer, {
+            uniforms: uniforms,
+            postProcesses: options.postProcesses
+        }) || this;
         _this.sourceRevision_ = -1;
-        _this.verticesBuffer_ = new _webgl_Buffer__WEBPACK_IMPORTED_MODULE_1__["default"]([], _webgl__WEBPACK_IMPORTED_MODULE_2__["DYNAMIC_DRAW"]);
-        _this.indicesBuffer_ = new _webgl_Buffer__WEBPACK_IMPORTED_MODULE_1__["default"]([], _webgl__WEBPACK_IMPORTED_MODULE_2__["DYNAMIC_DRAW"]);
+        _this.verticesBuffer_ = new _webgl_Buffer__WEBPACK_IMPORTED_MODULE_0__["default"]([], _webgl__WEBPACK_IMPORTED_MODULE_1__["DYNAMIC_DRAW"]);
+        _this.indicesBuffer_ = new _webgl_Buffer__WEBPACK_IMPORTED_MODULE_0__["default"]([], _webgl__WEBPACK_IMPORTED_MODULE_1__["DYNAMIC_DRAW"]);
         _this.program_ = _this.helper_.getProgram(options.fragmentShader || FRAGMENT_SHADER, options.vertexShader || VERTEX_SHADER);
         _this.helper_.useProgram(_this.program_);
         _this.sizeCallback_ = options.sizeCallback || function () {
@@ -56398,6 +56369,32 @@ var WebGLPointsLayerRenderer = /** @class */ (function (_super) {
         _this.rotateWithViewCallback_ = options.rotateWithViewCallback || function () {
             return false;
         };
+        _this.geojsonFormat_ = new _format_GeoJSON__WEBPACK_IMPORTED_MODULE_5__["default"]();
+        /**
+         * @type {Object<string, import("../../format/GeoJSON").GeoJSONFeature>}
+         * @private
+         */
+        _this.geojsonFeatureCache_ = {};
+        _this.previousExtent_ = Object(_extent__WEBPACK_IMPORTED_MODULE_8__["createEmpty"])();
+        /**
+         * This transform is updated on every frame and is the composition of:
+         * - invert of the world->screen transform that was used when rebuilding buffers (see `this.renderTransform_`)
+         * - current world->screen transform
+         * @type {import("../../transform.js").Transform}
+         * @private
+         */
+        _this.currentTransform_ = projectionMatrixTransform;
+        /**
+         * This transform is updated when buffers are rebuilt and converts world space coordinates to screen space
+         * @type {import("../../transform.js").Transform}
+         * @private
+         */
+        _this.renderTransform_ = Object(_transform__WEBPACK_IMPORTED_MODULE_9__["create"])();
+        /**
+         * @type {import("../../transform.js").Transform}
+         * @private
+         */
+        _this.invertRenderTransform_ = Object(_transform__WEBPACK_IMPORTED_MODULE_9__["create"])();
         return _this;
     }
     /**
@@ -56423,78 +56420,87 @@ var WebGLPointsLayerRenderer = /** @class */ (function (_super) {
      * @inheritDoc
      */
     WebGLPointsLayerRenderer.prototype.prepareFrame = function (frameState) {
-        var _this = this;
         var vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
         var vectorSource = vectorLayer.getSource();
+        var viewState = frameState.viewState;
+        // TODO: get this from somewhere...
         var stride = 12;
-        this.helper_.prepareDraw(frameState);
-        if (this.sourceRevision_ < vectorSource.getRevision()) {
+        // the source has changed: clear the feature cache & reload features
+        var sourceChanged = this.sourceRevision_ < vectorSource.getRevision();
+        if (sourceChanged) {
             this.sourceRevision_ = vectorSource.getRevision();
-            this.verticesBuffer_.getArray().length = 0;
-            this.indicesBuffer_.getArray().length = 0;
-            var viewState = frameState.viewState;
+            this.geojsonFeatureCache_ = {};
             var projection = viewState.projection;
             var resolution = viewState.resolution;
-            // loop on features to fill the buffer
             vectorSource.loadFeatures([-Infinity, -Infinity, Infinity, Infinity], resolution, projection);
-            vectorSource.forEachFeature(function (feature) {
-                if (!feature.getGeometry() || feature.getGeometry().getType() !== _geom_GeometryType__WEBPACK_IMPORTED_MODULE_4__["default"].POINT) {
-                    return;
-                }
-                var x = _this.coordCallback_(feature, 0);
-                var y = _this.coordCallback_(feature, 1);
-                var u0 = _this.texCoordCallback_(feature, 0);
-                var v0 = _this.texCoordCallback_(feature, 1);
-                var u1 = _this.texCoordCallback_(feature, 2);
-                var v1 = _this.texCoordCallback_(feature, 3);
-                var size = _this.sizeCallback_(feature);
-                var opacity = _this.opacityCallback_(feature);
-                var rotateWithView = _this.rotateWithViewCallback_(feature) ? 1 : 0;
-                var color = _this.colorCallback_(feature, _this.colorArray_);
-                var red = color[0];
-                var green = color[1];
-                var blue = color[2];
-                var alpha = color[3];
-                var baseIndex = _this.verticesBuffer_.getArray().length / stride;
-                _this.verticesBuffer_.getArray().push(x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha, x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha, x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha, x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha);
-                _this.indicesBuffer_.getArray().push(baseIndex, baseIndex + 1, baseIndex + 3, baseIndex + 1, baseIndex + 2, baseIndex + 3);
-            });
-            this.helper_.flushBufferData(_webgl__WEBPACK_IMPORTED_MODULE_2__["ARRAY_BUFFER"], this.verticesBuffer_);
-            this.helper_.flushBufferData(_webgl__WEBPACK_IMPORTED_MODULE_2__["ELEMENT_ARRAY_BUFFER"], this.indicesBuffer_);
         }
+        var viewNotMoving = !frameState.viewHints[_ViewHint__WEBPACK_IMPORTED_MODULE_7__["default"].ANIMATING] && !frameState.viewHints[_ViewHint__WEBPACK_IMPORTED_MODULE_7__["default"].INTERACTING];
+        var extentChanged = !Object(_extent__WEBPACK_IMPORTED_MODULE_8__["equals"])(this.previousExtent_, frameState.extent);
+        if ((sourceChanged || extentChanged) && viewNotMoving) {
+            this.rebuildBuffers_(frameState);
+            this.previousExtent_ = frameState.extent.slice();
+        }
+        // apply the current projection transform with the invert of the one used to fill buffers
+        this.helper_.makeProjectionTransform(frameState, this.currentTransform_);
+        Object(_transform__WEBPACK_IMPORTED_MODULE_9__["multiply"])(this.currentTransform_, this.invertRenderTransform_);
+        this.helper_.prepareDraw(frameState);
         // write new data
-        this.helper_.bindBuffer(_webgl__WEBPACK_IMPORTED_MODULE_2__["ARRAY_BUFFER"], this.verticesBuffer_);
-        this.helper_.bindBuffer(_webgl__WEBPACK_IMPORTED_MODULE_2__["ELEMENT_ARRAY_BUFFER"], this.indicesBuffer_);
+        this.helper_.bindBuffer(_webgl__WEBPACK_IMPORTED_MODULE_1__["ARRAY_BUFFER"], this.verticesBuffer_);
+        this.helper_.bindBuffer(_webgl__WEBPACK_IMPORTED_MODULE_1__["ELEMENT_ARRAY_BUFFER"], this.indicesBuffer_);
         var bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
-        this.helper_.enableAttributeArray(_webgl_Helper__WEBPACK_IMPORTED_MODULE_3__["DefaultAttrib"].POSITION, 2, _webgl__WEBPACK_IMPORTED_MODULE_2__["FLOAT"], bytesPerFloat * stride, 0);
-        this.helper_.enableAttributeArray(_webgl_Helper__WEBPACK_IMPORTED_MODULE_3__["DefaultAttrib"].OFFSETS, 2, _webgl__WEBPACK_IMPORTED_MODULE_2__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 2);
-        this.helper_.enableAttributeArray(_webgl_Helper__WEBPACK_IMPORTED_MODULE_3__["DefaultAttrib"].TEX_COORD, 2, _webgl__WEBPACK_IMPORTED_MODULE_2__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 4);
-        this.helper_.enableAttributeArray(_webgl_Helper__WEBPACK_IMPORTED_MODULE_3__["DefaultAttrib"].OPACITY, 1, _webgl__WEBPACK_IMPORTED_MODULE_2__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 6);
-        this.helper_.enableAttributeArray(_webgl_Helper__WEBPACK_IMPORTED_MODULE_3__["DefaultAttrib"].ROTATE_WITH_VIEW, 1, _webgl__WEBPACK_IMPORTED_MODULE_2__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 7);
-        this.helper_.enableAttributeArray(_webgl_Helper__WEBPACK_IMPORTED_MODULE_3__["DefaultAttrib"].COLOR, 4, _webgl__WEBPACK_IMPORTED_MODULE_2__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 8);
+        this.helper_.enableAttributeArray(_webgl_Helper__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].POSITION, 2, _webgl__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, 0);
+        this.helper_.enableAttributeArray(_webgl_Helper__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].OFFSETS, 2, _webgl__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 2);
+        this.helper_.enableAttributeArray(_webgl_Helper__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].TEX_COORD, 2, _webgl__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 4);
+        this.helper_.enableAttributeArray(_webgl_Helper__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].OPACITY, 1, _webgl__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 6);
+        this.helper_.enableAttributeArray(_webgl_Helper__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].ROTATE_WITH_VIEW, 1, _webgl__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 7);
+        this.helper_.enableAttributeArray(_webgl_Helper__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].COLOR, 4, _webgl__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 8);
         return true;
     };
     /**
-     * Will return the last shader compilation errors. If no error happened, will return null;
-     * @return {string|null} Errors, or null if last compilation was successful
-     * @api
-     */
-    WebGLPointsLayerRenderer.prototype.getShaderCompileErrors = function () {
-        return this.helper_.getShaderCompileErrors();
-    };
-    /**
-     * Returns a texture of 1x1 pixel, white
+     * Rebuild internal webgl buffers based on current view extent; costly, should not be called too much
+     * @param {import("../../PluggableMap").FrameState} frameState Frame state.
      * @private
-     * @return {ImageData} Image data.
      */
-    WebGLPointsLayerRenderer.prototype.getDefaultTexture = function () {
-        var canvas = document.createElement('canvas');
-        var image = canvas.getContext('2d').createImageData(1, 1);
-        image.data[0] = image.data[1] = image.data[2] = image.data[3] = 255;
-        return image;
+    WebGLPointsLayerRenderer.prototype.rebuildBuffers_ = function (frameState) {
+        var vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+        var vectorSource = vectorLayer.getSource();
+        this.verticesBuffer_.getArray().length = 0;
+        this.indicesBuffer_.getArray().length = 0;
+        // saves the projection transform for the current frame state
+        this.helper_.makeProjectionTransform(frameState, this.renderTransform_);
+        Object(_transform__WEBPACK_IMPORTED_MODULE_9__["makeInverse"])(this.invertRenderTransform_, this.renderTransform_);
+        // loop on features to fill the buffer
+        var features = vectorSource.getFeatures();
+        var feature;
+        for (var i = 0; i < features.length; i++) {
+            feature = features[i];
+            if (!feature.getGeometry() || feature.getGeometry().getType() !== _geom_GeometryType__WEBPACK_IMPORTED_MODULE_3__["default"].POINT) {
+                continue;
+            }
+            var geojsonFeature = this.geojsonFeatureCache_[Object(_util__WEBPACK_IMPORTED_MODULE_6__["getUid"])(feature)];
+            if (!geojsonFeature) {
+                geojsonFeature = this.geojsonFormat_.writeFeatureObject(feature);
+                this.geojsonFeatureCache_[Object(_util__WEBPACK_IMPORTED_MODULE_6__["getUid"])(feature)] = geojsonFeature;
+            }
+            geojsonFeature.geometry.coordinates[0] = this.coordCallback_(feature, 0);
+            geojsonFeature.geometry.coordinates[1] = this.coordCallback_(feature, 1);
+            Object(_transform__WEBPACK_IMPORTED_MODULE_9__["apply"])(this.renderTransform_, geojsonFeature.geometry.coordinates);
+            geojsonFeature.properties = geojsonFeature.properties || {};
+            geojsonFeature.properties.color = this.colorCallback_(feature, this.colorArray_);
+            geojsonFeature.properties.u0 = this.texCoordCallback_(feature, 0);
+            geojsonFeature.properties.v0 = this.texCoordCallback_(feature, 1);
+            geojsonFeature.properties.u1 = this.texCoordCallback_(feature, 2);
+            geojsonFeature.properties.v1 = this.texCoordCallback_(feature, 3);
+            geojsonFeature.properties.size = this.sizeCallback_(feature);
+            geojsonFeature.properties.opacity = this.opacityCallback_(feature);
+            geojsonFeature.properties.rotateWithView = this.rotateWithViewCallback_(feature) ? 1 : 0;
+            Object(_Layer__WEBPACK_IMPORTED_MODULE_4__["pushFeatureToBuffer"])(this.verticesBuffer_, this.indicesBuffer_, geojsonFeature);
+        }
+        this.helper_.flushBufferData(_webgl__WEBPACK_IMPORTED_MODULE_1__["ARRAY_BUFFER"], this.verticesBuffer_);
+        this.helper_.flushBufferData(_webgl__WEBPACK_IMPORTED_MODULE_1__["ELEMENT_ARRAY_BUFFER"], this.indicesBuffer_);
     };
     return WebGLPointsLayerRenderer;
-}(_Layer__WEBPACK_IMPORTED_MODULE_0__["default"]));
+}(_Layer__WEBPACK_IMPORTED_MODULE_4__["default"]));
 /* harmony default export */ __webpack_exports__["default"] = (WebGLPointsLayerRenderer);
 //# sourceMappingURL=PointsLayer.js.map
 
@@ -58722,6 +58728,11 @@ function formatPercentage(percentage) {
  */
 var IIIF = /** @class */ (function (_super) {
     __extends(IIIF, _super);
+    /**
+     * @param {Options} opt_options Tile source options. Use {@link import("../format/IIIFInfo.js").IIIFInfo}
+     * to parse Image API service information responses into constructor options.
+     * @api
+     */
     function IIIF(opt_options) {
         var _this = this;
         var options = opt_options || {};
@@ -58735,6 +58746,7 @@ var IIIF = /** @class */ (function (_super) {
         var width = size[0];
         var height = size[1];
         var tileSize = options.tileSize;
+        var tilePixelRatio = options.tilePixelRatio || 1;
         var format = options.format || 'jpg';
         var quality = options.quality || (options.version == _format_IIIFInfo_js__WEBPACK_IMPORTED_MODULE_3__["Versions"].VERSION1 ? 'native' : 'default');
         var resolutions = options.resolutions || [];
@@ -58913,7 +58925,7 @@ var IIIF = /** @class */ (function (_super) {
             }
             return baseUrl + regionParam + '/' + sizeParam + '/0/' + quality + '.' + format;
         };
-        var IiifTileClass = _Zoomify_js__WEBPACK_IMPORTED_MODULE_2__["CustomTile"].bind(null, tileGrid);
+        var IiifTileClass = _Zoomify_js__WEBPACK_IMPORTED_MODULE_2__["CustomTile"].bind(null, tilePixelRatio, tileGrid);
         _this = _super.call(this, {
             attributions: options.attributions,
             attributionsCollapsible: options.attributionsCollapsible,
@@ -62636,7 +62648,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
     };
 })();
 /**
- * See http://mapbox.com/developers/api/.
+ * See https://mapbox.com/developers/api/.
  */
 
 
@@ -66059,6 +66071,7 @@ var TierSizeCalculation = {
 var CustomTile = /** @class */ (function (_super) {
     __extends(CustomTile, _super);
     /**
+     * @param {number} tilePixelRatio Tile pixel ratio to display the tile
      * @param {import("../tilegrid/TileGrid.js").default} tileGrid TileGrid that the tile belongs to.
      * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
      * @param {TileState} state State.
@@ -66067,7 +66080,7 @@ var CustomTile = /** @class */ (function (_super) {
      * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
      * @param {import("../Tile.js").Options=} opt_options Tile options.
      */
-    function CustomTile(tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
+    function CustomTile(tilePixelRatio, tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
         var _this = _super.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) || this;
         /**
          * @private
@@ -66078,7 +66091,9 @@ var CustomTile = /** @class */ (function (_super) {
          * @private
          * @type {import("../size.js").Size}
          */
-        _this.tileSize_ = Object(_size_js__WEBPACK_IMPORTED_MODULE_7__["toSize"])(tileGrid.getTileSize(tileCoord[0]));
+        _this.tileSize_ = Object(_size_js__WEBPACK_IMPORTED_MODULE_7__["toSize"])(tileGrid.getTileSize(tileCoord[0])).map(function (x) {
+            return x * tilePixelRatio;
+        });
         return _this;
     }
     /**
@@ -66169,6 +66184,7 @@ var Zoomify = /** @class */ (function (_super) {
         var extent = options.extent || [0, -size[1], size[0], 0];
         var tierSizeInTiles = [];
         var tileSize = options.tileSize || _tilegrid_common_js__WEBPACK_IMPORTED_MODULE_0__["DEFAULT_TILE_SIZE"];
+        var tilePixelRatio = options.tilePixelRatio || 1;
         var tileSizeForTierSizeCalculation = tileSize;
         switch (tierSizeCalculation) {
             case TierSizeCalculation.DEFAULT:
@@ -66256,13 +66272,13 @@ var Zoomify = /** @class */ (function (_super) {
             });
         }
         var tileUrlFunction = Object(_tileurlfunction_js__WEBPACK_IMPORTED_MODULE_3__["createFromTileUrlFunctions"])(urls.map(createFromTemplate));
-        var ZoomifyTileClass = CustomTile.bind(null, tileGrid);
+        var ZoomifyTileClass = CustomTile.bind(null, tilePixelRatio, tileGrid);
         _this = _super.call(this, {
             attributions: options.attributions,
             cacheSize: options.cacheSize,
             crossOrigin: options.crossOrigin,
             projection: options.projection,
-            tilePixelRatio: options.tilePixelRatio,
+            tilePixelRatio: tilePixelRatio,
             reprojectionErrorThreshold: options.reprojectionErrorThreshold,
             tileClass: ZoomifyTileClass,
             tileGrid: tileGrid,
@@ -67155,7 +67171,7 @@ var PriorityQueue = /** @class */ (function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util.js */ "./build/ol/util.js");
-/* harmony import */ var rbush__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rbush */ "./node_modules/rbush/index.js");
+/* harmony import */ var rbush__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rbush */ "./node_modules/rbush/rbush.min.js");
 /* harmony import */ var rbush__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(rbush__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _extent_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../extent.js */ "./build/ol/extent.js");
 /* harmony import */ var _obj_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../obj.js */ "./build/ol/obj.js");
@@ -67189,7 +67205,7 @@ var RBush = /** @class */ (function () {
         /**
          * @private
          */
-        this.rbush_ = rbush__WEBPACK_IMPORTED_MODULE_1___default()(opt_maxEntries, undefined);
+        this.rbush_ = new rbush__WEBPACK_IMPORTED_MODULE_1___default.a(opt_maxEntries);
         /**
          * A mapping between the objects added to this rbush wrapper
          * and the objects that are actually added to the internal rbush.
@@ -67950,11 +67966,11 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get", function() { return get; });
 /* harmony import */ var _dom_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../dom.js */ "./build/ol/dom.js");
-/* harmony import */ var _events_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../events.js */ "./build/ol/events.js");
-/* harmony import */ var _events_Target_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../events/Target.js */ "./build/ol/events/Target.js");
-/* harmony import */ var _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../events/EventType.js */ "./build/ol/events/EventType.js");
-/* harmony import */ var _ImageState_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../ImageState.js */ "./build/ol/ImageState.js");
-/* harmony import */ var _IconImageCache_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./IconImageCache.js */ "./build/ol/style/IconImageCache.js");
+/* harmony import */ var _events_Target_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../events/Target.js */ "./build/ol/events/Target.js");
+/* harmony import */ var _events_EventType_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../events/EventType.js */ "./build/ol/events/EventType.js");
+/* harmony import */ var _ImageState_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../ImageState.js */ "./build/ol/ImageState.js");
+/* harmony import */ var _IconImageCache_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./IconImageCache.js */ "./build/ol/style/IconImageCache.js");
+/* harmony import */ var _Image_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Image.js */ "./build/ol/Image.js");
 /**
  * @module ol/style/IconImage
  */
@@ -68014,9 +68030,9 @@ var IconImage = /** @class */ (function (_super) {
         _this.color_ = color;
         /**
          * @private
-         * @type {Array<import("../events.js").EventsKey>}
+         * @type {function():void}
          */
-        _this.imageListenerKeys_ = null;
+        _this.unlisten_ = null;
         /**
          * @private
          * @type {import("../ImageState.js").default}
@@ -68044,7 +68060,7 @@ var IconImage = /** @class */ (function (_super) {
      * @return {boolean} The image canvas is tainted.
      */
     IconImage.prototype.isTainted_ = function () {
-        if (this.tainted_ === undefined && this.imageState_ === _ImageState_js__WEBPACK_IMPORTED_MODULE_4__["default"].LOADED) {
+        if (this.tainted_ === undefined && this.imageState_ === _ImageState_js__WEBPACK_IMPORTED_MODULE_3__["default"].LOADED) {
             this.tainted_ = false;
             var context = Object(_dom_js__WEBPACK_IMPORTED_MODULE_0__["createCanvasContext2D"])(1, 1);
             try {
@@ -68061,13 +68077,13 @@ var IconImage = /** @class */ (function (_super) {
      * @private
      */
     IconImage.prototype.dispatchChangeEvent_ = function () {
-        this.dispatchEvent(_events_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].CHANGE);
+        this.dispatchEvent(_events_EventType_js__WEBPACK_IMPORTED_MODULE_2__["default"].CHANGE);
     };
     /**
      * @private
      */
     IconImage.prototype.handleImageError_ = function () {
-        this.imageState_ = _ImageState_js__WEBPACK_IMPORTED_MODULE_4__["default"].ERROR;
+        this.imageState_ = _ImageState_js__WEBPACK_IMPORTED_MODULE_3__["default"].ERROR;
         this.unlistenImage_();
         this.dispatchChangeEvent_();
     };
@@ -68075,7 +68091,7 @@ var IconImage = /** @class */ (function (_super) {
      * @private
      */
     IconImage.prototype.handleImageLoad_ = function () {
-        this.imageState_ = _ImageState_js__WEBPACK_IMPORTED_MODULE_4__["default"].LOADED;
+        this.imageState_ = _ImageState_js__WEBPACK_IMPORTED_MODULE_3__["default"].LOADED;
         if (this.size_) {
             this.image_.width = this.size_[0];
             this.image_.height = this.size_[1];
@@ -68133,18 +68149,15 @@ var IconImage = /** @class */ (function (_super) {
      * Load not yet loaded URI.
      */
     IconImage.prototype.load = function () {
-        if (this.imageState_ == _ImageState_js__WEBPACK_IMPORTED_MODULE_4__["default"].IDLE) {
-            this.imageState_ = _ImageState_js__WEBPACK_IMPORTED_MODULE_4__["default"].LOADING;
-            this.imageListenerKeys_ = [
-                Object(_events_js__WEBPACK_IMPORTED_MODULE_1__["listenOnce"])(this.image_, _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].ERROR, this.handleImageError_, this),
-                Object(_events_js__WEBPACK_IMPORTED_MODULE_1__["listenOnce"])(this.image_, _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].LOAD, this.handleImageLoad_, this)
-            ];
+        if (this.imageState_ == _ImageState_js__WEBPACK_IMPORTED_MODULE_3__["default"].IDLE) {
+            this.imageState_ = _ImageState_js__WEBPACK_IMPORTED_MODULE_3__["default"].LOADING;
             try {
                 /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
             }
             catch (e) {
                 this.handleImageError_();
             }
+            this.unlisten_ = Object(_Image_js__WEBPACK_IMPORTED_MODULE_5__["listenImage"])(this.image_, this.handleImageLoad_.bind(this), this.handleImageError_.bind(this));
         }
     };
     /**
@@ -68176,11 +68189,13 @@ var IconImage = /** @class */ (function (_super) {
      * @private
      */
     IconImage.prototype.unlistenImage_ = function () {
-        this.imageListenerKeys_.forEach(_events_js__WEBPACK_IMPORTED_MODULE_1__["unlistenByKey"]);
-        this.imageListenerKeys_ = null;
+        if (this.unlisten_) {
+            this.unlisten_();
+            this.unlisten_ = null;
+        }
     };
     return IconImage;
-}(_events_Target_js__WEBPACK_IMPORTED_MODULE_2__["default"]));
+}(_events_Target_js__WEBPACK_IMPORTED_MODULE_1__["default"]));
 /**
  * @param {HTMLImageElement|HTMLCanvasElement} image Image.
  * @param {string} src Src.
@@ -68191,10 +68206,10 @@ var IconImage = /** @class */ (function (_super) {
  * @return {IconImage} Icon image.
  */
 function get(image, src, size, crossOrigin, imageState, color) {
-    var iconImage = _IconImageCache_js__WEBPACK_IMPORTED_MODULE_5__["shared"].get(src, crossOrigin, color);
+    var iconImage = _IconImageCache_js__WEBPACK_IMPORTED_MODULE_4__["shared"].get(src, crossOrigin, color);
     if (!iconImage) {
         iconImage = new IconImage(image, src, size, crossOrigin, imageState, color);
-        _IconImageCache_js__WEBPACK_IMPORTED_MODULE_5__["shared"].set(src, crossOrigin, color, iconImage);
+        _IconImageCache_js__WEBPACK_IMPORTED_MODULE_4__["shared"].set(src, crossOrigin, color, iconImage);
     }
     return iconImage;
 }
@@ -71781,7 +71796,6 @@ var uidCounter_ = 0;
  *
  * @param {Object} obj The object to get the unique ID for.
  * @return {string} The unique ID for the object.
- * @function module:ol.getUid
  * @api
  */
 function getUid(obj) {
@@ -71791,7 +71805,7 @@ function getUid(obj) {
  * OpenLayers version.
  * @type {string}
  */
-var VERSION = '6.0.0-beta.7';
+var VERSION = '6.0.0-beta.8';
 //# sourceMappingURL=util.js.map
 
 /***/ }),
@@ -72330,7 +72344,7 @@ var DefaultAttrib = {
     COLOR: 'a_color'
 };
 /**
- * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData} UniformLiteralValue
+ * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData|import("../transform").Transform} UniformLiteralValue
  */
 /**
  * Uniform value can be a number, array of numbers (2 to 4), canvas element or a callback returning
@@ -72524,11 +72538,6 @@ var WebGLHelper = /** @class */ (function (_super) {
         }
         Object(_events_js__WEBPACK_IMPORTED_MODULE_4__["listen"])(_this.canvas_, _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_6__["default"].LOST, _this.handleWebGLContextLost, _this);
         Object(_events_js__WEBPACK_IMPORTED_MODULE_4__["listen"])(_this.canvas_, _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_6__["default"].RESTORED, _this.handleWebGLContextRestored, _this);
-        /**
-         * @private
-         * @type {import("../transform.js").Transform}
-         */
-        _this.projectionMatrix_ = Object(_transform__WEBPACK_IMPORTED_MODULE_7__["create"])();
         /**
          * @private
          * @type {import("../transform.js").Transform}
@@ -72742,20 +72751,12 @@ var WebGLHelper = /** @class */ (function (_super) {
     WebGLHelper.prototype.applyFrameState = function (frameState) {
         var size = frameState.size;
         var rotation = frameState.viewState.rotation;
-        var resolution = frameState.viewState.resolution;
-        var center = frameState.viewState.center;
-        // set the "uniform" values (coordinates 0,0 are the center of the view)
-        var projectionMatrix = Object(_transform__WEBPACK_IMPORTED_MODULE_7__["reset"])(this.projectionMatrix_);
-        Object(_transform__WEBPACK_IMPORTED_MODULE_7__["scale"])(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
-        Object(_transform__WEBPACK_IMPORTED_MODULE_7__["rotate"])(projectionMatrix, -rotation);
-        Object(_transform__WEBPACK_IMPORTED_MODULE_7__["translate"])(projectionMatrix, -center[0], -center[1]);
         var offsetScaleMatrix = Object(_transform__WEBPACK_IMPORTED_MODULE_7__["reset"])(this.offsetScaleMatrix_);
         Object(_transform__WEBPACK_IMPORTED_MODULE_7__["scale"])(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
         var offsetRotateMatrix = Object(_transform__WEBPACK_IMPORTED_MODULE_7__["reset"])(this.offsetRotateMatrix_);
         if (rotation !== 0) {
             Object(_transform__WEBPACK_IMPORTED_MODULE_7__["rotate"])(offsetRotateMatrix, -rotation);
         }
-        this.setUniformMatrixValue(DefaultUniform.PROJECTION_MATRIX, Object(_vec_mat4__WEBPACK_IMPORTED_MODULE_8__["fromTransform"])(this.tmpMat4_, projectionMatrix));
         this.setUniformMatrixValue(DefaultUniform.OFFSET_SCALE_MATRIX, Object(_vec_mat4__WEBPACK_IMPORTED_MODULE_8__["fromTransform"])(this.tmpMat4_, offsetScaleMatrix));
         this.setUniformMatrixValue(DefaultUniform.OFFSET_ROTATION_MATRIX, Object(_vec_mat4__WEBPACK_IMPORTED_MODULE_8__["fromTransform"])(this.tmpMat4_, offsetRotateMatrix));
     };
@@ -72785,7 +72786,10 @@ var WebGLHelper = /** @class */ (function (_super) {
                 // fill texture slots by increasing index
                 gl.uniform1i(this.getUniformLocation(uniform.name), textureSlot++);
             }
-            else if (Array.isArray(value)) {
+            else if (Array.isArray(value) && value.length === 6) {
+                this.setUniformMatrixValue(uniform.name, Object(_vec_mat4__WEBPACK_IMPORTED_MODULE_8__["fromTransform"])(this.tmpMat4_, value));
+            }
+            else if (Array.isArray(value) && value.length <= 4) {
                 switch (value.length) {
                     case 2:
                         gl.uniform2f(this.getUniformLocation(uniform.name), value[0], value[1]);
@@ -72900,6 +72904,25 @@ var WebGLHelper = /** @class */ (function (_super) {
             this.attribLocations_[name] = this.getGL().getAttribLocation(this.currentProgram_, name);
         }
         return this.attribLocations_[name];
+    };
+    /**
+     * Modifies the given transform to apply the rotation/translation/scaling of the given frame state.
+     * The resulting transform can be used to convert world space coordinates to view coordinates.
+     * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+     * @param {import("../transform").Transform} transform Transform to update.
+     * @return {import("../transform").Transform} The updated transform object.
+     * @api
+     */
+    WebGLHelper.prototype.makeProjectionTransform = function (frameState, transform) {
+        var size = frameState.size;
+        var rotation = frameState.viewState.rotation;
+        var resolution = frameState.viewState.resolution;
+        var center = frameState.viewState.center;
+        Object(_transform__WEBPACK_IMPORTED_MODULE_7__["reset"])(transform);
+        Object(_transform__WEBPACK_IMPORTED_MODULE_7__["scale"])(transform, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
+        Object(_transform__WEBPACK_IMPORTED_MODULE_7__["rotate"])(transform, -rotation);
+        Object(_transform__WEBPACK_IMPORTED_MODULE_7__["translate"])(transform, -center[0], -center[1]);
+        return transform;
     };
     /**
      * Give a value for a standard float uniform
@@ -74814,649 +74837,14 @@ exports.newImageData = newImageData;
 
 /***/ }),
 
-/***/ "./node_modules/quickselect/quickselect.js":
-/*!*************************************************!*\
-  !*** ./node_modules/quickselect/quickselect.js ***!
-  \*************************************************/
+/***/ "./node_modules/rbush/rbush.min.js":
+/*!*****************************************!*\
+  !*** ./node_modules/rbush/rbush.min.js ***!
+  \*****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function (global, factory) {
-	 true ? module.exports = factory() :
-	undefined;
-}(this, (function () { 'use strict';
-
-function quickselect(arr, k, left, right, compare) {
-    quickselectStep(arr, k, left || 0, right || (arr.length - 1), compare || defaultCompare);
-}
-
-function quickselectStep(arr, k, left, right, compare) {
-
-    while (right > left) {
-        if (right - left > 600) {
-            var n = right - left + 1;
-            var m = k - left + 1;
-            var z = Math.log(n);
-            var s = 0.5 * Math.exp(2 * z / 3);
-            var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
-            var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
-            var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
-            quickselectStep(arr, k, newLeft, newRight, compare);
-        }
-
-        var t = arr[k];
-        var i = left;
-        var j = right;
-
-        swap(arr, left, k);
-        if (compare(arr[right], t) > 0) swap(arr, left, right);
-
-        while (i < j) {
-            swap(arr, i, j);
-            i++;
-            j--;
-            while (compare(arr[i], t) < 0) i++;
-            while (compare(arr[j], t) > 0) j--;
-        }
-
-        if (compare(arr[left], t) === 0) swap(arr, left, j);
-        else {
-            j++;
-            swap(arr, j, right);
-        }
-
-        if (j <= k) left = j + 1;
-        if (k <= j) right = j - 1;
-    }
-}
-
-function swap(arr, i, j) {
-    var tmp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = tmp;
-}
-
-function defaultCompare(a, b) {
-    return a < b ? -1 : a > b ? 1 : 0;
-}
-
-return quickselect;
-
-})));
-
-
-/***/ }),
-
-/***/ "./node_modules/rbush/index.js":
-/*!*************************************!*\
-  !*** ./node_modules/rbush/index.js ***!
-  \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = rbush;
-module.exports.default = rbush;
-
-var quickselect = __webpack_require__(/*! quickselect */ "./node_modules/quickselect/quickselect.js");
-
-function rbush(maxEntries, format) {
-    if (!(this instanceof rbush)) return new rbush(maxEntries, format);
-
-    // max entries in a node is 9 by default; min node fill is 40% for best performance
-    this._maxEntries = Math.max(4, maxEntries || 9);
-    this._minEntries = Math.max(2, Math.ceil(this._maxEntries * 0.4));
-
-    if (format) {
-        this._initFormat(format);
-    }
-
-    this.clear();
-}
-
-rbush.prototype = {
-
-    all: function () {
-        return this._all(this.data, []);
-    },
-
-    search: function (bbox) {
-
-        var node = this.data,
-            result = [],
-            toBBox = this.toBBox;
-
-        if (!intersects(bbox, node)) return result;
-
-        var nodesToSearch = [],
-            i, len, child, childBBox;
-
-        while (node) {
-            for (i = 0, len = node.children.length; i < len; i++) {
-
-                child = node.children[i];
-                childBBox = node.leaf ? toBBox(child) : child;
-
-                if (intersects(bbox, childBBox)) {
-                    if (node.leaf) result.push(child);
-                    else if (contains(bbox, childBBox)) this._all(child, result);
-                    else nodesToSearch.push(child);
-                }
-            }
-            node = nodesToSearch.pop();
-        }
-
-        return result;
-    },
-
-    collides: function (bbox) {
-
-        var node = this.data,
-            toBBox = this.toBBox;
-
-        if (!intersects(bbox, node)) return false;
-
-        var nodesToSearch = [],
-            i, len, child, childBBox;
-
-        while (node) {
-            for (i = 0, len = node.children.length; i < len; i++) {
-
-                child = node.children[i];
-                childBBox = node.leaf ? toBBox(child) : child;
-
-                if (intersects(bbox, childBBox)) {
-                    if (node.leaf || contains(bbox, childBBox)) return true;
-                    nodesToSearch.push(child);
-                }
-            }
-            node = nodesToSearch.pop();
-        }
-
-        return false;
-    },
-
-    load: function (data) {
-        if (!(data && data.length)) return this;
-
-        if (data.length < this._minEntries) {
-            for (var i = 0, len = data.length; i < len; i++) {
-                this.insert(data[i]);
-            }
-            return this;
-        }
-
-        // recursively build the tree with the given data from scratch using OMT algorithm
-        var node = this._build(data.slice(), 0, data.length - 1, 0);
-
-        if (!this.data.children.length) {
-            // save as is if tree is empty
-            this.data = node;
-
-        } else if (this.data.height === node.height) {
-            // split root if trees have the same height
-            this._splitRoot(this.data, node);
-
-        } else {
-            if (this.data.height < node.height) {
-                // swap trees if inserted one is bigger
-                var tmpNode = this.data;
-                this.data = node;
-                node = tmpNode;
-            }
-
-            // insert the small tree into the large tree at appropriate level
-            this._insert(node, this.data.height - node.height - 1, true);
-        }
-
-        return this;
-    },
-
-    insert: function (item) {
-        if (item) this._insert(item, this.data.height - 1);
-        return this;
-    },
-
-    clear: function () {
-        this.data = createNode([]);
-        return this;
-    },
-
-    remove: function (item, equalsFn) {
-        if (!item) return this;
-
-        var node = this.data,
-            bbox = this.toBBox(item),
-            path = [],
-            indexes = [],
-            i, parent, index, goingUp;
-
-        // depth-first iterative tree traversal
-        while (node || path.length) {
-
-            if (!node) { // go up
-                node = path.pop();
-                parent = path[path.length - 1];
-                i = indexes.pop();
-                goingUp = true;
-            }
-
-            if (node.leaf) { // check current node
-                index = findItem(item, node.children, equalsFn);
-
-                if (index !== -1) {
-                    // item found, remove the item and condense tree upwards
-                    node.children.splice(index, 1);
-                    path.push(node);
-                    this._condense(path);
-                    return this;
-                }
-            }
-
-            if (!goingUp && !node.leaf && contains(node, bbox)) { // go down
-                path.push(node);
-                indexes.push(i);
-                i = 0;
-                parent = node;
-                node = node.children[0];
-
-            } else if (parent) { // go right
-                i++;
-                node = parent.children[i];
-                goingUp = false;
-
-            } else node = null; // nothing found
-        }
-
-        return this;
-    },
-
-    toBBox: function (item) { return item; },
-
-    compareMinX: compareNodeMinX,
-    compareMinY: compareNodeMinY,
-
-    toJSON: function () { return this.data; },
-
-    fromJSON: function (data) {
-        this.data = data;
-        return this;
-    },
-
-    _all: function (node, result) {
-        var nodesToSearch = [];
-        while (node) {
-            if (node.leaf) result.push.apply(result, node.children);
-            else nodesToSearch.push.apply(nodesToSearch, node.children);
-
-            node = nodesToSearch.pop();
-        }
-        return result;
-    },
-
-    _build: function (items, left, right, height) {
-
-        var N = right - left + 1,
-            M = this._maxEntries,
-            node;
-
-        if (N <= M) {
-            // reached leaf level; return leaf
-            node = createNode(items.slice(left, right + 1));
-            calcBBox(node, this.toBBox);
-            return node;
-        }
-
-        if (!height) {
-            // target height of the bulk-loaded tree
-            height = Math.ceil(Math.log(N) / Math.log(M));
-
-            // target number of root entries to maximize storage utilization
-            M = Math.ceil(N / Math.pow(M, height - 1));
-        }
-
-        node = createNode([]);
-        node.leaf = false;
-        node.height = height;
-
-        // split the items into M mostly square tiles
-
-        var N2 = Math.ceil(N / M),
-            N1 = N2 * Math.ceil(Math.sqrt(M)),
-            i, j, right2, right3;
-
-        multiSelect(items, left, right, N1, this.compareMinX);
-
-        for (i = left; i <= right; i += N1) {
-
-            right2 = Math.min(i + N1 - 1, right);
-
-            multiSelect(items, i, right2, N2, this.compareMinY);
-
-            for (j = i; j <= right2; j += N2) {
-
-                right3 = Math.min(j + N2 - 1, right2);
-
-                // pack each entry recursively
-                node.children.push(this._build(items, j, right3, height - 1));
-            }
-        }
-
-        calcBBox(node, this.toBBox);
-
-        return node;
-    },
-
-    _chooseSubtree: function (bbox, node, level, path) {
-
-        var i, len, child, targetNode, area, enlargement, minArea, minEnlargement;
-
-        while (true) {
-            path.push(node);
-
-            if (node.leaf || path.length - 1 === level) break;
-
-            minArea = minEnlargement = Infinity;
-
-            for (i = 0, len = node.children.length; i < len; i++) {
-                child = node.children[i];
-                area = bboxArea(child);
-                enlargement = enlargedArea(bbox, child) - area;
-
-                // choose entry with the least area enlargement
-                if (enlargement < minEnlargement) {
-                    minEnlargement = enlargement;
-                    minArea = area < minArea ? area : minArea;
-                    targetNode = child;
-
-                } else if (enlargement === minEnlargement) {
-                    // otherwise choose one with the smallest area
-                    if (area < minArea) {
-                        minArea = area;
-                        targetNode = child;
-                    }
-                }
-            }
-
-            node = targetNode || node.children[0];
-        }
-
-        return node;
-    },
-
-    _insert: function (item, level, isNode) {
-
-        var toBBox = this.toBBox,
-            bbox = isNode ? item : toBBox(item),
-            insertPath = [];
-
-        // find the best node for accommodating the item, saving all nodes along the path too
-        var node = this._chooseSubtree(bbox, this.data, level, insertPath);
-
-        // put the item into the node
-        node.children.push(item);
-        extend(node, bbox);
-
-        // split on node overflow; propagate upwards if necessary
-        while (level >= 0) {
-            if (insertPath[level].children.length > this._maxEntries) {
-                this._split(insertPath, level);
-                level--;
-            } else break;
-        }
-
-        // adjust bboxes along the insertion path
-        this._adjustParentBBoxes(bbox, insertPath, level);
-    },
-
-    // split overflowed node into two
-    _split: function (insertPath, level) {
-
-        var node = insertPath[level],
-            M = node.children.length,
-            m = this._minEntries;
-
-        this._chooseSplitAxis(node, m, M);
-
-        var splitIndex = this._chooseSplitIndex(node, m, M);
-
-        var newNode = createNode(node.children.splice(splitIndex, node.children.length - splitIndex));
-        newNode.height = node.height;
-        newNode.leaf = node.leaf;
-
-        calcBBox(node, this.toBBox);
-        calcBBox(newNode, this.toBBox);
-
-        if (level) insertPath[level - 1].children.push(newNode);
-        else this._splitRoot(node, newNode);
-    },
-
-    _splitRoot: function (node, newNode) {
-        // split root node
-        this.data = createNode([node, newNode]);
-        this.data.height = node.height + 1;
-        this.data.leaf = false;
-        calcBBox(this.data, this.toBBox);
-    },
-
-    _chooseSplitIndex: function (node, m, M) {
-
-        var i, bbox1, bbox2, overlap, area, minOverlap, minArea, index;
-
-        minOverlap = minArea = Infinity;
-
-        for (i = m; i <= M - m; i++) {
-            bbox1 = distBBox(node, 0, i, this.toBBox);
-            bbox2 = distBBox(node, i, M, this.toBBox);
-
-            overlap = intersectionArea(bbox1, bbox2);
-            area = bboxArea(bbox1) + bboxArea(bbox2);
-
-            // choose distribution with minimum overlap
-            if (overlap < minOverlap) {
-                minOverlap = overlap;
-                index = i;
-
-                minArea = area < minArea ? area : minArea;
-
-            } else if (overlap === minOverlap) {
-                // otherwise choose distribution with minimum area
-                if (area < minArea) {
-                    minArea = area;
-                    index = i;
-                }
-            }
-        }
-
-        return index;
-    },
-
-    // sorts node children by the best axis for split
-    _chooseSplitAxis: function (node, m, M) {
-
-        var compareMinX = node.leaf ? this.compareMinX : compareNodeMinX,
-            compareMinY = node.leaf ? this.compareMinY : compareNodeMinY,
-            xMargin = this._allDistMargin(node, m, M, compareMinX),
-            yMargin = this._allDistMargin(node, m, M, compareMinY);
-
-        // if total distributions margin value is minimal for x, sort by minX,
-        // otherwise it's already sorted by minY
-        if (xMargin < yMargin) node.children.sort(compareMinX);
-    },
-
-    // total margin of all possible split distributions where each node is at least m full
-    _allDistMargin: function (node, m, M, compare) {
-
-        node.children.sort(compare);
-
-        var toBBox = this.toBBox,
-            leftBBox = distBBox(node, 0, m, toBBox),
-            rightBBox = distBBox(node, M - m, M, toBBox),
-            margin = bboxMargin(leftBBox) + bboxMargin(rightBBox),
-            i, child;
-
-        for (i = m; i < M - m; i++) {
-            child = node.children[i];
-            extend(leftBBox, node.leaf ? toBBox(child) : child);
-            margin += bboxMargin(leftBBox);
-        }
-
-        for (i = M - m - 1; i >= m; i--) {
-            child = node.children[i];
-            extend(rightBBox, node.leaf ? toBBox(child) : child);
-            margin += bboxMargin(rightBBox);
-        }
-
-        return margin;
-    },
-
-    _adjustParentBBoxes: function (bbox, path, level) {
-        // adjust bboxes along the given tree path
-        for (var i = level; i >= 0; i--) {
-            extend(path[i], bbox);
-        }
-    },
-
-    _condense: function (path) {
-        // go through the path, removing empty nodes and updating bboxes
-        for (var i = path.length - 1, siblings; i >= 0; i--) {
-            if (path[i].children.length === 0) {
-                if (i > 0) {
-                    siblings = path[i - 1].children;
-                    siblings.splice(siblings.indexOf(path[i]), 1);
-
-                } else this.clear();
-
-            } else calcBBox(path[i], this.toBBox);
-        }
-    },
-
-    _initFormat: function (format) {
-        // data format (minX, minY, maxX, maxY accessors)
-
-        // uses eval-type function compilation instead of just accepting a toBBox function
-        // because the algorithms are very sensitive to sorting functions performance,
-        // so they should be dead simple and without inner calls
-
-        var compareArr = ['return a', ' - b', ';'];
-
-        this.compareMinX = new Function('a', 'b', compareArr.join(format[0]));
-        this.compareMinY = new Function('a', 'b', compareArr.join(format[1]));
-
-        this.toBBox = new Function('a',
-            'return {minX: a' + format[0] +
-            ', minY: a' + format[1] +
-            ', maxX: a' + format[2] +
-            ', maxY: a' + format[3] + '};');
-    }
-};
-
-function findItem(item, items, equalsFn) {
-    if (!equalsFn) return items.indexOf(item);
-
-    for (var i = 0; i < items.length; i++) {
-        if (equalsFn(item, items[i])) return i;
-    }
-    return -1;
-}
-
-// calculate node's bbox from bboxes of its children
-function calcBBox(node, toBBox) {
-    distBBox(node, 0, node.children.length, toBBox, node);
-}
-
-// min bounding rectangle of node children from k to p-1
-function distBBox(node, k, p, toBBox, destNode) {
-    if (!destNode) destNode = createNode(null);
-    destNode.minX = Infinity;
-    destNode.minY = Infinity;
-    destNode.maxX = -Infinity;
-    destNode.maxY = -Infinity;
-
-    for (var i = k, child; i < p; i++) {
-        child = node.children[i];
-        extend(destNode, node.leaf ? toBBox(child) : child);
-    }
-
-    return destNode;
-}
-
-function extend(a, b) {
-    a.minX = Math.min(a.minX, b.minX);
-    a.minY = Math.min(a.minY, b.minY);
-    a.maxX = Math.max(a.maxX, b.maxX);
-    a.maxY = Math.max(a.maxY, b.maxY);
-    return a;
-}
-
-function compareNodeMinX(a, b) { return a.minX - b.minX; }
-function compareNodeMinY(a, b) { return a.minY - b.minY; }
-
-function bboxArea(a)   { return (a.maxX - a.minX) * (a.maxY - a.minY); }
-function bboxMargin(a) { return (a.maxX - a.minX) + (a.maxY - a.minY); }
-
-function enlargedArea(a, b) {
-    return (Math.max(b.maxX, a.maxX) - Math.min(b.minX, a.minX)) *
-           (Math.max(b.maxY, a.maxY) - Math.min(b.minY, a.minY));
-}
-
-function intersectionArea(a, b) {
-    var minX = Math.max(a.minX, b.minX),
-        minY = Math.max(a.minY, b.minY),
-        maxX = Math.min(a.maxX, b.maxX),
-        maxY = Math.min(a.maxY, b.maxY);
-
-    return Math.max(0, maxX - minX) *
-           Math.max(0, maxY - minY);
-}
-
-function contains(a, b) {
-    return a.minX <= b.minX &&
-           a.minY <= b.minY &&
-           b.maxX <= a.maxX &&
-           b.maxY <= a.maxY;
-}
-
-function intersects(a, b) {
-    return b.minX <= a.maxX &&
-           b.minY <= a.maxY &&
-           b.maxX >= a.minX &&
-           b.maxY >= a.minY;
-}
-
-function createNode(children) {
-    return {
-        children: children,
-        height: 1,
-        leaf: true,
-        minX: Infinity,
-        minY: Infinity,
-        maxX: -Infinity,
-        maxY: -Infinity
-    };
-}
-
-// sort an array so that items come in groups of n unsorted items, with groups sorted between each other;
-// combines selection algorithm with binary divide & conquer approach
-
-function multiSelect(arr, left, right, n, compare) {
-    var stack = [left, right],
-        mid;
-
-    while (stack.length) {
-        right = stack.pop();
-        left = stack.pop();
-
-        if (right - left <= n) continue;
-
-        mid = left + Math.ceil((right - left) / n / 2) * n;
-        quickselect(arr, mid, left, right, compare);
-
-        stack.push(left, mid, mid, right);
-    }
-}
+!function(t,i){ true?module.exports=i():undefined}(this,function(){"use strict";function t(t,r,e,a,h){!function t(n,r,e,a,h){for(;a>e;){if(a-e>600){var o=a-e+1,s=r-e+1,l=Math.log(o),f=.5*Math.exp(2*l/3),u=.5*Math.sqrt(l*f*(o-f)/o)*(s-o/2<0?-1:1),m=Math.max(e,Math.floor(r-s*f/o+u)),c=Math.min(a,Math.floor(r+(o-s)*f/o+u));t(n,r,m,c,h)}var p=n[r],d=e,x=a;for(i(n,e,r),h(n[a],p)>0&&i(n,e,a);d<x;){for(i(n,d,x),d++,x--;h(n[d],p)<0;)d++;for(;h(n[x],p)>0;)x--}0===h(n[e],p)?i(n,e,x):i(n,++x,a),x<=r&&(e=x+1),r<=x&&(a=x-1)}}(t,r,e||0,a||t.length-1,h||n)}function i(t,i,n){var r=t[i];t[i]=t[n],t[n]=r}function n(t,i){return t<i?-1:t>i?1:0}var r=function(t){void 0===t&&(t=9),this._maxEntries=Math.max(4,t),this._minEntries=Math.max(2,Math.ceil(.4*this._maxEntries)),this.clear()};function e(t,i,n){if(!n)return i.indexOf(t);for(var r=0;r<i.length;r++)if(n(t,i[r]))return r;return-1}function a(t,i){h(t,0,t.children.length,i,t)}function h(t,i,n,r,e){e||(e=p(null)),e.minX=1/0,e.minY=1/0,e.maxX=-1/0,e.maxY=-1/0;for(var a=i;a<n;a++){var h=t.children[a];o(e,t.leaf?r(h):h)}return e}function o(t,i){return t.minX=Math.min(t.minX,i.minX),t.minY=Math.min(t.minY,i.minY),t.maxX=Math.max(t.maxX,i.maxX),t.maxY=Math.max(t.maxY,i.maxY),t}function s(t,i){return t.minX-i.minX}function l(t,i){return t.minY-i.minY}function f(t){return(t.maxX-t.minX)*(t.maxY-t.minY)}function u(t){return t.maxX-t.minX+(t.maxY-t.minY)}function m(t,i){return t.minX<=i.minX&&t.minY<=i.minY&&i.maxX<=t.maxX&&i.maxY<=t.maxY}function c(t,i){return i.minX<=t.maxX&&i.minY<=t.maxY&&i.maxX>=t.minX&&i.maxY>=t.minY}function p(t){return{children:t,height:1,leaf:!0,minX:1/0,minY:1/0,maxX:-1/0,maxY:-1/0}}function d(i,n,r,e,a){for(var h=[n,r];h.length;)if(!((r=h.pop())-(n=h.pop())<=e)){var o=n+Math.ceil((r-n)/e/2)*e;t(i,o,n,r,a),h.push(n,o,o,r)}}return r.prototype.all=function(){return this._all(this.data,[])},r.prototype.search=function(t){var i=this.data,n=[];if(!c(t,i))return n;for(var r=this.toBBox,e=[];i;){for(var a=0;a<i.children.length;a++){var h=i.children[a],o=i.leaf?r(h):h;c(t,o)&&(i.leaf?n.push(h):m(t,o)?this._all(h,n):e.push(h))}i=e.pop()}return n},r.prototype.collides=function(t){var i=this.data;if(!c(t,i))return!1;for(var n=[];i;){for(var r=0;r<i.children.length;r++){var e=i.children[r],a=i.leaf?this.toBBox(e):e;if(c(t,a)){if(i.leaf||m(t,a))return!0;n.push(e)}}i=n.pop()}return!1},r.prototype.load=function(t){if(!t||!t.length)return this;if(t.length<this._minEntries){for(var i=0;i<t.length;i++)this.insert(t[i]);return this}var n=this._build(t.slice(),0,t.length-1,0);if(this.data.children.length)if(this.data.height===n.height)this._splitRoot(this.data,n);else{if(this.data.height<n.height){var r=this.data;this.data=n,n=r}this._insert(n,this.data.height-n.height-1,!0)}else this.data=n;return this},r.prototype.insert=function(t){return t&&this._insert(t,this.data.height-1),this},r.prototype.clear=function(){return this.data=p([]),this},r.prototype.remove=function(t,i){if(!t)return this;for(var n,r,a,h=this.data,o=this.toBBox(t),s=[],l=[];h||s.length;){if(h||(h=s.pop(),r=s[s.length-1],n=l.pop(),a=!0),h.leaf){var f=e(t,h.children,i);if(-1!==f)return h.children.splice(f,1),s.push(h),this._condense(s),this}a||h.leaf||!m(h,o)?r?(n++,h=r.children[n],a=!1):h=null:(s.push(h),l.push(n),n=0,r=h,h=h.children[0])}return this},r.prototype.toBBox=function(t){return t},r.prototype.compareMinX=function(t,i){return t.minX-i.minX},r.prototype.compareMinY=function(t,i){return t.minY-i.minY},r.prototype.toJSON=function(){return this.data},r.prototype.fromJSON=function(t){return this.data=t,this},r.prototype._all=function(t,i){for(var n=[];t;)t.leaf?i.push.apply(i,t.children):n.push.apply(n,t.children),t=n.pop();return i},r.prototype._build=function(t,i,n,r){var e,h=n-i+1,o=this._maxEntries;if(h<=o)return a(e=p(t.slice(i,n+1)),this.toBBox),e;r||(r=Math.ceil(Math.log(h)/Math.log(o)),o=Math.ceil(h/Math.pow(o,r-1))),(e=p([])).leaf=!1,e.height=r;var s=Math.ceil(h/o),l=s*Math.ceil(Math.sqrt(o));d(t,i,n,l,this.compareMinX);for(var f=i;f<=n;f+=l){var u=Math.min(f+l-1,n);d(t,f,u,s,this.compareMinY);for(var m=f;m<=u;m+=s){var c=Math.min(m+s-1,u);e.children.push(this._build(t,m,c,r-1))}}return a(e,this.toBBox),e},r.prototype._chooseSubtree=function(t,i,n,r){for(;r.push(i),!i.leaf&&r.length-1!==n;){for(var e=1/0,a=1/0,h=void 0,o=0;o<i.children.length;o++){var s=i.children[o],l=f(s),u=(m=t,c=s,(Math.max(c.maxX,m.maxX)-Math.min(c.minX,m.minX))*(Math.max(c.maxY,m.maxY)-Math.min(c.minY,m.minY))-l);u<a?(a=u,e=l<e?l:e,h=s):u===a&&l<e&&(e=l,h=s)}i=h||i.children[0]}var m,c;return i},r.prototype._insert=function(t,i,n){var r=n?t:this.toBBox(t),e=[],a=this._chooseSubtree(r,this.data,i,e);for(a.children.push(t),o(a,r);i>=0&&e[i].children.length>this._maxEntries;)this._split(e,i),i--;this._adjustParentBBoxes(r,e,i)},r.prototype._split=function(t,i){var n=t[i],r=n.children.length,e=this._minEntries;this._chooseSplitAxis(n,e,r);var h=this._chooseSplitIndex(n,e,r),o=p(n.children.splice(h,n.children.length-h));o.height=n.height,o.leaf=n.leaf,a(n,this.toBBox),a(o,this.toBBox),i?t[i-1].children.push(o):this._splitRoot(n,o)},r.prototype._splitRoot=function(t,i){this.data=p([t,i]),this.data.height=t.height+1,this.data.leaf=!1,a(this.data,this.toBBox)},r.prototype._chooseSplitIndex=function(t,i,n){for(var r,e,a,o,s,l,u,m=1/0,c=1/0,p=i;p<=n-i;p++){var d=h(t,0,p,this.toBBox),x=h(t,p,n,this.toBBox),v=(e=d,a=x,o=void 0,s=void 0,l=void 0,u=void 0,o=Math.max(e.minX,a.minX),s=Math.max(e.minY,a.minY),l=Math.min(e.maxX,a.maxX),u=Math.min(e.maxY,a.maxY),Math.max(0,l-o)*Math.max(0,u-s)),M=f(d)+f(x);v<m?(m=v,r=p,c=M<c?M:c):v===m&&M<c&&(c=M,r=p)}return r},r.prototype._chooseSplitAxis=function(t,i,n){var r=t.leaf?this.compareMinX:s,e=t.leaf?this.compareMinY:l;this._allDistMargin(t,i,n,r)<this._allDistMargin(t,i,n,e)&&t.children.sort(r)},r.prototype._allDistMargin=function(t,i,n,r){t.children.sort(r);for(var e=this.toBBox,a=h(t,0,i,e),s=h(t,n-i,n,e),l=u(a)+u(s),f=i;f<n-i;f++){var m=t.children[f];o(a,t.leaf?e(m):m),l+=u(a)}for(var c=n-i-1;c>=i;c--){var p=t.children[c];o(s,t.leaf?e(p):p),l+=u(s)}return l},r.prototype._adjustParentBBoxes=function(t,i,n){for(var r=n;r>=0;r--)o(i[r],t)},r.prototype._condense=function(t){for(var i=t.length-1,n=void 0;i>=0;i--)0===t[i].children.length?i>0?(n=t[i-1].children).splice(n.indexOf(t[i]),1):this.clear():a(t[i],this.toBBox)},r});
 
 
 /***/ })

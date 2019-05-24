@@ -14,7 +14,8 @@ goog.require('ga_vector_tile_layer_service');
     return map.on(evtType, function(evt) {
       var coord = evt.coordinate;
       overlay.setPosition(coord);
-      var features = gaVectorTileLayerService.getFeaturesUnderMousePointer();
+      var features = gaVectorTileLayerService.getFeatures(
+          map.getPixelFromCoordinate(coord));
       if (features) {
         var flatFeatures = [];
         features.forEach(function(feature) {
