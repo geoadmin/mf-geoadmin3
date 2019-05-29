@@ -174,7 +174,7 @@ goog.require('ga_browsersniffer_service');
               });
             }
             var center = ol.proj.toLonLat(view.getCenter(),
-                                          view.getProjection());
+                view.getProjection());
             var zoom = view.getZoom() + ZOOM_OFFSET;
             mbMap.jumpTo({
               center: center,
