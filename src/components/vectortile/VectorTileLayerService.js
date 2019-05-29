@@ -174,7 +174,7 @@ goog.require('ga_browsersniffer_service');
               });
             }
             var center = ol.proj.toLonLat(view.getCenter(),
-                                          view.getProjection());
+                view.getProjection());
             var zoom = view.getZoom() + ZOOM_OFFSET;
             mbMap.jumpTo({
               center: center,
@@ -194,10 +194,10 @@ goog.require('ga_browsersniffer_service');
             return canvas;
           }
         });
-        mbLayer.getFeaturesScreenPosition = function (screenPosition) {
+        mbLayer.getFeaturesScreenPosition = function(screenPosition) {
           return mbMap.queryRenderedFeatures(screenPosition);
         };
-        mbLayer.setStyle = function (style) {
+        mbLayer.setStyle = function(style) {
           mbMap.setStyle(style);
         };
         // useful for BackgroundService
