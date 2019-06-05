@@ -58,11 +58,11 @@ s3listconfig%:
 # Activate, i.e. copy the layersconfig from it timestamped configs directory to the 'active' one
 s3activateconfig := $(patsubst %,s3activateconfig%,dev,int,prod)                                                                                                          
 PHONY: $(s3activateconfig)
-s3activateconfig%: guard-LAYERSCONFIG
-		${AWS_CMD} s3 cp --recursive  s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/$(LAYERSCONFIG)/configs/ s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/configs/
+s3activateconfig%: guard-LAYERSCONFIG_VERSION
+		${AWS_CMD} s3 cp --recursive  s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/$(LAYERSCONFIG_VERSION)/configs/ s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/configs/
 
 # Delete a previous layersconfig
 s3deleteconfig := $(patsubst %,s3deleteconfig%,int,prod)
 PHONY: $(s3deleteconfig)
-s3deleteconfig%: guard-LAYERSCONFIG
-		${AWS_CMD} s3 rm --recursive  s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/$(LAYERSCONFIG);
+s3deleteconfig%: guard-LAYERSCONFIG_VERSION
+		${AWS_CMD} s3 rm --recursive  s3://$(S3_BUCKET_$(shell echo $*| tr a-z A-Z))/$(LAYERSCONFIG_VERSION);
