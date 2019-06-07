@@ -38,9 +38,9 @@ src/config.%.mako: src/config.mako \
 	mkdir -p $(dir $@)
 	$(call buildpage,desktop,$*,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
 
-# Upload the configs to :
-# - s3://mf-geoadmin3-int-dublin/configs/
-# - s3://mf-geoadmin3-prod-dublin/configs/
+# Upload configs to :
+# - s3://mf-geoadmin3-int-dublin/configs_archive/
+# - s3://mf-geoadmin3-prod-dublin/configs_archive/
 PHONY: s3uploadconfig
 s3uploadconfig: ${PYTHON_VENV}
 	@$(eval LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD = $(LAYERSCONFIG_VERSION))
