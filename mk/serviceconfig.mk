@@ -42,15 +42,30 @@ src/config.%.mako: src/config.mako \
 # - s3://mf-geoadmin3-int-dublin/configs/
 # - s3://mf-geoadmin3-prod-dublin/configs/
 PHONY: s3uploadconfig
-s3uploadconfig: configs/ $(CONFIG_FILES)
-	@echo "uploading config version $(LAYERSCONFIG_VERSION) to int..."
-	$(foreach json,$^, gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_INT)/configs_archive/$(LAYERSCONFIG_VERSION)/$(json);)
-	@echo "upload to int done."
-	@echo "uploading config version $(LAYERSCONFIG_VERSION) to prod..."
-	$(foreach json,$^, gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_PROD)/configs_archive/$(LAYERSCONFIG_VERSION)/$(json);)
-	@echo "upload to prod done"
+s3uploadconfig: ${PYTHON_VENV}
+	@$(eval LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD = $(LAYERSCONFIG_VERSION))
+	@echo "Layers config version : $(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)"
+	@echo "generating config for int..."
+	source rc_int && $(MAKE) clean configs/
 	@echo  
-	@echo "Layers config version : $(LAYERSCONFIG_VERSION)"
+	@echo "generating config for int done"
+	@echo  
+	@echo "uploading config to int..."
+	$(foreach json, $(CONFIG_FILES), gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_INT)/configs_archive/$(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)/$(json);)
+	@echo  
+	@echo "uploading to int done"
+	@echo  
+	@echo "generating config for prod..."
+	source rc_prod && $(MAKE) clean configs/
+	@echo  
+	@echo "generating config for prod done"
+	@echo  
+	@echo "uploading config to prod..."
+	$(foreach json, $(CONFIG_FILES), gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_PROD)/configs_archive/$(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)/$(json);)
+	@echo  
+	@echo "uploading to prod done"
+	@echo  
+	@echo "Layers config version : $(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)"
 
 # Display current version number
 s3currentconfig := $(patsubst %,s3currentconfig%,int,prod)
