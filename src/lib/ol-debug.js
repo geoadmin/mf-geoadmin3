@@ -555,7 +555,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 var ol = {};
 
 ol.array = {};
@@ -747,7 +746,6 @@ ol.geom.Polygon.fromCircle = _ol_geom_Polygon__WEBPACK_IMPORTED_MODULE_123__["fr
 ol.geom.Polygon.fromExtent = _ol_geom_Polygon__WEBPACK_IMPORTED_MODULE_123__["fromExtent"];
 ol.geom.SimpleGeometry = _ol_geom_SimpleGeometry__WEBPACK_IMPORTED_MODULE_124__["default"];
 ol.has.DEVICE_PIXEL_RATIO = _ol_has__WEBPACK_IMPORTED_MODULE_18__["DEVICE_PIXEL_RATIO"];
-ol.has.TOUCH = _ol_has__WEBPACK_IMPORTED_MODULE_18__["TOUCH"];
 ol.interaction.DoubleClickZoom = _ol_interaction_DoubleClickZoom__WEBPACK_IMPORTED_MODULE_94__["default"];
 ol.interaction.DragAndDrop = _ol_interaction_DragAndDrop__WEBPACK_IMPORTED_MODULE_95__["default"];
 ol.interaction.DragBox = _ol_interaction_DragBox__WEBPACK_IMPORTED_MODULE_96__["default"];
@@ -1996,6 +1994,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _events_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./events.js */ "./build/ol/events.js");
 /* harmony import */ var _events_EventType_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./events/EventType.js */ "./build/ol/events/EventType.js");
 /* harmony import */ var _extent_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./extent.js */ "./build/ol/extent.js");
+/* harmony import */ var _has_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./has.js */ "./build/ol/has.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -2012,6 +2011,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
 /**
  * @module ol/Image
  */
+
 
 
 
@@ -2148,7 +2148,10 @@ var ImageWrapper = /** @class */ (function (_super) {
  */
 function listenImage(image, loadHandler, errorHandler) {
     var img = /** @type {HTMLImageElement} */ (image);
-    if (img.decode) {
+    // The decode function is supported by Safari but not when the image is a svg file.
+    // FIXME: remove `!SAFARI` in the test when this bug is fixed upstream.
+    //        See: https://bugs.webkit.org/show_bug.cgi?id=198527
+    if (!_has_js__WEBPACK_IMPORTED_MODULE_5__["SAFARI"] && img.decode) {
         var promise = img.decode();
         var listening_1 = true;
         var unlisten = function () {
@@ -3193,11 +3196,6 @@ var MapBrowserEventHandler = /** @class */ (function (_super) {
             var newEvent = new _MapBrowserPointerEvent_js__WEBPACK_IMPORTED_MODULE_2__["default"](_MapBrowserEventType_js__WEBPACK_IMPORTED_MODULE_1__["default"].POINTERDRAG, this.map_, pointerEvent, this.dragging_);
             this.dispatchEvent(newEvent);
         }
-        // Some native android browser triggers mousemove events during small period
-        // of time. See: https://code.google.com/p/android/issues/detail?id=5491 or
-        // https://code.google.com/p/android/issues/detail?id=19827
-        // ex: Galaxy Tab P3110 + Android 4.1.1
-        pointerEvent.preventDefault();
     };
     /**
      * Wrap and relay a pointer event.  Note that this requires that the type
@@ -4745,7 +4743,7 @@ var PluggableMap = /** @class */ (function (_super) {
          * @type {!HTMLElement}
          */
         _this.viewport_ = document.createElement('div');
-        _this.viewport_.className = 'ol-viewport' + (_has_js__WEBPACK_IMPORTED_MODULE_21__["TOUCH"] ? ' ol-touch' : '');
+        _this.viewport_.className = 'ol-viewport' + ('ontouchstart' in window ? ' ol-touch' : '');
         _this.viewport_.style.position = 'relative';
         _this.viewport_.style.overflow = 'hidden';
         _this.viewport_.style.width = '100%';
@@ -4807,6 +4805,10 @@ var PluggableMap = /** @class */ (function (_super) {
          */
         _this.interactions = optionsInternal.interactions || new _Collection_js__WEBPACK_IMPORTED_MODULE_1__["default"]();
         /**
+         * @type {import("./events/Target.js").default}
+         */
+        _this.labelCache_ = null;
+        /**
          * @type {import("./events.js").EventsKey}
          */
         _this.labelCacheListenerKey_;
@@ -4825,7 +4827,7 @@ var PluggableMap = /** @class */ (function (_super) {
          * @type {import("./renderer/Map.js").default}
          * @private
          */
-        _this.renderer_ = _this.createRenderer();
+        _this.renderer_ = null;
         /**
          * @type {function(Event): void|undefined}
          * @private
@@ -4984,22 +4986,6 @@ var PluggableMap = /** @class */ (function (_super) {
         overlay.setMap(this);
     };
     /**
-     * Attach a label cache for listening to font changes.
-     * @param {import("./events/Target.js").default} labelCache Label cache.
-     */
-    PluggableMap.prototype.attachLabelCache = function (labelCache) {
-        this.detachLabelCache();
-        this.labelCacheListenerKey_ = Object(_events_js__WEBPACK_IMPORTED_MODULE_17__["listen"])(labelCache, _events_EventType_js__WEBPACK_IMPORTED_MODULE_18__["default"].CLEAR, this.redrawText.bind(this));
-    };
-    /**
-     * Detach the label cache, i.e. no longer listen to font changes.
-     */
-    PluggableMap.prototype.detachLabelCache = function () {
-        if (this.labelCacheListenerKey_) {
-            Object(_events_js__WEBPACK_IMPORTED_MODULE_17__["unlistenByKey"])(this.labelCacheListenerKey_);
-        }
-    };
-    /**
      *
      * @inheritDoc
      */
@@ -5012,11 +4998,6 @@ var PluggableMap = /** @class */ (function (_super) {
             removeEventListener(_events_EventType_js__WEBPACK_IMPORTED_MODULE_18__["default"].RESIZE, this.handleResize_, false);
             this.handleResize_ = undefined;
         }
-        if (this.animationDelayKey_) {
-            cancelAnimationFrame(this.animationDelayKey_);
-            this.animationDelayKey_ = undefined;
-        }
-        this.detachLabelCache();
         this.setTarget(null);
         _super.prototype.disposeInternal.call(this);
     };
@@ -5470,6 +5451,14 @@ var PluggableMap = /** @class */ (function (_super) {
             this.keyHandlerKeys_ = null;
         }
         if (!targetElement) {
+            if (this.renderer_) {
+                this.renderer_.dispose();
+                this.renderer_ = null;
+            }
+            if (this.animationDelayKey_) {
+                cancelAnimationFrame(this.animationDelayKey_);
+                this.animationDelayKey_ = undefined;
+            }
             Object(_dom_js__WEBPACK_IMPORTED_MODULE_16__["removeNode"])(this.viewport_);
             if (this.handleResize_ !== undefined) {
                 removeEventListener(_events_EventType_js__WEBPACK_IMPORTED_MODULE_18__["default"].RESIZE, this.handleResize_, false);
@@ -5478,6 +5467,9 @@ var PluggableMap = /** @class */ (function (_super) {
         }
         else {
             targetElement.appendChild(this.viewport_);
+            if (!this.renderer_) {
+                this.renderer_ = this.createRenderer();
+            }
             var keyboardEventTarget = !this.keyboardEventTarget_ ?
                 targetElement : this.keyboardEventTarget_;
             this.keyHandlerKeys_ = [
@@ -5576,7 +5568,7 @@ var PluggableMap = /** @class */ (function (_super) {
      * @api
      */
     PluggableMap.prototype.render = function () {
-        if (this.animationDelayKey_ === undefined) {
+        if (this.renderer_ && this.animationDelayKey_ === undefined) {
             this.animationDelayKey_ = requestAnimationFrame(this.animationDelay_);
         }
     };
@@ -10307,8 +10299,8 @@ var ControlledMap = /** @class */ (function (_super) {
  * @property {boolean} [collapsible=true] Whether the control can be collapsed or not.
  * @property {string|HTMLElement} [label='»'] Text label to use for the collapsed
  * overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {Array<import("../layer/Layer.js").default>|import("../Collection.js").default<import("../layer/Layer.js").default>} layers
- * Layers for the overview map (mandatory).
+ * @property {Array<import("../layer/Layer.js").default>|import("../Collection.js").default<import("../layer/Layer.js").default>} [layers]
+ * Layers for the overview map.
  * @property {function(import("../MapEvent.js").default)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
@@ -10398,13 +10390,9 @@ var OverviewMap = /** @class */ (function (_super) {
         });
         var ovmap = _this.ovmap_;
         if (options.layers) {
-            /** @type {Array<import("../layer/Layer.js").default>} */ (options.layers).forEach(
-            /**
-             * @param {import("../layer/Layer.js").default} layer Layer.
-             */
-            (function (layer) {
+            options.layers.forEach(function (layer) {
                 ovmap.addLayer(layer);
-            }).bind(_this));
+            });
         }
         var box = document.createElement('div');
         box.className = 'ol-overviewmap-box';
@@ -15129,8 +15117,10 @@ __webpack_require__.r(__webpack_exports__);
  * the `dataProjection` of the format is assigned (where set). If the projection
  * can not be derived from the data and if no `dataProjection` is set for a format,
  * the features will not be reprojected.
- * @property {import("../extent.js").Extent} [extent] Tile extent of the tile being read. This is only used and
- * required for {@link module:ol/format/MVT}.
+ * @property {import("../extent.js").Extent} [extent] Tile extent in map units of the tile being read.
+ * This is only required when reading data with tile pixels as geometry units. When configured,
+ * a `dataProjection` with `TILE_PIXELS` as `units` and the tile's pixel extent as `extent` needs to be
+ * provided.
  * @property {import("../proj.js").ProjectionLike} [featureProjection] Projection of the feature geometries
  * created by the format reader. If not provided, features will be returned in the
  * `dataProjection`.
@@ -15194,9 +15184,14 @@ var FeatureFormat = /** @class */ (function () {
     FeatureFormat.prototype.getReadOptions = function (source, opt_options) {
         var options;
         if (opt_options) {
+            var dataProjection = opt_options.dataProjection ?
+                opt_options.dataProjection : this.readProjection(source);
+            if (opt_options.extent) {
+                dataProjection = Object(_proj_js__WEBPACK_IMPORTED_MODULE_2__["get"])(dataProjection);
+                dataProjection.setWorldExtent(opt_options.extent);
+            }
             options = {
-                dataProjection: opt_options.dataProjection ?
-                    opt_options.dataProjection : this.readProjection(source),
+                dataProjection: dataProjection,
                 featureProjection: opt_options.featureProjection
             };
         }
@@ -34847,7 +34842,7 @@ function translate(flatCoordinates, offset, end, stride, deltaX, deltaY, opt_des
 /*!*************************!*\
   !*** ./build/ol/has.js ***!
   \*************************/
-/*! exports provided: FIREFOX, SAFARI, WEBKIT, MAC, DEVICE_PIXEL_RATIO, TOUCH, POINTER, MSPOINTER, WEBGL */
+/*! exports provided: FIREFOX, SAFARI, WEBKIT, MAC, DEVICE_PIXEL_RATIO, WEBGL */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -34857,9 +34852,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WEBKIT", function() { return WEBKIT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAC", function() { return MAC; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEVICE_PIXEL_RATIO", function() { return DEVICE_PIXEL_RATIO; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TOUCH", function() { return TOUCH; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "POINTER", function() { return POINTER; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MSPOINTER", function() { return MSPOINTER; });
 /* harmony import */ var _webgl_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./webgl.js */ "./build/ol/webgl.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "WEBGL", function() { return _webgl_js__WEBPACK_IMPORTED_MODULE_0__["HAS"]; });
 
@@ -34896,25 +34888,6 @@ var MAC = ua.indexOf('macintosh') !== -1;
  * @api
  */
 var DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
-/**
- * True if browser supports touch events.
- * @const
- * @type {boolean}
- * @api
- */
-var TOUCH = 'ontouchstart' in window;
-/**
- * True if browser supports pointer events.
- * @const
- * @type {boolean}
- */
-var POINTER = 'PointerEvent' in window;
-/**
- * True if browser supports ms pointer events (IE 10).
- * @const
- * @type {boolean}
- */
-var MSPOINTER = !!(navigator.msPointerEnabled);
 
 //# sourceMappingURL=has.js.map
 
@@ -41440,6 +41413,13 @@ var TranslateEventType = {
     TRANSLATEEND: 'translateend'
 };
 /**
+ * A function that takes an {@link module:ol/Feature} or
+ * {@link module:ol/render/Feature} and an
+ * {@link module:ol/layer/Layer} and returns `true` if the feature may be
+ * translated or `false` otherwise.
+ * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default):boolean} FilterFunction
+ */
+/**
  * @typedef {Object} Options
  * @property {Collection<import("../Feature.js").default>} [features] Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
@@ -41448,6 +41428,10 @@ var TranslateEventType = {
  * function will be called for each layer in the map and should return
  * `true` for layers that you want to be translatable. If the option is
  * absent, all visible layers will be considered translatable.
+ * @property {FilterFunction} [filter] A function
+ * that takes an {@link module:ol/Feature} and an
+ * {@link module:ol/layer/Layer} and returns `true` if the feature may be
+ * translated or `false` otherwise.
  * @property {number} [hitTolerance=0] Hit-detection tolerance. Pixels inside the radius around the given position
  * will be checked for features.
  */
@@ -41533,6 +41517,11 @@ var Translate = /** @class */ (function (_super) {
         _this.layerFilter_ = layerFilter;
         /**
          * @private
+         * @type {FilterFunction}
+         */
+        _this.filter_ = options.filter ? options.filter : _functions_js__WEBPACK_IMPORTED_MODULE_4__["TRUE"];
+        /**
+         * @private
          * @type {number}
          */
         _this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
@@ -41614,9 +41603,11 @@ var Translate = /** @class */ (function (_super) {
      * @private
      */
     Translate.prototype.featuresAtPixel_ = function (pixel, map) {
-        return map.forEachFeatureAtPixel(pixel, function (feature) {
-            if (!this.features_ || Object(_array_js__WEBPACK_IMPORTED_MODULE_5__["includes"])(this.features_.getArray(), feature)) {
-                return feature;
+        return map.forEachFeatureAtPixel(pixel, function (feature, layer) {
+            if (this.filter_(feature, layer)) {
+                if (!this.features_ || Object(_array_js__WEBPACK_IMPORTED_MODULE_5__["includes"])(this.features_.getArray(), feature)) {
+                    return feature;
+                }
             }
         }.bind(this), {
             layerFilter: this.layerFilter_,
@@ -41788,7 +41779,8 @@ var BaseLayer = /** @class */ (function (_super) {
         /** @type {import("./Layer.js").State} */
         var state = this.state_ || /** @type {?} */ ({
             layer: this,
-            managed: opt_managed === undefined ? true : opt_managed
+            managed: opt_managed === undefined ? true : opt_managed,
+            hasOverlay: false
         });
         state.opacity = Object(_math_js__WEBPACK_IMPORTED_MODULE_3__["clamp"])(Math.round(this.getOpacity() * 100) / 100, 0, 1);
         state.sourceState = this.getSourceState();
@@ -42242,8 +42234,7 @@ var BaseVectorLayer = /** @class */ (function (_super) {
      */
     function BaseVectorLayer(opt_options) {
         var _this = this;
-        var options = opt_options ?
-            opt_options : /** @type {Options} */ ({});
+        var options = opt_options ? opt_options : {};
         var baseOptions = Object(_obj_js__WEBPACK_IMPORTED_MODULE_1__["assign"])({}, options);
         delete baseOptions.style;
         delete baseOptions.renderBuffer;
@@ -43771,6 +43762,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
  * @property {SourceState} sourceState
  * @property {boolean} visible
  * @property {boolean} managed
+ * @property {boolean} hasOverlay Set by the renderer when an overlay for points and text is used.
  * @property {import("../extent.js").Extent} [extent]
  * @property {number} zIndex
  * @property {number} maxResolution
@@ -44050,9 +44042,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 
 /**
- * @typedef {import("./BaseTile.js").Options} Options
- */
-/**
  * @classdesc
  * For layer sources that provide pre-rendered, tiled images in grids that are
  * organized by zoom levels for specific resolutions.
@@ -44065,7 +44054,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
 var TileLayer = /** @class */ (function (_super) {
     __extends(TileLayer, _super);
     /**
-     * @param {Options=} opt_options Tile layer options.
+     * @param {import("./BaseTile.js").Options=} opt_options Tile layer options.
      */
     function TileLayer(opt_options) {
         return _super.call(this, opt_options) || this;
@@ -44138,9 +44127,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 
 /**
- * @typedef {import("./BaseVector.js").Options} Options
- */
-/**
  * @classdesc
  * Vector data that is rendered client-side.
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
@@ -44153,7 +44139,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
 var VectorLayer = /** @class */ (function (_super) {
     __extends(VectorLayer, _super);
     /**
-     * @param {Options=} opt_options Options.
+     * @param {import("./BaseVector.js").Options=} opt_options Options.
      */
     function VectorLayer(opt_options) {
         return _super.call(this, opt_options) || this;
@@ -44259,7 +44245,7 @@ var VectorImageLayer = /** @class */ (function (_super) {
      */
     function VectorImageLayer(opt_options) {
         var _this = this;
-        var options = opt_options ? opt_options : /** @type {Options} */ ({});
+        var options = opt_options ? opt_options : {};
         var baseOptions = Object(_obj_js__WEBPACK_IMPORTED_MODULE_1__["assign"])({}, options);
         delete baseOptions.imageRatio;
         _this = _super.call(this, baseOptions) || this;
@@ -45874,13 +45860,12 @@ function getPressure(eventDict, buttons) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _events_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../events.js */ "./build/ol/events.js");
 /* harmony import */ var _events_Target_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../events/Target.js */ "./build/ol/events/Target.js");
-/* harmony import */ var _has_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../has.js */ "./build/ol/has.js");
-/* harmony import */ var _EventType_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./EventType.js */ "./build/ol/pointer/EventType.js");
-/* harmony import */ var _MouseSource_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./MouseSource.js */ "./build/ol/pointer/MouseSource.js");
-/* harmony import */ var _MsSource_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./MsSource.js */ "./build/ol/pointer/MsSource.js");
-/* harmony import */ var _NativeSource_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./NativeSource.js */ "./build/ol/pointer/NativeSource.js");
-/* harmony import */ var _PointerEvent_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./PointerEvent.js */ "./build/ol/pointer/PointerEvent.js");
-/* harmony import */ var _TouchSource_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./TouchSource.js */ "./build/ol/pointer/TouchSource.js");
+/* harmony import */ var _EventType_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./EventType.js */ "./build/ol/pointer/EventType.js");
+/* harmony import */ var _MouseSource_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MouseSource.js */ "./build/ol/pointer/MouseSource.js");
+/* harmony import */ var _MsSource_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./MsSource.js */ "./build/ol/pointer/MsSource.js");
+/* harmony import */ var _NativeSource_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./NativeSource.js */ "./build/ol/pointer/NativeSource.js");
+/* harmony import */ var _PointerEvent_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./PointerEvent.js */ "./build/ol/pointer/PointerEvent.js");
+/* harmony import */ var _TouchSource_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./TouchSource.js */ "./build/ol/pointer/TouchSource.js");
 /**
  * @module ol/pointer/PointerEventHandler
  */
@@ -45925,7 +45910,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 
 
 
@@ -46008,17 +45992,17 @@ var PointerEventHandler = /** @class */ (function (_super) {
      * that generate pointer events.
      */
     PointerEventHandler.prototype.registerSources = function () {
-        if (_has_js__WEBPACK_IMPORTED_MODULE_2__["POINTER"]) {
-            this.registerSource('native', new _NativeSource_js__WEBPACK_IMPORTED_MODULE_6__["default"](this));
+        if ('PointerEvent' in window) {
+            this.registerSource('native', new _NativeSource_js__WEBPACK_IMPORTED_MODULE_5__["default"](this));
         }
-        else if (_has_js__WEBPACK_IMPORTED_MODULE_2__["MSPOINTER"]) {
-            this.registerSource('ms', new _MsSource_js__WEBPACK_IMPORTED_MODULE_5__["default"](this));
+        else if (window.navigator.msPointerEnabled) {
+            this.registerSource('ms', new _MsSource_js__WEBPACK_IMPORTED_MODULE_4__["default"](this));
         }
         else {
-            var mouseSource = new _MouseSource_js__WEBPACK_IMPORTED_MODULE_4__["default"](this);
+            var mouseSource = new _MouseSource_js__WEBPACK_IMPORTED_MODULE_3__["default"](this);
             this.registerSource('mouse', mouseSource);
-            if (_has_js__WEBPACK_IMPORTED_MODULE_2__["TOUCH"]) {
-                this.registerSource('touch', new _TouchSource_js__WEBPACK_IMPORTED_MODULE_8__["default"](this, mouseSource));
+            if ('ontouchstart' in window) {
+                this.registerSource('touch', new _TouchSource_js__WEBPACK_IMPORTED_MODULE_7__["default"](this, mouseSource));
             }
         }
         // register events on the viewport element
@@ -46121,7 +46105,7 @@ var PointerEventHandler = /** @class */ (function (_super) {
      * @param {Event} event The event.
      */
     PointerEventHandler.prototype.down = function (data, event) {
-        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].POINTERDOWN, data, event);
+        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_2__["default"].POINTERDOWN, data, event);
     };
     /**
      * Triggers a 'pointermove' event.
@@ -46129,7 +46113,7 @@ var PointerEventHandler = /** @class */ (function (_super) {
      * @param {Event} event The event.
      */
     PointerEventHandler.prototype.move = function (data, event) {
-        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].POINTERMOVE, data, event);
+        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_2__["default"].POINTERMOVE, data, event);
     };
     /**
      * Triggers a 'pointerup' event.
@@ -46137,7 +46121,7 @@ var PointerEventHandler = /** @class */ (function (_super) {
      * @param {Event} event The event.
      */
     PointerEventHandler.prototype.up = function (data, event) {
-        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].POINTERUP, data, event);
+        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_2__["default"].POINTERUP, data, event);
     };
     /**
      * Triggers a 'pointerenter' event.
@@ -46146,7 +46130,7 @@ var PointerEventHandler = /** @class */ (function (_super) {
      */
     PointerEventHandler.prototype.enter = function (data, event) {
         data.bubbles = false;
-        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].POINTERENTER, data, event);
+        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_2__["default"].POINTERENTER, data, event);
     };
     /**
      * Triggers a 'pointerleave' event.
@@ -46155,7 +46139,7 @@ var PointerEventHandler = /** @class */ (function (_super) {
      */
     PointerEventHandler.prototype.leave = function (data, event) {
         data.bubbles = false;
-        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].POINTERLEAVE, data, event);
+        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_2__["default"].POINTERLEAVE, data, event);
     };
     /**
      * Triggers a 'pointerover' event.
@@ -46164,7 +46148,7 @@ var PointerEventHandler = /** @class */ (function (_super) {
      */
     PointerEventHandler.prototype.over = function (data, event) {
         data.bubbles = true;
-        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].POINTEROVER, data, event);
+        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_2__["default"].POINTEROVER, data, event);
     };
     /**
      * Triggers a 'pointerout' event.
@@ -46173,7 +46157,7 @@ var PointerEventHandler = /** @class */ (function (_super) {
      */
     PointerEventHandler.prototype.out = function (data, event) {
         data.bubbles = true;
-        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].POINTEROUT, data, event);
+        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_2__["default"].POINTEROUT, data, event);
     };
     /**
      * Triggers a 'pointercancel' event.
@@ -46181,7 +46165,7 @@ var PointerEventHandler = /** @class */ (function (_super) {
      * @param {Event} event The event.
      */
     PointerEventHandler.prototype.cancel = function (data, event) {
-        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_3__["default"].POINTERCANCEL, data, event);
+        this.fireEvent(_EventType_js__WEBPACK_IMPORTED_MODULE_2__["default"].POINTERCANCEL, data, event);
     };
     /**
      * Triggers a combination of 'pointerout' and 'pointerleave' events.
@@ -46229,7 +46213,7 @@ var PointerEventHandler = /** @class */ (function (_super) {
      * @return {PointerEvent} A PointerEvent of type `inType`.
      */
     PointerEventHandler.prototype.makeEvent = function (inType, data, event) {
-        return new _PointerEvent_js__WEBPACK_IMPORTED_MODULE_7__["default"](inType, event, data);
+        return new _PointerEvent_js__WEBPACK_IMPORTED_MODULE_6__["default"](inType, event, data);
     };
     /**
      * Make and dispatch an event in one call.
@@ -46258,7 +46242,7 @@ var PointerEventHandler = /** @class */ (function (_super) {
      * @return {PointerEvent} The wrapped event.
      */
     PointerEventHandler.prototype.wrapMouseEvent = function (eventType, event) {
-        var pointerEvent = this.makeEvent(eventType, Object(_MouseSource_js__WEBPACK_IMPORTED_MODULE_4__["prepareEvent"])(event, this), event);
+        var pointerEvent = this.makeEvent(eventType, Object(_MouseSource_js__WEBPACK_IMPORTED_MODULE_3__["prepareEvent"])(event, this), event);
         return pointerEvent;
     };
     /**
@@ -46733,8 +46717,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _proj_Units_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./proj/Units.js */ "./build/ol/proj/Units.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "METERS_PER_UNIT", function() { return _proj_Units_js__WEBPACK_IMPORTED_MODULE_6__["METERS_PER_UNIT"]; });
 
-/* harmony import */ var _proj_projections_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./proj/projections.js */ "./build/ol/proj/projections.js");
-/* harmony import */ var _proj_transforms_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./proj/transforms.js */ "./build/ol/proj/transforms.js");
+/* harmony import */ var _proj_transforms_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./proj/transforms.js */ "./build/ol/proj/transforms.js");
+/* harmony import */ var _proj_projections_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./proj/projections.js */ "./build/ol/proj/projections.js");
 /**
  * @module ol/proj
  */
@@ -46858,8 +46842,8 @@ function identityTransform(input, opt_output, opt_dimension) {
  * @api
  */
 function addProjection(projection) {
-    _proj_projections_js__WEBPACK_IMPORTED_MODULE_7__["add"](projection.getCode(), projection);
-    Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_8__["add"])(projection, projection, cloneTransform);
+    Object(_proj_projections_js__WEBPACK_IMPORTED_MODULE_8__["add"])(projection.getCode(), projection);
+    Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_7__["add"])(projection, projection, cloneTransform);
 }
 /**
  * @param {Array<Projection>} projections Projections.
@@ -46878,7 +46862,7 @@ function addProjections(projections) {
  */
 function get(projectionLike) {
     return typeof projectionLike === 'string' ?
-        _proj_projections_js__WEBPACK_IMPORTED_MODULE_7__["get"](/** @type {string} */ (projectionLike)) :
+        Object(_proj_projections_js__WEBPACK_IMPORTED_MODULE_8__["get"])(/** @type {string} */ (projectionLike)) :
         ( /** @type {Projection} */(projectionLike) || null);
 }
 /**
@@ -46956,7 +46940,7 @@ function addEquivalentProjections(projections) {
     projections.forEach(function (source) {
         projections.forEach(function (destination) {
             if (source !== destination) {
-                Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_8__["add"])(source, destination, cloneTransform);
+                Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_7__["add"])(source, destination, cloneTransform);
             }
         });
     });
@@ -46977,8 +46961,8 @@ function addEquivalentProjections(projections) {
 function addEquivalentTransforms(projections1, projections2, forwardTransform, inverseTransform) {
     projections1.forEach(function (projection1) {
         projections2.forEach(function (projection2) {
-            Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_8__["add"])(projection1, projection2, forwardTransform);
-            Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_8__["add"])(projection2, projection1, inverseTransform);
+            Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_7__["add"])(projection1, projection2, forwardTransform);
+            Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_7__["add"])(projection2, projection1, inverseTransform);
         });
     });
 }
@@ -46986,8 +46970,8 @@ function addEquivalentTransforms(projections1, projections2, forwardTransform, i
  * Clear all cached projections and transforms.
  */
 function clearAllProjections() {
-    _proj_projections_js__WEBPACK_IMPORTED_MODULE_7__["clear"]();
-    Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_8__["clear"])();
+    Object(_proj_projections_js__WEBPACK_IMPORTED_MODULE_8__["clear"])();
+    Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_7__["clear"])();
 }
 /**
  * @param {Projection|string|undefined} projection Projection.
@@ -47058,8 +47042,8 @@ function createTransformFromCoordinateTransform(coordTransform) {
 function addCoordinateTransforms(source, destination, forward, inverse) {
     var sourceProj = get(source);
     var destProj = get(destination);
-    Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_8__["add"])(sourceProj, destProj, createTransformFromCoordinateTransform(forward));
-    Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_8__["add"])(destProj, sourceProj, createTransformFromCoordinateTransform(inverse));
+    Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_7__["add"])(sourceProj, destProj, createTransformFromCoordinateTransform(forward));
+    Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_7__["add"])(destProj, sourceProj, createTransformFromCoordinateTransform(inverse));
 }
 /**
  * Transforms a coordinate from longitude/latitude to a different projection.
@@ -47125,7 +47109,7 @@ function equivalent(projection1, projection2) {
 function getTransformFromProjections(sourceProjection, destinationProjection) {
     var sourceCode = sourceProjection.getCode();
     var destinationCode = destinationProjection.getCode();
-    var transformFunc = Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_8__["get"])(sourceCode, destinationCode);
+    var transformFunc = Object(_proj_transforms_js__WEBPACK_IMPORTED_MODULE_7__["get"])(sourceCode, destinationCode);
     if (!transformFunc) {
         transformFunc = identityTransform;
     }
@@ -53145,6 +53129,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _source_State_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../source/State.js */ "./build/ol/source/State.js");
 /* harmony import */ var _dom_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../dom.js */ "./build/ol/dom.js");
 /* harmony import */ var _render_canvas_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../render/canvas.js */ "./build/ol/render/canvas.js");
+/* harmony import */ var _events_EventType_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../events/EventType.js */ "./build/ol/events/EventType.js");
+/* harmony import */ var _events_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../events.js */ "./build/ol/events.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -53169,6 +53155,8 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 
 
+
+
 /**
  * @classdesc
  * Canvas map renderer.
@@ -53181,7 +53169,10 @@ var CompositeMapRenderer = /** @class */ (function (_super) {
      */
     function CompositeMapRenderer(map) {
         var _this = _super.call(this, map) || this;
-        map.attachLabelCache(_render_canvas_js__WEBPACK_IMPORTED_MODULE_7__["labelCache"]);
+        /**
+         * @type {import("./events.js").EventsKey}
+         */
+        _this.labelCacheKey_ = Object(_events_js__WEBPACK_IMPORTED_MODULE_9__["listen"])(_render_canvas_js__WEBPACK_IMPORTED_MODULE_7__["labelCache"], _events_EventType_js__WEBPACK_IMPORTED_MODULE_8__["default"].CLEAR, map.redrawText.bind(map));
         /**
          * @private
          * @type {HTMLDivElement}
@@ -53218,6 +53209,10 @@ var CompositeMapRenderer = /** @class */ (function (_super) {
             map.dispatchEvent(event_1);
         }
     };
+    CompositeMapRenderer.prototype.disposeInternal = function () {
+        Object(_events_js__WEBPACK_IMPORTED_MODULE_9__["unlistenByKey"])(this.labelCacheKey_);
+        _super.prototype.disposeInternal.call(this);
+    };
     /**
      * @inheritDoc
      */
@@ -53236,9 +53231,11 @@ var CompositeMapRenderer = /** @class */ (function (_super) {
         });
         var viewResolution = frameState.viewState.resolution;
         this.children_.length = 0;
+        var hasOverlay = false;
         var previousElement = null;
         for (var i = 0, ii = layerStatesArray.length; i < ii; ++i) {
             var layerState = layerStatesArray[i];
+            hasOverlay = hasOverlay || layerState.hasOverlay;
             frameState.layerIndex = i;
             if (!Object(_layer_Layer_js__WEBPACK_IMPORTED_MODULE_1__["visibleAtResolution"])(layerState, viewResolution) ||
                 (layerState.sourceState != _source_State_js__WEBPACK_IMPORTED_MODULE_5__["default"].READY && layerState.sourceState != _source_State_js__WEBPACK_IMPORTED_MODULE_5__["default"].UNDEFINED)) {
@@ -53246,8 +53243,15 @@ var CompositeMapRenderer = /** @class */ (function (_super) {
             }
             var layer = layerState.layer;
             var element = layer.render(frameState, previousElement);
+            if (!element) {
+                continue;
+            }
+            if ((element !== previousElement || i == ii - 1) && element.childElementCount === 2 && !hasOverlay) {
+                element.removeChild(element.lastElementChild);
+            }
             if (element !== previousElement) {
                 this.children_.push(element);
+                hasOverlay = false;
                 previousElement = element;
             }
         }
@@ -53811,9 +53815,9 @@ var CanvasImageLayerRenderer = /** @class */ (function (_super) {
             width = height = size_1;
         }
         // set forward and inverse pixel transforms
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_4__["compose"])(this.pixelTransform_, frameState.size[0] / 2, frameState.size[1] / 2, 1 / pixelRatio, 1 / pixelRatio, rotation, -width / 2, -height / 2);
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_4__["makeInverse"])(this.inversePixelTransform_, this.pixelTransform_);
-        this.useContainer(target, this.pixelTransform_, layerState.opacity);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_4__["compose"])(this.pixelTransform, frameState.size[0] / 2, frameState.size[1] / 2, 1 / pixelRatio, 1 / pixelRatio, rotation, -width / 2, -height / 2);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_4__["makeInverse"])(this.inversePixelTransform, this.pixelTransform);
+        this.useContainer(target, this.pixelTransform, layerState.opacity);
         var context = this.context;
         var canvas = context.canvas;
         if (canvas.width != width || canvas.height != height) {
@@ -53855,7 +53859,7 @@ var CanvasImageLayerRenderer = /** @class */ (function (_super) {
         if (clipped) {
             context.restore();
         }
-        var canvasTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_4__["toString"])(this.pixelTransform_);
+        var canvasTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_4__["toString"])(this.pixelTransform);
         if (canvasTransform !== canvas.style.transform) {
             canvas.style.transform = canvasTransform;
         }
@@ -53937,17 +53941,17 @@ var CanvasLayerRenderer = /** @class */ (function (_super) {
         /**
          * The transform for rendered pixels to viewport CSS pixels.  This transform must
          * be set when rendering a frame and may be used by other functions after rendering.
-         * @private
+         * @protected
          * @type {import("../../transform.js").Transform}
          */
-        _this.pixelTransform_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["create"])();
+        _this.pixelTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["create"])();
         /**
          * The transform for viewport CSS pixels to rendered pixels.  This transform must
          * be set when rendering a frame and may be used by other functions after rendering.
-         * @private
+         * @protected
          * @type {import("../../transform.js").Transform}
          */
-        _this.inversePixelTransform_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["create"])();
+        _this.inversePixelTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["create"])();
         /**
          * @protected
          * @type {CanvasRenderingContext2D}
@@ -54047,7 +54051,7 @@ var CanvasLayerRenderer = /** @class */ (function (_super) {
         Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["apply"])(frameState.coordinateToPixelTransform, topRight);
         Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["apply"])(frameState.coordinateToPixelTransform, bottomRight);
         Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["apply"])(frameState.coordinateToPixelTransform, bottomLeft);
-        var inverted = this.inversePixelTransform_;
+        var inverted = this.inversePixelTransform;
         Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["apply"])(inverted, topLeft);
         Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["apply"])(inverted, topRight);
         Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["apply"])(inverted, bottomRight);
@@ -54069,7 +54073,7 @@ var CanvasLayerRenderer = /** @class */ (function (_super) {
     CanvasLayerRenderer.prototype.dispatchRenderEvent_ = function (type, context, frameState) {
         var layer = this.getLayer();
         if (layer.hasListener(type)) {
-            var event_1 = new _render_Event_js__WEBPACK_IMPORTED_MODULE_2__["default"](type, this.inversePixelTransform_, frameState, context, null);
+            var event_1 = new _render_Event_js__WEBPACK_IMPORTED_MODULE_2__["default"](type, this.inversePixelTransform, frameState, context, null);
             layer.dispatchEvent(event_1);
         }
     };
@@ -54118,7 +54122,7 @@ var CanvasLayerRenderer = /** @class */ (function (_super) {
      *    returned, and empty array will be returned.
      */
     CanvasLayerRenderer.prototype.getDataAtPixel = function (pixel, frameState, hitTolerance) {
-        var renderPixel = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["apply"])(this.inversePixelTransform_, pixel.slice());
+        var renderPixel = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["apply"])(this.inversePixelTransform, pixel.slice());
         var context = this.context;
         var data;
         try {
@@ -54372,11 +54376,11 @@ var CanvasTileLayerRenderer = /** @class */ (function (_super) {
         }
         var canvasScale = tileResolution / viewResolution;
         // set forward and inverse pixel transforms
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["compose"])(this.pixelTransform_, frameState.size[0] / 2, frameState.size[1] / 2, 1 / tilePixelRatio, 1 / tilePixelRatio, rotation, -width / 2, -height / 2);
-        this.useContainer(target, this.pixelTransform_, layerState.opacity);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["compose"])(this.pixelTransform, frameState.size[0] / 2, frameState.size[1] / 2, 1 / tilePixelRatio, 1 / tilePixelRatio, rotation, -width / 2, -height / 2);
+        this.useContainer(target, this.pixelTransform, layerState.opacity);
         var context = this.context;
         var canvas = context.canvas;
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["makeInverse"])(this.inversePixelTransform_, this.pixelTransform_);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["makeInverse"])(this.inversePixelTransform, this.pixelTransform);
         // set scale transform for calculating tile positions on the canvas
         Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["compose"])(this.tempTransform_, width / 2, height / 2, canvasScale, canvasScale, 0, -width / 2, -height / 2);
         if (canvas.width != width || canvas.height != height) {
@@ -54483,7 +54487,7 @@ var CanvasTileLayerRenderer = /** @class */ (function (_super) {
         if (layerState.extent) {
             context.restore();
         }
-        var canvasTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["toString"])(this.pixelTransform_);
+        var canvasTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_5__["toString"])(this.pixelTransform);
         if (canvasTransform !== canvas.style.transform) {
             canvas.style.transform = canvasTransform;
         }
@@ -54934,9 +54938,9 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
         var pixelRatio = frameState.pixelRatio;
         var layerState = frameState.layerStatesArray[frameState.layerIndex];
         // set forward and inverse pixel transforms
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["makeScale"])(this.pixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["makeInverse"])(this.inversePixelTransform_, this.pixelTransform_);
-        this.useContainer(target, this.pixelTransform_, layerState.opacity);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["makeScale"])(this.pixelTransform, 1 / pixelRatio, 1 / pixelRatio);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["makeInverse"])(this.inversePixelTransform, this.pixelTransform);
+        this.useContainer(target, this.pixelTransform, layerState.opacity);
         var context = this.context;
         var canvas = context.canvas;
         var replayGroup = this.replayGroup_;
@@ -54952,7 +54956,7 @@ var CanvasVectorLayerRenderer = /** @class */ (function (_super) {
         if (canvas.width != width || canvas.height != height) {
             canvas.width = width;
             canvas.height = height;
-            var canvasTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["toString"])(this.pixelTransform_);
+            var canvasTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["toString"])(this.pixelTransform);
             if (canvas.style.transform !== canvasTransform) {
                 canvas.style.transform = canvasTransform;
             }
@@ -55275,6 +55279,10 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
          */
         _this.overlayContext_ = null;
         /**
+         * @type {string}
+         */
+        _this.overlayContextUid_;
+        /**
          * The transform for rendered pixels to viewport CSS pixels for the overlay canvas.
          * @private
          * @type {import("../../transform.js").Transform}
@@ -55329,6 +55337,7 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
         _super.prototype.useContainer.call(this, target, transform, opacity);
         if (containerReused && !this.containerReused && !overlayContext) {
             this.overlayContext_ = null;
+            this.overlayContextUid_ = undefined;
         }
         if (this.containerReused && overlayContext) {
             this.overlayContext_ = overlayContext;
@@ -55339,6 +55348,7 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
             style.position = 'absolute';
             style.transformOrigin = 'top left';
             this.overlayContext_ = overlayContext_1;
+            this.overlayContextUid_ = Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["getUid"])(overlayContext_1);
         }
         if (this.container.childElementCount === 1) {
             this.container.appendChild(this.overlayContext_.canvas);
@@ -55418,6 +55428,8 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
      * @inheritDoc
      */
     CanvasVectorTileLayerRenderer.prototype.prepareFrame = function (frameState) {
+        var layerState = frameState.layerStatesArray[frameState.layerIndex];
+        layerState.hasOverlay = true;
         var layerRevision = this.getLayer().getRevision();
         if (this.renderedLayerRevision_ != layerRevision) {
             this.renderedTiles.length = 0;
@@ -55593,7 +55605,7 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
         // Unqueue tiles from the image queue when we don't need any more
         var usedTiles = frameState.usedTiles[Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["getUid"])(source)];
         for (var tileUid in this.renderTileImageQueue_) {
-            if (!(tileUid in usedTiles)) {
+            if (!usedTiles || !(tileUid in usedTiles)) {
                 delete this.renderTileImageQueue_[tileUid];
             }
         }
@@ -55618,7 +55630,7 @@ var CanvasVectorTileLayerRenderer = /** @class */ (function (_super) {
                 canvas.style.transform = canvasTransform;
             }
         }
-        else if (!this.containerReused) {
+        else if (Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["getUid"])(context) === this.overlayContextUid_) {
             context.clearRect(0, 0, width, height);
         }
         var tiles = this.renderedTiles;
@@ -56122,12 +56134,16 @@ function renderPolygonGeometry(builderGroup, geometry, style, feature) {
 /*!******************************************!*\
   !*** ./build/ol/renderer/webgl/Layer.js ***!
   \******************************************/
-/*! exports provided: pushFeatureToBuffer, getBlankTexture, default */
+/*! exports provided: WebGLWorkerMessageType, writePointFeatureInstructions, POINT_INSTRUCTIONS_COUNT, POINT_VERTEX_STRIDE, writePointFeatureToBuffers, getBlankTexture, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pushFeatureToBuffer", function() { return pushFeatureToBuffer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WebGLWorkerMessageType", function() { return WebGLWorkerMessageType; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "writePointFeatureInstructions", function() { return writePointFeatureInstructions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "POINT_INSTRUCTIONS_COUNT", function() { return POINT_INSTRUCTIONS_COUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "POINT_VERTEX_STRIDE", function() { return POINT_VERTEX_STRIDE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "writePointFeatureToBuffers", function() { return writePointFeatureToBuffers; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getBlankTexture", function() { return getBlankTexture; });
 /* harmony import */ var _Layer_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Layer.js */ "./build/ol/renderer/Layer.js");
 /* harmony import */ var _webgl_Helper_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../webgl/Helper.js */ "./build/ol/webgl/Helper.js");
@@ -56149,6 +56165,24 @@ var __extends = (undefined && undefined.__extends) || (function () {
  */
 
 
+/**
+ * @enum {string}
+ */
+var WebGLWorkerMessageType = {
+    GENERATE_BUFFERS: 'GENERATE_BUFFERS'
+};
+/**
+ * @typedef {Object} WebGLWorkerGenerateBuffersMessage
+ * This message will trigger the generation of a vertex and an index buffer based on the given render instructions.
+ * When the buffers are generated, the worked will send a message of the same type to the main thread, with
+ * the generated buffers in it.
+ * Note that any addition properties present in the message *will* be sent back to the main thread.
+ * @property {WebGLWorkerMessageType} type Message type
+ * @property {ArrayBuffer} renderInstructions Render instructions raw binary buffer.
+ * @property {ArrayBuffer} [vertexBuffer] Vertices array raw binary buffer (sent by the worker).
+ * @property {ArrayBuffer} [indexBuffer] Indices array raw binary buffer (sent by the worker).
+ * @property {number} [customAttributesCount] Amount of custom attributes count in the render instructions.
+ */
 /**
  * @typedef {Object} PostProcessesOptions
  * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
@@ -56176,7 +56210,11 @@ var WebGLLayerRenderer = /** @class */ (function (_super) {
     function WebGLLayerRenderer(layer, opt_options) {
         var _this = _super.call(this, layer) || this;
         var options = opt_options || {};
-        _this.helper_ = new _webgl_Helper_js__WEBPACK_IMPORTED_MODULE_1__["default"]({
+        /**
+         * @type {WebGLHelper}
+         * @protected
+         */
+        _this.helper = new _webgl_Helper_js__WEBPACK_IMPORTED_MODULE_1__["default"]({
             postProcesses: options.postProcesses,
             uniforms: options.uniforms
         });
@@ -56194,83 +56232,137 @@ var WebGLLayerRenderer = /** @class */ (function (_super) {
      * @api
      */
     WebGLLayerRenderer.prototype.getShaderCompileErrors = function () {
-        return this.helper_.getShaderCompileErrors();
+        return this.helper.getShaderCompileErrors();
     };
     return WebGLLayerRenderer;
 }(_Layer_js__WEBPACK_IMPORTED_MODULE_0__["default"]));
 /**
- * Pushes vertices and indices to the given buffers using the geometry coordinates and the following properties
- * from the feature:
- * - `color`
- * - `opacity`
- * - `size` (for points)
- * - `u0`, `v0`, `u1`, `v1` (for points)
- * - `rotateWithView` (for points)
- * - `width` (for lines)
- * Custom attributes can be designated using the `opt_attributes` argument, otherwise other properties on the
- * feature will be ignored.
- * @param {import("../../webgl/Buffer").default} vertexBuffer WebGL buffer in which new vertices will be pushed.
- * @param {import("../../webgl/Buffer").default} indexBuffer WebGL buffer in which new indices will be pushed.
- * @param {import("../../format/GeoJSON").GeoJSONFeature} geojsonFeature Feature in geojson format, coordinates
- * expressed in EPSG:4326.
- * @param {Array<string>} [opt_attributes] Custom attributes. An array of properties which will be read from the
- * feature and pushed in the buffer in the given order. Note: attributes can only be numerical! Any other type or
- * NaN will result in `0` being pushed in the buffer.
- */
-function pushFeatureToBuffer(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
-    if (!geojsonFeature.geometry) {
-        return;
-    }
-    switch (geojsonFeature.geometry.type) {
-        case 'Point':
-            pushPointFeatureToBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes);
-            return;
-        default:
-            return;
-    }
-}
-var tmpArray_ = [];
-/**
- * Pushes a quad (two triangles) based on a point geometry
- * @param {import("../../webgl/Buffer").default} vertexBuffer WebGL buffer
- * @param {import("../../webgl/Buffer").default} indexBuffer WebGL buffer
- * @param {import("../../format/GeoJSON").GeoJSONFeature} geojsonFeature Feature
- * @param {Array<string>} [opt_attributes] Custom attributes
+ * @param {Float32Array} instructions Instructons array in which to write.
+ * @param {number} elementIndex Index from which render instructions will be written.
+ * @param {number} x Point center X coordinate
+ * @param {number} y Point center Y coordinate
+ * @param {number} u0 Left texture coordinate
+ * @param {number} v0 Bottom texture coordinate
+ * @param {number} u1 Right texture coordinate
+ * @param {number} v1 Top texture coordinate
+ * @param {number} size Radius of the point
+ * @param {number} opacity Opacity
+ * @param {boolean} rotateWithView If true, the point will stay aligned with the view
+ * @param {Array<number>} color Array holding red, green, blue, alpha values
+ * @return {number} Index from which the next element should be written
  * @private
  */
-function pushPointFeatureToBuffer_(vertexBuffer, indexBuffer, geojsonFeature, opt_attributes) {
-    var stride = 12 + (opt_attributes !== undefined ? opt_attributes.length : 0);
-    var x = geojsonFeature.geometry.coordinates[0];
-    var y = geojsonFeature.geometry.coordinates[1];
-    var u0 = geojsonFeature.properties.u0;
-    var v0 = geojsonFeature.properties.v0;
-    var u1 = geojsonFeature.properties.u1;
-    var v1 = geojsonFeature.properties.v1;
-    var size = geojsonFeature.properties.size;
-    var opacity = geojsonFeature.properties.opacity;
-    var rotateWithView = geojsonFeature.properties.rotateWithView;
-    var color = geojsonFeature.properties.color;
-    var red = color[0];
-    var green = color[1];
-    var blue = color[2];
-    var alpha = color[3];
-    var baseIndex = vertexBuffer.getArray().length / stride;
-    // read custom numerical attributes on the feature
-    var customAttributeValues = tmpArray_;
-    customAttributeValues.length = opt_attributes ? opt_attributes.length : 0;
-    for (var i = 0; i < customAttributeValues.length; i++) {
-        customAttributeValues[i] = parseFloat(geojsonFeature.properties[opt_attributes[i]]) || 0;
+function writePointFeatureInstructions(instructions, elementIndex, x, y, u0, v0, u1, v1, size, opacity, rotateWithView, color) {
+    var i = elementIndex;
+    instructions[i++] = x;
+    instructions[i++] = y;
+    instructions[i++] = u0;
+    instructions[i++] = v0;
+    instructions[i++] = u1;
+    instructions[i++] = v1;
+    instructions[i++] = size;
+    instructions[i++] = opacity;
+    instructions[i++] = rotateWithView ? 1 : 0;
+    instructions[i++] = color[0];
+    instructions[i++] = color[1];
+    instructions[i++] = color[2];
+    instructions[i++] = color[3];
+    return i;
+}
+var tmpArray_ = [];
+var bufferPositions_ = { vertexPosition: 0, indexPosition: 0 };
+var POINT_INSTRUCTIONS_COUNT = 13;
+var POINT_VERTEX_STRIDE = 12;
+function writePointVertex(buffer, pos, x, y, offsetX, offsetY, u, v, opacity, rotateWithView, red, green, blue, alpha) {
+    buffer[pos + 0] = x;
+    buffer[pos + 1] = y;
+    buffer[pos + 2] = offsetX;
+    buffer[pos + 3] = offsetY;
+    buffer[pos + 4] = u;
+    buffer[pos + 5] = v;
+    buffer[pos + 6] = opacity;
+    buffer[pos + 7] = rotateWithView;
+    buffer[pos + 8] = red;
+    buffer[pos + 9] = green;
+    buffer[pos + 10] = blue;
+    buffer[pos + 11] = alpha;
+}
+function writeCustomAttrs(buffer, pos, customAttrs) {
+    if (customAttrs.length) {
+        buffer.set(customAttrs, pos);
     }
+}
+/**
+ * An object holding positions both in an index and a vertex buffer.
+ * @typedef {Object} BufferPositions
+ * @property {number} vertexPosition Position in the vertex buffer
+ * @property {number} indexPosition Position in the index buffer
+ */
+/**
+ * Pushes a quad (two triangles) based on a point geometry
+ * @param {Float32Array} instructions Array of render instructions for points.
+ * @param {number} elementIndex Index from which render instructions will be read.
+ * @param {Float32Array} vertexBuffer Buffer in the form of a typed array.
+ * @param {Uint32Array} indexBuffer Buffer in the form of a typed array.
+ * @param {BufferPositions} [bufferPositions] Buffer write positions; if not specified, positions will be set at 0.
+ * @param {number} [count] Amount of render instructions that will be read. Default value is POINT_INSTRUCTIONS_COUNT
+ * but a higher value can be provided; all values beyond the default count will be put in the vertices buffer as
+ * is, thus allowing specifying custom attributes. Please note: this value should not vary inside the same buffer or
+ * rendering will break.
+ * @return {BufferPositions} New buffer positions where to write next
+ * @property {number} vertexPosition New position in the vertex buffer where future writes should start.
+ * @property {number} indexPosition New position in the index buffer where future writes should start.
+ * @private
+ */
+function writePointFeatureToBuffers(instructions, elementIndex, vertexBuffer, indexBuffer, bufferPositions, count) {
+    var count_ = count > POINT_INSTRUCTIONS_COUNT ? count : POINT_INSTRUCTIONS_COUNT;
+    var x = instructions[elementIndex + 0];
+    var y = instructions[elementIndex + 1];
+    var u0 = instructions[elementIndex + 2];
+    var v0 = instructions[elementIndex + 3];
+    var u1 = instructions[elementIndex + 4];
+    var v1 = instructions[elementIndex + 5];
+    var size = instructions[elementIndex + 6];
+    var opacity = instructions[elementIndex + 7];
+    var rotateWithView = instructions[elementIndex + 8];
+    var red = instructions[elementIndex + 9];
+    var green = instructions[elementIndex + 10];
+    var blue = instructions[elementIndex + 11];
+    var alpha = instructions[elementIndex + 12];
+    // the default vertex buffer stride is 12, plus additional custom values if any
+    var baseStride = POINT_VERTEX_STRIDE;
+    var stride = baseStride + count_ - POINT_INSTRUCTIONS_COUNT;
+    // read custom numerical attributes on the feature
+    var customAttrs = tmpArray_;
+    customAttrs.length = count_ - POINT_INSTRUCTIONS_COUNT;
+    for (var i = 0; i < customAttrs.length; i++) {
+        customAttrs[i] = instructions[elementIndex + POINT_INSTRUCTIONS_COUNT + i];
+    }
+    var vPos = bufferPositions ? bufferPositions.vertexPosition : 0;
+    var iPos = bufferPositions ? bufferPositions.indexPosition : 0;
+    var baseIndex = vPos / stride;
     // push vertices for each of the four quad corners (first standard then custom attributes)
-    vertexBuffer.getArray().push(x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha);
-    Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
-    vertexBuffer.getArray().push(x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha);
-    Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
-    vertexBuffer.getArray().push(x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha);
-    Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
-    vertexBuffer.getArray().push(x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha);
-    Array.prototype.push.apply(vertexBuffer.getArray(), customAttributeValues);
-    indexBuffer.getArray().push(baseIndex, baseIndex + 1, baseIndex + 3, baseIndex + 1, baseIndex + 2, baseIndex + 3);
+    writePointVertex(vertexBuffer, vPos, x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha);
+    writeCustomAttrs(vertexBuffer, vPos + baseStride, customAttrs);
+    vPos += stride;
+    writePointVertex(vertexBuffer, vPos, x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha);
+    writeCustomAttrs(vertexBuffer, vPos + baseStride, customAttrs);
+    vPos += stride;
+    writePointVertex(vertexBuffer, vPos, x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha);
+    writeCustomAttrs(vertexBuffer, vPos + baseStride, customAttrs);
+    vPos += stride;
+    writePointVertex(vertexBuffer, vPos, x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha);
+    writeCustomAttrs(vertexBuffer, vPos + baseStride, customAttrs);
+    vPos += stride;
+    indexBuffer[iPos++] = baseIndex;
+    indexBuffer[iPos++] = baseIndex + 1;
+    indexBuffer[iPos++] = baseIndex + 3;
+    indexBuffer[iPos++] = baseIndex + 1;
+    indexBuffer[iPos++] = baseIndex + 2;
+    indexBuffer[iPos++] = baseIndex + 3;
+    bufferPositions_.vertexPosition = vPos;
+    bufferPositions_.indexPosition = iPos;
+    return bufferPositions_;
 }
 /**
  * Returns a texture of 1x1 pixel, white
@@ -56302,11 +56394,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../webgl/Helper.js */ "./build/ol/webgl/Helper.js");
 /* harmony import */ var _geom_GeometryType_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../geom/GeometryType.js */ "./build/ol/geom/GeometryType.js");
 /* harmony import */ var _Layer_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Layer.js */ "./build/ol/renderer/webgl/Layer.js");
-/* harmony import */ var _format_GeoJSON_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../format/GeoJSON.js */ "./build/ol/format/GeoJSON.js");
-/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../util.js */ "./build/ol/util.js");
-/* harmony import */ var _ViewHint_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../ViewHint.js */ "./build/ol/ViewHint.js");
-/* harmony import */ var _extent_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../extent.js */ "./build/ol/extent.js");
-/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../transform.js */ "./build/ol/transform.js");
+/* harmony import */ var _ViewHint_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../ViewHint.js */ "./build/ol/ViewHint.js");
+/* harmony import */ var _extent_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../extent.js */ "./build/ol/extent.js");
+/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../transform.js */ "./build/ol/transform.js");
+/* harmony import */ var _worker_webgl_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../worker/webgl.js */ "./build/ol/worker/webgl.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -56323,7 +56414,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
 /**
  * @module ol/renderer/webgl/PointsLayer
  */
-
 
 
 
@@ -56467,17 +56557,17 @@ var WebGLPointsLayerRenderer = /** @class */ (function (_super) {
         var options = opt_options || {};
         var uniforms = options.uniforms || {};
         uniforms.u_texture = options.texture || Object(_Layer_js__WEBPACK_IMPORTED_MODULE_4__["getBlankTexture"])();
-        var projectionMatrixTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_9__["create"])();
+        var projectionMatrixTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["create"])();
         uniforms[_webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__["DefaultUniform"].PROJECTION_MATRIX] = projectionMatrixTransform;
         _this = _super.call(this, vectorLayer, {
             uniforms: uniforms,
             postProcesses: options.postProcesses
         }) || this;
         _this.sourceRevision_ = -1;
-        _this.verticesBuffer_ = new _webgl_Buffer_js__WEBPACK_IMPORTED_MODULE_0__["default"]([], _webgl_js__WEBPACK_IMPORTED_MODULE_1__["DYNAMIC_DRAW"]);
-        _this.indicesBuffer_ = new _webgl_Buffer_js__WEBPACK_IMPORTED_MODULE_0__["default"]([], _webgl_js__WEBPACK_IMPORTED_MODULE_1__["DYNAMIC_DRAW"]);
-        _this.program_ = _this.helper_.getProgram(options.fragmentShader || FRAGMENT_SHADER, options.vertexShader || VERTEX_SHADER);
-        _this.helper_.useProgram(_this.program_);
+        _this.verticesBuffer_ = new _webgl_Buffer_js__WEBPACK_IMPORTED_MODULE_0__["default"](_webgl_js__WEBPACK_IMPORTED_MODULE_1__["ARRAY_BUFFER"], _webgl_js__WEBPACK_IMPORTED_MODULE_1__["DYNAMIC_DRAW"]);
+        _this.indicesBuffer_ = new _webgl_Buffer_js__WEBPACK_IMPORTED_MODULE_0__["default"](_webgl_js__WEBPACK_IMPORTED_MODULE_1__["ELEMENT_ARRAY_BUFFER"], _webgl_js__WEBPACK_IMPORTED_MODULE_1__["DYNAMIC_DRAW"]);
+        _this.program_ = _this.helper.getProgram(options.fragmentShader || FRAGMENT_SHADER, options.vertexShader || VERTEX_SHADER);
+        _this.helper.useProgram(_this.program_);
         _this.sizeCallback_ = options.sizeCallback || function () {
             return 1;
         };
@@ -56498,13 +56588,7 @@ var WebGLPointsLayerRenderer = /** @class */ (function (_super) {
         _this.rotateWithViewCallback_ = options.rotateWithViewCallback || function () {
             return false;
         };
-        _this.geojsonFormat_ = new _format_GeoJSON_js__WEBPACK_IMPORTED_MODULE_5__["default"]();
-        /**
-         * @type {Object<string, import("../../format/GeoJSON").GeoJSONFeature>}
-         * @private
-         */
-        _this.geojsonFeatureCache_ = {};
-        _this.previousExtent_ = Object(_extent_js__WEBPACK_IMPORTED_MODULE_8__["createEmpty"])();
+        _this.previousExtent_ = Object(_extent_js__WEBPACK_IMPORTED_MODULE_6__["createEmpty"])();
         /**
          * This transform is updated on every frame and is the composition of:
          * - invert of the world->screen transform that was used when rebuilding buffers (see `this.renderTransform_`)
@@ -56518,12 +56602,32 @@ var WebGLPointsLayerRenderer = /** @class */ (function (_super) {
          * @type {import("../../transform.js").Transform}
          * @private
          */
-        _this.renderTransform_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_9__["create"])();
+        _this.renderTransform_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["create"])();
         /**
          * @type {import("../../transform.js").Transform}
          * @private
          */
-        _this.invertRenderTransform_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_9__["create"])();
+        _this.invertRenderTransform_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["create"])();
+        /**
+         * @type {Float32Array}
+         * @private
+         */
+        _this.renderInstructions_ = new Float32Array(0);
+        _this.worker_ = Object(_worker_webgl_js__WEBPACK_IMPORTED_MODULE_8__["create"])();
+        _this.worker_.addEventListener('message', function (event) {
+            var received = event.data;
+            if (received.type === _Layer_js__WEBPACK_IMPORTED_MODULE_4__["WebGLWorkerMessageType"].GENERATE_BUFFERS) {
+                var projectionTransform = received.projectionTransform;
+                this.verticesBuffer_.fromArrayBuffer(received.vertexBuffer);
+                this.indicesBuffer_.fromArrayBuffer(received.indexBuffer);
+                this.helper.flushBufferData(this.verticesBuffer_);
+                this.helper.flushBufferData(this.indicesBuffer_);
+                // saves the projection transform for the current frame state
+                this.renderTransform_ = projectionTransform;
+                Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["makeInverse"])(this.invertRenderTransform_, this.renderTransform_);
+                this.renderInstructions_ = new Float32Array(event.data.renderInstructions);
+            }
+        }.bind(_this));
         return _this;
     }
     /**
@@ -56536,10 +56640,11 @@ var WebGLPointsLayerRenderer = /** @class */ (function (_super) {
      * @inheritDoc
      */
     WebGLPointsLayerRenderer.prototype.renderFrame = function (frameState) {
+        var renderCount = this.indicesBuffer_.getArray() ? this.indicesBuffer_.getArray().length : 0;
+        this.helper.drawElements(0, renderCount);
+        this.helper.finalizeDraw(frameState);
+        var canvas = this.helper.getCanvas();
         var layerState = frameState.layerStatesArray[frameState.layerIndex];
-        this.helper_.drawElements(0, this.indicesBuffer_.getArray().length);
-        this.helper_.finalizeDraw(frameState);
-        var canvas = this.helper_.getCanvas();
         var opacity = layerState.opacity;
         if (opacity !== parseFloat(canvas.style.opacity)) {
             canvas.style.opacity = opacity;
@@ -56553,8 +56658,7 @@ var WebGLPointsLayerRenderer = /** @class */ (function (_super) {
         var vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
         var vectorSource = vectorLayer.getSource();
         var viewState = frameState.viewState;
-        // TODO: get this from somewhere...
-        var stride = 12;
+        var stride = _Layer_js__WEBPACK_IMPORTED_MODULE_4__["POINT_VERTEX_STRIDE"];
         // the source has changed: clear the feature cache & reload features
         var sourceChanged = this.sourceRevision_ < vectorSource.getRevision();
         if (sourceChanged) {
@@ -56564,26 +56668,26 @@ var WebGLPointsLayerRenderer = /** @class */ (function (_super) {
             var resolution = viewState.resolution;
             vectorSource.loadFeatures([-Infinity, -Infinity, Infinity, Infinity], resolution, projection);
         }
-        var viewNotMoving = !frameState.viewHints[_ViewHint_js__WEBPACK_IMPORTED_MODULE_7__["default"].ANIMATING] && !frameState.viewHints[_ViewHint_js__WEBPACK_IMPORTED_MODULE_7__["default"].INTERACTING];
-        var extentChanged = !Object(_extent_js__WEBPACK_IMPORTED_MODULE_8__["equals"])(this.previousExtent_, frameState.extent);
+        var viewNotMoving = !frameState.viewHints[_ViewHint_js__WEBPACK_IMPORTED_MODULE_5__["default"].ANIMATING] && !frameState.viewHints[_ViewHint_js__WEBPACK_IMPORTED_MODULE_5__["default"].INTERACTING];
+        var extentChanged = !Object(_extent_js__WEBPACK_IMPORTED_MODULE_6__["equals"])(this.previousExtent_, frameState.extent);
         if ((sourceChanged || extentChanged) && viewNotMoving) {
             this.rebuildBuffers_(frameState);
             this.previousExtent_ = frameState.extent.slice();
         }
         // apply the current projection transform with the invert of the one used to fill buffers
-        this.helper_.makeProjectionTransform(frameState, this.currentTransform_);
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_9__["multiply"])(this.currentTransform_, this.invertRenderTransform_);
-        this.helper_.prepareDraw(frameState);
+        this.helper.makeProjectionTransform(frameState, this.currentTransform_);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["multiply"])(this.currentTransform_, this.invertRenderTransform_);
+        this.helper.prepareDraw(frameState);
         // write new data
-        this.helper_.bindBuffer(_webgl_js__WEBPACK_IMPORTED_MODULE_1__["ARRAY_BUFFER"], this.verticesBuffer_);
-        this.helper_.bindBuffer(_webgl_js__WEBPACK_IMPORTED_MODULE_1__["ELEMENT_ARRAY_BUFFER"], this.indicesBuffer_);
+        this.helper.bindBuffer(this.verticesBuffer_);
+        this.helper.bindBuffer(this.indicesBuffer_);
         var bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
-        this.helper_.enableAttributeArray(_webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].POSITION, 2, _webgl_js__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, 0);
-        this.helper_.enableAttributeArray(_webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].OFFSETS, 2, _webgl_js__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 2);
-        this.helper_.enableAttributeArray(_webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].TEX_COORD, 2, _webgl_js__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 4);
-        this.helper_.enableAttributeArray(_webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].OPACITY, 1, _webgl_js__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 6);
-        this.helper_.enableAttributeArray(_webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].ROTATE_WITH_VIEW, 1, _webgl_js__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 7);
-        this.helper_.enableAttributeArray(_webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].COLOR, 4, _webgl_js__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 8);
+        this.helper.enableAttributeArray(_webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].POSITION, 2, _webgl_js__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, 0);
+        this.helper.enableAttributeArray(_webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].OFFSETS, 2, _webgl_js__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 2);
+        this.helper.enableAttributeArray(_webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].TEX_COORD, 2, _webgl_js__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 4);
+        this.helper.enableAttributeArray(_webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].OPACITY, 1, _webgl_js__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 6);
+        this.helper.enableAttributeArray(_webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].ROTATE_WITH_VIEW, 1, _webgl_js__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 7);
+        this.helper.enableAttributeArray(_webgl_Helper_js__WEBPACK_IMPORTED_MODULE_2__["DefaultAttrib"].COLOR, 4, _webgl_js__WEBPACK_IMPORTED_MODULE_1__["FLOAT"], bytesPerFloat * stride, bytesPerFloat * 8);
         return true;
     };
     /**
@@ -56594,40 +56698,37 @@ var WebGLPointsLayerRenderer = /** @class */ (function (_super) {
     WebGLPointsLayerRenderer.prototype.rebuildBuffers_ = function (frameState) {
         var vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
         var vectorSource = vectorLayer.getSource();
-        this.verticesBuffer_.getArray().length = 0;
-        this.indicesBuffer_.getArray().length = 0;
         // saves the projection transform for the current frame state
-        this.helper_.makeProjectionTransform(frameState, this.renderTransform_);
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_9__["makeInverse"])(this.invertRenderTransform_, this.renderTransform_);
-        // loop on features to fill the buffer
+        var projectionTransform = Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["create"])();
+        this.helper.makeProjectionTransform(frameState, projectionTransform);
         var features = vectorSource.getFeatures();
+        var totalInstructionsCount = _Layer_js__WEBPACK_IMPORTED_MODULE_4__["POINT_INSTRUCTIONS_COUNT"] * features.length;
+        if (!this.renderInstructions_ || this.renderInstructions_.length !== totalInstructionsCount) {
+            this.renderInstructions_ = new Float32Array(totalInstructionsCount);
+        }
+        // loop on features to fill the buffer
         var feature;
+        var tmpCoords = [];
+        var elementIndex = 0;
         for (var i = 0; i < features.length; i++) {
             feature = features[i];
             if (!feature.getGeometry() || feature.getGeometry().getType() !== _geom_GeometryType_js__WEBPACK_IMPORTED_MODULE_3__["default"].POINT) {
                 continue;
             }
-            var geojsonFeature = this.geojsonFeatureCache_[Object(_util_js__WEBPACK_IMPORTED_MODULE_6__["getUid"])(feature)];
-            if (!geojsonFeature) {
-                geojsonFeature = this.geojsonFormat_.writeFeatureObject(feature);
-                this.geojsonFeatureCache_[Object(_util_js__WEBPACK_IMPORTED_MODULE_6__["getUid"])(feature)] = geojsonFeature;
-            }
-            geojsonFeature.geometry.coordinates[0] = this.coordCallback_(feature, 0);
-            geojsonFeature.geometry.coordinates[1] = this.coordCallback_(feature, 1);
-            Object(_transform_js__WEBPACK_IMPORTED_MODULE_9__["apply"])(this.renderTransform_, geojsonFeature.geometry.coordinates);
-            geojsonFeature.properties = geojsonFeature.properties || {};
-            geojsonFeature.properties.color = this.colorCallback_(feature, this.colorArray_);
-            geojsonFeature.properties.u0 = this.texCoordCallback_(feature, 0);
-            geojsonFeature.properties.v0 = this.texCoordCallback_(feature, 1);
-            geojsonFeature.properties.u1 = this.texCoordCallback_(feature, 2);
-            geojsonFeature.properties.v1 = this.texCoordCallback_(feature, 3);
-            geojsonFeature.properties.size = this.sizeCallback_(feature);
-            geojsonFeature.properties.opacity = this.opacityCallback_(feature);
-            geojsonFeature.properties.rotateWithView = this.rotateWithViewCallback_(feature) ? 1 : 0;
-            Object(_Layer_js__WEBPACK_IMPORTED_MODULE_4__["pushFeatureToBuffer"])(this.verticesBuffer_, this.indicesBuffer_, geojsonFeature);
+            tmpCoords[0] = this.coordCallback_(feature, 0);
+            tmpCoords[1] = this.coordCallback_(feature, 1);
+            Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["apply"])(projectionTransform, tmpCoords);
+            elementIndex = Object(_Layer_js__WEBPACK_IMPORTED_MODULE_4__["writePointFeatureInstructions"])(this.renderInstructions_, elementIndex, tmpCoords[0], tmpCoords[1], this.texCoordCallback_(feature, 0), this.texCoordCallback_(feature, 1), this.texCoordCallback_(feature, 2), this.texCoordCallback_(feature, 3), this.sizeCallback_(feature), this.opacityCallback_(feature), this.rotateWithViewCallback_(feature), this.colorCallback_(feature, this.colorArray_));
         }
-        this.helper_.flushBufferData(_webgl_js__WEBPACK_IMPORTED_MODULE_1__["ARRAY_BUFFER"], this.verticesBuffer_);
-        this.helper_.flushBufferData(_webgl_js__WEBPACK_IMPORTED_MODULE_1__["ELEMENT_ARRAY_BUFFER"], this.indicesBuffer_);
+        /** @type import('./Layer').WebGLWorkerGenerateBuffersMessage */
+        var message = {
+            type: _Layer_js__WEBPACK_IMPORTED_MODULE_4__["WebGLWorkerMessageType"].GENERATE_BUFFERS,
+            renderInstructions: this.renderInstructions_.buffer
+        };
+        // additional properties will be sent back as-is by the worker
+        message['projectionTransform'] = projectionTransform;
+        this.worker_.postMessage(message, [this.renderInstructions_.buffer]);
+        this.renderInstructions_ = null;
     };
     return WebGLPointsLayerRenderer;
 }(_Layer_js__WEBPACK_IMPORTED_MODULE_4__["default"]));
@@ -59411,7 +59512,7 @@ var ImageArcGISRest = /** @class */ (function (_super) {
      */
     function ImageArcGISRest(opt_options) {
         var _this = this;
-        var options = opt_options || /** @type {Options} */ ({});
+        var options = opt_options ? opt_options : {};
         _this = _super.call(this, {
             attributions: options.attributions,
             projection: options.projection,
@@ -59681,7 +59782,7 @@ var ImageCanvasSource = /** @class */ (function (_super) {
      */
     function ImageCanvasSource(opt_options) {
         var _this = this;
-        var options = opt_options || /** @type {Options} */ ({});
+        var options = opt_options ? opt_options : {};
         _this = _super.call(this, {
             attributions: options.attributions,
             projection: options.projection,
@@ -60254,7 +60355,7 @@ var ImageWMS = /** @class */ (function (_super) {
      */
     function ImageWMS(opt_options) {
         var _this = this;
-        var options = opt_options || /** @type {Options} */ ({});
+        var options = opt_options ? opt_options : {};
         _this = _super.call(this, {
             attributions: options.attributions,
             projection: options.projection,
@@ -62005,7 +62106,7 @@ var TileArcGISRest = /** @class */ (function (_super) {
      */
     function TileArcGISRest(opt_options) {
         var _this = this;
-        var options = opt_options || /** @type {Options} */ ({});
+        var options = opt_options ? opt_options : {};
         _this = _super.call(this, {
             attributions: options.attributions,
             cacheSize: options.cacheSize,
@@ -63085,7 +63186,7 @@ var TileWMS = /** @class */ (function (_super) {
      */
     function TileWMS(opt_options) {
         var _this = this;
-        var options = opt_options || /** @type {Options} */ ({});
+        var options = opt_options ? opt_options : {};
         var params = options.params || {};
         var transparent = 'TRANSPARENT' in params ? params['TRANSPARENT'] : true;
         _this = _super.call(this, {
@@ -64711,7 +64812,7 @@ var VectorSource = /** @class */ (function (_super) {
         return features;
     };
     /**
-     * Get all features in the provided extent.  Note that this returns an array of
+     * Get all features whose bounding box intersects the provided extent.  Note that this returns an array of
      * all features intersecting the given extent in random order (so it may include
      * features whose geometries do not intersect the extent).
      *
@@ -67568,7 +67669,7 @@ var CircleStyle = /** @class */ (function (_super) {
      */
     function CircleStyle(opt_options) {
         var _this = this;
-        var options = opt_options || /** @type {Options} */ ({});
+        var options = opt_options ? opt_options : {};
         _this = _super.call(this, {
             points: Infinity,
             fill: options.fill,
@@ -72314,16 +72415,20 @@ if (typeof window !== 'undefined' && 'WebGLRenderingContext' in window) {
 /*!**********************************!*\
   !*** ./build/ol/webgl/Buffer.js ***!
   \**********************************/
-/*! exports provided: BufferUsage, default */
+/*! exports provided: BufferUsage, getArrayClassForType, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BufferUsage", function() { return BufferUsage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getArrayClassForType", function() { return getArrayClassForType; });
 /* harmony import */ var _webgl_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../webgl.js */ "./build/ol/webgl.js");
+/* harmony import */ var _asserts_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../asserts.js */ "./build/ol/asserts.js");
 /**
  * @module ol/webgl/Buffer
  */
+
+
 
 /**
  * Used to describe the intended usage for the data: `STATIC_DRAW`, `STREAM_DRAW`
@@ -72338,40 +72443,100 @@ var BufferUsage = {
 /**
  * @classdesc
  * Object used to store an array of data as well as usage information for that data.
- * See the documentation of [WebGLRenderingContext.bufferData](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData) for more info.
+ * Stores typed arrays internally, either Float32Array or Uint16/32Array depending on
+ * the buffer type (ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER) and available extensions.
+ *
+ * To populate the array, you can either use:
+ * * A size using `#ofSize(buffer)`
+ * * An `ArrayBuffer` object using `#fromArrayBuffer(buffer)`
+ * * A plain array using `#fromArray(array)`
+ *
+ * Note:
+ * See the documentation of [WebGLRenderingContext.bufferData](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData)
+ * for more info on buffer usage.
  * @api
  */
 var WebGLArrayBuffer = /** @class */ (function () {
     /**
-     * @param {Array<number>=} opt_arr Array.
-     * @param {number=} opt_usage Usage, either `STATIC_DRAW`, `STREAM_DRAW` or `DYNAMIC_DRAW`. Default is `DYNAMIC_DRAW`.
+     * @param {number} type Buffer type, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
+     * @param {number=} opt_usage Intended usage, either `STATIC_DRAW`, `STREAM_DRAW` or `DYNAMIC_DRAW`.
+     * Default is `DYNAMIC_DRAW`.
      */
-    function WebGLArrayBuffer(opt_arr, opt_usage) {
+    function WebGLArrayBuffer(type, opt_usage) {
         /**
          * @private
-         * @type {Array<number>}
+         * @type {Float32Array|Uint32Array}
          */
-        this.arr_ = opt_arr !== undefined ? opt_arr : [];
+        this.array = null;
         /**
          * @private
          * @type {number}
          */
-        this.usage_ = opt_usage !== undefined ? opt_usage : BufferUsage.STATIC_DRAW;
+        this.type = type;
+        Object(_asserts_js__WEBPACK_IMPORTED_MODULE_1__["assert"])(type === _webgl_js__WEBPACK_IMPORTED_MODULE_0__["ARRAY_BUFFER"] || type === _webgl_js__WEBPACK_IMPORTED_MODULE_0__["ELEMENT_ARRAY_BUFFER"], 62);
+        /**
+         * @private
+         * @type {number}
+         */
+        this.usage = opt_usage !== undefined ? opt_usage : BufferUsage.STATIC_DRAW;
     }
     /**
-     * @return {Array<number>} Array.
+     * Populates the buffer with an array of the given size (all values will be zeroes).
+     * @param {number} size Array size
+     */
+    WebGLArrayBuffer.prototype.ofSize = function (size) {
+        this.array = new (getArrayClassForType(this.type))(size);
+    };
+    /**
+     * Populates the buffer with an array of the given size (all values will be zeroes).
+     * @param {Array<number>} array Numerical array
+     */
+    WebGLArrayBuffer.prototype.fromArray = function (array) {
+        this.array = (getArrayClassForType(this.type)).from(array);
+    };
+    /**
+     * Populates the buffer with a raw binary array buffer.
+     * @param {ArrayBuffer} buffer Raw binary buffer to populate the array with. Note that this buffer must have been
+     * initialized for the same typed array class.
+     */
+    WebGLArrayBuffer.prototype.fromArrayBuffer = function (buffer) {
+        this.array = new (getArrayClassForType(this.type))(buffer);
+    };
+    /**
+     * @return {number} Buffer type.
+     */
+    WebGLArrayBuffer.prototype.getType = function () {
+        return this.type;
+    };
+    /**
+     * @return {Float32Array|Uint32Array} Array.
      */
     WebGLArrayBuffer.prototype.getArray = function () {
-        return this.arr_;
+        return this.array;
     };
     /**
      * @return {number} Usage.
      */
     WebGLArrayBuffer.prototype.getUsage = function () {
-        return this.usage_;
+        return this.usage;
     };
     return WebGLArrayBuffer;
 }());
+/**
+ * Returns a typed array constructor based on the given buffer type
+ * @param {number} type Buffer type, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
+ * @returns {Float32ArrayConstructor|Uint32ArrayConstructor} The typed array class to use for this buffer.
+ */
+function getArrayClassForType(type) {
+    switch (type) {
+        case _webgl_js__WEBPACK_IMPORTED_MODULE_0__["ARRAY_BUFFER"]:
+            return Float32Array;
+        case _webgl_js__WEBPACK_IMPORTED_MODULE_0__["ELEMENT_ARRAY_BUFFER"]:
+            return Uint32Array;
+        default:
+            return Float32Array;
+    }
+}
 /* harmony default export */ __webpack_exports__["default"] = (WebGLArrayBuffer);
 //# sourceMappingURL=Buffer.js.map
 
@@ -72413,15 +72578,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DefaultUniform", function() { return DefaultUniform; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DefaultAttrib", function() { return DefaultAttrib; });
 /* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util.js */ "./build/ol/util.js");
-/* harmony import */ var _webgl_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../webgl.js */ "./build/ol/webgl.js");
-/* harmony import */ var _Disposable_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Disposable.js */ "./build/ol/Disposable.js");
-/* harmony import */ var _array_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../array.js */ "./build/ol/array.js");
-/* harmony import */ var _events_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../events.js */ "./build/ol/events.js");
-/* harmony import */ var _obj_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../obj.js */ "./build/ol/obj.js");
-/* harmony import */ var _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../webgl/ContextEventType.js */ "./build/ol/webgl/ContextEventType.js");
-/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../transform.js */ "./build/ol/transform.js");
-/* harmony import */ var _vec_mat4_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../vec/mat4.js */ "./build/ol/vec/mat4.js");
-/* harmony import */ var _PostProcessingPass_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./PostProcessingPass.js */ "./build/ol/webgl/PostProcessingPass.js");
+/* harmony import */ var _Disposable_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Disposable.js */ "./build/ol/Disposable.js");
+/* harmony import */ var _events_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../events.js */ "./build/ol/events.js");
+/* harmony import */ var _obj_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../obj.js */ "./build/ol/obj.js");
+/* harmony import */ var _webgl_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../webgl.js */ "./build/ol/webgl.js");
+/* harmony import */ var _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../webgl/ContextEventType.js */ "./build/ol/webgl/ContextEventType.js");
+/* harmony import */ var _transform_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../transform.js */ "./build/ol/transform.js");
+/* harmony import */ var _vec_mat4_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../vec/mat4.js */ "./build/ol/vec/mat4.js");
+/* harmony import */ var _PostProcessingPass_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./PostProcessingPass.js */ "./build/ol/webgl/PostProcessingPass.js");
+/* harmony import */ var _array_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../array.js */ "./build/ol/array.js");
+/* harmony import */ var _asserts_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../asserts.js */ "./build/ol/asserts.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -72649,7 +72815,7 @@ var WebGLHelper = /** @class */ (function (_super) {
          * @private
          * @type {WebGLRenderingContext}
          */
-        _this.gl_ = Object(_webgl_js__WEBPACK_IMPORTED_MODULE_1__["getContext"])(_this.canvas_);
+        _this.gl_ = Object(_webgl_js__WEBPACK_IMPORTED_MODULE_4__["getContext"])(_this.canvas_);
         var gl = _this.getGL();
         /**
          * @private
@@ -72671,31 +72837,25 @@ var WebGLHelper = /** @class */ (function (_super) {
          * @type {WebGLProgram}
          */
         _this.currentProgram_ = null;
-        /**
-         * @type {boolean}
-         */
-        _this.hasOESElementIndexUint = Object(_array_js__WEBPACK_IMPORTED_MODULE_3__["includes"])(_webgl_js__WEBPACK_IMPORTED_MODULE_1__["EXTENSIONS"], 'OES_element_index_uint');
-        // use the OES_element_index_uint extension if available
-        if (_this.hasOESElementIndexUint) {
-            gl.getExtension('OES_element_index_uint');
-        }
-        Object(_events_js__WEBPACK_IMPORTED_MODULE_4__["listen"])(_this.canvas_, _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_6__["default"].LOST, _this.handleWebGLContextLost, _this);
-        Object(_events_js__WEBPACK_IMPORTED_MODULE_4__["listen"])(_this.canvas_, _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_6__["default"].RESTORED, _this.handleWebGLContextRestored, _this);
+        Object(_asserts_js__WEBPACK_IMPORTED_MODULE_10__["assert"])(Object(_array_js__WEBPACK_IMPORTED_MODULE_9__["includes"])(_webgl_js__WEBPACK_IMPORTED_MODULE_4__["EXTENSIONS"], 'OES_element_index_uint'), 63);
+        gl.getExtension('OES_element_index_uint');
+        Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["listen"])(_this.canvas_, _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_5__["default"].LOST, _this.handleWebGLContextLost, _this);
+        Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["listen"])(_this.canvas_, _webgl_ContextEventType_js__WEBPACK_IMPORTED_MODULE_5__["default"].RESTORED, _this.handleWebGLContextRestored, _this);
         /**
          * @private
          * @type {import("../transform.js").Transform}
          */
-        _this.offsetRotateMatrix_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["create"])();
+        _this.offsetRotateMatrix_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["create"])();
         /**
          * @private
          * @type {import("../transform.js").Transform}
          */
-        _this.offsetScaleMatrix_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["create"])();
+        _this.offsetScaleMatrix_ = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["create"])();
         /**
          * @private
          * @type {Array<number>}
          */
-        _this.tmpMat4_ = Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_8__["create"])();
+        _this.tmpMat4_ = Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_7__["create"])();
         /**
          * @private
          * @type {Object.<string, WebGLUniformLocation>}
@@ -72729,14 +72889,14 @@ var WebGLHelper = /** @class */ (function (_super) {
          * @private
          */
         _this.postProcessPasses_ = options.postProcesses ? options.postProcesses.map(function (options) {
-            return new _PostProcessingPass_js__WEBPACK_IMPORTED_MODULE_9__["default"]({
+            return new _PostProcessingPass_js__WEBPACK_IMPORTED_MODULE_8__["default"]({
                 webGlContext: gl,
                 scaleRatio: options.scaleRatio,
                 vertexShader: options.vertexShader,
                 fragmentShader: options.fragmentShader,
                 uniforms: options.uniforms
             });
-        }) : [new _PostProcessingPass_js__WEBPACK_IMPORTED_MODULE_9__["default"]({ webGlContext: gl })];
+        }) : [new _PostProcessingPass_js__WEBPACK_IMPORTED_MODULE_8__["default"]({ webGlContext: gl })];
         /**
          * @type {string|null}
          * @private
@@ -72748,11 +72908,10 @@ var WebGLHelper = /** @class */ (function (_super) {
      * Just bind the buffer if it's in the cache. Otherwise create
      * the WebGL buffer, bind it, populate it, and add an entry to
      * the cache.
-     * @param {number} target Target, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
      * @param {import("./Buffer").default} buffer Buffer.
      * @api
      */
-    WebGLHelper.prototype.bindBuffer = function (target, buffer) {
+    WebGLHelper.prototype.bindBuffer = function (buffer) {
         var gl = this.getGL();
         var bufferKey = Object(_util_js__WEBPACK_IMPORTED_MODULE_0__["getUid"])(buffer);
         var bufferCache = this.bufferCache_[bufferKey];
@@ -72763,28 +72922,18 @@ var WebGLHelper = /** @class */ (function (_super) {
                 webGlBuffer: webGlBuffer
             };
         }
-        gl.bindBuffer(target, bufferCache.webGlBuffer);
+        gl.bindBuffer(buffer.getType(), bufferCache.webGlBuffer);
     };
     /**
      * Update the data contained in the buffer array; this is required for the
      * new data to be rendered
-     * @param {number} target Target, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
      * @param {import("./Buffer").default} buffer Buffer.
      * @api
      */
-    WebGLHelper.prototype.flushBufferData = function (target, buffer) {
+    WebGLHelper.prototype.flushBufferData = function (buffer) {
         var gl = this.getGL();
-        var arr = buffer.getArray();
-        this.bindBuffer(target, buffer);
-        var /** @type {ArrayBufferView} */ arrayBuffer;
-        if (target == _webgl_js__WEBPACK_IMPORTED_MODULE_1__["ARRAY_BUFFER"]) {
-            arrayBuffer = new Float32Array(arr);
-        }
-        else if (target == _webgl_js__WEBPACK_IMPORTED_MODULE_1__["ELEMENT_ARRAY_BUFFER"]) {
-            arrayBuffer = this.hasOESElementIndexUint ?
-                new Uint32Array(arr) : new Uint16Array(arr);
-        }
-        gl.bufferData(target, arrayBuffer, buffer.getUsage());
+        this.bindBuffer(buffer);
+        gl.bufferData(buffer.getType(), buffer.getArray(), buffer.getUsage());
     };
     /**
      * @param {import("./Buffer.js").default} buf Buffer.
@@ -72802,7 +72951,7 @@ var WebGLHelper = /** @class */ (function (_super) {
      * @inheritDoc
      */
     WebGLHelper.prototype.disposeInternal = function () {
-        Object(_events_js__WEBPACK_IMPORTED_MODULE_4__["unlistenAll"])(this.canvas_);
+        Object(_events_js__WEBPACK_IMPORTED_MODULE_2__["unlistenAll"])(this.canvas_);
         var gl = this.getGL();
         if (!gl.isContextLost()) {
             for (var key in this.bufferCache_) {
@@ -72853,9 +73002,8 @@ var WebGLHelper = /** @class */ (function (_super) {
      */
     WebGLHelper.prototype.drawElements = function (start, end) {
         var gl = this.getGL();
-        var elementType = this.hasOESElementIndexUint ?
-            gl.UNSIGNED_INT : gl.UNSIGNED_SHORT;
-        var elementSize = this.hasOESElementIndexUint ? 4 : 2;
+        var elementType = gl.UNSIGNED_INT;
+        var elementSize = 4;
         var numItems = end - start;
         var offsetInBytes = start * elementSize;
         gl.drawElements(gl.TRIANGLES, numItems, elementType, offsetInBytes);
@@ -72894,14 +73042,14 @@ var WebGLHelper = /** @class */ (function (_super) {
     WebGLHelper.prototype.applyFrameState = function (frameState) {
         var size = frameState.size;
         var rotation = frameState.viewState.rotation;
-        var offsetScaleMatrix = Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["reset"])(this.offsetScaleMatrix_);
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["scale"])(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
-        var offsetRotateMatrix = Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["reset"])(this.offsetRotateMatrix_);
+        var offsetScaleMatrix = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["reset"])(this.offsetScaleMatrix_);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["scale"])(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
+        var offsetRotateMatrix = Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["reset"])(this.offsetRotateMatrix_);
         if (rotation !== 0) {
-            Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["rotate"])(offsetRotateMatrix, -rotation);
+            Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["rotate"])(offsetRotateMatrix, -rotation);
         }
-        this.setUniformMatrixValue(DefaultUniform.OFFSET_SCALE_MATRIX, Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_8__["fromTransform"])(this.tmpMat4_, offsetScaleMatrix));
-        this.setUniformMatrixValue(DefaultUniform.OFFSET_ROTATION_MATRIX, Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_8__["fromTransform"])(this.tmpMat4_, offsetRotateMatrix));
+        this.setUniformMatrixValue(DefaultUniform.OFFSET_SCALE_MATRIX, Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_7__["fromTransform"])(this.tmpMat4_, offsetScaleMatrix));
+        this.setUniformMatrixValue(DefaultUniform.OFFSET_ROTATION_MATRIX, Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_7__["fromTransform"])(this.tmpMat4_, offsetRotateMatrix));
     };
     /**
      * Sets the custom uniforms based on what was given in the constructor. This is called internally in `prepareDraw`.
@@ -72930,7 +73078,7 @@ var WebGLHelper = /** @class */ (function (_super) {
                 gl.uniform1i(this.getUniformLocation(uniform.name), textureSlot++);
             }
             else if (Array.isArray(value) && value.length === 6) {
-                this.setUniformMatrixValue(uniform.name, Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_8__["fromTransform"])(this.tmpMat4_, value));
+                this.setUniformMatrixValue(uniform.name, Object(_vec_mat4_js__WEBPACK_IMPORTED_MODULE_7__["fromTransform"])(this.tmpMat4_, value));
             }
             else if (Array.isArray(value) && value.length <= 4) {
                 switch (value.length) {
@@ -73061,10 +73209,8 @@ var WebGLHelper = /** @class */ (function (_super) {
         var rotation = frameState.viewState.rotation;
         var resolution = frameState.viewState.resolution;
         var center = frameState.viewState.center;
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["reset"])(transform);
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["scale"])(transform, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["rotate"])(transform, -rotation);
-        Object(_transform_js__WEBPACK_IMPORTED_MODULE_7__["translate"])(transform, -center[0], -center[1]);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["reset"])(transform);
+        Object(_transform_js__WEBPACK_IMPORTED_MODULE_6__["compose"])(transform, 0, 0, 2 / (resolution * size[0]), 2 / (resolution * size[1]), -rotation, -center[0], -center[1]);
         return transform;
     };
     /**
@@ -73108,9 +73254,9 @@ var WebGLHelper = /** @class */ (function (_super) {
      * @private
      */
     WebGLHelper.prototype.handleWebGLContextLost = function () {
-        Object(_obj_js__WEBPACK_IMPORTED_MODULE_5__["clear"])(this.bufferCache_);
-        Object(_obj_js__WEBPACK_IMPORTED_MODULE_5__["clear"])(this.shaderCache_);
-        Object(_obj_js__WEBPACK_IMPORTED_MODULE_5__["clear"])(this.programCache_);
+        Object(_obj_js__WEBPACK_IMPORTED_MODULE_3__["clear"])(this.bufferCache_);
+        Object(_obj_js__WEBPACK_IMPORTED_MODULE_3__["clear"])(this.shaderCache_);
+        Object(_obj_js__WEBPACK_IMPORTED_MODULE_3__["clear"])(this.programCache_);
         this.currentProgram_ = null;
     };
     /**
@@ -73133,10 +73279,10 @@ var WebGLHelper = /** @class */ (function (_super) {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         if (opt_wrapS !== undefined) {
-            gl.texParameteri(_webgl_js__WEBPACK_IMPORTED_MODULE_1__["TEXTURE_2D"], _webgl_js__WEBPACK_IMPORTED_MODULE_1__["TEXTURE_WRAP_S"], opt_wrapS);
+            gl.texParameteri(_webgl_js__WEBPACK_IMPORTED_MODULE_4__["TEXTURE_2D"], _webgl_js__WEBPACK_IMPORTED_MODULE_4__["TEXTURE_WRAP_S"], opt_wrapS);
         }
         if (opt_wrapT !== undefined) {
-            gl.texParameteri(_webgl_js__WEBPACK_IMPORTED_MODULE_1__["TEXTURE_2D"], _webgl_js__WEBPACK_IMPORTED_MODULE_1__["TEXTURE_WRAP_T"], opt_wrapT);
+            gl.texParameteri(_webgl_js__WEBPACK_IMPORTED_MODULE_4__["TEXTURE_2D"], _webgl_js__WEBPACK_IMPORTED_MODULE_4__["TEXTURE_WRAP_T"], opt_wrapT);
         }
         return texture;
     };
@@ -73168,7 +73314,7 @@ var WebGLHelper = /** @class */ (function (_super) {
         return texture;
     };
     return WebGLHelper;
-}(_Disposable_js__WEBPACK_IMPORTED_MODULE_2__["default"]));
+}(_Disposable_js__WEBPACK_IMPORTED_MODULE_1__["default"]));
 /* harmony default export */ __webpack_exports__["default"] = (WebGLHelper);
 //# sourceMappingURL=Helper.js.map
 
@@ -73434,6 +73580,26 @@ var WebGLPostProcessingPass = /** @class */ (function () {
 }());
 /* harmony default export */ __webpack_exports__["default"] = (WebGLPostProcessingPass);
 //# sourceMappingURL=PostProcessingPass.js.map
+
+/***/ }),
+
+/***/ "./build/ol/worker/webgl.js":
+/*!**********************************!*\
+  !*** ./build/ol/worker/webgl.js ***!
+  \**********************************/
+/*! exports provided: create */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create", function() { return create; });
+var source = "var e=\"function\"==typeof Object.assign?Object.assign:function(e,n){if(null==e)throw new TypeError(\"Cannot convert undefined or null to object\");for(var t=Object(e),r=1,o=arguments.length;r<o;++r){var i=arguments[r];if(null!=i)for(var f in i)i.hasOwnProperty(f)&&(t[f]=i[f])}return t},n=[\"experimental-webgl\",\"webgl\",\"webkit-3d\",\"moz-webgl\"];if(\"undefined\"!=typeof window&&\"WebGLRenderingContext\"in window)try{var t=function(e,t){for(var r=n.length,o=0;o<r;++o)try{var i=e.getContext(n[o],t);if(i)return i}catch(e){}return null}(document.createElement(\"canvas\"));t&&(!0,t.getParameter(t.MAX_TEXTURE_SIZE),t.getSupportedExtensions())}catch(e){}var r=\"GENERATE_BUFFERS\",o=[],i={vertexPosition:0,indexPosition:0},f=13,a=12;function u(e,n,t,r,o,i,f,a,u,s,l,c,v,g){e[n+0]=t,e[n+1]=r,e[n+2]=o,e[n+3]=i,e[n+4]=f,e[n+5]=a,e[n+6]=u,e[n+7]=s,e[n+8]=l,e[n+9]=c,e[n+10]=v,e[n+11]=g}function s(e,n,t){t.length&&e.set(t,n)}function l(e,n,t,r,l,c){var v=c>f?c:f,g=e[n+0],d=e[n+1],b=e[n+2],w=e[n+3],x=e[n+4],h=e[n+5],y=e[n+6],E=e[n+7],p=e[n+8],P=e[n+9],m=e[n+10],A=e[n+11],j=e[n+12],C=a,F=C+v-f,O=o;O.length=v-f;for(var R=0;R<O.length;R++)O[R]=e[n+f+R];var T=l?l.vertexPosition:0,B=l?l.indexPosition:0,I=T/F;return u(t,T,g,d,-y/2,-y/2,b,w,E,p,P,m,A,j),s(t,T+C,O),u(t,T+=F,g,d,+y/2,-y/2,x,w,E,p,P,m,A,j),s(t,T+C,O),u(t,T+=F,g,d,+y/2,+y/2,x,h,E,p,P,m,A,j),s(t,T+C,O),u(t,T+=F,g,d,-y/2,+y/2,b,h,E,p,P,m,A,j),s(t,T+C,O),T+=F,r[B++]=I,r[B++]=I+1,r[B++]=I+3,r[B++]=I+1,r[B++]=I+2,r[B++]=I+3,i.vertexPosition=T,i.indexPosition=B,i}onmessage=function(n){var t=n.data;if(t.type===r){for(var o=new Float32Array(t.renderInstructions),i=t.customAttributesCount||0,u=f+i,s=o.length/u,c=4*s*(a+i),v=new Uint32Array(6*s),g=new Float32Array(c),d=null,b=0;b<o.length;b+=u)d=l(o,b,g,v,d,u);var w=e({vertexBuffer:g.buffer,indexBuffer:v.buffer,renderInstructions:o.buffer},t);postMessage(w,[g.buffer,v.buffer,o.buffer])}};";
+var blob = new Blob([source], { type: 'application/javascript' });
+var url = URL.createObjectURL(blob);
+function create() {
+    return new Worker(url);
+}
+//# sourceMappingURL=webgl.js.map
 
 /***/ }),
 
