@@ -150,9 +150,10 @@ goog.require('ga_vector_tile_layer_service');
                 imageTile.getImage().src = content;
               }
             } else {
-              imageTile.getImage().src = (content) || src;
+              imageTile.getImage().src = content || src;
             }
           };
+          imageTile.getImage().src = src;
           gaStorage.getTile(gaMapUtils.getTileKey(src)).then(onSuccess);
         };
 
@@ -872,7 +873,10 @@ goog.require('ga_vector_tile_layer_service');
          * exist in currently loaded topic/layers
          */
         this.getLayerProperty = function(bodId, prop) {
-          return layers[bodId][prop];
+          var layer = this.getLayer(bodId);
+          if (layer) {
+            return layer[prop];
+          }
         };
 
         /**
