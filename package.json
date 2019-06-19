@@ -2,8 +2,9 @@
   "name": "geoadmin3",
   "version": "3.0.0",
   "description": "GeoAdmin 3 Application",
-  "_scripts": {
-    "test": "node test/selenium/tests.js"
+  "scripts": {
+    "test": "node test/selenium/tests.js",
+    "build-dev": "webpack --mode=development"
   },
   "repository": {
     "type": "git",
@@ -36,19 +37,24 @@
     "gyronorm": "2.0.6",
     "jquery-ajax-transport-xdomainrequest": "1.0.4",
     "localforage": "1.7.3",
-    "ol": "openlayers/openlayers#346cd56",
+    "ol": "openlayers/openlayers#51c8886",
     "slipjs": "2.1.1",
     "tinycolor2": "1.4.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
     "angular-mocks": "1.7.8",
     "autoprefixer": "9.5.1",
     "babel-cli": "^6.24.1",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-angularjs-annotate": "^0.10.0",
     "babel-preset-env": "^1.4.0",
     "bootstrap": "3.4.1",
     "commander": "2.20.0",
-    "eslint": "5.16.0",
+    "eslint": "^5.16.0",
     "eslint-config-standard": "12.0.0",
+    "eslint-loader": "^2.1.2",
     "eslint-plugin-import": "2.17.2",
     "eslint-plugin-node": "9.0.1",
     "eslint-plugin-promise": "4.1.1",
@@ -64,11 +70,14 @@
     "karma-phantomjs-launcher": "1.0.4",
     "less": "~3.9.0",
     "less-plugin-clean-css": "~1.5.1",
+    "mapbox-gl": "0.54.0",
     "mocha": "6.1.4",
     "ng-annotate": "1.2.2",
-    "postcss-cli": "6.1.2",
+    "ng-async": "^1.1.0",
     "phantomjs-prebuilt": "2.1.16",
+    "postcss-cli": "6.1.2",
     "sinon": "7.3.2",
-    "mapbox-gl": "0.54.0"
+    "webpack": "^4.34.0",
+    "webpack-cli": "^3.3.4"
   }
 }

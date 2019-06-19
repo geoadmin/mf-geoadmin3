@@ -1,7 +1,6 @@
 {
-  // List of plugins http://babeljs.io/docs/plugins/#transform-plugins
+  "presets": ["@babel/preset-env"],
   "plugins": [
-    "transform-es2015-arrow-functions",
-    "transform-es2015-block-scoping"
+    "angularjs-annotate"
   ]
 }

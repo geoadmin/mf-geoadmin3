@@ -33,7 +33,9 @@
   env: {
     browser: true,
     jquery: true,
-    mocha: true
+    mocha: true,
+    commonjs: true,
+    es6: true
   },
   globals:  {
     angular: true,

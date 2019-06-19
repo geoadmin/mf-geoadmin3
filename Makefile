@@ -143,17 +143,19 @@ test/karma-conf-debug.js: test/karma-conf.mako.js ${MAKO_CMD}
 test/karma-conf-release.js: test/karma-conf.mako.js ${MAKO_CMD}
 	${PYTHON_CMD} ${MAKO_CMD} --var "mode=release" $< > $@
 
-test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.js externs/jquery.js: package.json
+test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js test/lib/ng-async.js externs/angular.js externs/jquery.js: package.json
 	npm install;
 	cp -f node_modules/angular-mocks/angular-mocks.js test/lib/;
 	cp -f node_modules/expect.js/index.js test/lib/expect.js;
 	cp -f node_modules/sinon/pkg/sinon.js test/lib/;
+	cp -f node_modules/ng-async/src/index.js test/lib/ng-async.js;
 	cp -f node_modules/google-closure-compiler/contrib/externs/angular-1.4.js externs/angular.js;
 	cp -f node_modules/google-closure-compiler/contrib/externs/jquery-1.9.js externs/jquery.js;
 
 .build-artefacts/devlibs: test/lib/angular-mocks.js \
                           test/lib/expect.js \
                           test/lib/sinon.js \
+                          test/lib/ng-async.js \
                           externs/angular.js \
                           externs/jquery.js
 	mkdir -p $(dir $@)
