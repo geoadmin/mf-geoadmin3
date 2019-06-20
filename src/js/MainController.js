@@ -1,5 +1,3 @@
-import Map from 'ol/Map.js';
-
 goog.provide('ga_main_controller');
 
 goog.require('ga_background_service');
@@ -59,7 +57,7 @@ goog.require('ga_vector_tile_layer_service');
         '<i class="fa fa-ga-circle"></i>' +
         '<i class="fa fa-ga-zoom-minus"></i>' +
       '</span>';
-      var map = new Map({
+      var map = new ol.Map({
         moveTolerance: 5,
         controls: ol.control.defaults({
           attribution: false,
@@ -518,7 +516,6 @@ goog.require('ga_vector_tile_layer_service');
           $scope.langId = gaLang.get();
           gaVectorTileLayerService.init($scope.map).then(function() {
             initApp();
-            $rootScope.$emit('gaInitAppDone');
           })
         }
     );

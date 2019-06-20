@@ -143,8 +143,7 @@ test/karma-conf-debug.js: test/karma-conf.mako.js ${MAKO_CMD}
 test/karma-conf-release.js: test/karma-conf.mako.js ${MAKO_CMD}
 	${PYTHON_CMD} ${MAKO_CMD} --var "mode=release" $< > $@
 
-test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js test/lib/ng-async.js externs/angular.js externs/jquery.js: package.json
-	npm install;
+test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js test/lib/ng-async.js externs/angular.js externs/jquery.js: package.json node_modules
 	cp -f node_modules/angular-mocks/angular-mocks.js test/lib/;
 	cp -f node_modules/expect.js/index.js test/lib/expect.js;
 	cp -f node_modules/sinon/pkg/sinon.js test/lib/;
@@ -214,44 +213,11 @@ install-libs: install-cesium \
               install-openlayers \
               install-ol-cesium \
 
-.build-artefacts/app.js: .build-artefacts/js-files
-	mkdir -p $(dir $@)
-	java -jar ${CLOSURE_COMPILER} $(SRC_JS_FILES_FOR_COMPILER) \
-	    --compilation_level SIMPLE_OPTIMIZATIONS \
-	    --jscomp_error checkVars \
-	    --externs externs/ol.js \
-	    --externs externs/olcesium.js \
-	    --externs externs/Cesium.externs.js \
-	    --externs externs/slip.js \
-	    --externs externs/angular.js \
-	    --externs externs/jquery.js \
-	    --js_output_file $@
+.build-artefacts/app.js:
+	npm run build-prod
 
-$(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js): \
-	    .build-artefacts/annotated/%.js: %.js .build-artefacts/devlibs
-	mkdir -p $(dir $@)
-	${NG_ANNOTATE} -a $< > $@
-
-.build-artefacts/app-whitespace.js: .build-artefacts/js-files
-	java -jar ${CLOSURE_COMPILER} $(SRC_JS_FILES_FOR_COMPILER) \
-	    --compilation_level WHITESPACE_ONLY \
-	    --formatting PRETTY_PRINT \
-	    --js_output_file tmp
-	cat node_modules/google-closure-library/closure/goog/base.js tmp > $@
-	rm -f tmp
-
-# closurebuilder.py complains if it cannot find a Closure base.js script, so we
-# add lib/closure as a root. When compiling we remove base.js from the js files
-# passed to the Closure compiler.
-.build-artefacts/js-files: $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js) \
-	    ${PYTHON_VENV} \
-	    node_modules/google-closure-library
-	${PYTHON_CMD} node_modules/google-closure-library/closure/bin/build/closurebuilder.py \
-	    --root=.build-artefacts/annotated \
-	    --root=node_modules/google-closure-library \
-	    --namespace="geoadmin" \
-	    --namespace="__ga_template_cache__" \
-	    --output_mode=list > $@
+.build-artefacts/app-whitespace.js:
+	npm run build-dev
 
 .build-artefacts/requirements.timestamp: .build-artefacts/last-pypi-url ${PYTHON_VENV} requirements.txt
 	${PIP_CMD} install --index-url ${PYPI_URL} -r requirements.txt

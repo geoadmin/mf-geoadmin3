@@ -8,21 +8,25 @@ describe('ga_geolocation_directive', function() {
       gaBrowserSniffer, gaThrottle, gaStyleFactory, gaMapUtils
     */
 
-    var loadDirective = function(map, ol3d) {
+    var appIsLoaded = function() {
+      // listening to app loaded event
+      var deferred = $q.defer();
+      $rootScope.$on('gaInitAppDone', function() {
+        deferred.resolve();
+      });
+      return deferred.promise;
+    }
+
+    var loadDirective = async function(map, ol3d) {
       parentScope = $rootScope.$new();
       parentScope.map = map;
       parentScope.ol3d = ol3d;
-      // listening to app loaded event
-      var deferred = $q.defer();
-      $rootScope.$on('gaInitAppDone', function () {
-        deferred.resolve();
-      });
       var tpl = '<div ga-geolocation ga-geolocation-map="map" ga-geolocation-ol3d="ol3d"></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
       scope = elt.isolateScope();
       $timeout.flush();
-      return deferred.promise;
+      await appIsLoaded();
     };
 
     var provideServices = function($provide) {
@@ -93,7 +97,7 @@ describe('ga_geolocation_directive', function() {
       it('disables the button if geolocation isn\'t supported', function() {
         var spy = sinon.spy(ol, 'Geolocation');
         var spy2 = sinon.spy($window, 'GyroNorm');
-        loadDirective(map, ol3d).then(function () {
+        loadDirective(map, ol3d).then(function() {
           expect(spy.callCount).to.be(0);
           expect(spy2.callCount).to.be(0);
           expect(elt.find('.ga-btn-disabled').length).to.be(1);
@@ -111,7 +115,7 @@ describe('ga_geolocation_directive', function() {
       });
 
       it('verifies html elements', function() {
-        loadDirective(map, ol3d).then(function () {
+        loadDirective(map, ol3d).then(function() {
           expect(elt.find('.ga-btn').length).to.be(1);
           expect(elt.find('.fa').length).to.be(4);
         });
@@ -221,7 +225,7 @@ describe('ga_geolocation_directive', function() {
       });
 
       it('activates/deactivates tracking/heading when button is clicked', function() {
-        await loadDirective(map);
+        loadDirective(map);
         var bt = elt.find('button').click();
         $rootScope.$digest();
         expect(scope.tracking).to.be(true);
@@ -243,7 +247,7 @@ describe('ga_geolocation_directive', function() {
       });
 
       it('rotates the button with the view when heading is activated', function() {
-        await loadDirective(map);
+        loadDirective(map);
         var bt = elt.find('button').click();
         $rootScope.$digest();
         bt.click();

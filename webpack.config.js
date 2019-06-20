@@ -1,8 +1,10 @@
-var webpack = require('webpack');
+const webpack = require('webpack');
+const path = require('path');
+const glob = require('glob');
 
 module.exports = {
 
-  entry: './src/js/GaModule.js',
+  entry: glob.sync('./src/@(components|js)/**/*.js'),
 
   module: {
     rules: [

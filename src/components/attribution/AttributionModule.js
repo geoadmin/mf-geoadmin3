@@ -1,9 +1,12 @@
-import gaAttributionDirective from './AttributionDirective.js';
-import gaAttributionService from './AttributionService.js';
+goog.provide('ga_attribution');
 
-const gaAttributionModule = angular.module('ga_attribution', [
-  gaAttributionDirective,
-  gaAttributionService
-]);
+goog.require('ga_attribution_directive');
+goog.require('ga_attribution_service');
 
-export default gaAttributionModule;
+(function() {
+
+  angular.module('ga_attribution', [
+    'ga_attribution_directive',
+    'ga_attribution_service'
+  ]);
+})();

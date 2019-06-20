@@ -4,7 +4,8 @@
   "description": "GeoAdmin 3 Application",
   "scripts": {
     "test": "node test/selenium/tests.js",
-    "build-dev": "webpack --mode=development"
+    "build-dev": "webpack --mode=development -o .build-artefacts/app-whitespace.js",
+    "build-prod": "webpack -o .build-artefacts/app.js"
   },
   "repository": {
     "type": "git",

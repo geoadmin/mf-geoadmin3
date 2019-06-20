@@ -37,10 +37,11 @@ polyfill: .build-artefacts/polyfill
 	cp $</polyfill.js src/lib/
 	cp $</polyfill.min.js src/lib/
 
+node_modules: package.json
+	npm install;
 
 .PHONY: libs
-libs:
-	npm install;
+libs: node_modules
 	cp -f $(addprefix node_modules/angular/, angular.js angular.min.js) src/lib/;
 	cp -f $(addprefix node_modules/angular-translate/dist/, angular-translate.js angular-translate.min.js) src/lib/;
 	cp -f $(addprefix node_modules/angular-translate/dist/angular-translate-loader-static-files/, angular-translate-loader-static-files.js angular-translate-loader-static-files.min.js) src/lib/;

@@ -35,6 +35,9 @@ prd/lib/Cesium/ThirdParty/Workers/: src/lib/Cesium/ThirdParty/Workers/*.min.js
 	mkdir -p $@; \
 	$(call moveto,$^,$@,'.min.js','.js')
 
+dist/main.js: node_modules
+	npm run build-dev
+
 prd/lib/build.js: src/lib/polyfill.min.js \
                   src/lib/jquery.min.js \
                   src/lib/slip.min.js \

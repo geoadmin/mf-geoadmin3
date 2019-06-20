@@ -26,6 +26,187 @@ goog.require('ga_browsersniffer_service');
 
     var ZOOM_OFFSET = 3;
 
+    var Mapbox = /* @__PURE__ */(function(Layer) {
+      function Mapbox(options) {
+        var baseOptions = Object.assign({}, options);
+        Layer.call(this, baseOptions);
+
+        this.baseOptions = baseOptions;
+
+        /**
+         * @private
+         * @type boolean
+         */
+        this.loaded = false;
+
+        this.initMap();
+      }
+
+      if (Layer) Mapbox.prototype = Layer;
+      Mapbox.prototype = Object.create(Layer && Layer.prototype);
+      Mapbox.prototype.constructor = Mapbox;
+
+      Mapbox.prototype.initMap = function initMap() {
+        var map = this.map_;
+        var view = map.getView();
+        var transformToLatLng = ol.proj.getTransform(
+            view.getProjection(), 'EPSG:4326');
+        var center = transformToLatLng(view.getCenter());
+
+        this.centerLastRender = view.getCenter();
+        this.zoomLastRender = view.getZoom();
+        this.centerLastRender = view.getCenter();
+        this.zoomLastRender = view.getZoom();
+
+        var options = Object.assign(this.baseOptions, {
+          attributionControl: false,
+          boxZoom: false,
+          center: center,
+          container: map.getTargetElement(),
+          doubleClickZoom: false,
+          dragPan: false,
+          dragRotate: false,
+          interactive: false,
+          keyboard: false,
+          pitchWithRotate: false,
+          scrollZoom: false,
+          touchZoomRotate: false,
+          zoom: view.getZoom() + ZOOM_OFFSET
+        });
+
+        this.mbmap = new $window.mapboxgl.Map(options);
+        this.mbmap.on('load', function() {
+          this.mbmap.getCanvas().remove();
+          this.loaded = true;
+          this.map_.render();
+          [
+            'mapboxgl-control-container'
+          ].forEach(function(className) {
+            return document.getElementsByClassName(className)[0].remove();
+          });
+        }.bind(this));
+        this.mbmap.on('mousemove', function(e) {
+          this.featuresUnderMousePointer =
+            this.mbmap.queryRenderedFeatures(e.point);
+        }.bind(this));
+      };
+
+      Mapbox.prototype.getFeaturesUnderMousePointer = function() {
+        return this.featuresUnderMousePointer;
+      };
+
+      /**
+       *
+       * @inheritDoc
+       */
+      Mapbox.prototype.render = function render(frameState) {
+        var map = this.map_;
+        var view = map.getView();
+        var transformToLatLng = ol.proj.getTransform(view.getProjection(),
+            'EPSG:4326');
+
+        this.centerNextRender = view.getCenter();
+
+        // adjust view parameters in mapbox
+        var rotation = frameState.viewState.rotation;
+        if (rotation) {
+          this.mbmap.rotateTo(-rotation * 180 / Math.PI, {
+            animate: false
+          });
+        }
+
+        var center = transformToLatLng(this.centerNextRender);
+        var zoom = view.getZoom() + ZOOM_OFFSET;
+        this.mbmap.jumpTo({
+          center: center,
+          zoom: zoom,
+          animate: false
+        });
+        // cancel the scheduled update & trigger synchronous redraw
+        // see https://github.com/mapbox/mapbox-gl-js/issues/7893#issue-408992184
+        // NOTE: THIS MIGHT BREAK WHEN UPDATING MAPBOX
+        if (this.mbmap._frame) {
+          this.mbmap._frame.cancel();
+          this.mbmap._frame = null;
+        }
+        this.mbmap._render();
+
+        return this.mbmap.getCanvas();
+      };
+
+      Mapbox.prototype.setVisible = function setVisible(visible) {
+        Layer.prototype.setVisible.call(this, visible);
+
+        var canvas = this.mbmap.getCanvas();
+        canvas.style.display = visible ? 'block' : 'none';
+      };
+
+      Mapbox.prototype.setOpacity = function setOpacity(opacity) {
+        Layer.prototype.setOpacity.call(this, opacity);
+        var canvas = this.mbmap.getCanvas();
+        canvas.style.opacity = opacity;
+      };
+
+      Mapbox.prototype.setZIndex = function setZIndex(zindex) {
+        Layer.prototype.setZIndex.call(this, zindex);
+        var canvas = this.mbmap.getCanvas();
+        canvas.style.zIndex = zindex;
+      };
+
+      Mapbox.prototype.setStyle = function setStyle(style) {
+        this.mbmap.setStyle(style);
+      }
+
+      /**
+       * @inheritDoc
+       */
+      Mapbox.prototype.getSourceState = function getSourceState() {
+        return this.loaded ? 'ready' : 'undefined';
+      };
+
+      Mapbox.prototype.setMap = function setMap(map) {
+        this.map_ = map;
+      };
+
+      return Mapbox;
+    }(ol.layer.BaseTile));
+
+    $window.mapboxgl.Map.prototype._setupContainer =
+    function _setupContainer() {
+      var container = this._container;
+      container.classList.add('mapboxgl-map');
+
+      var canvasContainer = this._canvasContainer = container.firstChild;
+      this._canvas = document.createElement('canvas');
+      canvasContainer.insertBefore(this._canvas, canvasContainer.firstChild);
+      this._canvas.style.position = 'absolute';
+      this._canvas.addEventListener('webglcontextlost',
+          this._contextLost, false);
+      this._canvas.addEventListener('webglcontextrestored',
+          this._contextRestored, false);
+      this._canvas.setAttribute('tabindex', '0');
+      this._canvas.setAttribute('aria-label', 'Map');
+      this._canvas.className = 'mapboxgl-canvas';
+
+      var dimensions = this._containerDimensions();
+      this._resizeCanvas(dimensions[0], dimensions[1]);
+
+      this._controlContainer = canvasContainer;
+      var controlContainer = this._controlContainer =
+        document.createElement('div');
+      controlContainer.className = 'mapboxgl-control-container';
+      container.appendChild(controlContainer);
+
+      var positions = this._controlPositions = {};
+      ['top-left', 'top-right', 'bottom-left', 'bottom-right'].forEach(
+          function(positionName) {
+            var elem = document.createElement('div');
+            elem.className = 'mapboxgl-ctrl-' + positionName;
+            controlContainer.appendChild(elem);
+            positions[positionName] = elem;
+          });
+    };
+
     // LayersConfig for vector
     // TODO: replace this by a fetch call on the API (TBD)
     var vectortileLayerConfig = {
@@ -139,67 +320,11 @@ goog.require('ga_browsersniffer_service');
         mbLayer.setStyle(style);
         mbLayer.glStyle = style;
       } else {
-        var mbMap = new $window.mapboxgl.Map({
-          style: style,
-          attributionControl: false,
-          boxZoom: false,
-          center: style.center,
-          container: olMap.getTargetElement(),
-          doubleClickZoom: false,
-          dragPan: false,
-          dragRotate: false,
-          interactive: false,
-          keyboard: false,
-          pitchWithRotate: false,
-          scrollZoom: false,
-          touchZoomRotate: false,
-          zoom: olMap.getView().getZoom() + ZOOM_OFFSET
+        mbLayer = new Mapbox({
+          map: olMap,
+          container: olMap.getTarget(),
+          style: style
         });
-        mbLayer = new ol.layer.Layer({
-          render: function(frameState) {
-            var canvas = mbMap.getCanvas();
-            var view = olMap.getView();
-
-            var visible = mbLayer.getVisible();
-            canvas.style.display = visible ? 'block' : 'none';
-
-            var opacity = mbLayer.getOpacity();
-            canvas.style.opacity = opacity;
-
-            // adjust view parameters in mapbox
-            var rotation = frameState.viewState.rotation;
-            if (rotation) {
-              mbMap.rotateTo(-rotation * 180 / Math.PI, {
-                animate: false
-              });
-            }
-            var center = ol.proj.toLonLat(view.getCenter(),
-                view.getProjection());
-            var zoom = view.getZoom() + ZOOM_OFFSET;
-            mbMap.jumpTo({
-              center: center,
-              zoom: zoom,
-              animate: false
-            });
-
-            // cancel the scheduled update & trigger synchronous redraw
-            // see https://github.com/mapbox/mapbox-gl-js/issues/7893#issue-408992184
-            // NOTE: THIS MIGHT BREAK WHEN UPDATING MAPBOX
-            if (mbMap._frame) {
-              mbMap._frame.cancel();
-              mbMap._frame = null;
-            }
-            mbMap._render();
-
-            return canvas;
-          }
-        });
-        mbLayer.getFeaturesScreenPosition = function(screenPosition) {
-          return mbMap.queryRenderedFeatures(screenPosition);
-        };
-        mbLayer.setStyle = function(style) {
-          mbMap.setStyle(style);
-        };
         // useful for BackgroundService
         mbLayer.mapboxLayer = true;
         // mimicing LayersService output
@@ -333,9 +458,9 @@ goog.require('ga_browsersniffer_service');
       return deferred.promise;
     }
 
-    function getFeatures(screenPosition) {
+    function getFeaturesUnderMousePointer() {
       if (mbLayer) {
-        return mbLayer.getFeaturesScreenPosition(screenPosition);
+        return mbLayer.getFeaturesUnderMousePointer();
       } else {
         return [];
       }
@@ -352,7 +477,7 @@ goog.require('ga_browsersniffer_service');
       switchToStyleAtIndex: switchToStyleAtIndex,
       hideVectorTileLayers: hideVectorTileLayers,
       showVectorTileLayers: showVectorTileLayers,
-      getFeatures: getFeatures,
+      getFeaturesUnderMousePointer: getFeaturesUnderMousePointer,
       init: init
     };
   };
