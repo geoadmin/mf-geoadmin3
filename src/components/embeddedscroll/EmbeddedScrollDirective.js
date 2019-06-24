@@ -30,7 +30,7 @@ goog.provide('ga_embedded_scroll_directive');
               }, 2500);
             };
             // handling mouse zoom event
-            document.body.addEventListener('wheel', function(event) {
+            document.addEventListener('wheel', function(event) {
               if (!event.ctrlKey) {
                 datetimeLastAction = $window.moment();
                 $rootScope.$emit('gaShowEmbeddedOverlay',
@@ -45,7 +45,7 @@ goog.provide('ga_embedded_scroll_directive');
             // when bubbling the ctrl+wheel event, we don't want the webpage
             // embedding our map to be resized so we need to stop the event
             // at the iframe level
-            document.body.addEventListener('wheel', function(event) {
+            document.addEventListener('wheel', function(event) {
               if (event.ctrlKey) {
                 datetimeLastAction = null;
                 $rootScope.$emit('gaHideEmbeddedOverlay');
@@ -53,23 +53,34 @@ goog.provide('ga_embedded_scroll_directive');
                 event.stopPropagation();
                 return false;
               }
-            }, false);
+            }, {
+              passive: false
+            });
+
+            var lastTouchWasWithMultipleFingers = false;
             // handling touch event (mobile devices)
-            document.body.addEventListener('touchstart', function(touchEvent) {
+            window.addEventListener('touchstart', function(touchEvent) {
+              lastTouchWasWithMultipleFingers = touchEvent.touches.length > 1;
               // if one finger gesture, show overlay
-              if (touchEvent.touches.length <= 1) {
+              if (!lastTouchWasWithMultipleFingers) {
+                touchEvent.stopPropagation();
                 datetimeLastAction = $window.moment();
                 $rootScope.$emit('gaShowEmbeddedOverlay',
                     $translate.instant('embedded_touch_hint'));
                 hideAfterAWhileIfSameDatetime(datetimeLastAction);
               } else {
                 $rootScope.$emit('gaHideEmbeddedOverlay');
-                // preventing two fingers zoom gesture to be transmitted
-                // to embedding parent so that the webpage isn't zoomed
-                touchEvent.preventDefault();
-                return false;
               }
-            });
+              // preventing two fingers zoom gesture to be transmitted
+              // to embedding parent so that the webpage isn't zoomed
+              touchEvent.preventDefault();
+            }, { passive: false, capture: true });
+            window.addEventListener('touchmove', function (touchMoveEvent) {
+              if (!lastTouchWasWithMultipleFingers) {
+                touchMoveEvent.preventDefault();
+                touchMoveEvent.stopPropagation();
+              }
+            }, { passive: false, capture: true })
           }
         };
       });
