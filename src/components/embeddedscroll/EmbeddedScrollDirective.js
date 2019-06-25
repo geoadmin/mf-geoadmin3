@@ -75,7 +75,7 @@ goog.provide('ga_embedded_scroll_directive');
               // to embedding parent so that the webpage isn't zoomed
               touchEvent.preventDefault();
             }, { passive: false, capture: true });
-            window.addEventListener('touchmove', function (touchMoveEvent) {
+            window.addEventListener('touchmove', function(touchMoveEvent) {
               if (!lastTouchWasWithMultipleFingers) {
                 touchMoveEvent.preventDefault();
                 touchMoveEvent.stopPropagation();
