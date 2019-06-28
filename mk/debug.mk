@@ -68,7 +68,7 @@ define buildpage
 		--var "tilegrid_origin"="$(TILEGRID_ORIGIN)" \
 		--var "tilegrid_resolutions"="$(TILEGRID_RESOLUTIONS)" \
 		--var "tilegrid_wmts_dflt_min_res"="$(TILEGRID_WMTS_DFLT_MIN_RES)" \
-		--var "staging"="$(DEPLOY_TARGET)" $< > $@
+		--var "staging"="$(STAGING)" $< > $@
 endef
 
 src/deps.js: $(SRC_JS_FILES) ${PYTHON_VENV}
@@ -86,17 +86,17 @@ src/style/app.css: $(SRC_LESS_FILES)
 src/index.html: src/index.mako.html appconfig \
 	    ${MAKO_CMD} \
 	    ${MAKO_LAST_VARIABLES}
-	$(call buildpage,desktop,,,,$(S3_SRC_BASE_PATH))
+	$(call buildpage,desktop,dev,,,$(S3_SRC_BASE_PATH))
 
 src/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    ${MAKO_LAST_VARIABLES}
-	$(call buildpage,mobile,,,,$(S3_SRC_BASE_PATH))
+	$(call buildpage,mobile,dev,,,$(S3_SRC_BASE_PATH),)
 
 src/embed.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    ${MAKO_LAST_VARIABLES}
-	$(call buildpage,embed,,,,$(S3_SRC_BASE_PATH))
+	$(call buildpage,embed,dev,,,$(S3_SRC_BASE_PATH))
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js \
 	    ${SRC_COMPONENTS_PARTIALS_FILES} \

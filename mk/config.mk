@@ -10,8 +10,11 @@ define moveto
 	done;
 endef
 
-# rc file used
-USER_SOURCE ?= rc_user
+
+# default staging is prod
+STAGING ?= prod
+# default rc file used is prod
+RUNTIME_CONFIGURATION_FILE ?= rc_prod
 
 # mf-geoadmin3 or mvt_clean
 PROJECT ?= mf-geoadmin3
@@ -168,7 +171,7 @@ ifeq ($(NODE_VERSION_COMPARISON),matches)
 else
 	# Big disclaimer as nvm tends to make build time plummet
 	FORCE_NODE_VERSION_IF_NEEDED= \
-		echo -e "\n\e[33m================================================================================\n \
+		@echo -e "\n\e[33m================================================================================\n \
 						Your node version doesn't match with the required version to build mf-geoadmin3 (\e[1m$(NODE_VERSION)\e[0m\e[33m).\n \
 						NVM will be used to force the required version during build, but this has a big impact on build performance.\n \
 						Please set your environment to use version \e[1m$(NODE_VERSION)\e[0m\e[33m of node.js for optimal build time\n \
