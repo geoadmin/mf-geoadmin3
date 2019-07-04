@@ -5,6 +5,9 @@ itemscope itemtype="http://schema.org/WebApplication"
 % if device == 'mobile' :
  manifest="geoadmin.${git_commit_short}.appcache"
 % endif
+% if device == 'embed' :
+  ga-embedded-scroll-event-handler
+% endif
 >
   <head>
     <!--![if !HTML5]>
@@ -187,7 +190,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div id="search-container" ng-controller="GaSearchController">
         <div ga-search ga-search-map="map" ga-search-options="options" ga-search-ol3d="::ol3d"></div>
       </div>
-
+      <div ga-embedded-scroll-overlay></div>
       <div ga-scale-line ga-scale-line-map="map" ng-show="!globals.is3dActive"></div>
   % endif
 
@@ -774,6 +777,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         if (localhostRegexp.test(wmtsUrl)){
            wmtsUrl = wmtsUrl.replace('https:', 'http:');
         }
+        var embeddedWithInteractions = getParam('embedded_with_interactions') || false;
         module.constant('gaGlobalOptions', {
           //dev3d to be removed once 3d goes live
           dev3d: true,
@@ -821,6 +825,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           apiOverwrite: apiOverwrite,
           configOverwrite: configOverwrite,
           disableTooltip: disableTooltip,
+          embeddedWithInteractions: embeddedWithInteractions,
 
           // Map state values
           defaultExtent: JSON.parse(${default_extent}),

@@ -486,5 +486,7 @@
   "layer_cant_be_printed": "",
   "print_request_too_large": "",
   "whatsapp_tooltip": "",
-  "try_test_viewer": ""
+  "try_test_viewer": "",
+  "embedded_scroll_hint": "",
+  "embedded_touch_hint": ""
 }

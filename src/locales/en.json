@@ -142,6 +142,8 @@
 "emapis_service_link_href": "mailto:info@blw.admin.ch",
 "emapis_service_link_label": "info@blw.admin.ch",
 "embed_map": "Embed map",
+"embedded_scroll_hint": "Use ctrl + scroll to zoom the map",
+"embedded_touch_hint": "Use two fingers to move the map",
 "energie": "Energy",
 "energie_service_link_href": "http://www.bfe.admin.ch/geoinformation/index.html?lang=en",
 "energie_service_link_label": "www.map.energy.admin.ch",
