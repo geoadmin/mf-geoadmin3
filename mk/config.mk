@@ -40,7 +40,7 @@ PYTHON_FILES := $(shell find scripts test/saucelabs -type f -name "*.py" -print)
 # Apache variables
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
 LAST_APACHE_BASE_DIRECTORY := $(call lastvalue,apache-base-directory)
-APACHE_BASE_PATH ?= $(ifneq ($(USER_NAME) "root") /$(USER_NAME))
+APACHE_BASE_PATH ?= $(shell if [ "${USER_NAME}" = "root" ]; then echo "/"; else echo "/$(USER_NAME)"; fi;)
 LAST_APACHE_BASE_PATH := $(call lastvalue,apache-base-path)
 
 # Local server

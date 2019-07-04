@@ -95,6 +95,7 @@ help:
 	@echo "Variables:"
 	@echo
 	@echo "- PROJECT                     (current value: ${PROJECT})"
+	@echo "- USER_NAME                   (current value: ${USER_NAME})"
 	@echo "- API_URL Service URL         (build with: $(LAST_API_URL), current value: $(API_URL))"
 	@echo "- CONFIG_URL Service URL      (build with: $(LAST_CONFIG_URL), current value: $(CONFIG_URL))"
 	@echo "- ALTI_URL Alti service URL   (build with: $(LAST_ALTI_URL), current value: $(ALTI_URL))"
