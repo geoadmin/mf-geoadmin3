@@ -711,25 +711,14 @@ itemscope itemtype="http://schema.org/WebApplication"
         // dev env variables
         <%include file="../config.prod.mako"/>
 
-        // Because s3 is hosted on infra
-        var supportedEnv = ['dev', 'int', 'prod', 'ci'];
+        var supportedEnv = ['dev', 'int', 'prod'];
         var requestedStaging = getParam('staging') ;
-        var staging = 'prod';
-        var cfg = configs['prod'];
-        if (!requestedStaging || Object.keys(configs).indexOf(requestedStaging) < 0) {
-          var res = /.*\.(dev|int|ci|infra|prod)\.bgdi\.ch$/.exec(location.hostname);
-          if (res && res.length > 0) {
-            if (Object.keys(configs).indexOf(res[1]) !== -1) {
-              staging = res[1];
-            } 
-          }  
-        } else {
+        var staging = '${staging}';
+        if (requestedStaging) {
             staging = requestedStaging;
         }
+        var cfg = configs[staging];
 
-        // Use 'prod' setting per default
-        var cfg = Object.assign(cfg, configs[staging]);
-        
         var adminUrlRegexp = new RegExp(cfg['admin_url_regexp']);
         var module = angular.module('geoadmin');
         var cacheAdd = cfg['version'] != '' ? '/' + cfg['version'] : '';

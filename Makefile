@@ -9,13 +9,9 @@
 .PHONY: all
 all: showVariables lint debug release dist apache testdebug testrelease fixrights
 
-.PHONY: user
-user: env .build-artefacts/requirements.timestamp
-	make appconfig && source $(USER_SOURCE) && make src/config.dev.mako all
-
 .PHONY: build
-build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) appconfig apache debug release dist
-
+build: guard-STAGING env .build-artefacts/requirements.timestamp appconfig
+	source $(RUNTIME_CONFIGURATION_FILE) && $(MAKE) src/config.$(STAGING).mako all
 
 .PHONY: .build-artefacts/nvm-version
 .build-artefacts/nvm-version: .build-artefacts/last-nvm-version
@@ -33,17 +29,25 @@ endif
 env: .build-artefacts/nvm-version .build-artefacts/node-version
 	source $(HOME)/.bashrc && source ${NVM_DIR}/nvm.sh && nvm use $(NODE_VERSION)
 
+.PHONY: user
+user:
+	RUNTIME_CONFIGURATION_FILE=rc_user;
+	$(MAKE) build STAGING=dev
+
 .PHONY: dev
 dev:
-	make build
+	RUNTIME_CONFIGURATION_FILE=rc_dev;
+	$(MAKE) build STAGING=dev
 
 .PHONY: int
 int:
-	make build
+	RUNTIME_CONFIGURATION_FILE=rc_int;
+	$(MAKE) build STAGING=int
 
 .PHONY: prod
 prod:
-	make build
+	RUNTIME_CONFIGURATION_FILE=rc_prod;
+	$(MAKE) build STAGING=prod
 
 # Include the handling of last values for specific variables
 # (everything like .build-artefacts/last-VARNAME

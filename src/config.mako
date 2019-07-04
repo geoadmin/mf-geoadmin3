@@ -20,7 +20,7 @@
 
 %>
 
-       configs["${context['staging']}"] = 
+       configs["${context['mode']}"] = 
        {
        % for key in [k for k in sorted(context.keys()) if k not in ['capture', 'self', 'caller', 'function', 'local'] ]:
          "${key}": ${context[key]| quoting },
