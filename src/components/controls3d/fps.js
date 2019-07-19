@@ -348,8 +348,8 @@ FPS.prototype.getTimeDifference_ = function() {
  * @return {!Cesium.Cartesian3}
  * @private
  */
-FPS.prototype.clampAboveTerrain_ = function(gpos, minHeight, optMaxHeight,
-    cameraHeading) {
+FPS.prototype.clampAboveTerrain_ = function(gpos, minHeight, cameraHeading,
+    optMaxHeight) {
   var lla = this.ellipsoid_.cartesianToCartographic(gpos),
     lla25MetersAhead = this.ellipsoid_.cartesianToCartographic(gpos);
   // projecting 25m ahead in the camera direction to check altitude
@@ -472,7 +472,7 @@ FPS.prototype.manTick_ = function(delta) {
     this.camera_.moveBackward(moveAmount);
   }
 
-  var gpos = this.clampAboveTerrain_(this.camera_.position, 2, 2, heading);
+  var gpos = this.clampAboveTerrain_(this.camera_.position, 2, heading, 2);
 
   this.camera_.setView({
     destination: gpos,
