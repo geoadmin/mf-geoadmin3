@@ -64,8 +64,7 @@ help:
 	@echo "----------------------------------------------------------------------------------------------------------"
 	@echo
 	@echo "- configs/              Generate layersconfig from API_URL=${API_URL} (current value)                            "
-	@echo "- s3uploadconfigint     Upload current config as $(LAYERSCONFIG_VERSION) to int bucket (as defined by S3_MF_GEOADMIN3_INT=$(S3_MF_GEOADMIN3_INT))"
-	@echo "- s3uploadconfigprod    Upload current config as $(LAYERSCONFIG_VERSION) to prod bucket (as defined by S3_MF_GEOADMIN3_PROD=$(S3_MF_GEOADMIN3_PROD))"
+	@echo "- s3uploadconfig        Upload current config as $(LAYERSCONFIG_VERSION) to int and prod bucket (as defined by S3_MF_GEOADMIN3_INT=$(S3_MF_GEOADMIN3_INT) and S3_MF_GEOADMIN3_PROD=$(S3_MF_GEOADMIN3_PROD))"
 	@echo "- s3listconfigint       List all available configs from int bucket (as defined by S3_MF_GEOADMIN3_INT=$(S3_MF_GEOADMIN3_INT))"
 	@echo "- s3listconfigprod      List all available configs from prod bucket (as defined by S3_MF_GEOADMIN3_PROD=$(S3_MF_GEOADMIN3_PROD))"
 	@echo "- s3currentconfigint    Show current active version on int bucket (as defined by S3_MF_GEOADMIN3_INT=$(S3_MF_GEOADMIN3_INT))"

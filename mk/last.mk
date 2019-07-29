@@ -11,6 +11,7 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 	mkdir -p .build-artefacts
 	virtualenv --no-site-packages $@
 	${PIP_CMD} install --index-url ${PYPI_URL} -U pip setuptools
+	$(MAKE) .build-artefacts/requirements.timestamp
 
 
 .build-artefacts/last-version::
