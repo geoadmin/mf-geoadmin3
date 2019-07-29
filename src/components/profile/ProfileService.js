@@ -41,7 +41,7 @@ goog.require('ga_urlutils_service');
 
     // Utils functions
     var createArea = function(domain, height, elevationModel) {
-      return d3.area().x(function(d) {
+      return d3.area().curve(d3.curveBasis).x(function(d) {
         return domain.X(d.domainDist);
       }).y0(height).y1(function(d) {
         return domain.Y(d.alts[elevationModel]);
@@ -296,7 +296,7 @@ goog.require('ga_urlutils_service');
           var data = $.param({
             geom: wkt,
             elevation_models: elevationModel,
-            offset: 1
+            offset: 0
           });
 
           var config = {
