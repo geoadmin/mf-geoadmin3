@@ -1,58 +1,70 @@
 /* DIEMO */
+
+@diemo_green: rgb(49,169,80);
+@diemo_red: rgb(245,6,58);
+@diemo_yellow: rgb(233,188,114);
+@diemo_grey: rgb(130,131,133);
+@diemo_lightgrey: #efefef;
+
 div.evse_data {
   display: table;
   padding-bottom: 10px;
   width: 100%;
 }
 
-div.station_data{
-  width: 300px;
-}
+.htmlpopup-container .htmlpopup-content {
+  .station_data {
+    width: 300px;
+    td {
+     width: 40%;
+    }
+    td.cell-left {
+      width: 30%;
+    }
+  }
+  .diemo_evse {
+    border-collapse: collapse;
+    margin: 5px;
+    width: 30%;
+    float: left;
 
-div.station_data td{
-  width: 40%;
-}
-
-.htmlpopup-container .htmlpopup-content table.diemo_evse {
-  border-collapse: collapse;
-  margin: 5px;
-  width: 30%;
-  float: left;
-}
-
-table.diemo_evse td, table.diemo_evse th{
-  display: table-cell;
-  border-width : 2px;
-  border-style : solid;
-  padding: 2px;
-  text-align: center;
-  border-color: rgb(130,131,133);
-}
-
-table.diemo_evse th{
-  background-color:rgb(130,131,133);
-  color: white;
-  height: 30px;
-}
-
-.status_Occupied {
-  border-color : rgb(245,6,58) !important;
-}
-
-.status_Reserved {
-  border-color: rgb(233,188,114) !important;
-}
-
-.status_Available {
-  border-color: rgb(49,169,80) !important;
-}
-
-th.status_Occupied {
-  background-color:rgb(245,6,58) !important;
-}
-th.status_Reserved {
-  background-color:rgb(233,188,114) !important;
-}
-th.status_Available {
-  background-color: rgb(49,169,80) !important;
+    td, th {
+      display: table-cell;
+      border-width : 2px;
+      border-style : solid;
+      padding: 2px;
+      text-align: center;
+      border-color: @diemo_grey;
+    }
+    th {
+      background-color:@diemo_grey;
+      color: white;
+      height: 30px;
+    }
+    th.status_Occupied {
+      background-color:@diemo_red;
+    }
+    th.status_Reserved {
+      background-color:@diemo_yellow;
+    }
+    th.status_Available {
+      background-color: @diemo_green;
+    }
+    th.status_Unkown {
+      background-color: @diemo_lightgrey;
+      color: black;
+    }
+    .status_Occupied {
+      border-color : @diemo_red;
+    }
+    .status_Reserved {
+      border-color: @diemo_yellow;
+    }
+    .status_Available {
+      border-color: @diemo_green;
+    }
+    .status_Unkown {
+      border-color: @diemo_lightgrey;
+    }
+  }
 }
