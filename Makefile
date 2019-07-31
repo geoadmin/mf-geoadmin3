@@ -31,23 +31,19 @@ env: .build-artefacts/nvm-version .build-artefacts/node-version
 
 .PHONY: user
 user:
-	RUNTIME_CONFIGURATION_FILE=rc_user;
-	$(MAKE) build STAGING=dev
+	$(MAKE) build STAGING=dev RUNTIME_CONFIGURATION_FILE=rc_user
 
 .PHONY: dev
 dev:
-	RUNTIME_CONFIGURATION_FILE=rc_dev;
-	$(MAKE) build STAGING=dev
+	$(MAKE) build STAGING=dev RUNTIME_CONFIGURATION_FILE=rc_dev
 
 .PHONY: int
 int:
-	RUNTIME_CONFIGURATION_FILE=rc_int;
-	$(MAKE) build STAGING=int
+	$(MAKE) build STAGING=int RUNTIME_CONFIGURATION_FILE=rc_int
 
 .PHONY: prod
 prod:
-	RUNTIME_CONFIGURATION_FILE=rc_prod;
-	$(MAKE) build STAGING=prod
+	$(MAKE) build STAGING=prod RUNTIME_CONFIGURATION_FILE=rc_prod
 
 # Include the handling of last values for specific variables
 # (everything like .build-artefacts/last-VARNAME
