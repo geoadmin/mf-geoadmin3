@@ -171,7 +171,7 @@ node(label: 'jenkins-slave') {
       def targets = ['int']
       // Unofortunately, bucket <dev> doesn't not exist for 'mvt'
       if (isGitMaster && project == 'mf-geoadmin3') {
-        targets.push('dev']
+        targets.push('dev')
       }
       for (target in targets) {
         echo 'Activating on ' + target
