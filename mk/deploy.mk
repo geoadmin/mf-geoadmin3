@@ -77,8 +77,7 @@ s3deploybranch: guard-CLONEDIR \
 	make s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
 	                  DEPLOY_TARGET=${DEPLOY_TARGET} \
 	                  NAMED_BRANCH=${NAMED_BRANCH} \
-	                  PROJECT=${PROJECT} \
-	                  $(shell if [ ${FORCE} = "true" ]; then echo "--force"; fi)
+	                  PROJECT=${PROJECT}
 
 .PHONY: s3deploybranchint
 s3deploybranchint:
