@@ -10,6 +10,7 @@ node(label: 'jenkins-slave') {
 
   // If it's a branch
   def deployGitBranch = env.BRANCH_NAME
+  def isGitMaster = deployGitBranch == 'mvt_clean' || deployGitBranch == 'master'
 
   // If it's a PR
   if (env.CHANGE_ID) {
@@ -58,42 +59,41 @@ node(label: 'jenkins-slave') {
     // Different project --> different targets
     stage('Deploy dev/int/prod') {
       echo 'Deploying  project <' + project + '>'
-      
+      def makeTargetForDeployIntDev = 's3deploy' + (isGitMaster ? '' : 'branch')
       parallel (
-       'dev': {
-         // Project mf-geoadmin3/legacy
-         // Script s3copybranch set bucket to deploy to base on project name (see above)
-         if (project == 'mf-geoadmin3') {
-           stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=dev DEPLOY_GIT_BRANCH=' + deployGitBranch
-           echo stdout
-        // Project 'mvt/vib2d' has no bucket for <dev>
-         } else if (project == 'mvt'){
-           echo 'project <' + project + '> has no target <dev>. Skipping stage.'
-         }
-       },
-       // Both projects 'mvt' and 'mf-geoadmin3' are deployable to <int>
-       // All branches, including 'master' and 'mvt_clean' (which is 'master' for 'mvt')
-       // are deployed to <int>
-       'int': {
-           stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
-           echo stdout
-           def lines = stdout.readLines()
-           deployedVersion = lines.get(lines.size()-5)
+        'dev': {
+          // deploy any master branch on dev
+          if (isGitMaster) {
+            if (project == 'mf-geoadmin3') {
+              stdout = sh returnStdout: true, script: 'make ' + makeTargetForDeployIntDev + ' DEPLOY_TARGET=dev FORCE=true PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
+              echo stdout
+            // Project 'mvt/vib2d' has no bucket for <dev>
+            } else if (project == 'mvt'){
+              echo 'project <' + project + '> has no target <dev>. Skipping stage.'
+            }
+          }
+        },
+        // deploy anything to int (branches for PR, or master for deploy day)
+        'int': {
+          stdout = sh returnStdout: true, script: 'make ' + makeTargetForDeployIntDev + ' DEPLOY_TARGET=int FORCE=true PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
+          echo stdout
+          def lines = stdout.readLines()
+          deployedVersion = lines.get(lines.size()-5)
           s3VersionPath = lines.get(lines.size()-3)
           e2eTargetUrl = lines.get(lines.size()-1)
-       },
-       'prod': {
-       // Both projects 'mvt' and 'mf-geoadmin3' are deployable to <prod>,
-       // but only the 'master' branches for both projects ('master' for mf-geoadmin3, 'mvt_clean' for mvt/vib2d) 
-         if (deployGitBranch == 'mvt_clean' || deployGitBranch == 'master') {
-           stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=prod DEPLOY_GIT_BRANCH=' + deployGitBranch
-           echo stdout
-           } else {
+        },
+        'prod': {
+          // Both projects 'mvt' and 'mf-geoadmin3' are deployable to <prod>,
+          // but only the 'master' branches for both projects ('master' for mf-geoadmin3, 'mvt_clean' for mvt/vib2d) 
+          if (isGitMaster) {
+            stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=prod DEPLOY_GIT_BRANCH=' + deployGitBranch
+            echo stdout
+          } else {
             echo 'Won\'t deploy branch <' + deployGitBranch + '> to production. Skipping stage'
-         }
-       }
+          }
+        }
       )
-    }  
+    }
     //It's a PR
     if (env.CHANGE_ID) {
       // Add the test link in the PR on GitHub
@@ -168,12 +168,10 @@ node(label: 'jenkins-slave') {
     stage('Activate dev/int') {
       echo 'Project <' + project + '>'
       echo 'Activating the new version <' + deployedVersion + ' of branch  <' + deployGitBranch + '>'
-      def targets = []
+      def targets = ['int']
       // Unofortunately, bucket <dev> doesn't not exist for 'mvt'
-      if (project == 'mf-geoadmin3') {
-        targets = ['dev', 'int']
-      } else if (project == 'mvt'){
-        targets = ['int']
+      if (isGitMaster && project == 'mf-geoadmin3') {
+        targets.push('dev']
       }
       for (target in targets) {
         echo 'Activating on ' + target
