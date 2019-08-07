@@ -78,9 +78,9 @@ node(label: 'jenkins-slave') {
           stdout = sh returnStdout: true, script: 'make ' + makeTargetForDeployIntDev + ' DEPLOY_TARGET=int FORCE=true PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
           echo stdout
           def lines = stdout.readLines()
-          deployedVersion = lines.get(lines.size()-5)
-          s3VersionPath = lines.get(lines.size()-3)
-          e2eTargetUrl = lines.get(lines.size()-1)
+          deployedVersion = lines.get(lines.size() - 6)
+          s3VersionPath = lines.get(lines.size() - 4)
+          e2eTargetUrl = lines.get(lines.size() - 2)
         },
         'prod': {
           // Both projects 'mvt' and 'mf-geoadmin3' are deployable to <prod>,
