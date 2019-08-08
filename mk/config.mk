@@ -138,7 +138,6 @@ DEFAULT_ELEVATION_MODEL ?= COMB
 KEEP_VERSION ?= false
 LAST_VERSION = $(call lastvalue,version)
 VERSION := $(shell if [ $(KEEP_VERSION) = true ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo '$(LAST_VERSION)'; else date '+%y%m%d%H%M'; fi)
-NAMED_BRANCH ?= true
 DEEP_CLEAN ?= false
 NVM_VERSION ?= v0.33.8
 LAST_NVM_VERSION := $(call lastvalue,nvm-version)

@@ -459,13 +459,11 @@ def list_cmd(bucket_name, branch, legacy=False):
 @click.option('--url', 'bucket_url', help='Bucket url to check', required=True)
 @click.argument('snapshotdir', required=True, default=os.getcwd())
 @click.argument('bucket_name', required=True)
-@click.argument('named_branch', required=False, default=False)
 @click.argument('git_branch', required=False)
-def upload_cmd(force, snapshotdir, named_branch, bucket_name, git_branch, bucket_url):
+def upload_cmd(force, snapshotdir, bucket_name, git_branch, bucket_url):
     """Upload content of /dist directory to a bucket. You may specify a directory (it defaults to current)."""
     global s3, s3client, bucket
     s3, s3client, bucket = __init_connection__(bucket_name)
-    named_branch = True if named_branch == 'true' else False
     base_dir = os.path.abspath(snapshotdir)
     if not os.path.isdir(base_dir):
         print('No code found in directory %s' % base_dir)

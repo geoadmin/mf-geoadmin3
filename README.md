@@ -150,13 +150,7 @@ To manually build the current branch and upload it to AWS S3 int, use:
 After the first clone, dev dependencies are not removed when uploading a branch
 to S3. If you want to also remove the dev depedencies, use:
 
-    make s3deploybranch DEEP_CLEAN=true
-
-Per default, branches are overwritten on S3 when deployed on integration.
-If you want to change this behaviour and create a new version of the deployed branch,
-use the following command:
-
-    make s3deploybranch NAMED_BRANCH=false
+    make s3deploy DEEP_CLEAN=true
 
 If the project builds and the tests are passing, then, files will be uploaded to a directory:
 
@@ -176,23 +170,15 @@ Metadata to a build are available next to the index.html, as info.json
 
 #### Deploying to dev
 
-    make s3copybranch  DEPLOY_TARGET=dev DEPLOY_GIT_BRANCH=<my branch>
+    make s3copybranch DEPLOY_TARGET=dev DEPLOY_GIT_BRANCH=<my branch>
 
 will create a snapshot and output a snapshot version. (uses Apache)
 
 #### Deploying to int
 
-    make s3copybranch  DEPLOY_TARGET=int DEPLOY_GIT_BRANCH=<my branch>
+    make s3deploy DEPLOY_TARGET=int
 
-
-Use the KEEP_VERSION option to generate a new version
-
-     make s3deployint SNAPSHOT=123456 KEEP_VERSION=false
-
-will deploy the snapshot to AWS S3 in the int bucket. It will output a S3 URL.
-Take the version and use the following command to activate the version.
-
-    make s3activateint S3_VERSION_PATH=<DEPLOY_GIT_BRANCH>/<EPOCH_BUILD>
+will create a snapshot and activate it, a link to the deployed branch will be in the output.
 
 #### Deploying to prod
 
