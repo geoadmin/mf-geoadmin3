@@ -22,7 +22,6 @@ CLONEDIR=${@:$OPTIND:1}
 DEPLOY_TARGET=${@:$OPTIND+1:1}
 DEPLOY_GIT_BRANCH=${@:$OPTIND+2:1}
 DEEP_CLEAN=${@:$OPTIND+3:1}
-NAMED_BRANCH=${@:$OPTIND+4:1}
 
 # Remove the clone folder
 if [ $DEEP_CLEAN == true ]; then
@@ -44,5 +43,5 @@ else
 fi
 
 # Build the app with correct parameter
-make $DEPLOY_TARGET  NAMED_BRANCH=$NAMED_BRANCH
+make $DEPLOY_TARGET
 

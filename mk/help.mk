@@ -112,6 +112,7 @@ help:
 	@echo "- LAYERSCONFIG_VERSION        (build with: $(LAST_LAYERSCONFIG_VERSION), current value: $(LAYERSCONFIG_VERSION))"
 	@echo "- SNAPSHOT                    (current value: $(SNAPSHOT))"
 	@echo "- DEPLOY_GIT_BRANCH           (current value: $(DEPLOY_GIT_BRANCH))"
+	@echo "- IS_MASTER_BRANCH            (current value: ${IS_MASTER_BRANCH})"
 	@echo "- GIT_COMMIT_HASH             (current value: $(GIT_COMMIT_HASH))"
 	@echo "- VARNISH_HOSTS               (current value: ${VARNISH_HOSTS})"
 	@echo "- DEPLOY_TARGET               (current value: ${DEPLOY_TARGET})"

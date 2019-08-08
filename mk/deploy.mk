@@ -11,7 +11,9 @@ CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
 CODE_DIR ?= .
 S3_BASE_PATH ?=
 S3_SRC_BASE_PATH ?=
-ifeq ($(NAMED_BRANCH), false)
+
+IS_MASTER_BRANCH = $(shell if [ ${DEPLOY_GIT_BRANCH} = "master" ] || [ ${DEPLOY_GIT_BRANCH} = "mvt_clean"]; then echo "true"; else echo "false"; fi)
+ifeq (IS_MASTER_BRANCH, true)
 	SHA := $(shell git rev-parse HEAD | cut -c1-7)
 	S3_BASE = /$(DEPLOY_GIT_BRANCH)/$(SHA)/$(VERSION)
 	S3_BASE_PATH = $(S3_BASE)/
@@ -53,40 +55,23 @@ ifeq ($(DEPLOY_TARGET),prod)
 	S3_BUCKET_URL := $(S3_BUCKET_PROD_URL)
 endif
 
-.PHONY: deploydev
-deploydev:
-	@ if test $(SNAPSHOT) = true; then \
-		./scripts/deploydev.sh -s; \
-	else \
-		./scripts/deploydev.sh; \
-	fi
-
 s3deploy := $(patsubst %,s3deploy%,int,prod)
 PHONY: $(s3deploy)
-s3deploy%: guard-SNAPSHOT .build-artefacts/requirements.timestamp
-	./scripts/deploysnapshot.sh $(SNAPSHOT) $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
-
-s3deploybranch: guard-CLONEDIR \
-                guard-DEPLOY_TARGET \
-                guard-DEPLOY_GIT_BRANCH \
-                guard-DEEP_CLEAN \
-                guard-NAMED_BRANCH \
-                .build-artefacts/requirements.timestamp \
-                showVariables
-	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
+s3deploy%: guard-CLONEDIR \
+           guard-DEPLOY_TARGET \
+           guard-DEPLOY_GIT_BRANCH \
+           guard-DEEP_CLEAN \
+           guard-IS_MASTER_BRANCH \
+           .build-artefacts/requirements.timestamp \
+           showVariables
+	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${IS_MASTER_BRANCH};
 	make s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
 	                  DEPLOY_TARGET=${DEPLOY_TARGET} \
-	                  NAMED_BRANCH=${NAMED_BRANCH} \
 	                  PROJECT=${PROJECT}
-
-.PHONY: s3deploybranchint
-s3deploybranchint:
-	make s3deploybranch DEPLOY_TARGET=int
 
 .PHONY: s3copybranch
 s3copybranch: guard-S3_BUCKET \
               guard-CODE_DIR \
-              guard-NAMED_BRANCH \
               guard-DEPLOY_GIT_BRANCH \
               .build-artefacts/requirements.timestamp
 	PROJECT=${PROJECT} ${PYTHON_CMD} ./scripts/s3manage.py upload \
@@ -94,7 +79,6 @@ s3copybranch: guard-S3_BUCKET \
 	                                                       --url $(S3_BUCKET_URL) \
 	                                                       ${CODE_DIR} \
 	                                                       ${S3_BUCKET} \
-	                                                       ${NAMED_BRANCH} \
 	                                                       ${DEPLOY_GIT_BRANCH};
 
 s3list := $(patsubst %,s3list%,int,prod)

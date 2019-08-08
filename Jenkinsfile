@@ -6,7 +6,6 @@ node(label: 'jenkins-slave') {
   def stdout
   def s3VersionPath
   def e2eTargetUrl
-  def deployTarget = 'int'
 
   // If it's a branch
   def deployGitBranch = env.BRANCH_NAME
@@ -59,13 +58,12 @@ node(label: 'jenkins-slave') {
     // Different project --> different targets
     stage('Deploy dev/int/prod') {
       echo 'Deploying  project <' + project + '>'
-      def makeTargetForDeployIntDev = 's3deploy' + (isGitMaster ? '' : 'branch')
       parallel (
         'dev': {
           // deploy any master branch on dev
           if (isGitMaster) {
             if (project == 'mf-geoadmin3') {
-              stdout = sh returnStdout: true, script: 'make ' + makeTargetForDeployIntDev + ' DEPLOY_TARGET=dev FORCE=true PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
+              stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=dev FORCE=true PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
               echo stdout
             // Project 'mvt/vib2d' has no bucket for <dev>
             } else if (project == 'mvt'){
@@ -75,7 +73,7 @@ node(label: 'jenkins-slave') {
         },
         // deploy anything to int (branches for PR, or master for deploy day)
         'int': {
-          stdout = sh returnStdout: true, script: 'make ' + makeTargetForDeployIntDev + ' DEPLOY_TARGET=int FORCE=true PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
+          stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=int FORCE=true PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
           echo stdout
           def lines = stdout.readLines()
           deployedVersion = lines.get(lines.size() - 6)
