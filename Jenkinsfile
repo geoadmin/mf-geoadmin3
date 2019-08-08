@@ -61,23 +61,27 @@ node(label: 'jenkins-slave') {
       parallel (
         // as we are using clonebuild (beneath s3deploy) for both dev and int, we can't build concurently
         'dev/int': {
-          // deploy any master branch on dev
-          if (isGitMaster) {
-            if (project == 'mf-geoadmin3') {
-              stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=dev PROJECT='+ project
-              echo stdout
-            // Project 'mvt/vib2d' has no bucket for <dev>
-            } else if (project == 'mvt'){
-              echo 'project <' + project + '> has no target <dev>. Skipping stage.'
+          stage('dev') {
+            // deploy any master branch on dev
+            if (isGitMaster) {
+              if (project == 'mf-geoadmin3') {
+                stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=dev PROJECT='+ project
+                echo stdout
+              // Project 'mvt/vib2d' has no bucket for <dev>
+              } else if (project == 'mvt'){
+                echo 'project <' + project + '> has no target <dev>. Skipping stage.'
+              }
             }
           }
-          // deploy anything to int (branches for PR, or master for deploy day)
-          stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=int PROJECT='+ project + (isGitMaster ? '' : ' DEPLOY_GIT_BRANCH=' + deployGitBranch)
-          echo stdout
-          def lines = stdout.readLines()
-          deployedVersion = lines.get(lines.size() - 6)
-          s3VersionPath = lines.get(lines.size() - 4)
-          e2eTargetUrl = lines.get(lines.size() - 2)
+          stage('int') {
+            // deploy anything to int (branches for PR, or master for deploy day)
+            stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=int PROJECT='+ project + (isGitMaster ? '' : ' DEPLOY_GIT_BRANCH=' + deployGitBranch)
+            echo stdout
+            def lines = stdout.readLines()
+            deployedVersion = lines.get(lines.size() - 6)
+            s3VersionPath = lines.get(lines.size() - 4)
+            e2eTargetUrl = lines.get(lines.size() - 2)
+          }
         },
         'prod': {
           // Both projects 'mvt' and 'mf-geoadmin3' are deployable to <prod>,
