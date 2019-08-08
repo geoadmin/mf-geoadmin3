@@ -59,21 +59,20 @@ node(label: 'jenkins-slave') {
     stage('Deploy dev/int/prod') {
       echo 'Deploying  project <' + project + '>'
       parallel (
-        'dev': {
+        // as we are using clonebuild (beneath s3deploy) for both dev and int, we can't build concurently
+        'dev/int': {
           // deploy any master branch on dev
           if (isGitMaster) {
             if (project == 'mf-geoadmin3') {
-              stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=dev FORCE=true PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
+              stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=dev PROJECT='+ project
               echo stdout
             // Project 'mvt/vib2d' has no bucket for <dev>
             } else if (project == 'mvt'){
               echo 'project <' + project + '> has no target <dev>. Skipping stage.'
             }
           }
-        },
-        // deploy anything to int (branches for PR, or master for deploy day)
-        'int': {
-          stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=int FORCE=true PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
+          // deploy anything to int (branches for PR, or master for deploy day)
+          stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=int PROJECT='+ project + (isGitMaster ? '' : ' DEPLOY_GIT_BRANCH=' + deployGitBranch)
           echo stdout
           def lines = stdout.readLines()
           deployedVersion = lines.get(lines.size() - 6)
@@ -84,7 +83,7 @@ node(label: 'jenkins-slave') {
           // Both projects 'mvt' and 'mf-geoadmin3' are deployable to <prod>,
           // but only the 'master' branches for both projects ('master' for mf-geoadmin3, 'mvt_clean' for mvt/vib2d) 
           if (isGitMaster) {
-            stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project +   ' DEPLOY_TARGET=prod DEPLOY_GIT_BRANCH=' + deployGitBranch
+            stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project + ' DEPLOY_TARGET=prod'
             echo stdout
           } else {
             echo 'Won\'t deploy branch <' + deployGitBranch + '> to production. Skipping stage'

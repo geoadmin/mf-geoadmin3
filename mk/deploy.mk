@@ -78,7 +78,7 @@ s3copybranch: guard-S3_BUCKET \
 	                                                       --url $(S3_BUCKET_URL) \
 	                                                       ${CODE_DIR} \
 	                                                       ${S3_BUCKET} \
-	                                                       ${DEPLOY_GIT_BRANCH};
+	                                                       $(shell if [ ${IS_MASTER_BRANCH} = "false" ]; then echo ${DEPLOY_GIT_BRANCH}; fi)
 
 s3list := $(patsubst %,s3list%,int,prod)
 PHONY: $(s3list)
