@@ -66,6 +66,7 @@ s3deploy: guard-CLONEDIR \
 	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${IS_MASTER_BRANCH};
 	make s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
 	                  DEPLOY_TARGET=${DEPLOY_TARGET} \
+	                  DEPLOY_GIT_BRANCH=${DEPLOY_GIT_BRANCH}
 	                  PROJECT=${PROJECT}
 
 .PHONY: s3copybranch

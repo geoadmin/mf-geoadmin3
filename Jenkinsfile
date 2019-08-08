@@ -75,7 +75,7 @@ node(label: 'jenkins-slave') {
           };
           stage('int') {
             // deploy anything to int (branches for PR, or master for deploy day)
-            stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=int PROJECT='+ project + (isGitMaster ? '' : ' DEPLOY_GIT_BRANCH=' + deployGitBranch)
+            stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=int PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
             echo stdout
             def lines = stdout.readLines()
             deployedVersion = lines.get(lines.size() - 6)
