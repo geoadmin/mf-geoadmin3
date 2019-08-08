@@ -56,32 +56,17 @@ node(label: 'jenkins-slave') {
     }
     
     // Different project --> different targets
-    stage('Deploy dev/int/prod') {
+    stage('Deploy int/prod') {
       echo 'Deploying  project <' + project + '>'
       parallel (
-        // as we are using clonebuild (beneath s3deploy) for both dev and int, we can't build concurently
-        'dev/int': {
-          stage('dev') {
-            // deploy any master branch on dev
-            if (isGitMaster) {
-              if (project == 'mf-geoadmin3') {
-                stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=dev PROJECT='+ project
-                echo stdout
-              // Project 'mvt/vib2d' has no bucket for <dev>
-              } else if (project == 'mvt'){
-                echo 'project <' + project + '> has no target <dev>. Skipping stage.'
-              }
-            }
-          };
-          stage('int') {
-            // deploy anything to int (branches for PR, or master for deploy day)
-            stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=int PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
-            echo stdout
-            def lines = stdout.readLines()
-            deployedVersion = lines.get(lines.size() - 7)
-            s3VersionPath = lines.get(lines.size() - 5)
-            e2eTargetUrl = lines.get(lines.size() - 3)
-          };
+        'int': {
+          // deploy anything to int (branches for PR, or master for deploy day)
+          stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=int PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
+          echo stdout
+          def lines = stdout.readLines()
+          deployedVersion = lines.get(lines.size() - 7)
+          s3VersionPath = lines.get(lines.size() - 5)
+          e2eTargetUrl = lines.get(lines.size() - 3)
         },
         'prod': {
           // Both projects 'mvt' and 'mf-geoadmin3' are deployable to <prod>,
@@ -164,20 +149,11 @@ node(label: 'jenkins-slave') {
         }
       )
     }
-    // Activate all branches only on <dev> (which is only availabel to project 'mf-geoadmin3')
-    // and <int>
-    stage('Activate dev/int') {
+    // Activate all branches only on <int> 
+    stage('Activate int') {
       echo 'Project <' + project + '>'
       echo 'Activating the new version <' + deployedVersion + ' of branch  <' + deployGitBranch + '>'
-      def targets = ['int']
-      // Unofortunately, bucket <dev> doesn't not exist for 'mvt'
-      if (isGitMaster && project == 'mf-geoadmin3') {
-        targets.push('dev')
-      }
-      for (target in targets) {
-        echo 'Activating on ' + target
-        sh 'PROJECT=' + project + ' make s3activate' + target + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' VERSION=' + deployedVersion + ' FORCE=true'
-      }
+      sh 'PROJECT=' + project + ' make s3activateint DEPLOY_GIT_BRANCH=' + deployGitBranch + ' VERSION=' + deployedVersion + ' FORCE=true'
     }
 
   } catch(e) {
