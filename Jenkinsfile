@@ -78,9 +78,9 @@ node(label: 'jenkins-slave') {
             stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=int PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
             echo stdout
             def lines = stdout.readLines()
-            deployedVersion = lines.get(lines.size() - 6)
-            s3VersionPath = lines.get(lines.size() - 4)
-            e2eTargetUrl = lines.get(lines.size() - 2)
+            deployedVersion = lines.get(lines.size() - 7)
+            s3VersionPath = lines.get(lines.size() - 5)
+            e2eTargetUrl = lines.get(lines.size() - 3)
           };
         },
         'prod': {
