@@ -55,15 +55,14 @@ ifeq ($(DEPLOY_TARGET),prod)
 	S3_BUCKET_URL := $(S3_BUCKET_PROD_URL)
 endif
 
-s3deploy := $(patsubst %,s3deploy%,int,prod)
-PHONY: $(s3deploy)
-s3deploy%: guard-CLONEDIR \
-           guard-DEPLOY_TARGET \
-           guard-DEPLOY_GIT_BRANCH \
-           guard-DEEP_CLEAN \
-           guard-IS_MASTER_BRANCH \
-           .build-artefacts/requirements.timestamp \
-           showVariables
+PHONY: s3deploy
+s3deploy: guard-CLONEDIR \
+          guard-DEPLOY_TARGET \
+          guard-DEPLOY_GIT_BRANCH \
+          guard-DEEP_CLEAN \
+          guard-IS_MASTER_BRANCH \
+          .build-artefacts/requirements.timestamp \
+          showVariables
 	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${IS_MASTER_BRANCH};
 	make s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
 	                  DEPLOY_TARGET=${DEPLOY_TARGET} \
