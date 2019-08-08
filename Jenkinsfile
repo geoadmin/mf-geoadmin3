@@ -61,7 +61,7 @@ node(label: 'jenkins-slave') {
       parallel (
         // as we are using clonebuild (beneath s3deploy) for both dev and int, we can't build concurently
         'dev/int': {
-          stage('dev') {
+          node('dev') {
             // deploy any master branch on dev
             if (isGitMaster) {
               if (project == 'mf-geoadmin3') {
@@ -73,7 +73,7 @@ node(label: 'jenkins-slave') {
               }
             }
           }
-          stage('int') {
+          node('int') {
             // deploy anything to int (branches for PR, or master for deploy day)
             stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=int PROJECT='+ project + (isGitMaster ? '' : ' DEPLOY_GIT_BRANCH=' + deployGitBranch)
             echo stdout
