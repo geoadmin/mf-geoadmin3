@@ -145,7 +145,7 @@ Since March 2018, all branches are deployed by the CI to all three S3 staging bu
 
 To manually build the current branch and upload it to AWS S3 int, use:
 
-    make s3copybranch  DEPLOY_TARGET=int DEPLOY_GIT_BRANCH=<my branch>
+    make s3deploy DEPLOY_TARGET=int DEPLOY_GIT_BRANCH=<my branch>
 
 After the first clone, dev dependencies are not removed when uploading a branch
 to S3. If you want to also remove the dev depedencies, use:
@@ -170,9 +170,9 @@ Metadata to a build are available next to the index.html, as info.json
 
 #### Deploying to dev
 
-    make s3copybranch DEPLOY_TARGET=dev DEPLOY_GIT_BRANCH=<my branch>
+    make s3deploy DEPLOY_TARGET=dev
 
-will create a snapshot and output a snapshot version. (uses Apache)
+will create a snapshot and activate it. a link to the deployed branch will be in the output.
 
 #### Deploying to int
 
@@ -183,7 +183,8 @@ will create a snapshot and activate it, a link to the deployed branch will be in
 #### Deploying to prod
 
 The CI is responsible for uploading to `prod`. The only required step is to `activate` a `version`, _i.e._
-copying from its directory to the root.
+copying from its directory to the root. To get the `EPOCH_BUILD`, you'll have to look at the CI logs for
+the last build on master.
 
     make s3activateprod S3_VERSION_PATH=<DEPLOY_GIT_BRANCH>/<EPOCH_BUILD>
 
@@ -211,7 +212,10 @@ in the `rc_branch.mako` file on **your branch**
 # Flushing AWS CloudFront
 
 The AWS bucket from `int` and `prod` staging are behing AWS CloudFront distribution.
+You will need to know the AWS Cloudfront Distrubtion ID to be able to flush it.
+The command then look like this :
 
+`aws cloudfront create-invalidation --distribution-id <DISTRIBUTION_ID> --path <PATH_YOU_WANT_TO_FLUSH>`
 
 # Point to a target env for all services
 
