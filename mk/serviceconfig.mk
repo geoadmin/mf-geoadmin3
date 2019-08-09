@@ -7,24 +7,24 @@ CONFIG_FILES := $(wildcard configs/**/*.json)
 CONFIG_FILES += configs/services.json configs/layersconfiginfo.json
 S3_UPLOAD_HEADERS = --content-encoding gzip --acl public-read --cache-control 'max-age=60' --content-type 'application/json'
 
-configs/layersconfiginfo.json: src/layersconfiginfo.mako.json
+configs/layersconfiginfo.json: src/layersconfiginfo.mako.json \
+                               guard-LAYERSCONFIG_VERSION
 	@mkdir -p $(@D)
-	${PYTHON_CMD} ${MAKO_CMD} \
-	--var "version=$(VERSION)" \
-	--var "api_url=$(API_URL)" \
-	--var "layersconfig_version=$(LAYERSCONFIG_VERSION)" \
-	--var "build_date=$(CURRENT_DATE)"  $< > $@
+	${PYTHON_CMD} ${MAKO_CMD} --var "version=$(VERSION)" \
+	                          --var "api_url=$(API_URL)" \
+	                          --var "layersconfig_version=$(LAYERSCONFIG_VERSION)" \
+	                          --var "build_date=$(CURRENT_DATE)"  $< > $@
 
 
 configs/: .build-artefacts/last-version \
           .build-artefacts/last-api-url \
           .build-artefacts/last-layersconfig-version \
           configs/layersconfiginfo.json \
-          .build-artefacts/last-config-url
+          .build-artefacts/last-config-url \
+          guard-LAYERSCONFIG_VERSION
 	mkdir -p $@
 	curl -s -q -o configs/services.json http:$(API_URL)/rest/services
 	$(foreach lang, $(LANGS), mkdir -p $@$(lang) && curl -s --retry 3 -o configs/$(lang)/layersConfig.json http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang);)
-	echo $(TOPICS)
 	$(foreach topic, $(TOPICS), $(foreach lang, $(LANGS),curl -s --retry 3 -o configs/${lang}/catalog.${topic}.json http:$(API_URL)/rest/services/$(topic)/CatalogServer?lang=$(lang); ))
 
 
@@ -41,31 +41,33 @@ src/config.%.mako: src/config.mako \
 # Upload configs to :
 # - s3://mf-geoadmin3-int-dublin/configs_archive/
 # - s3://mf-geoadmin3-prod-dublin/configs_archive/
-PHONY: s3uploadconfig
-s3uploadconfig: ${PYTHON_VENV}
-	@$(eval LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD = $(LAYERSCONFIG_VERSION))
-	@echo "Layers config version : $(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)"
+PHONY: s3uploadconfigint
+s3uploadconfigint: ${PYTHON_VENV}
 	@echo "generating config for int..."
-	source rc_int && $(MAKE) clean configs/
+	source rc_int && $(MAKE) clean configs/ LAYERSCONFIG_VERSION=$(LAYERSCONFIG_VERSION)
 	@echo  
 	@echo "generating config for int done"
 	@echo  
 	@echo "uploading config to int..."
-	$(foreach json, $(CONFIG_FILES), gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_INT)/configs_archive/$(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)/$(json);)
+	$(foreach json, $(CONFIG_FILES), gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_INT)/configs_archive/$(LAYERSCONFIG_VERSION)/$(json);)
 	@echo  
 	@echo "uploading to int done"
 	@echo  
+	@echo "Layers config version for int : $(LAYERSCONFIG_VERSION)"
+
+PHONY: s3uploadconfigprod
+s3uploadconfigprod: ${PYTHON_VENV}
 	@echo "generating config for prod..."
-	source rc_prod && $(MAKE) clean configs/
+	source rc_prod && $(MAKE) clean configs/ LAYERSCONFIG_VERSION=$(LAYERSCONFIG_VERSION)
 	@echo  
 	@echo "generating config for prod done"
 	@echo  
 	@echo "uploading config to prod..."
-	$(foreach json, $(CONFIG_FILES), gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_PROD)/configs_archive/$(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)/$(json);)
+	$(foreach json, $(CONFIG_FILES), gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_PROD)/configs_archive/$(LAYERSCONFIG_VERSION)/$(json);)
 	@echo  
 	@echo "uploading to prod done"
 	@echo  
-	@echo "Layers config version : $(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)"
+	@echo "Layers config version for prod : $(LAYERSCONFIG_VERSION)"
 
 # Display current version number
 s3currentconfig := $(patsubst %,s3currentconfig%,int,prod)
