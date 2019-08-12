@@ -13,7 +13,7 @@ div.evse_data {
 }
 
 .htmlpopup-container .htmlpopup-content {
-  .station_data {
+  .station-data {
     width: 300px;
     td {
      width: 40%;
@@ -22,7 +22,7 @@ div.evse_data {
       width: 30%;
     }
   }
-  .diemo_evse {
+  .evse-overview {
     border-collapse: collapse;
     margin: 5px;
     width: 30%;
@@ -41,30 +41,38 @@ div.evse_data {
       color: white;
       height: 30px;
     }
-    th.status_Occupied {
-      background-color:@diemo_red;
+    &.status-occupied {
+      th {
+        background-color:@diemo_red;
+      }
+      th, td {
+        border-color : @diemo_red;
+      }
     }
-    th.status_Reserved {
-      background-color:@diemo_yellow;
+    &.status-reserved {
+      th {
+        background-color:@diemo_yellow;
+      }
+      th, td {
+        border-color: @diemo_yellow;
+      }
     }
-    th.status_Available {
-      background-color: @diemo_green;
+    &.status-available {
+      th {
+        background-color: @diemo_green;
+      }
+      th, td {
+        border-color: @diemo_green;
+      }
     }
-    th.status_Unkown {
-      background-color: @diemo_lightgrey;
-      color: black;
-    }
-    .status_Occupied {
-      border-color : @diemo_red;
-    }
-    .status_Reserved {
-      border-color: @diemo_yellow;
-    }
-    .status_Available {
-      border-color: @diemo_green;
-    }
-    .status_Unkown {
-      border-color: @diemo_lightgrey;
+    &.status-unknown {
+      th {
+        background-color: @diemo_lightgrey;
+        color: black;
+      }
+      th, td {
+        border-color: @diemo_lightgrey;
+      }
     }
   }
 }
