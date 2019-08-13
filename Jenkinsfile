@@ -43,6 +43,7 @@ node(label: 'jenkins-slave') {
       def payloadString = currentBuild.rawBuild.buildVariableResolver.resolve("payload")
       def payloadObject = new groovy.json.JsonSlurper().parseText(payloadString)
       echo payloadObject
+      
     }
 
     stage('Checkout') {
