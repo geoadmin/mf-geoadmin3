@@ -35,10 +35,10 @@ node(label: 'jenkins-slave') {
   try {
 
     stage('print env') {
-      echo 'env.CHANGE_BRANCH: ' + env.CHANGE_BRANCH
-      echo 'env.BRANCH_NAME: ' + env.BRANCH_NAME
-      echo 'env.CHANGE_TARGET: ' + env.CHANGE_TARGET
-      echo 'env.GIT_BRANCH: ' + env.GIT_BRANCH
+      sh "echo 'env.CHANGE_BRANCH: ${env.CHANGE_BRANCH}'"
+      sh "echo 'env.BRANCH_NAME: ${env.BRANCH_NAME}'"
+      sh "echo 'env.CHANGE_TARGET: ${env.CHANGE_TARGET}'"
+      sh "echo 'env.GIT_BRANCH: ${env.GIT_BRANCH}'"
     }
 
     stage('Checkout') {
