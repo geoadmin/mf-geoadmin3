@@ -38,6 +38,12 @@ node(label: 'jenkins-slave') {
       sh 'printenv'
     }
 
+    stage('get payload') {
+      def payloadString = build.buildVariableResolver.resolve("payload")
+      def payloadObject = new groovy.json.JsonSlurper().parseText(payloadString)
+      echo payloadObject
+    }
+
     stage('Checkout') {
       checkout scm
     }
