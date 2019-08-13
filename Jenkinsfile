@@ -1,6 +1,7 @@
 #!/usr/bin/env groovy
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
+import hudson.model.*
 
 node(label: 'jenkins-slave') {
   def stdout
