@@ -486,5 +486,7 @@
   "layer_cant_be_printed": "",
   "print_request_too_large": "",
   "whatsapp_tooltip": "",
-  "try_test_viewer": ""
+  "try_test_viewer": "",
+  "obstacle_started_last_4_days": "",
+  "obstacle_deleted_last_4_days": ""
 }
