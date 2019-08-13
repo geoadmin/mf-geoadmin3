@@ -40,7 +40,6 @@ node(label: 'jenkins-slave') {
     }
 
     stage('get payload') {
-      echo "payload is $payload"
       def build = Thread.currentThread().executable;
       def payloadString = build.buildVariableResolver.resolve("payload")
       def payloadObject = new groovy.json.JsonSlurper().parseText(payloadString)
