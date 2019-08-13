@@ -33,8 +33,15 @@ node(label: 'jenkins-slave') {
   utils.abortPreviousBuilds()
 
   try {
+
+    stage('print env') {
+      echo 'env.CHANGE_BRANCH: ' + env.CHANGE_BRANCH
+      echo 'env.BRANCH_NAME: ' + env.BRANCH_NAME
+      echo 'env.CHANGE_TARGET: ' + env.CHANGE_TARGET
+      echo 'env.GIT_BRANCH: ' + env.GIT_BRANCH
+    }
+
     stage('Checkout') {
-      echo 'Checking out branch ' + deployGitBranch + ' (env.CHANGE_BRANCH:'+ env.CHANGE_BRANCH + ' ,env.BRANCH_NAME:' + env.BRANCH_NAME + ')'
       checkout scm
     }
 
