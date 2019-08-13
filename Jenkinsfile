@@ -34,7 +34,7 @@ node(label: 'jenkins-slave') {
 
   try {
     stage('Checkout') {
-      echo 'Checking out branch ' + deployGitBranch ' (env.CHANGE_BRANCH:'+ env.CHANGE_BRANCH + ' ,env.BRANCH_NAME:' + env.BRANCH_NAME + ')'
+      echo 'Checking out branch ' + deployGitBranch + ' (env.CHANGE_BRANCH:'+ env.CHANGE_BRANCH + ' ,env.BRANCH_NAME:' + env.BRANCH_NAME + ')'
       checkout scm
     }
 
