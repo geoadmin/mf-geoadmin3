@@ -5,6 +5,8 @@ describe('ga_query_service', function() {
     var gaQuery, $httpBackend;
     var twoWeeksAgo = window.moment().subtract(2, 'weeks').
         format('YYYY-MM-DD');
+    var fourDaysAgo = window.moment().subtract(4, 'days').
+        format('YYYY-MM-DD');
     var predefQueriesByLayer = {
       'ch.bazl.luftfahrthindernis': [{
         id: 'obstacle_started_last_2_weeks',
@@ -24,6 +26,25 @@ describe('ga_query_service', function() {
           attrName: 'abortionaccomplished',
           operator: '>=',
           value: twoWeeksAgo
+        }]
+      }, {
+        id: 'obstacle_started_last_4_days',
+        filters: [{
+          attrName: 'bgdi_activesince',
+          operator: '>=',
+          value: fourDaysAgo
+        }, {
+          attrName: 'state',
+          operator: 'ilike',
+          value: 'A'
+        }]
+      }, {
+        id: 'obstacle_deleted_last_4_days',
+        filters: [{
+          layer: null,
+          attrName: 'abortionaccomplished',
+          operator: '>=',
+          value: fourDaysAgo
         }]
       }],
       'ch.astra.unfaelle-personenschaeden_alle': [{
