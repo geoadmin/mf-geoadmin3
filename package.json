@@ -28,7 +28,7 @@
     "angular": "1.7.8",
     "angular-translate": "2.18.1",
     "corejs-typeahead": "v1.2.1",
-    "d3": "5.10.1",
+    "d3": "5.11.0",
     "fastclick": "1.0.6",
     "gyronorm": "2.0.6",
     "jquery-ajax-transport-xdomainrequest": "1.0.4",
