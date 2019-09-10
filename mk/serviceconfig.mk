@@ -43,31 +43,33 @@ src/config.%.mako: src/config.mako \
 # - s3://mf-geoadmin3-prod-dublin/configs_archive/
 PHONY: s3uploadconfigint
 s3uploadconfigint: ${PYTHON_VENV}
+	@$(eval LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD = $(LAYERSCONFIG_VERSION))
 	@echo "generating config for int..."
-	source rc_int && $(MAKE) clean configs/ LAYERSCONFIG_VERSION=$(LAYERSCONFIG_VERSION)
+	source rc_int && $(MAKE) clean configs/ LAYERSCONFIG_VERSION=$(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)
 	@echo  
 	@echo "generating config for int done"
 	@echo  
 	@echo "uploading config to int..."
-	$(foreach json, $(CONFIG_FILES), gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_INT)/configs_archive/$(LAYERSCONFIG_VERSION)/$(json);)
+	$(foreach json, $(CONFIG_FILES), gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_INT)/configs_archive/$(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)/$(json);)
 	@echo  
 	@echo "uploading to int done"
 	@echo  
-	@echo "Layers config version for int : $(LAYERSCONFIG_VERSION)"
+	@echo "Layers config version for int : $(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)"
 
 PHONY: s3uploadconfigprod
 s3uploadconfigprod: ${PYTHON_VENV}
+	@$(eval LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD = $(LAYERSCONFIG_VERSION))
 	@echo "generating config for prod..."
-	source rc_prod && $(MAKE) clean configs/ LAYERSCONFIG_VERSION=$(LAYERSCONFIG_VERSION)
+	source rc_prod && $(MAKE) clean configs/ LAYERSCONFIG_VERSION=$(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)
 	@echo  
 	@echo "generating config for prod done"
 	@echo  
 	@echo "uploading config to prod..."
-	$(foreach json, $(CONFIG_FILES), gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_PROD)/configs_archive/$(LAYERSCONFIG_VERSION)/$(json);)
+	$(foreach json, $(CONFIG_FILES), gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_PROD)/configs_archive/$(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)/$(json);)
 	@echo  
 	@echo "uploading to prod done"
 	@echo  
-	@echo "Layers config version for prod : $(LAYERSCONFIG_VERSION)"
+	@echo "Layers config version for prod : $(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)"
 
 # Display current version number
 s3currentconfig := $(patsubst %,s3currentconfig%,int,prod)
