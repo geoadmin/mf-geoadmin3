@@ -72,7 +72,7 @@ node(label: 'jenkins-slave') {
           // Both projects 'mvt' and 'mf-geoadmin3' are deployable to <prod>,
           // but only the 'master' branches for both projects ('master' for mf-geoadmin3, 'mvt_clean' for mvt/vib2d) 
           if (isGitMaster) {
-            stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project + ' DEPLOY_TARGET=prod'
+            stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project + ' DEPLOY_TARGET=prod DEPLOY_GIT_BRANCH=' + deployGitBranch
             echo stdout
           } else {
             echo 'Won\'t deploy branch <' + deployGitBranch + '> to production. Skipping stage'
