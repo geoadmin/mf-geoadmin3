@@ -36,12 +36,7 @@ node(label: 'jenkins-slave') {
     stage('Checkout') { 
       checkout scm
     }
-
-    // cleaning up if last build has failed and has not cleanup properly the workspace
-    stage('clean') {
-      sh 'make cleanall'
-    }
-
+    
     stage('env') {
       sh 'make env'
       echo sh(returnStdout: true, script: 'env')
