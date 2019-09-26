@@ -2,7 +2,6 @@
 describe('ga_vector_tile_feedback_directive', function() {
   var $rootScope,
     $compile,
-    gaBrowserSniffer,
     scope,
     scopeElt,
     options,
@@ -23,7 +22,6 @@ describe('ga_vector_tile_feedback_directive', function() {
   var injectServices = function($injector) {
     $rootScope = $injector.get('$rootScope');
     $compile = $injector.get('$compile');
-    gaBrowserSniffer = $injector.get('gaBrowserSniffer');
   };
 
   beforeEach(function() {
@@ -68,10 +66,4 @@ describe('ga_vector_tile_feedback_directive', function() {
     expect(scopeElt.getSurveyUrl()).to.be('http://foo.ch/somelang');
   });
 
-  it('open the survey in a new window on IE', function() {
-    gaBrowserSniffer.msie = 56;
-    loadDirective(options);
-    expect(el.find('[target="_blank"]').length).to.be(2);
-    expect(el.find('[href="http://foo.ch/somelang"]').length).to.be(1);
-  });
 });
