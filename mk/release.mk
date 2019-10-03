@@ -134,6 +134,10 @@ prd/locales/: src/locales/*.json
 	mkdir -p $@
 	cp $^ $@
 
+prd/manifest.json: src/manifest.mako.json
+	${PYTHON_CMD} ${MAKO_CMD} \
+	    --var "s3basepath"="$(S3_SRC_BASE_PATH)" $< > $@
+
 prd/checker: src/checker
 	mkdir -p $(dir $@)
 	cp $< $@
@@ -162,4 +166,5 @@ release: showVariables \
          appconfig \
          prd/info.json \
          prd/robots.txt \
-         prd/robots_prod.txt
+         prd/robots_prod.txt \
+         prd/manifest.json

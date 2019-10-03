@@ -7,7 +7,8 @@ debug: showVariables \
 	appconfig \
 	src/mobile.html \
 	src/embed.html \
-	src/404.html
+	src/404.html \
+	src/manifest.json
 
 
 
