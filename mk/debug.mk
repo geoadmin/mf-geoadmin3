@@ -88,6 +88,10 @@ src/index.html: src/index.mako.html appconfig \
 	    ${MAKO_LAST_VARIABLES}
 	$(call buildpage,desktop,dev,,,$(S3_SRC_BASE_PATH))
 
+src/manifest.json: src/manifest.mako.json
+	${PYTHON_CMD} ${MAKO_CMD} \
+	    --var "s3basepath"="$(S3_SRC_BASE_PATH)" $< > $@
+
 src/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    ${MAKO_LAST_VARIABLES}
