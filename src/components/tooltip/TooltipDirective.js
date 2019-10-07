@@ -97,7 +97,7 @@ goog.require('ga_window_service');
         };
 
         // Find the first feature from a vector layer
-        var findVectorFeature = function(map, pixel, vectorLayer) {
+        var findVectorFeature = function(map, pixel, tolerance, vectorLayer) {
           var featureFound;
           map.forEachFeatureAtPixel(pixel, function(feature, layer) {
             // vectorLayer is defined when a feature is clicked.
@@ -109,6 +109,8 @@ goog.require('ga_window_service');
                 }
               }
             }
+          }, {
+            hitTolerance: tolerance
           });
           return featureFound;
         };
@@ -434,7 +436,11 @@ goog.require('ga_window_service');
                 // Go through queryable vector layers
                 // Launch no requests.
                 layersToQuery.vectorLayers.forEach(function(layerToQuery) {
-                  var feature = findVectorFeature(map, pixel, layerToQuery);
+                  var config = gaLayers.getLayer(layerToQuery.bodId);
+                  var shopLayer = config.shop && !config.shopMulti;
+                  var tolerance = shopLayer ? 0 : scope.options.tolerance;
+                  var feature = findVectorFeature(map, pixel, tolerance, 
+                      layerToQuery);
                   if (feature) {
                     showVectorFeature(feature, layerToQuery);
                     all.push($q.when(1));
