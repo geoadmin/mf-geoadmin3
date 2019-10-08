@@ -96,18 +96,32 @@ goog.require('ga_window_service');
               geom instanceof ol.geom.GeometryCollection);
         };
 
-        // Find the first feature from a vector layer
-        var findVectorFeature = function(map, pixel, vectorLayer) {
-          var featureFound;
+        // Find the closest feature from pixel in a vector layer
+        var findVectorFeature = function(map, pixel, tolerance, vectorLayer) {
+          var featureFound,
+            distanceWithPixel = Infinity,
+            pixelOnMap = map.getCoordinateFromPixel(pixel);
           map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-            // vectorLayer is defined when a feature is clicked.
-            // onclick, geolocation circle is unselectable
-            if (layer && !feature.getProperties().unselectable) {
-              if (!vectorLayer || vectorLayer === layer) {
-                if (!featureFound) {
-                  featureFound = feature;
-                }
+            // checkinf first if feature can be selected by users
+            if (!feature.getProperties().unselectable) {
+              // calculating distance between pixel and feature
+              // in order to find the feature closest to the pixel
+              var featureCoordinates = feature.get('geometry').flatCoordinates;
+              var distance = Math.sqrt(
+                  Math.pow(pixelOnMap[0] - featureCoordinates[0], 2) +
+                 Math.pow(pixelOnMap[1] - featureCoordinates[1], 2));
+              if (!featureFound || distanceWithPixel > distance) {
+                featureFound = feature;
+                distanceWithPixel = distance;
               }
+            }
+          }, {
+            // see TooltipController.js for default tolerance values
+            hitTolerance: tolerance,
+            // filtering layers so that only the current layer is queried
+            layerFilter: function(layerCandidate) {
+              return layerCandidate && vectorLayer &&
+                layerCandidate.bodId === vectorLayer.bodId;
             }
           });
           return featureFound;
@@ -434,7 +448,11 @@ goog.require('ga_window_service');
                 // Go through queryable vector layers
                 // Launch no requests.
                 layersToQuery.vectorLayers.forEach(function(layerToQuery) {
-                  var feature = findVectorFeature(map, pixel, layerToQuery);
+                  var config = gaLayers.getLayer(layerToQuery.bodId);
+                  var shopLayer = config && config.shop && !config.shopMulti;
+                  var tolerance = shopLayer ? 0 : scope.options.tolerance;
+                  var feature = findVectorFeature(map, pixel, tolerance,
+                      layerToQuery);
                   if (feature) {
                     showVectorFeature(feature, layerToQuery);
                     all.push($q.when(1));
