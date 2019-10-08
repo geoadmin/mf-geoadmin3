@@ -98,7 +98,7 @@ goog.require('ga_window_service');
 
         // Find the closest feature from pixel in a vector layer
         var findVectorFeature = function(map, pixel, tolerance, vectorLayer) {
-          var featureFound = undefined,
+          var featureFound,
               distanceWithPixel = Infinity,
               pixelOnMap = map.getCoordinateFromPixel(pixel);
           map.forEachFeatureAtPixel(pixel, function(feature, layer) {
