@@ -99,8 +99,8 @@ goog.require('ga_window_service');
         // Find the closest feature from pixel in a vector layer
         var findVectorFeature = function(map, pixel, tolerance, vectorLayer) {
           var featureFound,
-              distanceWithPixel = Infinity,
-              pixelOnMap = map.getCoordinateFromPixel(pixel);
+            distanceWithPixel = Infinity,
+            pixelOnMap = map.getCoordinateFromPixel(pixel);
           map.forEachFeatureAtPixel(pixel, function(feature, layer) {
             // checkinf first if feature can be selected by users
             if (!feature.getProperties().unselectable) {
@@ -108,8 +108,8 @@ goog.require('ga_window_service');
               // in order to find the feature closest to the pixel
               var featureCoordinates = feature.get('geometry').flatCoordinates;
               var distance = Math.sqrt(
-                Math.pow(pixelOnMap[0] - featureCoordinates[0], 2)
-                 + Math.pow(pixelOnMap[1] - featureCoordinates[1], 2));
+                  Math.pow(pixelOnMap[0] - featureCoordinates[0], 2) +
+                 Math.pow(pixelOnMap[1] - featureCoordinates[1], 2));
               if (!featureFound || distanceWithPixel > distance) {
                 featureFound = feature;
                 distanceWithPixel = distance;
@@ -119,8 +119,9 @@ goog.require('ga_window_service');
             // see TooltipController.js for default tolerance values
             hitTolerance: tolerance,
             // filtering layers so that only the current layer is queried
-            layerFilter: function (layerCandidate) {
-              return layerCandidate.bodId === vectorLayer.bodId;
+            layerFilter: function(layerCandidate) {
+              return layerCandidate && vectorLayer &&
+                layerCandidate.bodId === vectorLayer.bodId;
             }
           });
           return featureFound;
@@ -448,9 +449,9 @@ goog.require('ga_window_service');
                 // Launch no requests.
                 layersToQuery.vectorLayers.forEach(function(layerToQuery) {
                   var config = gaLayers.getLayer(layerToQuery.bodId);
-                  var shopLayer = config.shop && !config.shopMulti;
+                  var shopLayer = config && config.shop && !config.shopMulti;
                   var tolerance = shopLayer ? 0 : scope.options.tolerance;
-                  var feature = findVectorFeature(map, pixel, tolerance, 
+                  var feature = findVectorFeature(map, pixel, tolerance,
                       layerToQuery);
                   if (feature) {
                     showVectorFeature(feature, layerToQuery);
