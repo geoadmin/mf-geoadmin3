@@ -104,9 +104,18 @@ goog.require('ga_window_service');
           map.forEachFeatureAtPixel(pixel, function(feature, layer) {
             // checkinf first if feature can be selected by users
             if (!feature.getProperties().unselectable) {
+              var featureGeometry = feature.get('geometry');
+              var featureCoordinates;
+              // if feature is a point, we use its coordinates right away
+              if (featureGeometry.flatCoordinates) {
+                featureCoordinates = feature.get('geometry').flatCoordinates;
+              } else {
+                // if not, we take the center of its extent as a coordinate
+                featureCoordinates = ol.extent.getCenter(
+                    featureGeometry.getExtent());
+              }
               // calculating distance between pixel and feature
               // in order to find the feature closest to the pixel
-              var featureCoordinates = feature.get('geometry').flatCoordinates;
               var distance = Math.sqrt(
                   Math.pow(pixelOnMap[0] - featureCoordinates[0], 2) +
                  Math.pow(pixelOnMap[1] - featureCoordinates[1], 2));
