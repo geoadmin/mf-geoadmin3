@@ -112,7 +112,7 @@ goog.require('ga_window_service');
               } else {
                 // if not, we take the center of its extent as a coordinate
                 featureCoordinates = ol.extent.getCenter(
-                  featureGeometry.getExtent());
+                    featureGeometry.getExtent());
               }
               // calculating distance between pixel and feature
               // in order to find the feature closest to the pixel
@@ -129,13 +129,13 @@ goog.require('ga_window_service');
             hitTolerance: tolerance,
             // filtering layers so that only the current layer is queried
             layerFilter: function(layerCandidate) {
-              return layerCandidate && vectorLayer 
+              return layerCandidate && vectorLayer &&
                 // if both layers have a bodId we filter by bodId
-                && ((layerCandidate.bodId && vectorLayer.bodId
-                     && layerCandidate.bodId === vectorLayer.bodId)
+                ((layerCandidate.bodId && vectorLayer.bodId &&
+                     layerCandidate.bodId === vectorLayer.bodId) ||
                     // otherwise we look at OL unique ID for both layers
-                    || layerCandidate.ol_uid === vectorLayer.ol_uid)
-                ;
+                    layerCandidate.ol_uid === vectorLayer.ol_uid)
+              ;
             }
           });
           return featureFound;
