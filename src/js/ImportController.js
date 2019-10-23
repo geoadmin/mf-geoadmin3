@@ -180,6 +180,7 @@ goog.require('ga_wmts_service');
       'https://geodienste.ch/db/npl_laermempfindlichkeitsstufen/ita',
       'https://geodienste.ch/db/npl_nutzungsplanung/deu',
       'https://geodienste.ch/db/npl_nutzungsplanung/fra',
+      'https://geodienste.ch/db/npl_nutzungsplanung/ita',
       'https://geodienste.ch/db/planerischer_gewaesserschutz/deu',
       'https://geodienste.ch/db/planerischer_gewaesserschutz/fra',
       'https://geodienste.ch/db/npl_waldabstandslinien/deu',
