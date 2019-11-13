@@ -49,7 +49,7 @@ goog.require('ga_wmts_service');
       'http://wms.geo.gr.ch/wildruhezonen',
       'http://wms.geo.gr.ch/wildschutzgebiete',
       'https://geo.so.ch/api/wms',
-      'http://wms.vd.ch/public/services/wmsVD/Mapserver/Wmsserver',
+      'https://www.ogc.vd.ch/public/services/OGC/wmsVD/Mapserver/WMSServer',
       'http://wms.geo.bs.ch/',
       'http://vogis.cnv.at/mapserver/mapserv?map=i_flaechenwidmung_v_wms.map',
       'http://vogis.cnv.at/mapserver/mapserv?map=i_luftbilder_r_wms.map',
