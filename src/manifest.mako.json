@@ -1,6 +1,6 @@
 {
   "display": "standalone",
-  "short_name": "geoadmin",
+  "short_name": "Maps of Switzerland",
   "name": "map.geo.admin.ch",
   "orientation": "portrait",
   "scope": "/",
