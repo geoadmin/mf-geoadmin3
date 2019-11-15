@@ -1,6 +1,6 @@
 {
   "display": "standalone",
-  "short_name": "Geoadmin",
+  "short_name": "geoadmin",
   "name": "map.geo.admin.ch",
   "orientation": "portrait",
   "scope": "/",
