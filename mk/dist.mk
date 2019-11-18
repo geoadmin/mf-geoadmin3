@@ -21,7 +21,8 @@ NON_CACHE_FILES = $(BUILD_DIR)/index.html \
 			 $(BUILD_DIR)/404.html \
 			 $(BUILD_DIR)/embed.html \
 			 $(BUILD_DIR)/geoadmin.$(GIT_COMMIT_SHORT).appcache \
-			 $(BUILD_DIR)/mobile.html 
+			 $(BUILD_DIR)/mobile.html \
+			 $(BUILD_DIR)/manifest.json
 
 $(BUILD_DIR)/%: $(RELEASE_DIR)/%
 	@echo "Copying $< to $@ (matched file: $*)"
