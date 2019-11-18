@@ -701,7 +701,8 @@ goog.require('ga_window_service');
             // Show the popup with all features informations
             var showPopup = function(html, value) {
               // Don't show popup when notooltip parameter is active
-              if (gaPermalink.getParams().notooltip === 'true') {
+              if (gaBrowserSniffer.embed &&
+                  gaPermalink.getParams().notooltip === 'true') {
                 return;
               }
 
