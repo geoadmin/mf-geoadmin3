@@ -23,6 +23,7 @@ clean:
 	rm -f src/config.int.mako
 	rm -f src/config.prod.mako
 	rm -f src/config.infra.mako
+	rm -f src/manifest.json
 	rm -rf prd
 	rm -rf configs
 	rm -rf dist

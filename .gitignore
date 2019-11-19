@@ -12,6 +12,7 @@
 /src/config.int.mako
 /src/config.prod.mako
 /src/config.infra.mako
+/src/manifest.json
 /prd
 /configs
 /dist
