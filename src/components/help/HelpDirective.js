@@ -46,16 +46,8 @@ goog.require('ga_help_service');
     };
   });
 
-  module.directive('gaHelpAction', function($rootScope, $sce, gaHelp,
-      gaPopup, $window) {
-    var popupContent = '<div class="ga-help-content" ' +
-                            'ng-repeat="res in options.results">' +
-                         '<h2 ng-bind-html="res[0]"></h2>' +
-                         '<div ng-bind-html="res[1]"></div>' +
-                         '<br>' +
-                         '<img ng-src="{{res[2]}}" ' +
-                              'draggable="false"/>' +
-                       '</div>';
+  module.directive('gaHelpAction', function($rootScope, $sce, gaHelp, gaPopup,
+    gaLang, $window) {
     return {
       restrict: 'A',
       link: function(scope, element, attrs) {
@@ -73,6 +65,13 @@ goog.require('ga_help_service');
           });
         });
 
+        var generateUrl = function (helpIds) {
+          return '//help.geo.admin.ch/#/' +
+            '?ids=' + helpIds +
+            '&lang=' + gaLang.getNoRm() +
+            '&embedded=true';
+        }
+
         var displayHelp = function(evt) {
           if (angular.isDefined(popup)) {
             if (shown) {
@@ -82,66 +81,32 @@ goog.require('ga_help_service');
               shown = true;
             }
           } else if (helpIds) {
-            var ids = helpIds.split(',');
-
             // Create the popup
             popup = gaPopup.create({
               className: 'ga-help-popup ga-popup-tablet-full',
               destroyOnClose: false,
               title: 'help_label',
-              content: popupContent, // contains data-binding to results
+              content: '<iframe id="help-iframe" src="' +
+                generateUrl(helpIds) + '" />',
               results: results,
               showPrint: true,
               onCloseCallback: function() {
                 shown = false;
               }
             });
-
-            var updateContent = function(doOpen) {
-              var resCount = 0,
-                len = ids.length,
-                i;
-
-              var resultReceived = function() {
-                if (resCount === 0 &&
-                    doOpen) {
-                  popup.open();
-                  shown = true;
-                }
-
-                resCount++;
-              };
-              for (i = 0; i < len; i++) {
-                gaHelp.get(ids[i]).then(function(res) {
-                  results.push([
-                    $sce.trustAsHtml(res.rows[0][1]),
-                    $sce.trustAsHtml(res.rows[0][2]),
-                    res.rows[0][4]
-                  ]);
-                  resultReceived();
-                }, function() {
-                  resultReceived();
-                  // FIXME: better error handling
-                  var msg = 'No help found for id ' + ids[i];
-                  $window.alert(msg);
-                });
-              }
-            };
-
-            updateContent(true);
-
-            // react on language change
-            $rootScope.$on('$translateChangeEnd', function() {
-              // Remove old content _without destroying the array_
-              // The below is used because it's fastest and is
-              // best supported across browsers
-              while (results.length > 0) {
-                results.pop();
-              }
-              updateContent(false);
-            });
+            popup.open();
+            shown = true;
           }
         };
+        // react on language change
+        $rootScope.$on('$translateChangeEnd', function() {
+          if (popup && shown) {
+            var helpIFrame = popup.element.find('#help-iframe');
+            if (helpIFrame) {
+              helpIFrame.attr('src', generateUrl(helpIds));
+            }
+          }
+        });
       }
     };
   });
@@ -152,7 +117,7 @@ goog.require('ga_help_service');
    * inside.
    */
   module.directive('gaHelpHighlight', function($document, $window, $translate,
-      $timeout) {
+    $timeout) {
     var transitionClass = 'ga-help-hl-transition';
     return {
       restrict: 'A',
@@ -163,8 +128,8 @@ goog.require('ga_help_service');
 
         if (!container.length) {
           container = $(
-              '<div class="ga-help-hl-container">' +
-              '<div class="ga-help-hl"></div>' +
+            '<div class="ga-help-hl-container">' +
+            '<div class="ga-help-hl"></div>' +
             '</div>');
           $(document.body).append(container);
           container.on('click', function(evt) {
