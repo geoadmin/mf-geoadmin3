@@ -47,7 +47,7 @@ goog.require('ga_help_service');
   });
 
   module.directive('gaHelpAction', function($rootScope, $sce, gaHelp, gaPopup,
-    gaLang, $window) {
+      gaLang, $window) {
     return {
       restrict: 'A',
       link: function(scope, element, attrs) {
@@ -65,7 +65,7 @@ goog.require('ga_help_service');
           });
         });
 
-        var generateUrl = function (helpIds) {
+        var generateUrl = function(helpIds) {
           return '//help.geo.admin.ch/#/' +
             '?ids=' + helpIds +
             '&lang=' + gaLang.getNoRm() +
@@ -117,7 +117,7 @@ goog.require('ga_help_service');
    * inside.
    */
   module.directive('gaHelpHighlight', function($document, $window, $translate,
-    $timeout) {
+      $timeout) {
     var transitionClass = 'ga-help-hl-transition';
     return {
       restrict: 'A',
@@ -128,7 +128,7 @@ goog.require('ga_help_service');
 
         if (!container.length) {
           container = $(
-            '<div class="ga-help-hl-container">' +
+              '<div class="ga-help-hl-container">' +
             '<div class="ga-help-hl"></div>' +
             '</div>');
           $(document.body).append(container);
