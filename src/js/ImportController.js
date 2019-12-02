@@ -232,6 +232,7 @@ goog.require('ga_wmts_service');
       'https://services.arcgisonline.com/arcgis/rest/services/Reference/World_Transportation/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
       'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
       'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
+      'http://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml',
       'https://geo.so.ch/api/wmts/1.0.0/WMTSCapabilities.xml'
     ];
 
