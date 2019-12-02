@@ -51,7 +51,7 @@ phases:
   build:
     commands:
       - echo Build started on $(date)
-      - . ./rc_ci && make cleanall all
+      - make cleanall all
 
   post_build:
     commands:
