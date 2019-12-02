@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "angular-mocks": "1.7.9",
-    "autoprefixer": "9.7.2",
+    "autoprefixer": "9.7.3",
     "babel-cli": "^6.24.1",
     "babel-preset-env": "^1.4.0",
     "bootstrap": "3.4.1",
