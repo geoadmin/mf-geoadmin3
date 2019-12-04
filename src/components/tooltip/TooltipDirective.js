@@ -98,46 +98,32 @@ goog.require('ga_window_service');
 
         // Find the closest feature from pixel in a vector layer
         var findVectorFeature = function(map, pixel, tolerance, vectorLayer) {
-          var featureFound,
-            distanceWithPixel = Infinity,
-            pixelOnMap = map.getCoordinateFromPixel(pixel);
-          map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-            // checkinf first if feature can be selected by users
-            if (!feature.getProperties().unselectable) {
-              var featureGeometry = feature.get('geometry');
-              var featureCoordinates;
-              // if feature is a point, we use its coordinates right away
-              if (featureGeometry.flatCoordinates) {
-                featureCoordinates = featureGeometry.flatCoordinates;
-              } else {
-                // if not, we take the center of its extent as a coordinate
-                featureCoordinates = ol.extent.getCenter(
-                    featureGeometry.getExtent());
+          var featureFound;
+          map.forEachFeatureAtPixel(pixel,
+              function(feature, layer) {
+              // checking if feature can be selected by users
+              // we pick the first of the stack, so that features with higher
+              // z-index (in the KML) will be chosen over deeper ones.
+                if (!feature.getProperties().unselectable && !featureFound) {
+                  featureFound = feature;
+                }
+              },
+              // options for method forEachFeatureAtPixel
+              {
+              // see TooltipController.js for default tolerance values
+                hitTolerance: tolerance,
+                // filtering layers so that only the current layer is queried
+                layerFilter: function(layerCandidate) {
+                  return layerCandidate && vectorLayer &&
+                  // if both layers have a bodId we filter by bodId
+                  ((layerCandidate.bodId && vectorLayer.bodId &&
+                       layerCandidate.bodId === vectorLayer.bodId) ||
+                      // otherwise we look at OL unique ID for both layers
+                      layerCandidate.ol_uid === vectorLayer.ol_uid)
+                  ;
+                }
               }
-              // calculating distance between pixel and feature
-              // in order to find the feature closest to the pixel
-              var distance = Math.sqrt(
-                  Math.pow(pixelOnMap[0] - featureCoordinates[0], 2) +
-                 Math.pow(pixelOnMap[1] - featureCoordinates[1], 2));
-              if (!featureFound || distanceWithPixel > distance) {
-                featureFound = feature;
-                distanceWithPixel = distance;
-              }
-            }
-          }, {
-            // see TooltipController.js for default tolerance values
-            hitTolerance: tolerance,
-            // filtering layers so that only the current layer is queried
-            layerFilter: function(layerCandidate) {
-              return layerCandidate && vectorLayer &&
-                // if both layers have a bodId we filter by bodId
-                ((layerCandidate.bodId && vectorLayer.bodId &&
-                     layerCandidate.bodId === vectorLayer.bodId) ||
-                    // otherwise we look at OL unique ID for both layers
-                    layerCandidate.ol_uid === vectorLayer.ol_uid)
-              ;
-            }
-          });
+          );
           return featureFound;
         };
 
