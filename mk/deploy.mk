@@ -81,12 +81,12 @@ s3copybranch: guard-S3_BUCKET \
 	                                                       ${S3_BUCKET} \
 	                                                       ${DEPLOY_GIT_BRANCH}
 
-s3list := $(patsubst %,s3list%,int,prod)
+s3list := $(patsubst %,s3list%,dev,int,prod)
 PHONY: $(s3list)
 s3list%: .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py list $(S3_BUCKET_$(shell echo $*| tr a-z A-Z))
 
-s3info := $(patsubst %,s3info%,int,prod)
+s3info := $(patsubst %,s3info%,dev,int,prod)
 PHONY: $(s3info)
 s3info%: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
@@ -103,7 +103,7 @@ s3activate%: guard-DEPLOY_GIT_BRANCH \
 	                                    --url $(S3_BUCKET_$(shell echo $*| tr a-z A-Z)_URL) \
 	                                    $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
 
-s3delete := $(patsubst %,s3delete%,int,prod)
+s3delete := $(patsubst %,s3delete%,dev,int,prod)
 PHONY: $(s3delete)
 s3delete%: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
