@@ -23,7 +23,7 @@ help:
 	@echo "- testrelease         Run the JavaScript tests in release mode"
 	@echo "- teste2e             Run saucelabs tests"
 	@echo "- saucelabssingle     Run saucelabs tests but only with single platform/browser"
-	@echo "- apache              Configure Apache (restart required)"
+	@echo "- apache              Configure Apache (restart required). If you want to build mf1-dev main apache file (for https://mf-geoadmin3.dev.bgdi.ch/index.html and so forth), please use geodata user (or root if you have access)"
 	@echo "- fixrights           Fix rights in common folder"
 	@echo "- clean               Remove generated files"
 	@echo "- cleanall            Remove all the build artefacts"
@@ -43,6 +43,9 @@ help:
 	@echo "                                               CODE_DIR=<Path to the folder, default to current folder> (optional)"
 	@echo "                                               DEPLOY_GIT_BRANCH=<Name of the branch to deploy, default to current branch> (optional)"
 	@echo "- s3deploy            Makes a clone build and deploy result to s3 dev|int|prod depending of defined DEPLOY_TARGET (default is int). If it's a branch (not equal to master) a directory will be created.
+	@echo "- s3deploydev         Shortcut for make s3deploy DEPLOY_TARGET=dev
+	@echo "- s3deployint         Shortcut for make s3deploy DEPLOY_TARGET=int
+	@echo "- s3deployprod        Shortcut for make s3deploy DEPLOY_TARGET=prod
 	@echo "- s3listdev           List availables branches, revision and build on dev bucket."
 	@echo "- s3listint           List availables branches, revision and build on int bucket."
 	@echo "- s3listprod          List availables branches, revision and build on prod bucket."

@@ -40,6 +40,7 @@ PYTHON_FILES := $(shell find scripts test/saucelabs -type f -name "*.py" -print)
 # Apache variables
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
 LAST_APACHE_BASE_DIRECTORY := $(call lastvalue,apache-base-directory)
+# on mf1-dev, we can't be root, so geodata is also used as a surrogate to build the main apache config
 APACHE_BASE_PATH ?= $(shell if [ "${USER_NAME}" = "root" ] || [ "${USER_NAME}" = "geodata" ]; then echo ""; else echo "/$(USER_NAME)"; fi;)
 LAST_APACHE_BASE_PATH := $(call lastvalue,apache-base-path)
 
