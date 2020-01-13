@@ -152,7 +152,7 @@ LAST_LAYERSCONFIG_VERSION := $(call lastvalue,layersconfig-version)
 ## So prepend all python scripts with python cmd
 ## See: https://bugs.launchpad.net/virtualenv/+bug/241581/comments/11
 PYTHON_VENV=.build-artefacts/python-venv
-PYTHON_CMD=${PYTHON_VENV}/bin/python
+PYTHON_CMD=${PYTHON_VENV}/bin/python2.7
 AWS_CMD=${PYTHON_VENV}/bin/aws
 PIP_CMD=${PYTHON_VENV}/bin/pip
 MAKO_CMD=${PYTHON_VENV}/bin/mako-render
