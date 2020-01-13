@@ -42,9 +42,7 @@ help:
 	@echo "                                               NAMED_BRANCH=<true|false>"
 	@echo "                                               CODE_DIR=<Path to the folder, default to current folder> (optional)"
 	@echo "                                               DEPLOY_GIT_BRANCH=<Name of the branch to deploy, default to current branch> (optional)"
-	@echo "- s3deploydev         Makes a clone build and deploy result to s3 dev in a snapshot directory (needs to be 's3activatedev' to be visible)."
-	@echo "- s3deployint         Makes a clone build and deploy result to s3 int."
-	@echo "- s3deployprod        Makes a clone build and deploy result to s3 prod."
+	@echo "- s3deploy            Makes a clone build and deploy result to s3 dev|int|prod depending of defined DEPLOY_TARGET (default is int). If it's a branch (not equal to master) a directory will be created.
 	@echo "- s3listdev           List availables branches, revision and build on dev bucket."
 	@echo "- s3listint           List availables branches, revision and build on int bucket."
 	@echo "- s3listprod          List availables branches, revision and build on prod bucket."
