@@ -57,15 +57,15 @@ endif
 
 .PHONY: s3deploydev
 s3deploydev:
-	${MAKE_CMD} s3deploy DEPLOY_TARGET=dev
+	$(MAKE) s3deploy DEPLOY_TARGET=dev
 
 .PHONY: s3deployint
 s3deployint:
-	${MAKE_CMD} s3deploy DEPLOY_TARGET=int
+	$(MAKE) s3deploy DEPLOY_TARGET=int
 
 .PHONY: s3deployprod
 s3deployprod:
-	${MAKE_CMD} s3deploy DEPLOY_TARGET=prod
+	$(MAKE) s3deploy DEPLOY_TARGET=prod
 
 PHONY: s3deploy
 s3deploy: guard-CLONEDIR \
@@ -76,7 +76,7 @@ s3deploy: guard-CLONEDIR \
           .build-artefacts/requirements.timestamp \
           showVariables
 	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${IS_MASTER_BRANCH};
-	${MAKE_CMD} s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
+	$(MAKE) s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
 	                         DEPLOY_TARGET=${DEPLOY_TARGET} \
 	                         DEPLOY_GIT_BRANCH=${DEPLOY_GIT_BRANCH}
 	                         PROJECT=${PROJECT}
