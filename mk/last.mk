@@ -10,7 +10,7 @@ endef
 ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 	mkdir -p .build-artefacts
 	virtualenv --no-site-packages $@
-	${PIP_CMD} install --index-url ${PYPI_URL} -U pip2 setuptools==43.0.0
+	${PIP_CMD} install --index-url ${PYPI_URL} -U pip setuptools==44.0.0
 	$(MAKE) .build-artefacts/requirements.timestamp
 
 
