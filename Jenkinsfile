@@ -63,7 +63,7 @@ node(label: 'jenkins-slave') {
         'dev': {
           // deploy master to dev
           if (isGitMaster) {
-            stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=dev PROJECT='+ project
+            stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=dev PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
             echo stdout
             deployedVersionDev = lines.get(lines.size() - 7)
           } else {
