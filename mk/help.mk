@@ -23,7 +23,7 @@ help:
 	@echo "- testrelease         Run the JavaScript tests in release mode"
 	@echo "- teste2e             Run saucelabs tests"
 	@echo "- saucelabssingle     Run saucelabs tests but only with single platform/browser"
-	@echo "- apache              Configure Apache (restart required)"
+	@echo "- apache              Configure Apache (restart required). If you want to build mf1-dev main apache file (for https://mf-geoadmin3.dev.bgdi.ch/index.html and so forth), please use geodata user (or root if you have access)"
 	@echo "- fixrights           Fix rights in common folder"
 	@echo "- clean               Remove generated files"
 	@echo "- cleanall            Remove all the build artefacts"
@@ -37,25 +37,28 @@ help:
 	@echo "|                     DEPLOYMENT                                                                         |"
 	@echo "----------------------------------------------------------------------------------------------------------"
 	@echo
-	@echo "- deploydev           Deploys current github master to dev. Specify SNAPSHOT=true to create snapshot as well."
-	@echo "- s3deploybranchint   Build a branch and deploy it to S3 int. Defaults to the current branch name."
-	@echo "- s3deploybranchinfra Build a branch and deploy it to S3 infra. Defaults to the current branch name."
 	@echo "- s3copybranch        Copy the current directory content to S3. Defaults to the current branch name. WARNING: your code must have been compiled with 'make <user|int|prod>' first."
 	@echo "                      Usage: make s3copybranch DEPLOY_TARGET=<int|prod>"
 	@echo "                                               NAMED_BRANCH=<true|false>"
 	@echo "                                               CODE_DIR=<Path to the folder, default to current folder> (optional)"
 	@echo "                                               DEPLOY_GIT_BRANCH=<Name of the branch to deploy, default to current branch> (optional)"
-	@echo "- s3deploydistdev     Copy the CI generated <dist> to dev (DRYRUN=<true|false> SNAPSHOT=<snapshot> DEPLOY_GIT_BRANCH=<branch>)"
-	@echo "- s3deploydistprod    Copy the CI generated <dist> to prod (DRYRUN=<true|false> SNAPSHOT=<snapshot> DEPLOY_GIT_BRANCH=<branch>)"
-	@echo "                      Usage: make SNAPSHOT=<snapshot> DEPLOY_GIT_BRANCH=<branch> s3deploydistprod"
+	@echo "- s3deploy            Makes a clone build and deploy result to s3 dev|int|prod depending of defined DEPLOY_TARGET (default is int). If it's a branch (not equal to master) a directory will be created.
+	@echo "- s3deploydev         Shortcut for make s3deploy DEPLOY_TARGET=dev
+	@echo "- s3deployint         Shortcut for make s3deploy DEPLOY_TARGET=int
+	@echo "- s3deployprod        Shortcut for make s3deploy DEPLOY_TARGET=prod
+	@echo "- s3listdev           List availables branches, revision and build on dev bucket."
 	@echo "- s3listint           List availables branches, revision and build on int bucket."
 	@echo "- s3listprod          List availables branches, revision and build on prod bucket."
+	@echo "- s3infodev           Get version info on remote dev bucket. (usage only: make s3infodev S3_VERSION_PATH=<branch>/<sha>/<version>)"
 	@echo "- s3infoint           Get version info on remote int bucket. (usage only: make s3infoint S3_VERSION_PATH=<branch>/<sha>/<version>)"
 	@echo "- s3infoprod          Get version info on remote prod bucket. (usage only: make s3infoprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3activatedev       Activate a version at the root of '${S3_BUCKET_DEV}' bucket. (usage only: make s3activatedev DRYRUN=<true|false>"
+	@echo "                                                                                         SNAPSHOT=<snapshot> DEPLOY_GIT_BRANCH=<branch>"
 	@echo "- s3activateint       Activate a version at the root of '${S3_BUCKET_INT}' bucket. (usage only: make s3activateint DRYRUN=<true|false>"
 	@echo "                                                                                         SNAPSHOT=<snapshot> DEPLOY_GIT_BRANCH=<branch>"
 	@echo "- s3activateprod      Activate a version at the root of '${S3_BUCKET_PROD}' bucket. (usage only: make s3activateint DRYRUN=<true|false>)"
 	@echo "                                                                                         SNAPSHOT=<snapshot> DEPLOY_GIT_BRANCH=<branch>)"
+	@echo "- s3deletedev         Delete a project version in a remote dev bucket. (usage: make s3deletedev S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
 	@echo "- s3deleteint         Delete a project version in a remote int bucket. (usage: make s3deleteint S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
 	@echo "- s3deleteprod        Delete a project version in a remote prod bucket. (usage: make s3deleteprod S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
 	@echo
@@ -83,13 +86,6 @@ help:
 	@echo "----------------------------------------------------------------------------------------------------------"
 	@echo "- flushvarnish        Flush varnish instances. (usage: make flushvarnish DEPLOY_TARGET=<int|prod|infra>)"
 	@echo
-	@echo
-	@echo "----------------------------------------------------------------------------------------------------------"
-	@echo "|                     DEPRECATED                                                                         |"
-	@echo "----------------------------------------------------------------------------------------------------------"
-	@echo
-	@echo "- s3deployint         Deploys a snapshot specified with SNAPSHOT=xxx to s3 int."
-	@echo "- s3deployprod        Deploys a snapshot specified with SNAPSHOT=xxx to s3 prod."
 	@echo
 	@echo "Variables:"
 	@echo

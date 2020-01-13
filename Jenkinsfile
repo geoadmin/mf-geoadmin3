@@ -4,7 +4,8 @@ import groovy.json.JsonOutput
 
 node(label: 'jenkins-slave') {
   def stdout
-  def s3VersionPath
+  def deployedVersionDev
+  def deployedVersionInt
   def e2eTargetUrl
 
   // If it's a branch
@@ -15,12 +16,12 @@ node(label: 'jenkins-slave') {
   if (env.CHANGE_ID) {
     deployGitBranch = env.CHANGE_BRANCH
   }
-  
+
   // Two projects:
   // Project legacy/mf-geoadmin3: branch 'master'                --> s3_mf-geoadmin3_(dev|int|prod)_dublin  bucket
   // Project mvt/vib2d (vector tiles demo): branch 'mvt_clean'   --> s3_mf_geoadmin4_(int|prod)_dublin  bucket
   def project
-  
+
   if (env.BRANCH_NAME == 'mvt_clean' || (env.CHANGE_TARGET != null && env.CHANGE_TARGET == 'mvt_clean' )) {
     project = 'mvt'
   } else if  (env.BRANCH_NAME == 'master' || (env.CHANGE_TARGET != null && env.CHANGE_TARGET == 'master' )) {
@@ -29,14 +30,14 @@ node(label: 'jenkins-slave') {
     error 'Fatal error: unknown project. Aborting.'
   }
 
-  // from jenkins-shared-librairies 
+  // from jenkins-shared-librairies
   utils.abortPreviousBuilds()
 
-  try { 
-    stage('Checkout') { 
+  try {
+    stage('Checkout') {
       checkout scm
     }
-    
+
     stage('env') {
       sh 'make env'
       echo sh(returnStdout: true, script: 'env')
@@ -54,23 +55,32 @@ node(label: 'jenkins-slave') {
     stage('Build') {
       sh 'make build GIT_BRANCH=' + deployGitBranch
     }
-    
+
     // Different project --> different targets
-    stage('Deploy int/prod') {
+    stage('Deploy dev/int/prod') {
       echo 'Deploying  project <' + project + '>'
       parallel (
+        'dev': {
+          // deploy master to dev
+          if (isGitMaster) {
+            stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=dev PROJECT='+ project
+            echo stdout
+            deployedVersionDev = lines.get(lines.size() - 7)
+          } else {
+            echo 'Won\'t deploy branch <' + deployGitBranch + '> to dev. Skipping stage'
+          }
+        },
         'int': {
           // deploy anything to int (branches for PR, or master for deploy day)
           stdout = sh returnStdout: true, script: 'make s3deploy DEPLOY_TARGET=int PROJECT='+ project + ' DEPLOY_GIT_BRANCH=' + deployGitBranch
           echo stdout
           def lines = stdout.readLines()
-          deployedVersion = lines.get(lines.size() - 7)
-          s3VersionPath = lines.get(lines.size() - 5)
+          deployedVersionInt = lines.get(lines.size() - 7)
           e2eTargetUrl = lines.get(lines.size() - 3)
         },
         'prod': {
           // Both projects 'mvt' and 'mf-geoadmin3' are deployable to <prod>,
-          // but only the 'master' branches for both projects ('master' for mf-geoadmin3, 'mvt_clean' for mvt/vib2d) 
+          // but only the 'master' branches for both projects ('master' for mf-geoadmin3, 'mvt_clean' for mvt/vib2d)
           if (isGitMaster) {
             stdout = sh returnStdout: true, script: 'make s3copybranch PROJECT='+ project + ' DEPLOY_TARGET=prod DEPLOY_GIT_BRANCH=' + deployGitBranch
             echo stdout
@@ -93,12 +103,12 @@ node(label: 'jenkins-slave') {
         if (response.status == 200) {
 
           echo 'Get personnal access token'
-          def userpass 
+          def userpass
           withCredentials([usernameColonPassword(credentialsId: 'iwibot-admin-user-github-token', variable: 'USERPASS')]) {
             userpass = sh returnStdout: true, script: 'echo $USERPASS'
           }
           def token = 'token ' + userpass.split(':')[1].trim()
-          
+
           echo 'Parse the json'
           // Don't put instance of JsonSlurperClassic in a variable it will trigger a java.io.NotSerializableException
           def result = new JsonSlurperClassic().parseText(response.content)
@@ -110,11 +120,11 @@ node(label: 'jenkins-slave') {
           echo 'Add test link'
           body = body + '\n\n' + testLink
           def bodyEscaped = JsonOutput.toJson(body)
-          
+
           echo 'Body sent: ' + bodyEscaped
           httpRequest acceptType: 'APPLICATION_JSON',
                       consoleLogResponseBody: false,
-                      customHeaders: [[maskValue: true, name: 'Authorization', value: token]], 
+                      customHeaders: [[maskValue: true, name: 'Authorization', value: token]],
                       httpMode: 'POST',
                       requestBody: '{"body": ' + bodyEscaped + '}',
                       responseHandle: 'NONE',
@@ -149,11 +159,24 @@ node(label: 'jenkins-slave') {
         }
       )
     }
-    // Activate all branches only on <int> 
-    stage('Activate int') {
-      echo 'Project <' + project + '>'
-      echo 'Activating the new version <' + deployedVersion + ' of branch  <' + deployGitBranch + '>'
-      sh 'PROJECT=' + project + ' make s3activateint DEPLOY_GIT_BRANCH=' + deployGitBranch + ' VERSION=' + deployedVersion + ' FORCE=true'
+    // Activate all branches only on <int>
+    stage('Activate dev/int') {
+      parallel (
+        'dev': {
+          if (isGitMaster) {
+            echo 'Project <' + project + '>'
+            echo 'Activating the new version <' + deployedVersionDev + ' of branch  <' + deployGitBranch + '> on dev'
+            sh 'PROJECT=' + project + ' make s3activatedev DEPLOY_GIT_BRANCH=' + deployGitBranch + ' VERSION=' + deployedVersionDev + ' FORCE=true'
+          } else {
+            echo 'Nothing to activate if not building master'
+          }
+        },
+        'int': {
+          echo 'Project <' + project + '>'
+          echo 'Activating the new version <' + deployedVersionInt + ' of branch  <' + deployGitBranch + '> on int'
+          sh 'PROJECT=' + project + ' make s3activateint DEPLOY_GIT_BRANCH=' + deployGitBranch + ' VERSION=' + deployedVersionInt + ' FORCE=true'
+        }
+      );
     }
 
   } catch(e) {

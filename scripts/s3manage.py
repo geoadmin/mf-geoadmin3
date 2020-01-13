@@ -331,8 +331,8 @@ def __activate_version__(branch_name, version, bucket_name, bucket_url):
     print('bucket_name', bucket_name)
 
     # The root for copying the files is different for master and all other branches
-    # root: s3://mf-geoadmin3-(int|prod)-dublin/
-    # <branch>: s3://mf-geoadmin3-(int|prod)-dublin/<branch>/
+    # root: s3://mf-geoadmin3-(dev|int|prod)-dublin/
+    # <branch>: s3://mf-geoadmin3-(dev|int|prod)-dublin/<branch>/
     # special case when branch = mvt_clean : s3://mf-geoadmin4-(int-prod)-dublin/
     if branch_name in MASTER_BRANCHES:
         branch_root = ''

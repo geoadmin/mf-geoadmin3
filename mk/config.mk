@@ -40,7 +40,8 @@ PYTHON_FILES := $(shell find scripts test/saucelabs -type f -name "*.py" -print)
 # Apache variables
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
 LAST_APACHE_BASE_DIRECTORY := $(call lastvalue,apache-base-directory)
-APACHE_BASE_PATH ?= $(shell if [ "${USER_NAME}" = "root" ]; then echo ""; else echo "/$(USER_NAME)"; fi;)
+# on mf1-dev, we can't be root, so geodata is also used as a surrogate to build the main apache config
+APACHE_BASE_PATH ?= $(shell if [ "${USER_NAME}" = "root" ] || [ "${USER_NAME}" = "geodata" ]; then echo ""; else echo "/$(USER_NAME)"; fi;)
 LAST_APACHE_BASE_PATH := $(call lastvalue,apache-base-path)
 
 # Local server
@@ -151,7 +152,7 @@ LAST_LAYERSCONFIG_VERSION := $(call lastvalue,layersconfig-version)
 ## So prepend all python scripts with python cmd
 ## See: https://bugs.launchpad.net/virtualenv/+bug/241581/comments/11
 PYTHON_VENV=.build-artefacts/python-venv
-PYTHON_CMD=${PYTHON_VENV}/bin/python
+PYTHON_CMD=${PYTHON_VENV}/bin/python2
 AWS_CMD=${PYTHON_VENV}/bin/aws
 PIP_CMD=${PYTHON_VENV}/bin/pip
 MAKO_CMD=${PYTHON_VENV}/bin/mako-render
@@ -175,7 +176,7 @@ else
 						NVM will be used to force the required version during build, but this has a big impact on build performance.\n \
 						Please set your environment to use version \e[1m$(NODE_VERSION)\e[0m\e[33m of node.js for optimal build time\n \
 						================================================================================\n\e[0m" \
-		&& source ${NVM_DIR}/nvm.sh && nvm use ${NODE_VERSION} && 
+		&& source ${NVM_DIR}/nvm.sh && nvm use ${NODE_VERSION} &&
 endif
 # Node version must (might, see above) be forced at every step to ensure that the default OS version is not used
 # as it was causing many syntax errors in node modules (default debian jessie version is 5.9.x, most modules need > 6.x.x)

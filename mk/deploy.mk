@@ -55,6 +55,18 @@ ifeq ($(DEPLOY_TARGET),prod)
 	S3_BUCKET_URL := $(S3_BUCKET_PROD_URL)
 endif
 
+.PHONY: s3deploydev
+s3deploydev:
+	$(MAKE) s3deploy DEPLOY_TARGET=dev
+
+.PHONY: s3deployint
+s3deployint:
+	$(MAKE) s3deploy DEPLOY_TARGET=int
+
+.PHONY: s3deployprod
+s3deployprod:
+	$(MAKE) s3deploy DEPLOY_TARGET=prod
+
 PHONY: s3deploy
 s3deploy: guard-CLONEDIR \
           guard-DEPLOY_TARGET \
@@ -64,10 +76,10 @@ s3deploy: guard-CLONEDIR \
           .build-artefacts/requirements.timestamp \
           showVariables
 	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${IS_MASTER_BRANCH};
-	make s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
-	                  DEPLOY_TARGET=${DEPLOY_TARGET} \
-	                  DEPLOY_GIT_BRANCH=${DEPLOY_GIT_BRANCH}
-	                  PROJECT=${PROJECT}
+	$(MAKE) s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
+	                         DEPLOY_TARGET=${DEPLOY_TARGET} \
+	                         DEPLOY_GIT_BRANCH=${DEPLOY_GIT_BRANCH}
+	                         PROJECT=${PROJECT}
 
 .PHONY: s3copybranch
 s3copybranch: guard-S3_BUCKET \
@@ -81,12 +93,12 @@ s3copybranch: guard-S3_BUCKET \
 	                                                       ${S3_BUCKET} \
 	                                                       ${DEPLOY_GIT_BRANCH}
 
-s3list := $(patsubst %,s3list%,int,prod)
+s3list := $(patsubst %,s3list%,dev,int,prod)
 PHONY: $(s3list)
 s3list%: .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py list $(S3_BUCKET_$(shell echo $*| tr a-z A-Z))
 
-s3info := $(patsubst %,s3info%,int,prod)
+s3info := $(patsubst %,s3info%,dev,int,prod)
 PHONY: $(s3info)
 s3info%: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
@@ -103,7 +115,7 @@ s3activate%: guard-DEPLOY_GIT_BRANCH \
 	                                    --url $(S3_BUCKET_$(shell echo $*| tr a-z A-Z)_URL) \
 	                                    $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));
 
-s3delete := $(patsubst %,s3delete%,int,prod)
+s3delete := $(patsubst %,s3delete%,dev,int,prod)
 PHONY: $(s3delete)
 s3delete%: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} $(S3_BUCKET_$(shell echo $*| tr a-z A-Z));

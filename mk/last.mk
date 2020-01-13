@@ -6,11 +6,11 @@ define cachelastvariable
 	    echo "$2" > .build-artefacts/last-$4 || :
 endef
 
- 
+
 ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 	mkdir -p .build-artefacts
 	virtualenv --no-site-packages $@
-	${PIP_CMD} install --index-url ${PYPI_URL} -U pip setuptools
+	${PIP_CMD} install --index-url ${PYPI_URL} -U pip setuptools==44.0.0
 	$(MAKE) .build-artefacts/requirements.timestamp
 
 
@@ -83,7 +83,7 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 #.build-artefacts/last-GIT_COMMIT_HASH.$(GIT_COMMIT_HASH):
 #	@rm -f .build-artefacts/last-GIT_COMMIT_HASH.*
 #	touch $@
- 
+
 #.build-artefacts/last-GIT_COMMIT_SHORT.$(GIT_COMMIT_SHORT):
 #	@rm -f .build-artefacts/last-GIT_COMMIT_SHORT.*
 #	touch $@
