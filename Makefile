@@ -53,7 +53,7 @@ prod:
 # backend services (aka layerConfig)
 -include mk/serviceconfig.mk
 
-# Include targets used to get a working application in 
+# Include targets used to get a working application in
 # src/
 -include mk/debug.mk
 
@@ -70,7 +70,7 @@ prod:
 # and moving around stuff in s3, with the help of s3manage.py)
 -include mk/deploy.mk
 
-# Everything concerning installation and update of 
+# Everything concerning installation and update of
 # external libraries
 -include mk/libs.mk
 
@@ -203,5 +203,6 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	@if [ ! -e ${PYTHON_VENV}/local ]; then \
 	  ln -s . ${PYTHON_VENV}/local; \
 	fi
+	mkdir ${PYTHON_VENV}/local/lib/python2.7/site-packages/mako/ && \
 	cp scripts/cmd.py ${PYTHON_VENV}/local/lib/python2.7/site-packages/mako/cmd.py
 	touch $@
