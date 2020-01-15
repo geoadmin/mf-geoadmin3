@@ -203,6 +203,6 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	@if [ ! -e ${PYTHON_VENV}/local ]; then \
 	  ln -s . ${PYTHON_VENV}/local; \
 	fi
-	mkdir ${PYTHON_VENV}/local/lib/python2.7/site-packages/mako/ && \
+	mkdir -p ${PYTHON_VENV}/local/lib/python2.7/site-packages/mako/ && \
 	cp scripts/cmd.py ${PYTHON_VENV}/local/lib/python2.7/site-packages/mako/cmd.py
 	touch $@
