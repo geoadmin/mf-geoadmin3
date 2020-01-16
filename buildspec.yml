@@ -50,9 +50,9 @@ phases:
       - npm install
   build:
     commands:
-      - echo Build started on $(date)
+      - echo Build started on `date`
       - make cleanall all
 
   post_build:
     commands:
-      - echo Build completed on $(date)
+      - echo Build completed on `date`
