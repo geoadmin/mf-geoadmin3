@@ -1,0 +1,58 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_DEFAULT_REGION: eu-west-1
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.7
+    commands:
+      - echo "Installing python 2.7"
+      - apt-get update && apt-get install -y python2.7 python2.7-dev virtualenv build-essential
+
+  pre_build:
+    commands:
+      - echo "Configuring stuff..."
+      - aws --version
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - GITHUB_BRANCH=${CODEBUILD_WEBHOOK_HEAD_REF#refs/heads/*}
+      - TODAY=$(date '+%Y%m%d')
+      - |-
+        if [ "${CODEBUILD_WEBHOOK_TRIGGER}" = pr/* ]; then
+          PULL_REQUEST=${CODEBUILD_WEBHOOK_TRIGGER#pr/*}
+        fi
+      - |-
+        if [ "${GIT_BRANCH}" != master  ]; then
+            LATEST=${GITHUB_BRANCH:-staging}
+        else
+            LATEST=latest
+        fi
+      - echo "=========== VERSIONS ============="
+      - python --version
+      - python2 --version
+      - bash --version
+      - echo "=========== VARIABLES ============="
+      - echo CODEBUILD_RESOLVED_SOURCE_VERSION=${CODEBUILD_RESOLVED_SOURCE_VERSION}
+      - echo CODEBUILD_SOURCE_VERSION=${CODEBUILD_SOURCE_VERSION}
+      - echo CODEBUILD_WEBHOOK_BASE_REF=${CODEBUILD_WEBHOOK_BASE_REF}
+      - echo CODEBUILD_WEBHOOK_HEAD_REF=${CODEBUILD_WEBHOOK_HEAD_REF=}
+      - echo CODEBUILD_WEBHOOK_TRIGGER=${CODEBUILD_WEBHOOK_TRIGGER}
+      - echo CODEBUILD_SOURCE_VERSION=${CODEBUILD_SOURCE_VERSION}
+      - echo CODEBUILD_BUILD_ID=${CODEBUILD_BUILD_ID}
+      - echo CODEBUILD_SOURCE_REPO_URL=${CODEBUILD_SOURCE_REPO_URL}
+      - echo COMMIT_HASH=${COMMIT_HASH}
+      - echo PULL_REQUEST=${PULL_REQUEST}
+      - echo GITHUB_BRANCH=${GITHUB_BRANCH}
+      - echo "==================================="
+      - make env
+      - npm install
+  build:
+    commands:
+      - echo Build started on `date`
+      - make cleanall all
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
