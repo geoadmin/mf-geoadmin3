@@ -203,6 +203,7 @@ def __upload__(bucket_name, base_dir, git_branch, bucket_url):
     print('Test url: ')
     # This line is used by jenkins to get the E2E_TARGETURL
     print('%s%s/index.html' % (url_to_check, s3_dir_path))
+    return version
 
 
 def __list_legacy_version__():
@@ -457,10 +458,11 @@ def list_cmd(bucket_name, branch, legacy=False):
 @cli.command('upload')
 @click.option('--force', help='Do not prompt for confirmation', is_flag=True)
 @click.option('--url', 'bucket_url', help='Bucket url to check', required=True)
+@click.option('--activate', help='Activate this upload in the process', is_flag=True)
 @click.argument('snapshotdir', required=True, default=os.getcwd())
 @click.argument('bucket_name', required=True)
 @click.argument('git_branch', required=False)
-def upload_cmd(force, snapshotdir, bucket_name, git_branch, bucket_url):
+def upload_cmd(force, activate, snapshotdir, bucket_name, git_branch, bucket_url):
     """Upload content of /dist directory to a bucket. You may specify a directory (it defaults to current)."""
     global s3, s3client, bucket
     s3, s3client, bucket = __init_connection__(bucket_name)
@@ -474,7 +476,9 @@ def upload_cmd(force, snapshotdir, bucket_name, git_branch, bucket_url):
         click.echo('Aborting.')
         sys.exit()
     else:
-        __upload__(bucket_name, base_dir, git_branch, bucket_url)
+        version = __upload__(bucket_name, base_dir, git_branch, bucket_url)
+        if activate:
+            activate_cmd(git_branch, version, bucket_name, force, bucket_url)
 
 
 @cli.command('info')
