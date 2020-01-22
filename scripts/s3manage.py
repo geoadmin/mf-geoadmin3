@@ -478,7 +478,7 @@ def upload_cmd(force, activate, snapshotdir, bucket_name, git_branch, bucket_url
     else:
         version = __upload__(bucket_name, base_dir, git_branch, bucket_url)
         if activate:
-            activate_cmd(git_branch, version, bucket_name, force, bucket_url)
+            __activate_version__(git_branch, version, bucket_name, bucket_url)
 
 
 @cli.command('info')
