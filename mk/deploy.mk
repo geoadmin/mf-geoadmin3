@@ -20,9 +20,11 @@ ifeq (IS_MASTER_BRANCH, true)
 	S3_SRC_BASE_PATH = $(S3_BASE)/src/
 endif
 
+# used for s3copybranch and s3deploy to define if what has been uploaded can be activated right away (useful with master on dev and int)
+ACTIVATE_AFTER_UPLOAD = false
+
 # S3 activation variables
 S3_VERSION_PATH ?=
-
 
 # S3 delete variables
 BRANCH_TO_DELETE ?=
@@ -57,11 +59,11 @@ endif
 
 .PHONY: s3deploydev
 s3deploydev:
-	$(MAKE) s3deploy DEPLOY_TARGET=dev
+	$(MAKE) s3deploy DEPLOY_TARGET=dev ACTIVATE_AFTER_UPLOAD=true
 
 .PHONY: s3deployint
 s3deployint:
-	$(MAKE) s3deploy DEPLOY_TARGET=int
+	$(MAKE) s3deploy DEPLOY_TARGET=int ACTIVATE_AFTER_UPLOAD=true
 
 .PHONY: s3deployprod
 s3deployprod:
@@ -77,9 +79,10 @@ s3deploy: guard-CLONEDIR \
           showVariables
 	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${IS_MASTER_BRANCH};
 	$(MAKE) s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
-	                         DEPLOY_TARGET=${DEPLOY_TARGET} \
-	                         DEPLOY_GIT_BRANCH=${DEPLOY_GIT_BRANCH}
-	                         PROJECT=${PROJECT}
+	                     DEPLOY_TARGET=${DEPLOY_TARGET} \
+	                     DEPLOY_GIT_BRANCH=${DEPLOY_GIT_BRANCH}
+	                     PROJECT=${PROJECT}
+	                     ACTIVATE_AFTER_UPLOAD=${ACTIVATE_AFTER_UPLOAD}
 
 .PHONY: s3copybranch
 s3copybranch: guard-S3_BUCKET \
@@ -88,6 +91,7 @@ s3copybranch: guard-S3_BUCKET \
               .build-artefacts/requirements.timestamp
 	PROJECT=${PROJECT} ${PYTHON_CMD} ./scripts/s3manage.py upload \
 	                                                       --force \
+	                                                       $(shell if [ ${ACTIVATE_AFTER_UPLOAD} = "true" ]; then echo "--activate"; fi) \
 	                                                       --url $(S3_BUCKET_URL) \
 	                                                       ${CODE_DIR} \
 	                                                       ${S3_BUCKET} \
