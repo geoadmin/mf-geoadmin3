@@ -59,7 +59,7 @@
     "karma-phantomjs-launcher": "1.0.4",
     "less": "~3.10.1",
     "less-plugin-clean-css": "~1.5.1",
-    "mocha": "6.2.2",
+    "mocha": "7.1.0",
     "ng-annotate": "1.2.2",
     "postcss-cli": "7.1.0",
     "phantomjs-prebuilt": "2.1.16",
