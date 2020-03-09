@@ -296,7 +296,8 @@ goog.require('ga_urlutils_service');
           var data = $.param({
             geom: wkt,
             elevation_models: elevationModel,
-            offset: 1
+            offset: 0,
+            smart_filling: true
           });
 
           var config = {
