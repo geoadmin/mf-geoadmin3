@@ -295,9 +295,9 @@ goog.require('ga_urlutils_service');
           // untestable. FormData is always an ampty object in tests.
           var data = $.param({
             geom: wkt,
-            elevation_models: elevationModel,
             offset: 0,
-            smart_filling: true
+            smart_filling: true,
+            distinct_points: true
           });
 
           var config = {
