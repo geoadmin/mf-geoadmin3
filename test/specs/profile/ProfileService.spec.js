@@ -158,7 +158,7 @@ describe('ga_profile_service', function() {
         var spy = sinon.spy($http, 'post');
         gaProfile.create(feature);
         expect(spy.callCount).to.be(1);
-        expect(spy.args[0][1]).to.be('geom=%7B%22type%22%3A%22LineString%22%2C%22coordinates%22%3A%5B%5B0.0%2C0.0%5D%2C%5B1.0%2C0.0%5D%2C%5B1.0%2C1.0%5D%5D%7D&elevation_models=COMB&offset=0&smart_filling=true');
+        expect(spy.args[0][1]).to.be('geom=%7B%22type%22%3A%22LineString%22%2C%22coordinates%22%3A%5B%5B0.0%2C0.0%5D%2C%5B1.0%2C0.0%5D%2C%5B1.0%2C1.0%5D%5D%7D&offset=0&smart_filling=true&distinct_points=true');
         var config = spy.args[0][2];
         expect(config.cache).to.be(true);
         expect(config.timeout).to.be.a(Object);
