@@ -186,12 +186,16 @@ goog.require('ga_wmts_service');
       'https://geodienste.ch/db/npl_nutzungsplanung/ita',
       'https://geodienste.ch/db/planerischer_gewaesserschutz/deu',
       'https://geodienste.ch/db/planerischer_gewaesserschutz/fra',
+      'https://geodienste.ch/db/planerischer_gewaesserschutz/ita',
       'https://geodienste.ch/db/npl_waldabstandslinien/deu',
       'https://geodienste.ch/db/npl_waldabstandslinien/fra',
       'https://geodienste.ch/db/npl_waldabstandslinien/ita',
       'https://geodienste.ch/db/npl_waldgrenzen/deu',
       'https://geodienste.ch/db/npl_waldgrenzen/fra',
       'https://geodienste.ch/db/npl_waldgrenzen/ita',
+      'https://geodienste.ch/db/planungszonen_v1_0_0/deu'
+      'https://geodienste.ch/db/planungszonen_v1_0_0/fra'
+      'https://geodienste.ch/db/planungszonen_v1_0_0/ita'
       'https://geodienste.ch/db/waldreservate/deu',
       'https://geodienste.ch/db/waldreservate/fra',
       'https://geodienste.ch/db/waldreservate/ita',
