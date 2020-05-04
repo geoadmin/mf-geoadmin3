@@ -9,6 +9,9 @@
 .PHONY: all
 all: showVariables lint debug release dist apache testdebug testrelease fixrights
 
+.PHONY: ci
+ci: showVariables lint debug release dist
+
 .PHONY: build
 build: guard-STAGING env .build-artefacts/requirements.timestamp appconfig
 	source $(RUNTIME_CONFIGURATION_FILE) && $(MAKE) src/config.$(STAGING).mako all

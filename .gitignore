@@ -31,6 +31,7 @@
 /re3-translations.json
 rc_user_*
 package-lock.json
+junit-reports
 
 # FIXME
 # The following are developer-specific and should probably be in the
