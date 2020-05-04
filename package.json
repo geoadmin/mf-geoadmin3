@@ -55,7 +55,7 @@
     "jquery": "3.5.0",
     "karma": "5.0.2",
     "karma-coverage": "~2.0.1",
-    "karma-mocha": "2.0.0",
+    "karma-mocha": "2.0.1",
     "karma-junit-reporter": "^2.0.1",
     "karma-phantomjs-launcher": "1.0.4",
     "less": "~3.11.1",
