@@ -51,8 +51,17 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - make cleanall all
+      - make cleanall ci
+      # Suppress status outputs
+      - make testdebug | grep -vE 'Executed [0-9]* of [0-9]*'
+      - make testrelease | grep -vE 'Executed [0-9]* of [0-9]*'
 
   post_build:
     commands:
       - echo Build completed on `date`
+
+reports:
+  reportGroupJunit:
+    files:
+      - 'junit-reports/**/*'
+    file-format: JunitXml # default is JunitXml
