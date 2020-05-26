@@ -53,6 +53,7 @@ node(label: 'jenkins-slave') {
     }
 
     stage('Build') {
+      sh 'command -v jq &> /dev/null || DEBIAN_FRONTEND=noninteractive apt-get -yq install jq'
       sh 'make build GIT_BRANCH=' + deployGitBranch
     }
 
