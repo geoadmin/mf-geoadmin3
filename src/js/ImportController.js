@@ -227,7 +227,6 @@ goog.require('ga_wmts_service');
       'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000004200001/MapServer/WMSServer',
       // WMTS servers
       'https://tiles.arcgis.com/tiles/oPre3pOfRfefL8y0/arcgis/rest/services/Topographic_Map_Switzerland/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
-      'https://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml',
       'http://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml',
       'https://wmts.geo.bs.ch/1.0.0/WMTSCapabilities.xml',
       'https://osmlab.github.io/wmts-osm/WMTSCapabilities.xml',
