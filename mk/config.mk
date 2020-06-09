@@ -73,7 +73,7 @@ LAST_PROXY_URL := $(call lastvalue,proxy-url)
 PYPI_URL ?= https://pypi.org/simple/
 LAST_PYPI_URL := $(call lastvalue,pypi-url)
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
-ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
+ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi\.ch|\.geo\.admin\.ch|\.swisstopo\.cloud))
 HREF_REGEXP ?= ^\s*(https?|whatsapp|file|s?ftp|blob|mailto):
 
 
