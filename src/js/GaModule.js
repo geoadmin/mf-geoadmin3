@@ -201,7 +201,7 @@ goog.require('ga_waitcursor_service');
   });
 
   module.config(function(gaPreviewFeaturesProvider, gaGlobalOptions) {
-    gaPreviewFeaturesProvider.url = gaGlobalOptions.cachedApiUrl +
+    gaPreviewFeaturesProvider.url = gaGlobalOptions.apiUrl +
         '/rest/services/all/MapServer/';
   });
 

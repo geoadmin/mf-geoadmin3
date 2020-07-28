@@ -43,7 +43,7 @@ describe('ga_tooltip_controller', function() {
 
       it('set scope values', function() {
         expect(scope.options.tolerance).to.be(10);
-        expect(scope.options.htmlUrlTemplate).to.be(gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup');
+        expect(scope.options.htmlUrlTemplate).to.be(gaGlobalOptions.apiUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup');
       });
     });
 
@@ -59,7 +59,7 @@ describe('ga_tooltip_controller', function() {
 
       it('set scope values', function() {
         expect(scope.options.tolerance).to.be(20);
-        expect(scope.options.htmlUrlTemplate).to.be(gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup');
+        expect(scope.options.htmlUrlTemplate).to.be(gaGlobalOptions.apiUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup');
       });
     });
   });

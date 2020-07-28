@@ -5,7 +5,7 @@ goog.provide('ga_seo_controller');
 
   module.controller('GaSeoController', function($scope, gaGlobalOptions) {
     $scope.options = {
-      htmlUrlTemplate: gaGlobalOptions.cachedApiUrl +
+      htmlUrlTemplate: gaGlobalOptions.apiUrl +
           '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup',
       searchUrl: gaGlobalOptions.apiUrl + '/rest/services/ech/SearchServer',
       identifyUrl: gaGlobalOptions.apiUrl +

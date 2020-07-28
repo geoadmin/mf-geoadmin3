@@ -49,7 +49,6 @@ beforeEach(function() {
       publicUrl: location.protocol + publicUrl,
       publicUrlRegexp: /^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*/,
       adminUrlRegexp: /^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)/,
-      cachedApiUrl: location.protocol + apiUrl + cacheAdd,
       cachedPrintUrl: location.protocol + printUrl + cacheAdd,
       resourceUrl: location.origin + pathname + versionSlashed,
       proxyUrl: location.protocol + proxyUrl + '/',
@@ -124,7 +123,7 @@ beforeEach(function() {
 
   module(function(gaPreviewFeaturesProvider, gaGlobalOptions) {
     gaPreviewFeaturesProvider.url =
-        gaGlobalOptions.cachedApiUrl + '/rest/services/all/MapServer/';
+        gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/';
   });
 
   module(function(gaProfileProvider, gaGlobalOptions) {
