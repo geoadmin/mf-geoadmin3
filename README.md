@@ -4,7 +4,11 @@ mf-geoadmin3
 [![Build Status](https://jenkins.bgdi.ch/buildStatus/icon?job=chtopo_igeb_mf-geoadmin3/master)](https://jenkins.bgdi.ch/job/chtopo_igeb_mf-geoadmin3/job/master/)
 [![Greenkeeper badge](https://badges.greenkeeper.io/geoadmin/mf-geoadmin3.svg)](https://greenkeeper.io/)
 
-Next generation map.geo.admin.ch
+___
+**Freezed version map.geo.admin.ch**
+
+*mf-geoadmin-3 will not be developed further (bug fix only). map.geo.admin.ch will only be developed  in the new experience [web-mapviewer](https://github.com/geoadmin/web-mapviewer). Follow our transition in 2021 either on the [forum](https://groups.google.com/g/geoadmin-api) or in [web-mapviewer](https://github.com/geoadmin/web-mapviewer)*
+___
 
 # Getting started
 
