@@ -150,6 +150,7 @@ goog.require('ga_wmts_service');
       'http://wms.geoportal.ch:8080/geoserver/AVAI/wms',
       'https://geodienste.ch/db/av/deu',
       'https://geodienste.ch/db/av/fra',
+      'https://geodienste.ch/db/av/ita',
       'https://geodienste.ch/db/fruchtfolgeflaechen/deu',
       'https://geodienste.ch/db/fruchtfolgeflaechen/fra',
       'https://geodienste.ch/db/fruchtfolgeflaechen/ita',
