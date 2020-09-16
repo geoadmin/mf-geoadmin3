@@ -108,7 +108,7 @@ LESS_PARAMETERS ?= -ru
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"fr\", \"it\", \"en\", \"rm\"]'
 DEFAULT_TOPIC_ID ?= ech
-TOPICS =$(shell curl -s --retry 3 https://${CONFIG_URL}/rest/services | jq -r '.topics[].id')
+TOPICS =$(shell curl -s --retry 3 https:${CONFIG_TECH_URL}/rest/services | jq -r '.topics[].id')
 
 
 # Translations variables
