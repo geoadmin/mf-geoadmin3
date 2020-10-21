@@ -232,7 +232,7 @@ goog.require('ga_urlutils_service');
                 'ch.swisstopo.vegetation.3d'
               ];
               var tilesetTs = [
-                '20200318',
+                '20201020',
                 '20180716',
                 '20190313'
               ];
