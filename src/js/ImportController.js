@@ -146,6 +146,7 @@ goog.require('ga_wmts_service');
       'http://webdienste.zugmap.ch/basisplan_sw/service.svc/get',
       'http://webdienste.zugmap.ch/basisplan_farbig/service.svc/get',
       'http://webdienste.zugmap.ch/Landwirtschaft_Naturschutz/service.svc/get',
+      'https://wms.geo.sh.ch/wms?SERVICE=WMS',
       'http://service.lisag.ch/wms',
       'http://wms.geoportal.ch:8080/geoserver/AVAI/wms',
       'https://geodienste.ch/db/av/deu',
