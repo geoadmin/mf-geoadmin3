@@ -143,6 +143,7 @@ goog.require('ga_wmts_service');
       'https://map.geo.tg.ch/proxy/geofy_chsdi3/biomasse-oberflaeche?access_key=YoW2syIQ4xe0ccJA',
       'https://map.geo.tg.ch/proxy/geofy_chsdi3/gefahrenhinweiskarte_allgemeine_gefahrengebiete?access_key=YoW2syIQ4xe0ccJA',
       'https://map.geo.tg.ch/proxy/geofy_chsdi3/bodenuebersicht-regionen?access_key=YoW2syIQ4xe0ccJA',
+      'https://wms.geo.ti.ch/service',
       'http://webdienste.zugmap.ch/basisplan_sw/service.svc/get',
       'http://webdienste.zugmap.ch/basisplan_farbig/service.svc/get',
       'http://webdienste.zugmap.ch/Landwirtschaft_Naturschutz/service.svc/get',
@@ -247,7 +248,8 @@ goog.require('ga_wmts_service');
       'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
       'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
       'http://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml',
-      'https://geo.so.ch/api/wmts/1.0.0/WMTSCapabilities.xml'
+      'https://geo.so.ch/api/wmts/1.0.0/WMTSCapabilities.xml',
+      'https://wmts.geo.ti.ch/wmts/1.0.0/WMTSCapabilities.xml'
     ];
 
     // Typeahead manages a list of objects with a url property, so we
