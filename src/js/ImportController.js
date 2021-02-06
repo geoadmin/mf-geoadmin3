@@ -28,6 +28,7 @@ goog.require('ga_wmts_service');
     var servers = [
       'https://wms.geo.admin.ch/?lang=',
       'https://wms-inspire.geo.admin.ch/?SERVICE=WMS',
+      'https://apps.ecmwf.int/wms/?token=public',
       'http://owsproxy.lgl-bw.de/owsproxy/ows/WMS_Maps4BW',
       'https://www.ogd.stadt-zuerich.ch/mapproxy/wmts/1.0.0/WMTSCapabilities.xml',
       'https://wms.geo.gl.ch/',
