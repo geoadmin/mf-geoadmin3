@@ -48,7 +48,10 @@ goog.provide('ga_urlutils_service');
           }
           return (!this.isHttps(url) ||
                   !this.isAdminValid(url) ||
-                  /.*kmz$/.test(url));
+                  /.*(kmz)$/.test(url) ||
+                  (!this.isAdminValid(url) &&
+                   /.*(kmz|kml|gpx|xml)$/.test(url))
+          );
         };
 
         // Test using a head request if the remote resource enables CORS
@@ -107,7 +110,8 @@ goog.provide('ga_urlutils_service');
         this.unProxifyUrl = function(url) {
           if (this.isValid(url)) {
             var reg = new RegExp(['^(http|https)://(service-proxy.',
-              '(dev|int|prod).bgdi.ch|proxy.geo.admin.ch)',
+              '(dev|int|prod).bgdi.ch|proxy.geo.admin.ch|',
+              'service-proxy.bgdi-dev.swisstopo.cloud)',
               '/(http|https)/(.*)'].join(''));
             var parts = reg.exec(url);
             if (parts && parts.length === 6) {
