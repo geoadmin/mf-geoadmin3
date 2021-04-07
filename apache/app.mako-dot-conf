@@ -37,7 +37,7 @@ RewriteRule ${apache_base_path}/src/layersConfig\.(\w+)\.json http:${api_url}/re
 RewriteRule ${apache_base_path}/src/services http:${api_url}/rest/services [P]
 
 # Config url on dev (new style #4687)
-RewriteRule ${apache_base_path}/configs/(de|fr|it|rm|en)/layersConfig\.json http:${api_url}/rest/services/all/MapServer/layersConfig?lang=$2 [P]
+RewriteRule ${apache_base_path}/configs/(de|fr|it|rm|en)/layersConfig\.json http:${api_url}/rest/services/all/MapServer/layersConfig?lang=$1 [P]
 RewriteRule ${apache_base_path}/configs/(de|fr|it|rm|en)/catalog\.(\w+)\.json http:${api_url}/rest/services/$2/CatalogServer?lang=$1 [P]
 RewriteRule ${apache_base_path}/configs/(de|fr|it|rm|en)/services\.json http:${api_url}/rest/services [P]
 RewriteRule ${apache_base_path}/configs/services\.json http:${api_url}/rest/services [P]
