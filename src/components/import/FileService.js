@@ -16,7 +16,7 @@ goog.provide('ga_file_service');
 
         // Test the validity of the file size
         this.isValidFileSize = function(fileSize) {
-          return !(fileSize > 20000000); // 20 Mo
+          return !(fileSize > 25000000); // 25 Mo
         };
 
         this.isWmsGetCap = function(fileContent) {
