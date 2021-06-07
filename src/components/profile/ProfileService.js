@@ -195,8 +195,8 @@ goog.require('ga_urlutils_service');
         };
 
         // Hiking time
-        // Official formula: http://www.wandern.ch/download.php?id=4574_62003b89
-        // Reference link: http://www.wandern.ch
+        // Official formula: https://www.wanderwege.schweizer-wanderwege.ch/de/downloads/hilfsmittel-signalisation in Excelfile
+        // Reference link: www.schweizer-wanderwege.ch
         // But we use a slightly modified version from schweizmobil
         this.hikingTime = function() {
           var wayTime = 0;
