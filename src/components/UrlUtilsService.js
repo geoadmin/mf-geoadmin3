@@ -53,7 +53,7 @@ goog.provide('ga_urlutils_service');
 
         // Test using a head request if the remote resource enables CORS
         this.isCorsEnabled = function(url) {
-          return $http.head(url, { timeout: 1500 });
+          return $http.options(url, { timeout: 1500 });
         };
 
         this.buildProxyUrl = function(url) {
