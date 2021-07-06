@@ -46,7 +46,7 @@ describe('ga_featuretree_controller', function() {
       });
 
       it('set scope values', function() {
-        expect(scope.options.msUrl).to.be(gaGlobalOptions.cachedApiUrl + '/rest/services/all/MapServer');
+        expect(scope.options.msUrl).to.be(gaGlobalOptions.apiUrl + '/rest/services/all/MapServer');
         expect(scope.options.featuresShown).to.be(false);
         expect(scope.options.hasMoreResults).to.be(false);
         expect(scope.options.nbFeatures).to.be(0);

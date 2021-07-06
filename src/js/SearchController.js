@@ -13,9 +13,9 @@ goog.provide('ga_search_controller');
     }
 
     $scope.options = {
-      searchUrl: gaGlobalOptions.cachedApiUrl +
+      searchUrl: gaGlobalOptions.apiUrl +
           '/rest/services/{Topic}/SearchServer' + sr,
-      featureUrl: gaGlobalOptions.cachedApiUrl +
+      featureUrl: gaGlobalOptions.apiUrl +
           '/rest/services/{Topic}/MapServer/{Layer}/{Feature}' + sr
     };
   });
