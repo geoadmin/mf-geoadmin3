@@ -256,7 +256,8 @@ goog.require('ga_wmts_service');
       'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
       'http://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml',
       'https://geo.so.ch/api/wmts/1.0.0/WMTSCapabilities.xml',
-      'https://wmts.geo.ti.ch/wmts/1.0.0/WMTSCapabilities.xml'
+      'https://wmts.geo.ti.ch/wmts/1.0.0/WMTSCapabilities.xml',
+      'https://p20.cosmos-project.ch/sd20alps_map/wmts?request=getcapabilities'
     ];
 
     // Typeahead manages a list of objects with a url property, so we
