@@ -59,7 +59,7 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - ls -lah junit-reports
+      - ls -lah test
 
 reports:
   reportGroupJunit:
