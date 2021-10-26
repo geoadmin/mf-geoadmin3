@@ -59,10 +59,4 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - ls -lah test
-
-reports:
-  reportGroupJunit:
-    files:
-      - 'junit-reports/**/*'
-    file-format: JunitXml # default is JunitXml
+      - ls -lah .
