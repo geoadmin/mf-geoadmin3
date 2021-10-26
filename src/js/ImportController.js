@@ -160,6 +160,10 @@ goog.require('ga_wmts_service');
       'https://geodienste.ch/db/fruchtfolgeflaechen/deu',
       'https://geodienste.ch/db/fruchtfolgeflaechen/fra',
       'https://geodienste.ch/db/fruchtfolgeflaechen/ita',
+      'https://geodienste.ch/db/gefahrenkarten_v1_3_0/deu',
+      'https://geodienste.ch/db/gefahrenkarten_v1_3_0/fra',
+      'https://geodienste.ch/db/gefahrenkarten_v1_3_0/ita',
+      'https://geodienste.ch/db/gefahrenkarten_v1_3_0/eng',
       'https://geodienste.ch/db/kantonale_ausnahmetransportrouten/deu',
       'https://geodienste.ch/db/kantonale_ausnahmetransportrouten/fra',
       'https://geodienste.ch/db/kantonale_ausnahmetransportrouten/ita',
@@ -256,7 +260,9 @@ goog.require('ga_wmts_service');
       'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
       'http://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml',
       'https://geo.so.ch/api/wmts/1.0.0/WMTSCapabilities.xml',
-      'https://wmts.geo.ti.ch/wmts/1.0.0/WMTSCapabilities.xml'
+      'https://wmts.geo.ti.ch/wmts/1.0.0/WMTSCapabilities.xml',
+      'https://www.mapant.ch/WMTSCapabilities.xml',
+      'https://p20.cosmos-project.ch/sd20alps_map/wmts?request=getcapabilities'
     ];
 
     // Typeahead manages a list of objects with a url property, so we
