@@ -59,4 +59,4 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - ls -lah .
+      - find . -iname xml
