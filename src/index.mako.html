@@ -767,6 +767,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         var configUrl = setBackend(prtl + cfg['config_url'], prtl + cfg['config_tech_url'], 'config_url');
         var altiUrl = setBackend(prtl + cfg['alti_url'], prtl + cfg['alti_tech_url'], 'alti_url');
         var shopUrl = setBackend(prtl + cfg['shop_url'], prtl + cfg['shop_tech_url'], 'shop_url');
+        var shortenUrl = setBackend(prtl + cfg['shorten_url'], prtl + cfg['shorten_tech_url'], 'shorten_url');
         var publicUrl = setBackend(prtl + cfg['public_url'], prtl + cfg['public_tech_url'], 'public_url');
         var printUrl = setBackend(prtl + cfg['print_url'], prtl + cfg['print_tech_url'], 'print_url');
         var proxyUrl = prtl + cfg['proxy_url'] + '/';
@@ -796,6 +797,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           printUrl: printUrl,
           proxyUrl: proxyUrl,
           shopUrl: shopUrl,
+	  shortenUrl: shortenUrl,
           publicUrl: publicUrl,
           publicUrlRegexp: new RegExp(cfg['public_url_regexp']),
           adminUrlRegexp: adminUrlRegexp,

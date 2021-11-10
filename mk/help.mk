@@ -94,6 +94,7 @@ help:
 	@echo "- CONFIG_URL Service URL      (build with: $(LAST_CONFIG_URL), current value: $(CONFIG_URL))"
 	@echo "- ALTI_URL Alti service URL   (build with: $(LAST_ALTI_URL), current value: $(ALTI_URL))"
 	@echo "- PRINT_URL Print service URL (build with: $(LAST_PRINT_URL), current value: $(PRINT_URL))"
+	@echo "- SHORTEN_URL Shortener URL   (build with: $(LAST_SHORTEN_URL), current value: $(SHORTEN_URL))"
 	@echo "- SHOP_URL Service URL        (build with: $(LAST_SHOP_URL), current value: $(SHOP_URL))"
 	@echo "- WMS_URL Service URL         (build with  $(LAST_WMS_URL), current value: $(WMS_URL))"
 	@echo "- WMTS_URL Service URL        (build with  $(LAST_WMTS_URL), current value: $(WMTS_URL))"

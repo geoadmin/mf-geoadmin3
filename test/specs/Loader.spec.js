@@ -13,6 +13,7 @@ beforeEach(function() {
     var printUrl = '//print.geo.admin.ch';
     var proxyUrl = '//proxy.geo.admin.ch';
     var shopUrl = '//shop.bgdi.ch';
+    var shortenUrl = '//s.geo.admin.ch';
     var wmsUrl = '//wms.geo.admin.ch';
     var wmtsUrl = '//tod{s}.bgdi.ch';
     var terrainUrl = '//terrain100.geo.admin.ch';
@@ -40,6 +41,7 @@ beforeEach(function() {
       altiUrl: location.protocol + altiUrl,
       printUrl: location.protocol + printUrl,
       shopUrl: location.protocol + shopUrl,
+      shortenUrl: location.protocol + shortenUrl,
       publicUrl: location.protocol + publicUrl,
       publicUrlRegexp: /^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*/,
       adminUrlRegexp: /^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)/,
@@ -128,7 +130,7 @@ beforeEach(function() {
 
   module(function(gaUrlUtilsProvider, gaGlobalOptions) {
     gaUrlUtilsProvider.shortenUrl =
-        gaGlobalOptions.apiUrl + '/shorten.json';
+        gaGlobalOptions.shortenUrl + '/';
   });
 
   module(function(gaQueryProvider, gaGlobalOptions) {

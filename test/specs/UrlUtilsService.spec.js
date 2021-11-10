@@ -165,7 +165,7 @@ describe('ga_urlutils_service', function() {
 
     describe('#shorten()', function() {
       var $httpBackend;
-      var shortenUrl = 'http://api3.geo.admin.ch/shorten.json?url=foo';
+      var shortenUrl = 'http://s.geo.admin.ch/';
       beforeEach(inject(function($injector) {
         $httpBackend = $injector.get('$httpBackend');
       }));
@@ -181,7 +181,7 @@ describe('ga_urlutils_service', function() {
       });
 
       it('shorten a url successfully', function(done) {
-        $httpBackend.expectGET(shortenUrl).respond({shorturl: 'shortenfoo'});
+        $httpBackend.expectPOST(shortenUrl).respond({shorturl: 'shortenfoo'});
         gaUrlUtils.shorten('foo').then(function(url) {
           expect(url).to.be('shortenfoo');
           done();
@@ -192,7 +192,7 @@ describe('ga_urlutils_service', function() {
 
       it('handle service error displaying a log an returning the initial url', function(done) {
         var errorSpy = sinon.stub(window.console, 'error');
-        $httpBackend.expectGET(shortenUrl).respond(501);
+        $httpBackend.expectPOST(shortenUrl).respond(501);
         gaUrlUtils.shorten('foo').then(function(url) {
           expect(url).to.be('foo');
           expect(errorSpy.callCount).to.be(1);

@@ -43,6 +43,8 @@ define buildpage
 		--var "public_tech_url=$(PUBLIC_TECH_URL)" \
 		--var "shop_url=$(SHOP_URL)" \
 		--var "shop_tech_url=$(SHOP_TECH_URL)" \
+		--var "shorten_url=$(SHORTEN_URL)" \
+		--var "shorten_tech_url=$(SHORTEN_TECH_URL)" \
 		--var "wms_url=$(WMS_URL)" \
 		--var "wms_tech_url=$(WMS_TECH_URL)" \
 		--var "wmts_url=$(WMTS_URL)" \
