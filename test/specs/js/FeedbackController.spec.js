@@ -44,7 +44,7 @@ describe('ga_feedback_controller', function() {
       expect(scope.options.useTemporaryLayer).to.be(true);
       expect(scope.options.broadcastLayer).to.be(true);
       expect(scope.options.noMoreFunctions).to.be(true);
-      expect(scope.options.feedbackUrl).to.be(gaGlobalOptions.apiUrl + '/feedback');
+      expect(scope.options.feedbackUrl).to.be(gaGlobalOptions.feedbackUrl + '/api/feedback');
     });
   });
 });
