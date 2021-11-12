@@ -36,6 +36,8 @@ define buildpage
 		--var "api_tech_url=$(API_TECH_URL)" \
 		--var "alti_url=$(ALTI_URL)" \
 		--var "alti_tech_url=$(ALTI_TECH_URL)" \
+		--var "feedback_url=$(FEEDBACK_URL)" \
+		--var "feedback_tech_url=$(FEEDBACK_TECH_URL)" \
 		--var "print_url=$(PRINT_URL)" \
 		--var "print_tech_url=$(PRINT_TECH_URL)" \
 		--var "proxy_url=$(PROXY_URL)" \

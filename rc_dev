@@ -6,6 +6,7 @@ export E2E_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch
 export API_URL=//mf-chsdi3.dev.bgdi.ch
 export ALTI_URL=//mf-chsdi3.dev.bgdi.ch
 export SHOP_URL=//shop-bgdi.dev.bgdi.ch
+export FEEDBACK_URL=//sys-map.dev.bgdi.ch
 export PUBLIC_URL=//public.dev.bgdi.ch
 export PRINT_URL=//service-print.dev.bgdi.ch
 export PROXY_URL=//service-proxy.bgdi-dev.swisstopo.cloud
