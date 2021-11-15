@@ -5,7 +5,8 @@ goog.provide('ga_share_controller');
 
   module.controller('GaShareController', function($scope, gaGlobalOptions) {
     $scope.options = {
-      qrcodegeneratorPath: gaGlobalOptions.apiUrl + '/qrcodegenerator'
+      qrcodegeneratorPath: gaGlobalOptions.qrcodeUrl +
+        gaGlobalOptions.qrcodePath
     };
   });
 })();

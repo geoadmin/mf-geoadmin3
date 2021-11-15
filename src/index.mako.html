@@ -771,6 +771,8 @@ itemscope itemtype="http://schema.org/WebApplication"
         var publicUrl = setBackend(prtl + cfg['public_url'], prtl + cfg['public_tech_url'], 'public_url');
         var printUrl = setBackend(prtl + cfg['print_url'], prtl + cfg['print_tech_url'], 'print_url');
         var proxyUrl = prtl + cfg['proxy_url'] + '/';
+        var qrcodeUrl = setBackend(prtl + cfg['qrcode_url'], prtl + cfg['qrcode_tech_url'], 'qrcode_url');
+        var qrcodePath = cfg['qrcode_path'];
         var apiOverwrite = !!(getParam('api_url') || env);
         var configOverwrite = !!(getParam('config_url') || env);
         var localhostRegexp = new RegExp('https?:\/\/localhost:[0-9]{1,5}');
@@ -800,6 +802,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           shopUrl: shopUrl,
           publicUrl: publicUrl,
           publicUrlRegexp: new RegExp(cfg['public_url_regexp']),
+          qrcodeUrl: qrcodeUrl,
+          qrcodePath: qrcodePath,
           adminUrlRegexp: adminUrlRegexp,
           hrefRegexp: new RegExp(cfg['href_regexp']),
           cachedApiUrl: apiUrl + cacheAdd,

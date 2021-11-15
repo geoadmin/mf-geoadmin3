@@ -43,6 +43,9 @@ define buildpage
 		--var "proxy_url=$(PROXY_URL)" \
 		--var "public_url=$(PUBLIC_URL)" \
 		--var "public_tech_url=$(PUBLIC_TECH_URL)" \
+		--var "qrcode_url=$(QRCODE_URL)" \
+		--var "qrcode_tech_url=$(QRCODE_TECH_URL)" \
+		--var "qrcode_path=$(QRCODE_PATH)" \
 		--var "shop_url=$(SHOP_URL)" \
 		--var "shop_tech_url=$(SHOP_TECH_URL)" \
 		--var "wms_url=$(WMS_URL)" \

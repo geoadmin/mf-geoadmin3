@@ -50,6 +50,12 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 .build-artefacts/last-proxy-url::
 	$(call cachelastvariable,$@,$(PROXY_URL),$(LAST_PROXY_URL),proxy-url)
 
+.build-artefacts/last-qrcode-url::
+	$(call cachelastvariable,$@,$(QRCODE_URL),$(LAST_QRCODE_URL),qrcode-url)
+
+.build-artefacts/last-qrcode-path::
+	$(call cachelastvariable,$@,$(QRCODE_PATH),$(LAST_QRCODE_PATH),qrcode-path)
+
 .build-artefacts/last-apache-base-path::
 	$(call cachelastvariable,$@,$(APACHE_BASE_PATH),$(LAST_APACHE_BASE_PATH),apache-base-path)
 
