@@ -10,6 +10,7 @@ beforeEach(function() {
     var configUrl = '//map.geo.admin.ch';
     var altiUrl = '//api3.geo.admin.ch';
     var publicUrl = '//public.geo.admin.ch';
+    var feedbackUrl = '//sys-map.prod.bgdi.ch';
     var printUrl = '//print.geo.admin.ch';
     var proxyUrl = '//proxy.geo.admin.ch';
     var shopUrl = '//shop.bgdi.ch';
@@ -39,6 +40,7 @@ beforeEach(function() {
       configUrl: location.protocol + configUrl,
       altiUrl: location.protocol + altiUrl,
       printUrl: location.protocol + printUrl,
+      feedbackUrl: location.protocol + feedbackUrl,
       shopUrl: location.protocol + shopUrl,
       publicUrl: location.protocol + publicUrl,
       publicUrlRegexp: /^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*/,

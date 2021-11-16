@@ -9,7 +9,7 @@ goog.provide('ga_feedback_controller');
       useTemporaryLayer: true,
       broadcastLayer: true,
       noMoreFunctions: true,
-      feedbackUrl: gaGlobalOptions.apiUrl + '/feedback'
+      feedbackUrl: gaGlobalOptions.feedbackUrl + '/api/feedback'
     };
   });
 })();
