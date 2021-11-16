@@ -13,8 +13,8 @@ goog.require('ga_publicstorage_service');
    */
   module.provider('gaFileStorage', function() {
     this.$get = function($http, $q, gaPublicStorage) {
-      var endPoint = '/files';
-      var publicEndPoint = '';
+      var endPoint = '/api/kml/admin';
+      var publicEndPoint = '/kml/files';
       var contentType = 'application/vnd.google-earth.kml+xml';
 
       var FileStorage = function() {
@@ -35,9 +35,9 @@ goog.require('ga_publicstorage_service');
               adminId);
         };
 
-        this.save = function(id, content) {
-          return gaPublicStorage.save(endPoint, publicEndPoint, id, content,
-              contentType);
+        this.save = function(fileId, adminId, content) {
+          return gaPublicStorage.save(endPoint, publicEndPoint, fileId,
+              adminId, content, contentType);
         };
 
         // Delete the file in s3. Only if an adminId is specified

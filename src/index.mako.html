@@ -770,6 +770,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         var shopUrl = setBackend(prtl + cfg['shop_url'], prtl + cfg['shop_tech_url'], 'shop_url');
         var publicUrl = setBackend(prtl + cfg['public_url'], prtl + cfg['public_tech_url'], 'public_url');
         var printUrl = setBackend(prtl + cfg['print_url'], prtl + cfg['print_tech_url'], 'print_url');
+        var storageUrl = setBackend(prtl + cfg['storage_url'], prtl + cfg['storage_tech_url'], 'storage_url');
         var proxyUrl = prtl + cfg['proxy_url'] + '/';
         var qrcodeUrl = setBackend(prtl + cfg['qrcode_url'], prtl + cfg['qrcode_tech_url'], 'qrcode_url');
         var qrcodePath = cfg['qrcode_path'];
@@ -800,6 +801,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           printUrl: printUrl,
           proxyUrl: proxyUrl,
           shopUrl: shopUrl,
+          storageUrl: storageUrl,
+          storagePath: '/api/kml/admin',
           publicUrl: publicUrl,
           publicUrlRegexp: new RegExp(cfg['public_url_regexp']),
           qrcodeUrl: qrcodeUrl,

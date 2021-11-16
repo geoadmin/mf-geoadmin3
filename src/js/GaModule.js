@@ -196,7 +196,8 @@ goog.require('ga_waitcursor_service');
   });
 
   module.config(function(gaFileStorageProvider, gaGlobalOptions) {
-    gaFileStorageProvider.fileStorageUrl = gaGlobalOptions.apiUrl + '/files';
+    gaFileStorageProvider.fileStorageUrl = gaGlobalOptions.storageUrl +
+        gaGlobalOptions.storagePath;
     gaFileStorageProvider.publicUrl = gaGlobalOptions.publicUrl;
   });
 

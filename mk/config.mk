@@ -79,9 +79,12 @@ QRCODE_PATH ?= /api/qrcode/generate
 LAST_QRCODE_PATH := $(call lastvalue,qrcode-path)
 PROXY_URL ?= //service-proxy.prod.bgdi.ch
 LAST_PROXY_URL := $(call lastvalue,proxy-url)
+STORAGE_URL ?= //sys-public.prod.bgdi.ch
+STORAGE_TECH_URL ?= //sys-public.prod.bgdi.ch
+STORAGE_LAST_URL := $(call lastvalue,storage-url)
 PYPI_URL ?= https://pypi.org/simple/
 LAST_PYPI_URL := $(call lastvalue,pypi-url)
-PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
+PUBLIC_URL_REGEXP ?= ^https?:\/\/(sys-)?public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi\.ch|\.geo\.admin\.ch|\.swisstopo\.cloud))
 HREF_REGEXP ?= ^\s*(https?|whatsapp|file|s?ftp|blob|mailto):
 

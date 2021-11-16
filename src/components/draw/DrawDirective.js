@@ -757,9 +757,10 @@ goog.require('ga_styles_service');
           scope.statusMsgId = 'draw_file_saving';
           var kmlString = gaExportKml.create(layer,
               map.getView().getProjection());
-          var id = layer.adminId ||
-              gaFileStorage.getFileIdFromFileUrl(layer.url);
-          gaFileStorage.save(id, kmlString || '<kml></kml>').then(
+          var adminId = layer.adminId;
+          var kmlId = (adminId !== undefined) ?
+            gaFileStorage.getFileIdFromFileUrl(layer.url) : undefined;
+          gaFileStorage.save(kmlId, adminId, kmlString || '<kml></kml>').then(
               function(data) {
                 scope.statusMsgId = 'draw_file_saved';
 
