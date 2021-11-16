@@ -13,6 +13,8 @@ beforeEach(function() {
     var feedbackUrl = '//sys-map.prod.bgdi.ch';
     var printUrl = '//print.geo.admin.ch';
     var proxyUrl = '//proxy.geo.admin.ch';
+    var qrcodeUrl = '//sys-map.prod.bgdi.ch';
+    var qrcodePath = '/api/qrcode/generate';
     var shopUrl = '//shop.bgdi.ch';
     var wmsUrl = '//wms.geo.admin.ch';
     var wmtsUrl = '//tod{s}.bgdi.ch';
@@ -41,6 +43,8 @@ beforeEach(function() {
       altiUrl: location.protocol + altiUrl,
       printUrl: location.protocol + printUrl,
       feedbackUrl: location.protocol + feedbackUrl,
+      qrcodeUrl: location.protocol + qrcodeUrl,
+      qrcodePath: qrcodePath,
       shopUrl: location.protocol + shopUrl,
       publicUrl: location.protocol + publicUrl,
       publicUrlRegexp: /^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*/,

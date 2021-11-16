@@ -6,6 +6,7 @@ goog.require('ga_height_service');
 goog.require('ga_measure_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_reframe_service');
+goog.require('ga_urlutils_service');
 goog.require('ga_what3words_service');
 goog.require('ga_window_service');
 
@@ -18,6 +19,7 @@ goog.require('ga_window_service');
     'ga_height_service',
     'ga_measure_service',
     'ga_reframe_service',
+    'ga_urlutils_service',
     'ga_window_service',
     'ga_what3words_service',
     'pascalprecht.translate'
@@ -26,7 +28,7 @@ goog.require('ga_window_service');
   module.directive('gaContextPopup',
       function($q, $timeout, $window, $rootScope, gaBrowserSniffer,
           gaNetworkStatus, gaPermalink, gaWhat3Words, gaReframe,
-          gaEvent, gaWindow, gaHeight, gaMeasure) {
+          gaEvent, gaWindow, gaHeight, gaMeasure, gaUrlUtils) {
         return {
           restrict: 'A',
           replace: true,
@@ -251,8 +253,9 @@ goog.require('ga_window_service');
               scope.qrcodeUrl = null;
               if (!gaNetworkStatus.offline && gaWindow.isWidth('>=s') &&
                   gaWindow.isHeight('>s')) {
-                scope.qrcodeUrl = qrcodeUrl + '?url=' +
-                    escape(scope.contextPermalink);
+                gaUrlUtils.shorten(scope.contextPermalink).then(function(url) {
+                  scope.qrcodeUrl = qrcodeUrl + '?url=' + escape(url);
+                });
               }
             }
           }
