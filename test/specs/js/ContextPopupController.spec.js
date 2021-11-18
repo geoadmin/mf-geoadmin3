@@ -38,7 +38,7 @@ describe('ga_contextpopup_controller', function() {
     });
 
     it('set scope values', function() {
-      expect(scope.options.qrcodeUrl).to.be('http://api3.geo.admin.ch/qrcodegenerator');
+      expect(scope.options.qrcodeUrl).to.be('http://sys-map.prod.bgdi.ch/api/qrcode/generate');
     });
   });
 });

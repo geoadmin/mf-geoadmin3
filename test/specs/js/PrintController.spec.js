@@ -45,7 +45,8 @@ describe('ga_print_controller', function() {
       expect(opt.printPath).to.be('http://print.geo.admin.ch/print');
       expect(opt.printConfigUrl).to.be('http://print.geo.admin.ch/123456/print/info.json?url=http%3A%2F%2Fprint.geo.admin.ch%2Fprint');
       expect(opt.legendUrl).to.be(gaGlobalOptions.apiUrl + '/static/images/legends/');
-      expect(opt.qrcodeUrl).to.be(gaGlobalOptions.apiUrl + '/qrcodegenerator?url=');
+      expect(opt.qrcodeUrl).to.be(gaGlobalOptions.qrcodeUrl +
+          gaGlobalOptions.qrcodePath + '?url=');
       expect(opt.markerUrl).to.be(gaGlobalOptions.resourceUrl + 'img/marker.png');
       expect(opt.bubbleUrl).to.be(gaGlobalOptions.resourceUrl + 'img/bubble.png');
       expect(opt.heightMargin).to.be();

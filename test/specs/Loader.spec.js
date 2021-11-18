@@ -10,8 +10,11 @@ beforeEach(function() {
     var configUrl = '//map.geo.admin.ch';
     var altiUrl = '//api3.geo.admin.ch';
     var publicUrl = '//public.geo.admin.ch';
+    var feedbackUrl = '//sys-map.prod.bgdi.ch';
     var printUrl = '//print.geo.admin.ch';
     var proxyUrl = '//proxy.geo.admin.ch';
+    var qrcodeUrl = '//sys-map.prod.bgdi.ch';
+    var qrcodePath = '/api/qrcode/generate';
     var shopUrl = '//shop.bgdi.ch';
     var shortenUrl = '//s.geo.admin.ch';
     var wmsUrl = '//wms.geo.admin.ch';
@@ -40,6 +43,9 @@ beforeEach(function() {
       configUrl: location.protocol + configUrl,
       altiUrl: location.protocol + altiUrl,
       printUrl: location.protocol + printUrl,
+      feedbackUrl: location.protocol + feedbackUrl,
+      qrcodeUrl: location.protocol + qrcodeUrl,
+      qrcodePath: qrcodePath,
       shopUrl: location.protocol + shopUrl,
       shortenUrl: location.protocol + shortenUrl,
       publicUrl: location.protocol + publicUrl,

@@ -37,6 +37,9 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 
 .build-artefacts/last-shorten-url::
 	$(call cachelastvariable,$@,$(SHORTEN_URL),$(LAST_SHORTEN_URL),shorten-url)
+  
+.build-artefacts/last-feedback-url::
+	$(call cachelastvariable,$@,$(FEEDBACK_URL),$(LAST_FEEDBACK_URL),feedback-url)
 
 .build-artefacts/last-wms-url::
 	$(call cachelastvariable,$@,$(WMS_URL),$(LAST_WMS_URL),wms-url)
@@ -49,6 +52,12 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 
 .build-artefacts/last-proxy-url::
 	$(call cachelastvariable,$@,$(PROXY_URL),$(LAST_PROXY_URL),proxy-url)
+
+.build-artefacts/last-qrcode-url::
+	$(call cachelastvariable,$@,$(QRCODE_URL),$(LAST_QRCODE_URL),qrcode-url)
+
+.build-artefacts/last-qrcode-path::
+	$(call cachelastvariable,$@,$(QRCODE_PATH),$(LAST_QRCODE_PATH),qrcode-path)
 
 .build-artefacts/last-apache-base-path::
 	$(call cachelastvariable,$@,$(APACHE_BASE_PATH),$(LAST_APACHE_BASE_PATH),apache-base-path)

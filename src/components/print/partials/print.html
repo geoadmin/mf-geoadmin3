@@ -29,16 +29,17 @@
       </div>
     </div>
   </div>
-  <div class="form-group" ng-if="options.multiprint">
-    <div class="col-xs-12">
-      <div class="checkbox">
-        <label class="ga-checkbox" >
-          <input ng-model="options.movie" type="checkbox"/>
-          <span translate>movie</span>
-        </label>
-      </div>
-    </div>
-  </div>
+<!--  As of BGDIINF_SB-2065, we want to hide multi print to see if this is what affects our backend-->
+<!--  <div class="form-group" ng-if="options.multiprint">-->
+<!--    <div class="col-xs-12">-->
+<!--      <div class="checkbox">-->
+<!--        <label class="ga-checkbox" >-->
+<!--          <input ng-model="options.movie" type="checkbox"/>-->
+<!--          <span translate>movie</span>-->
+<!--        </label>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
   <div class="ga-print-progress" ng-if="options.printing && options.progress != ''">{{options.progress}}</div>
   <button ng-show="options.printing" class="btn btn-danger col-xs-12" 
           ng-click="abort()" 
