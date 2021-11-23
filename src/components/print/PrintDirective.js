@@ -255,10 +255,8 @@ goog.require('ga_urlutils_service');
       var lang = gaLang.get();
       var defaultPage = {};
       defaultPage['lang' + lang] = true;
-      var qrcodeUrl = $scope.options.qrcodeUrl +
-          encodeURIComponent(gaPermalink.getHref());
+      var qrcodeServiceUrl = $scope.options.qrcodeUrl;
       var printZoom = getZoomFromScale($scope.scale.value);
-      qrcodeUrl = qrcodeUrl.replace(/zoom%3D(\d{1,2})/, 'zoom%3D' + printZoom);
       var encLayers = [];
       var encLegends = [];
       var attributions = [];
@@ -405,9 +403,11 @@ goog.require('ga_urlutils_service');
       // Get the short link
       var shortLink;
       canceller = $q.defer();
-      gaUrlUtils.shorten(gaPermalink.getHref(), canceller.promise).
+      var permalink = gaPermalink.getHref();
+      permalink = permalink.replace(/zoom%3D(\d{1,2})/, 'zoom%3D' + printZoom);
+      gaUrlUtils.shorten(permalink, canceller.promise).
           then(function(shortUrl) {
-            shortLink = shortUrl.replace('/shorten', '');
+            shortLink = shortUrl;
 
             // Build the complete json then send it to the print server
             if (!$scope.options.printing) {
@@ -430,7 +430,8 @@ goog.require('ga_urlutils_service');
               layers: encLayers,
               legends: encLegends,
               enableLegends: !!encLegends.length,
-              qrcodeurl: qrcodeUrl,
+              // The qrcode service is no longer shortening urls
+              qrcodeurl: qrcodeServiceUrl + shortLink,
               movie: movieprint,
               pages: [
                 angular.extend({
