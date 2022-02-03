@@ -24,21 +24,29 @@ Generating a custom configuration
 
 In the `mf-geoadmin3` directory:
 
-    make configs/
+    make meteoconfigs/
 
 or using an alternative target
 
-API_URL=https://mf-chsdi3.dev.bgdi.ch make configs/
+API_URL=https://mf-chsdi3.dev.bgdi.ch make meteoconfigs/
+
+
+This will copy the standards files from `configs/` into a directory `meteoconfigs/` and modify the 
+`jsonStyleUrl` of MeteoSchweiz's layers using the script `scripts/meteoStyleUrl.py`
+
+The server hosting the style is defined by `METEO_TESTING_STYLE_BASEURL` and is currently _data.geo.admin.ch_
 
 Copy the content of the `configs` directory in a suitable directory accessible
-with a domain ending in `bgdi.ch`, `swisstopo.cloud` or `geo.admin.ch`
+with a domain ending in `bgdi.ch`, `swisstopo.cloud` or `geo.admin.ch`. Or simply with
+
+    make s3uploadmeteoconfigs
+
+The custom meteoconfigs will be uploaded to an AWS S3 Bucket _s3://mf-geoadmin3-dev-dublin/meteoconfigs_ and the files 
+will be accessible with _https://mf-geoadmin3.dev.bgdi.ch/meteoconfigs_
 
 Point your browser to:
 
-    https://map.geo.admin.ch?config_url=//{random hostname}.bgdi.ch/new_configs
-
-
-
+    https://map.geo.admin.ch?config_url=//mf-geoadmin3.dev.bgdi.ch/meteoconfigs
 
 
 
