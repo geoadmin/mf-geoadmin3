@@ -29,7 +29,7 @@ configs/: .build-artefacts/last-version \
 
 
 meteoconfigs/: export METEO_TESTING_STYLE_BASEURL=$(METEO_STYLE_BASEURL)
-meteoconfigs/:  
+meteoconfigs/:  configs/
 	${PYTHON_CMD}  scripts/meteoStyleUrl.py
 
 .PHONY: s3uploadmeteoconfig
