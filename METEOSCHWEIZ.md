@@ -26,20 +26,20 @@ In the `mf-geoadmin3` directory:
 
     make meteoconfigs/
 
-or using an alternative target
+or if integrating new layers, use the `dev` service
 
-API_URL=https://mf-chsdi3.dev.bgdi.ch make meteoconfigs/
+    API_URL=https://mf-chsdi3.dev.bgdi.ch make meteoconfigs/
 
 
 This will copy the standards files from `configs/` into a directory `meteoconfigs/` and modify the 
 `jsonStyleUrl` of MeteoSchweiz's layers using the script `scripts/meteoStyleUrl.py`
 
-The server hosting the style is defined by `METEO_TESTING_STYLE_BASEURL` and is currently _data.geo.admin.ch_
+The server hosting the style is defined by `METEO_TESTING_STYLE_BASEURL` and is currently _cms.geo.admin.ch_
 
 Copy the content of the `configs` directory in a suitable directory accessible
 with a domain ending in `bgdi.ch`, `swisstopo.cloud` or `geo.admin.ch`. Or simply with
 
-    make s3uploadmeteoconfigs
+    make s3uploadmeteoconfig
 
 The custom meteoconfigs will be uploaded to an AWS S3 Bucket _s3://mf-geoadmin3-dev-dublin/meteoconfigs_ and the files 
 will be accessible with _https://mf-geoadmin3.dev.bgdi.ch/meteoconfigs_
@@ -47,6 +47,19 @@ will be accessible with _https://mf-geoadmin3.dev.bgdi.ch/meteoconfigs_
 Point your browser to:
 
     https://map.geo.admin.ch?config_url=//mf-geoadmin3.dev.bgdi.ch/meteoconfigs
+
+
+Style and resources for testing
+===============================
+
+Testing styles for GeoJson are to be on the location defined in the above mentionned _meteoconfigs_ files, 
+currently:
+
+    _https://cms.geo.admin.ch/ch.meteoschweiz/{bodLayerId}/testing/{bodLayerId}.json
+
+Custom resource for testing are to be hosted on
+
+    _https://cms.geo.admin.ch/ch.meteoschweiz/images/_
 
 
 
