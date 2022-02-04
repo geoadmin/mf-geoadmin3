@@ -62,4 +62,41 @@ Custom resource for testing are to be hosted on
     _https://cms.geo.admin.ch/ch.meteoschweiz/images/_
 
 
+AWS S3 Buckets and URLS
+=======================
 
+
+**GeoJson data** (unchangend)
+
+bucket _s3://data.geo.admin.ch_
+Url _https://data.geo.admin.ch/ch.meteoschweiz.*_
+
+**Config to custom meteoconfigs** (new)
+
+Use the param: _config_url_ 
+S3 bucket: _s3://mf-geoadmin3-dev-dublin/meteoconfigs/_
+URL : _https://mf-geoadmin3.dev.bgdi.ch/meteoconfigs/_
+
+**Testing style** (moved)
+
+old _s3://data.geo.admin.ch_
+new _s3://cms.geo.admin.ch/ch.meteoschweiz_
+url: _https://cms.geo.admin.ch/ch.meteoschweiz/_
+
+**Image for testing** (moved)
+old _s3://data.geo.admin.ch/ch.meteoschweiz_
+new _s3://cms.geo.admin.ch/ch.meteoschweiz_
+URL: _https://data.geo.admin.ch/ch.meteoschweiz_
+
+:warning:  For the integrators, you'll have to copy the images and json files back to _data.geo.admin.ch_, and update the path in the style json, if needed.
+
+
+**Testing**
+
+https://map.geo.admin.ch/?config_url=//mf-geoadmin3.dev.bgdi.ch/meteoconfigs/
+
+or with a custom meteoschweiz layer:
+
+https://map.geo.admin.ch/?config_url=%2F%2Fmf-geoadmin3.dev.bgdi.ch%2Fmeteoconfigs%2F&lang=fr&topic=meteoschweiz&bgLayer=voidLayer&layers=ch.bafu.gefahren-basiskarte,ch.meteoschweiz.messwerte-wind-boeenspitze-kmh-6h&layers_opacity=0.7,1&catalogNodes=15046,15055,15126,15138,15052
+
+Verify that the Style file and the various images are hosted on _https://cms.geo.admin.ch_
