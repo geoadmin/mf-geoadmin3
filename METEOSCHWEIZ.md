@@ -55,7 +55,7 @@ Style and resources for testing
 Testing styles for GeoJson are to be on the location defined in the above mentionned _meteoconfigs_ files, 
 currently:
 
-    _https://cms.geo.admin.ch/ch.meteoschweiz/{bodLayerId}/testing/{bodLayerId}.json
+    _https://cms.geo.admin.ch/ch.meteoschweiz/{bodLayerId}/testing/{bodLayerId}.json_
 
 Custom resource for testing are to be hosted on
 
