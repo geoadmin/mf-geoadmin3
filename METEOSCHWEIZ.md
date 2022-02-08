@@ -16,7 +16,7 @@ the `int` and `prod` environment, but real services on `dev`
 
 The location of these files may be controlled by the parameter `config_url`.
 
-See https://github.com/geoadmin/mf-geoadmin3/pull/4764 poru discussions and implementation
+See https://github.com/geoadmin/mf-geoadmin3/pull/4764 for discussions and implementation
 
 
 Generating a custom configuration
