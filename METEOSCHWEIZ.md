@@ -86,7 +86,7 @@ url: _https://cms.geo.admin.ch/ch.meteoschweiz/_
 **Image for testing** (moved)
 old _s3://data.geo.admin.ch/ch.meteoschweiz_
 new _s3://cms.geo.admin.ch/ch.meteoschweiz_
-URL: _https://data.geo.admin.ch/ch.meteoschweiz_
+URL: _https://cms.geo.admin.ch/ch.meteoschweiz_
 
 :warning:  For the integrators, you'll have to copy the images and json files back to _data.geo.admin.ch_, and update the path in the style json, if needed.
 
