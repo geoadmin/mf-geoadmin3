@@ -26,4 +26,5 @@ clean:
 	rm -f src/manifest.json
 	rm -rf prd
 	rm -rf configs
+	rm -rf meteoconfigs
 	rm -rf dist
