@@ -20,7 +20,7 @@ goog.require('ga_translation_service');
     };
 
     $scope.options = {
-      msUrl: gaGlobalOptions.cachedApiUrl + '/rest/services/all/MapServer',
+      msUrl: gaGlobalOptions.apiUrl + '/rest/services/all/MapServer',
       featuresShown: false,
       hasMoreResults: false,
       nbFeatures: 0,

@@ -12,7 +12,7 @@ goog.require('ga_window_service');
       gaWindow) {
     $scope.options = {
       tolerance: gaWindow.isWidth('<=s') ? 20 : 10,
-      htmlUrlTemplate: gaGlobalOptions.cachedApiUrl +
+      htmlUrlTemplate: gaGlobalOptions.apiUrl +
           '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup'
     };
   });
