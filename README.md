@@ -1,6 +1,8 @@
 mf-geoadmin3
 ============
 
+Test CI
+
 [![Build Status](https://jenkins.bgdi.ch/buildStatus/icon?job=chtopo_igeb_mf-geoadmin3/master)](https://jenkins.bgdi.ch/job/chtopo_igeb_mf-geoadmin3/job/master/)
 [![Greenkeeper badge](https://badges.greenkeeper.io/geoadmin/mf-geoadmin3.svg)](https://greenkeeper.io/)
 
