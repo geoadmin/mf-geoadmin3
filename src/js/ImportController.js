@@ -216,9 +216,9 @@ goog.require('ga_wmts_service');
       'https://geodienste.ch/db/waldreservate/deu',
       'https://geodienste.ch/db/waldreservate/fra',
       'https://geodienste.ch/db/waldreservate/ita',
-      'https://geodienste.ch/db/wildruhezonen_v2_1_0/deu',
-      'https://geodienste.ch/db/wildruhezonen_v2_1_0/fra',
-      'https://geodienste.ch/db/wildruhezonen_v2_1_0/ita',
+      'https://geodienste.ch/db/wildruhezonen_v2_1_1/deu',
+      'https://geodienste.ch/db/wildruhezonen_v2_1_1/fra',
+      'https://geodienste.ch/db/wildruhezonen_v2_1_1/ita',
       // non-SwissProjected test urls
       'http://wms.ga.admin.ch/1GE',
       'http://wms.ga.admin.ch/LG_DE_Geologie_und_Tektonik/wms',
