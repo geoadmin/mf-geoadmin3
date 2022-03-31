@@ -56,6 +56,9 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 .build-artefacts/last-qrcode-path::
 	$(call cachelastvariable,$@,$(QRCODE_PATH),$(LAST_QRCODE_PATH),qrcode-path)
 
+.build-artefacts/last-storage-url::
+	$(call cachelastvariable,$@,$(STORAGE_URL),$(LAST_STORAGE_URL),storage-url)
+
 .build-artefacts/last-apache-base-path::
 	$(call cachelastvariable,$@,$(APACHE_BASE_PATH),$(LAST_APACHE_BASE_PATH),apache-base-path)
 

@@ -16,6 +16,7 @@ beforeEach(function() {
     var qrcodeUrl = '//sys-map.prod.bgdi.ch';
     var qrcodePath = '/api/qrcode/generate';
     var shopUrl = '//shop.bgdi.ch';
+    var storageUrl = '//sys-public.prod.bgdi.ch';
     var wmsUrl = '//wms.geo.admin.ch';
     var wmtsUrl = '//tod{s}.bgdi.ch';
     var terrainUrl = '//terrain100.geo.admin.ch';
@@ -46,6 +47,7 @@ beforeEach(function() {
       qrcodeUrl: location.protocol + qrcodeUrl,
       qrcodePath: qrcodePath,
       shopUrl: location.protocol + shopUrl,
+      storageUrl: location.protocol + storageUrl,
       publicUrl: location.protocol + publicUrl,
       publicUrlRegexp: /^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*/,
       adminUrlRegexp: /^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)/,

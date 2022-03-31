@@ -101,6 +101,7 @@ help:
 	@echo "- QRCODE_URL qrcode URL       (build with: $(LAST_QRCODE_URL), current value: $(QRCODE_URL))"
 	@echo "- QRCODE_PATH qrcode path     (build with: $(LAST_QRCODE_PATH), current value: $(QRCODE_PATH))"
 	@echo "- SHOP_URL Service URL        (build with: $(LAST_SHOP_URL), current value: $(SHOP_URL))"
+	@echo "- STORAGE_URL Storage/KML URL (build with: $(LAST_STORAGE_URL), current value: $(STORAGE_URL))"
 	@echo "- WMS_URL Service URL         (build with  $(LAST_WMS_URL), current value: $(WMS_URL))"
 	@echo "- WMTS_URL Service URL        (build with  $(LAST_WMTS_URL), current value: $(WMTS_URL))"
 	@echo "- TERRAIN_URL Service URL     (build with: $(LAST_TERRAIN_URL), current value: $(TERRAIN_URL))"
