@@ -17,6 +17,7 @@ beforeEach(function() {
     var qrcodePath = '/api/qrcode/generate';
     var shopUrl = '//shop.bgdi.ch';
     var shortenUrl = '//s.geo.admin.ch';
+    var storageUrl = '//sys-public.prod.bgdi.ch';
     var wmsUrl = '//wms.geo.admin.ch';
     var wmtsUrl = '//tod{s}.bgdi.ch';
     var terrainUrl = '//terrain100.geo.admin.ch';
@@ -48,10 +49,10 @@ beforeEach(function() {
       qrcodePath: qrcodePath,
       shopUrl: location.protocol + shopUrl,
       shortenUrl: location.protocol + shortenUrl,
+      storageUrl: location.protocol + storageUrl,
       publicUrl: location.protocol + publicUrl,
       publicUrlRegexp: /^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*/,
       adminUrlRegexp: /^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)/,
-      cachedApiUrl: location.protocol + apiUrl + cacheAdd,
       cachedPrintUrl: location.protocol + printUrl + cacheAdd,
       resourceUrl: location.origin + pathname + versionSlashed,
       proxyUrl: location.protocol + proxyUrl + '/',
@@ -126,7 +127,7 @@ beforeEach(function() {
 
   module(function(gaPreviewFeaturesProvider, gaGlobalOptions) {
     gaPreviewFeaturesProvider.url =
-        gaGlobalOptions.cachedApiUrl + '/rest/services/all/MapServer/';
+        gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/';
   });
 
   module(function(gaProfileProvider, gaGlobalOptions) {

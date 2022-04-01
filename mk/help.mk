@@ -79,6 +79,9 @@ help:
 	@echo "                        Usage: make s3deleteconfigint LAYERSCONFIG_VERSION=$(LAYER_LAYERSCONFIG_VERSION)"
 	@echo "- s3deleteconfigprod    Delete config=$(LAYERSCONFIG_VERSION) from prod bucket (as defined by S3_MF_GEOADMIN3_PROD=$(S3_MF_GEOADMIN3_PROD))"
 	@echo "                        Usage: make s3deleteconfigprod LAYERSCONFIG_VERSION=$(LAYER_LAYERSCONFIG_VERSION)"
+	@echo "Meteoschweiz:"
+	@echo "- meteoconfigs/         Generate custom MeteoSchweiz configs (on test) using a custom jsonStyleUrl (METEO_TESTING_STYLE_BASEURL=$(METEO_TESTING_STYLE_BASEURL))"
+	@echo "- s3uploadmeteoconfig   Upload MeteoSchweiz config to S3 bucket s3://s3://$(S3_MF_GEOADMIN3_DEV)/meteoconfigs "
 	@echo
 	@echo "----------------------------------------------------------------------------------------------------------"
 	@echo "|                     VARNISH/CLOUDFRONT                                                                 |"
@@ -99,6 +102,7 @@ help:
 	@echo "- QRCODE_URL qrcode URL       (build with: $(LAST_QRCODE_URL), current value: $(QRCODE_URL))"
 	@echo "- QRCODE_PATH qrcode path     (build with: $(LAST_QRCODE_PATH), current value: $(QRCODE_PATH))"
 	@echo "- SHOP_URL Service URL        (build with: $(LAST_SHOP_URL), current value: $(SHOP_URL))"
+	@echo "- STORAGE_URL Storage/KML URL (build with: $(LAST_STORAGE_URL), current value: $(STORAGE_URL))"
 	@echo "- WMS_URL Service URL         (build with  $(LAST_WMS_URL), current value: $(WMS_URL))"
 	@echo "- WMTS_URL Service URL        (build with  $(LAST_WMTS_URL), current value: $(WMTS_URL))"
 	@echo "- TERRAIN_URL Service URL     (build with: $(LAST_TERRAIN_URL), current value: $(TERRAIN_URL))"

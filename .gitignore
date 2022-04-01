@@ -15,6 +15,7 @@
 /src/manifest.json
 /prd
 /configs
+/meteoconfigs
 /dist
 /.build-artefacts
 /apache/app.conf

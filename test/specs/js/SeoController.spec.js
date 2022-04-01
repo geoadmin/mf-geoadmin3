@@ -42,7 +42,7 @@ describe('ga_seo_controller', function() {
 
     it('set scope values', function() {
       var opt = scope.options;
-      expect(opt.htmlUrlTemplate).to.be(gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup');
+      expect(opt.htmlUrlTemplate).to.be(gaGlobalOptions.apiUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup');
       expect(opt.searchUrl).to.be(gaGlobalOptions.apiUrl + '/rest/services/ech/SearchServer');
       expect(opt.identifyUrl).to.be(gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/identify');
     });
