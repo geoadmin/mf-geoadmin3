@@ -48,6 +48,8 @@ define buildpage
 		--var "qrcode_path=$(QRCODE_PATH)" \
 		--var "shop_url=$(SHOP_URL)" \
 		--var "shop_tech_url=$(SHOP_TECH_URL)" \
+		--var "shorten_url=$(SHORTEN_URL)" \
+		--var "shorten_tech_url=$(SHORTEN_TECH_URL)" \
 		--var "storage_url=$(STORAGE_URL)" \
 		--var "storage_tech_url=$(STORAGE_TECH_URL)" \
 		--var "wms_url=$(WMS_URL)" \

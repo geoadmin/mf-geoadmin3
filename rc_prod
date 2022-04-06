@@ -10,6 +10,7 @@ export SHOP_URL=//shop.swisstopo.admin.ch
 export PUBLIC_URL=//public.geo.admin.ch
 export PRINT_URL=//print.geo.admin.ch
 export PROXY_URL=//service-proxy.prod.bgdi.ch
+export SHORTEN_URL=//sys-s.prod.bgdi.ch
 export QRCODE_URL=//map.geo.admin.ch
 export STORAGE_URL=//public.geo.admin.ch
 export WMS_URL=//wms{s}.geo.admin.ch

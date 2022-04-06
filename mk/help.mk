@@ -97,6 +97,7 @@ help:
 	@echo "- CONFIG_URL Service URL      (build with: $(LAST_CONFIG_URL), current value: $(CONFIG_URL))"
 	@echo "- ALTI_URL Alti service URL   (build with: $(LAST_ALTI_URL), current value: $(ALTI_URL))"
 	@echo "- PRINT_URL Print service URL (build with: $(LAST_PRINT_URL), current value: $(PRINT_URL))"
+	@echo "- SHORTEN_URL Shortener URL   (build with: $(LAST_SHORTEN_URL), current value: $(SHORTEN_URL))"
 	@echo "- FEEDBACK_URL Feedback URL   (build with: $(LAST_FEEDBACK_URL), current value: $(FEEDBACK_URL))"
 	@echo "- QRCODE_URL qrcode URL       (build with: $(LAST_QRCODE_URL), current value: $(QRCODE_URL))"
 	@echo "- QRCODE_PATH qrcode path     (build with: $(LAST_QRCODE_PATH), current value: $(QRCODE_PATH))"

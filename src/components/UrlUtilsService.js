@@ -118,11 +118,10 @@ goog.provide('ga_urlutils_service');
         };
 
         this.shorten = function(url, timeout) {
-          return $http.get(shortenUrl, {
-            timeout: timeout,
-            params: {
-              url: url
-            }
+          return $http.post(shortenUrl, {
+            url: url
+          }, {
+            timeout: timeout
           }).then(function(response) {
             return response.data.shorturl;
           }, function(reason) {

@@ -10,6 +10,7 @@ export SHOP_URL=//shop-bgdi.int.bgdi.ch
 export PUBLIC_URL=//public.int.bgdi.ch
 export PRINT_URL=//service-print.int.bgdi.ch
 export PROXY_URL=//service-proxy.int.bgdi.ch
+export SHORTEN_URL=//sys-s.int.bgdi.ch
 export QRCODE_URL=//sys-map.int.bgdi.ch
 export STORAGE_URL=//sys-public.int.bgdi.ch
 export WMS_URL=//wms-bgdi-cdn-{s}.int.bgdi.ch

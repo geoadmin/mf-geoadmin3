@@ -214,8 +214,8 @@ goog.require('ga_waitcursor_service');
   });
 
   module.config(function(gaUrlUtilsProvider, gaGlobalOptions) {
-    gaUrlUtilsProvider.shortenUrl = gaGlobalOptions.apiUrl +
-        '/shorten.json';
+    gaUrlUtilsProvider.shortenUrl = gaGlobalOptions.shortenUrl +
+        '/';
   });
 
   module.config(function(gaQueryProvider, gaGlobalOptions) {

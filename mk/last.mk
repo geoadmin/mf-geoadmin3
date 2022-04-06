@@ -35,6 +35,9 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 .build-artefacts/last-shop-url::
 	$(call cachelastvariable,$@,$(SHOP_URL),$(LAST_SHOP_URL),shop-url)
 
+.build-artefacts/last-shorten-url::
+	$(call cachelastvariable,$@,$(SHORTEN_URL),$(LAST_SHORTEN_URL),shorten-url)
+  
 .build-artefacts/last-feedback-url::
 	$(call cachelastvariable,$@,$(FEEDBACK_URL),$(LAST_FEEDBACK_URL),feedback-url)
 
