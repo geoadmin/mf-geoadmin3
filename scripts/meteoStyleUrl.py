@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 """
-Simple script to copy the map.geo.admin.ch configuration files and update the pathes 
+Simple script to copy the map.geo.admin.ch configuration files and update the pathes
 to allow METEOSCHWEIZ to edit and test their custom GeoJSON styles.
 
 This script is usually not runned directly, but with:
 
     make meteoconfigs/
 
-For more information, see the METEOSCHWEIZ.md 
+For more information, see the METEOSCHWEIZ.md
 
 """
 import os

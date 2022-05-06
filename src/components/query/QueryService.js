@@ -61,52 +61,9 @@ goog.provide('ga_query_service');
     this.$get = function($http, $log, $q, gaLang, $window,
         gaGlobalOptions) {
       var msUrl = gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/';
-      var twoWeeksAgo = $window.moment().subtract(2, 'weeks').
-          format('YYYY-MM-DD');
-      var fourDaysAgo = $window.moment().subtract(4, 'days').
-          format('YYYY-MM-DD');
 
       // List of predefined queries by layer
       var predefQueriesByLayer = {
-        'ch.bazl.luftfahrthindernis': [{
-          id: 'obstacle_started_last_2_weeks',
-          filters: [{
-            attrName: 'bgdi_activesince',
-            operator: '>=',
-            value: twoWeeksAgo
-          }, {
-            attrName: 'state',
-            operator: 'ilike',
-            value: 'A'
-          }]
-        }, {
-          id: 'obstacle_deleted_last_2_weeks',
-          filters: [{
-            layer: null,
-            attrName: 'abortionaccomplished',
-            operator: '>=',
-            value: twoWeeksAgo
-          }]
-        }, {
-          id: 'obstacle_started_last_4_days',
-          filters: [{
-            attrName: 'bgdi_activesince',
-            operator: '>=',
-            value: fourDaysAgo
-          }, {
-            attrName: 'state',
-            operator: 'ilike',
-            value: 'A'
-          }]
-        }, {
-          id: 'obstacle_deleted_last_4_days',
-          filters: [{
-            layer: null,
-            attrName: 'abortionaccomplished',
-            operator: '>=',
-            value: fourDaysAgo
-          }]
-        }],
         'ch.astra.unfaelle-personenschaeden_alle': [{
           id: 'astra_alle_lastyear_casualties',
           filters: [{
