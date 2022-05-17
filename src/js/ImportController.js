@@ -226,7 +226,7 @@ goog.require('ga_wmts_service');
       'http://copernicus.discomap.eea.europa.eu/arcgis/services/Corine/CLC2012_WM/MapServer/WMSServer',
       'https://image.discomap.eea.europa.eu/arcgis/services/GioLandPublic/DEM/MapServer/WMSServer',
       'https://image.discomap.eea.europa.eu/arcgis/services/Elevation/Hillshade/MapServer/WMSServer',
-      'http://eumetview.eumetsat.int/geoserver/wms',
+      'https://view.eumetsat.int/geoserver/wms?service=WMS',
       'https://ogc.glamos.ch/sgi',
       'http://osm.omniscale.net/proxy/service',
       'https://ows.terrestris.de/osm/service',
