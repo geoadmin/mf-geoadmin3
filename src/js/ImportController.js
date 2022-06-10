@@ -52,6 +52,7 @@ goog.require('ga_wmts_service');
       'https://geo.so.ch/api/wms',
       'https://www.ogc.vd.ch/public/services/OGC/wmsVD/Mapserver/WMSServer',
       'http://wms.geo.bs.ch/',
+      'https://geoservices.jura.ch/wms/',
       'http://vogis.cnv.at/mapserver/mapserv?map=i_flaechenwidmung_v_wms.map',
       'http://vogis.cnv.at/mapserver/mapserv?map=i_luftbilder_r_wms.map',
       'http://vogis.cnv.at/mapserver/mapserv?map=i_relief_r_wms.map',
@@ -220,8 +221,6 @@ goog.require('ga_wmts_service');
       'https://geodienste.ch/db/wildruhezonen_v2_1_1/fra',
       'https://geodienste.ch/db/wildruhezonen_v2_1_1/ita',
       // non-SwissProjected test urls
-      'http://wms.ga.admin.ch/1GE',
-      'http://wms.ga.admin.ch/LG_DE_Geologie_und_Tektonik/wms',
       'http://bio.discomap.eea.europa.eu/arcgis/services/Ecosystem/Ecosystems/MapServer/WMSServer',
       'http://copernicus.discomap.eea.europa.eu/arcgis/services/Corine/CLC2012_WM/MapServer/WMSServer',
       'https://image.discomap.eea.europa.eu/arcgis/services/GioLandPublic/DEM/MapServer/WMSServer',
