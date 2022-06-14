@@ -1,6 +1,6 @@
 # This file contains the targets to create a set of configuration files
 # that describe the current state of the backend services, a.k.a the layerConfig
-# 
+#
 
 # Configs
 CONFIG_FILES := $(wildcard configs/**/*.json)
@@ -23,9 +23,9 @@ configs/: .build-artefacts/last-version \
           .build-artefacts/last-config-url \
           guard-LAYERSCONFIG_VERSION
 	mkdir -p $@
-	curl -s -q -o configs/services.json http:$(API_URL)/rest/services
-	$(foreach lang, $(LANGS), mkdir -p $@$(lang) && curl -s --retry 3 --fail -o configs/$(lang)/layersConfig.json http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang) && jq . configs/$(lang)/layersConfig.json 1> /dev/null;)
-	$(foreach topic, $(TOPICS), $(foreach lang, $(LANGS),curl -s --retry 3 --fail -o configs/${lang}/catalog.${topic}.json http:$(API_URL)/rest/services/$(topic)/CatalogServer?lang=$(lang) && jq . configs/${lang}/catalog.${topic}.json 1> /dev/null; ))
+	curl -L -s -q -o configs/services.json http:$(API_URL)/rest/services
+	$(foreach lang, $(LANGS), mkdir -p $@$(lang) && curl -L -s --retry 3 --fail -o configs/$(lang)/layersConfig.json http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang) && jq . configs/$(lang)/layersConfig.json 1> /dev/null;)
+	$(foreach topic, $(TOPICS), $(foreach lang, $(LANGS),curl -L -s --retry 3 --fail -o configs/${lang}/catalog.${topic}.json http:$(API_URL)/rest/services/$(topic)/CatalogServer?lang=$(lang) && jq . configs/${lang}/catalog.${topic}.json 1> /dev/null; ))
 
 
 meteoconfigs/: export METEO_TESTING_STYLE_BASEURL=$(METEO_STYLE_BASEURL)
@@ -55,14 +55,14 @@ s3uploadconfigint: ${PYTHON_VENV}
 	@$(eval LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD = $(LAYERSCONFIG_VERSION))
 	@echo "generating config for int..."
 	source rc_int && $(MAKE) clean configs/ LAYERSCONFIG_VERSION=$(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)
-	@echo  
+	@echo
 	@echo "generating config for int done"
-	@echo  
+	@echo
 	@echo "uploading config to int..."
 	$(foreach json, $(CONFIG_FILES), gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_INT)/configs_archive/$(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)/$(json);)
-	@echo  
+	@echo
 	@echo "uploading to int done"
-	@echo  
+	@echo
 	@echo "Layers config version for int : $(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)"
 
 PHONY: s3uploadconfigprod
@@ -70,14 +70,14 @@ s3uploadconfigprod: ${PYTHON_VENV}
 	@$(eval LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD = $(LAYERSCONFIG_VERSION))
 	@echo "generating config for prod..."
 	source rc_prod && $(MAKE) clean configs/ LAYERSCONFIG_VERSION=$(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)
-	@echo  
+	@echo
 	@echo "generating config for prod done"
-	@echo  
+	@echo
 	@echo "uploading config to prod..."
 	$(foreach json, $(CONFIG_FILES), gzip -c $(json) | ${AWS_CMD} s3 cp $(S3_UPLOAD_HEADERS) - s3://$(S3_MF_GEOADMIN3_PROD)/configs_archive/$(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)/$(json);)
-	@echo  
+	@echo
 	@echo "uploading to prod done"
-	@echo  
+	@echo
 	@echo "Layers config version for prod : $(LAYERSCONFIG_VERSION_FOR_THIS_UPLOAD)"
 
 # Display current version number
@@ -91,7 +91,7 @@ s3listconfig := $(patsubst %,s3listconfig%,dev,int,prod)
 PHONY: $(s3listconfig)
 s3listconfig%:
 	$(eval CURRENT_VERSION = $(shell ${AWS_CMD} s3 cp s3://$(S3_MF_GEOADMIN3_$(shell echo $(*)| tr a-z A-Z))/configs/layersconfiginfo.json - | gunzip | jq -r '.layersconfig_version'))
-	@echo  
+	@echo
 	@${AWS_CMD} s3 ls s3://$(S3_MF_GEOADMIN3_$(shell echo $(*)| tr a-z A-Z))/configs_archive/ | grep -o -E '[0-9]{14}' | while read -r line; do \
 		if [[ "$$line" = $(CURRENT_VERSION) ]]; then echo "$$line <== current"; else echo "$$line"; fi; \
 	done
