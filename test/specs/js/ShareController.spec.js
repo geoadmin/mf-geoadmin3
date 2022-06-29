@@ -41,7 +41,7 @@ describe('ga_share_controller', function() {
     });
 
     it('set scope values', function() {
-      expect(scope.options.qrcodegeneratorPath).to.be(gaGlobalOptions.apiUrl + '/qrcodegenerator');
+      expect(scope.options.qrcodegeneratorPath).to.be(gaGlobalOptions.qrcodeUrl + '/api/qrcode/generate');
     });
   });
 });

@@ -389,12 +389,12 @@ describe('ga_print_directive', function() {
             expect(conf.app).to.be('config');
             expect(conf.lang).to.be('en');
             expect(conf.dpi).to.be('150');
-            expect(conf.qrcodeurl).to.be('http://foo.ch/qrcodegenerator?url=http%3A%2F%2Flocalhost%3A8081%2Fcontext.html%3Flang%3Den');
+            expect(conf.qrcodeurl).to.be('http://foo.ch/qrcodegenerator?url=http://foo.ch/shorten');
             expect(conf.pages[0].center).to.eql([10000, 10000]);
             expect(conf.pages[0].bbox).to.eql([10000, 10000, 10000, 10000]);
             expect(conf.pages[0].display).to.eql([802, 530]);
             expect(conf.pages[0].scale).to.eql('500.0');
-            expect(conf.pages[0].shortLink).to.eql('http://foo.ch');
+            expect(conf.pages[0].shortLink).to.eql('http://foo.ch/shorten');
             expect(conf.pages[0].rotation).to.eql(0);
             expect(conf.pages[0].langen).to.be(true);
           };

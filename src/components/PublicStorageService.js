@@ -11,13 +11,18 @@ goog.provide('ga_publicstorage_service');
     this.$get = function($http, $q, gaGlobalOptions) {
 
       var getServiceUrl = function(endPoint, id) {
-        return gaGlobalOptions.apiUrl + endPoint + ((id) ? '/' + id : '');
+        return gaGlobalOptions.storageUrl + endPoint + ((id) ? '/' + id : '');
       };
 
       var getPublicUrl = function(endPoint, fileId) {
-        return gaGlobalOptions.publicUrl + endPoint +
+        return gaGlobalOptions.storageUrl + endPoint +
             ((fileId) ? '/' + fileId : '');
       };
+
+      var getMetadataUrl = function(endPoint, adminId) {
+        return gaGlobalOptions.storageUrl + endPoint +
+              '?admin_id=' + adminId
+      }
 
       var PublicStorage = function() {
 
@@ -35,13 +40,14 @@ goog.provide('ga_publicstorage_service');
         };
 
         // Get the accessible url of the file from an adminId
+        // using the metadata request
         this.getFileUrlFromAdminId = function(endPoint, publicEndPoint,
             adminId) {
           var deferred = $q.defer();
-          $http.get(getServiceUrl(endPoint, adminId)).then(function(response) {
+          $http.get(getMetadataUrl(endPoint, adminId)).then(function(response) {
             var data = response.data;
-            if (data && data.fileId) {
-              var url = getPublicUrl(publicEndPoint, data.fileId);
+            if (data && data.links && data.links.kml) {
+              var url = data.links.kml;
               deferred.resolve(url);
             } else {
               deferred.reject();
@@ -59,18 +65,36 @@ goog.provide('ga_publicstorage_service');
         //     returns the same adminId and the same file url
         // if id is an fileId --> fork the file
         //     returns new adminId and new file url
-        this.save = function(endPoint, publicEndPoint, id, content,
-            contentType) {
-          return $http.post(getServiceUrl(endPoint, id), content, {
+        this.save = function(endPoint, publicEndPoint, fileId,
+            adminId, content, contentType) {
+
+          var method = 'PUT'
+          const formData = new FormData();
+          const blob = new Blob([content], { name: 'kml',
+            filename: 'blob',
+            type: contentType})
+          formData.append('kml', blob);
+          formData.append('author', 'mf-geoadmin3');
+          if (fileId === undefined && adminId === undefined) {
+            method = 'POST'
+          } else {
+            formData.append('admin_id', adminId)
+          }
+          return $http({
+            method: method,
+            url: getServiceUrl(endPoint, fileId),
+            data: formData,
+            // Use 'undefined' to send 'multipart/form-data'
+            // See https://stackoverflow.com/a/44726531/996693
             headers: {
-              'Content-Type': contentType
+              'Content-Type': undefined
             }
           }).then(function(response) {
             var data = response.data;
             return {
-              adminId: data.adminId,
-              fileId: data.fileId,
-              fileUrl: getPublicUrl(publicEndPoint, data.fileId)
+              adminId: data.admin_id,
+              fileId: data.file_id,
+              fileUrl: ((data || {}).links || {}).kml
             };
           });
         };

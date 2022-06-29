@@ -28,6 +28,15 @@ configs/: .build-artefacts/last-version \
 	$(foreach topic, $(TOPICS), $(foreach lang, $(LANGS),curl -s --retry 3 --fail -o configs/${lang}/catalog.${topic}.json http:$(API_URL)/rest/services/$(topic)/CatalogServer?lang=$(lang) && jq . configs/${lang}/catalog.${topic}.json 1> /dev/null; ))
 
 
+meteoconfigs/: export METEO_TESTING_STYLE_BASEURL=$(METEO_STYLE_BASEURL)
+meteoconfigs/:  configs/
+	${PYTHON_CMD}  scripts/meteoStyleUrl.py
+
+.PHONY: s3uploadmeteoconfig
+s3uploadmeteoconfig: meteoconfigs/
+	${AWS_CMD} s3 cp --recursive --acl public-read --cache-control 'max-age=60' --content-type 'application/json'  meteoconfigs/configs/ s3://$(S3_MF_GEOADMIN3_DEV)/meteoconfigs
+
+
 # Variables for the different staging.
 appconfig: src/config.dev.mako src/config.int.mako src/config.prod.mako
 	$(foreach target, $(TARGETS), source rc_$(shell echo $(target) | tr A-Z a-z) && make src/config.$(shell echo $(target) | tr A-Z a-z).mako ;)

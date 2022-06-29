@@ -196,12 +196,13 @@ goog.require('ga_waitcursor_service');
   });
 
   module.config(function(gaFileStorageProvider, gaGlobalOptions) {
-    gaFileStorageProvider.fileStorageUrl = gaGlobalOptions.apiUrl + '/files';
+    gaFileStorageProvider.fileStorageUrl = gaGlobalOptions.storageUrl +
+        gaGlobalOptions.storagePath;
     gaFileStorageProvider.publicUrl = gaGlobalOptions.publicUrl;
   });
 
   module.config(function(gaPreviewFeaturesProvider, gaGlobalOptions) {
-    gaPreviewFeaturesProvider.url = gaGlobalOptions.cachedApiUrl +
+    gaPreviewFeaturesProvider.url = gaGlobalOptions.apiUrl +
         '/rest/services/all/MapServer/';
   });
 
@@ -213,8 +214,8 @@ goog.require('ga_waitcursor_service');
   });
 
   module.config(function(gaUrlUtilsProvider, gaGlobalOptions) {
-    gaUrlUtilsProvider.shortenUrl = gaGlobalOptions.apiUrl +
-        '/shorten.json';
+    gaUrlUtilsProvider.shortenUrl = gaGlobalOptions.shortenUrl +
+        '/';
   });
 
   module.config(function(gaQueryProvider, gaGlobalOptions) {

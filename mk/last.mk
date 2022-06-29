@@ -9,7 +9,7 @@ endef
 
 ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 	mkdir -p .build-artefacts
-	virtualenv --no-site-packages --python=python2 $@
+	virtualenv --python=python2 $@
 	${PIP_CMD} install --index-url ${PYPI_URL} -U pip==19.2.3 setuptools==44.0.0
 	$(MAKE) .build-artefacts/requirements.timestamp
 
@@ -35,6 +35,12 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 .build-artefacts/last-shop-url::
 	$(call cachelastvariable,$@,$(SHOP_URL),$(LAST_SHOP_URL),shop-url)
 
+.build-artefacts/last-shorten-url::
+	$(call cachelastvariable,$@,$(SHORTEN_URL),$(LAST_SHORTEN_URL),shorten-url)
+  
+.build-artefacts/last-feedback-url::
+	$(call cachelastvariable,$@,$(FEEDBACK_URL),$(LAST_FEEDBACK_URL),feedback-url)
+
 .build-artefacts/last-wms-url::
 	$(call cachelastvariable,$@,$(WMS_URL),$(LAST_WMS_URL),wms-url)
 
@@ -46,6 +52,15 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 
 .build-artefacts/last-proxy-url::
 	$(call cachelastvariable,$@,$(PROXY_URL),$(LAST_PROXY_URL),proxy-url)
+
+.build-artefacts/last-qrcode-url::
+	$(call cachelastvariable,$@,$(QRCODE_URL),$(LAST_QRCODE_URL),qrcode-url)
+
+.build-artefacts/last-qrcode-path::
+	$(call cachelastvariable,$@,$(QRCODE_PATH),$(LAST_QRCODE_PATH),qrcode-path)
+
+.build-artefacts/last-storage-url::
+	$(call cachelastvariable,$@,$(STORAGE_URL),$(LAST_STORAGE_URL),storage-url)
 
 .build-artefacts/last-apache-base-path::
 	$(call cachelastvariable,$@,$(APACHE_BASE_PATH),$(LAST_APACHE_BASE_PATH),apache-base-path)

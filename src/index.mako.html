@@ -38,7 +38,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
     <!-- Description is translated 'by hand' in the MainController -->
     <meta name="description" translate-attr="{content: 'page_description'}" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
-    <meta name="keywords" content="maps Switzerland, map viewer, Confederation, geodata, public platform, geographical information, geoportal, orthophotos, geolocation, geoinformation, Geodaten, Geoinformation, Bund, Plattform, Karte, Kartendienst, Kartenviewer"/>
+    <meta name="keywords" content="maps Switzerland, map viewer, Swiss Map,Confederation, geodata, public platform, geographical information, geoportal, orthophotos, geolocation, geoinformation, Geodaten, Geoinformation, Bund, Plattform, Karte, Kartendienst, Kartenviewer"/>
     <meta name="news_keywords" content="Maps of Switzerland"/>
 
     <!-- Open Graph metas SMO -->
@@ -766,10 +766,15 @@ itemscope itemtype="http://schema.org/WebApplication"
         var apiUrl = setBackend(defaultApiUrl, prtl + cfg['api_tech_url'], 'api_url');
         var configUrl = setBackend(prtl + cfg['config_url'], prtl + cfg['config_tech_url'], 'config_url');
         var altiUrl = setBackend(prtl + cfg['alti_url'], prtl + cfg['alti_tech_url'], 'alti_url');
+        var feedbackUrl = setBackend(prtl + cfg['feedback_url'], prtl + cfg['feedback_tech_url'], 'feedback_url');
         var shopUrl = setBackend(prtl + cfg['shop_url'], prtl + cfg['shop_tech_url'], 'shop_url');
+        var shortenUrl = setBackend(prtl + cfg['shorten_url'], prtl + cfg['shorten_tech_url'], 'shorten_url');
         var publicUrl = setBackend(prtl + cfg['public_url'], prtl + cfg['public_tech_url'], 'public_url');
         var printUrl = setBackend(prtl + cfg['print_url'], prtl + cfg['print_tech_url'], 'print_url');
+        var storageUrl = setBackend(prtl + cfg['storage_url'], prtl + cfg['storage_tech_url'], 'storage_url');
         var proxyUrl = prtl + cfg['proxy_url'] + '/';
+        var qrcodeUrl = setBackend(prtl + cfg['qrcode_url'], prtl + cfg['qrcode_tech_url'], 'qrcode_url');
+        var qrcodePath = cfg['qrcode_path'];
         var apiOverwrite = !!(getParam('api_url') || env);
         var configOverwrite = !!(getParam('config_url') || env);
         var localhostRegexp = new RegExp('https?:\/\/localhost:[0-9]{1,5}');
@@ -793,14 +798,19 @@ itemscope itemtype="http://schema.org/WebApplication"
           apiUrl: apiUrl,
           configUrl: configUrl,
           altiUrl: altiUrl,
+          feedbackUrl: feedbackUrl,
           printUrl: printUrl,
           proxyUrl: proxyUrl,
           shopUrl: shopUrl,
+	        shortenUrl: shortenUrl,
+          storageUrl: storageUrl,
+          storagePath: '/api/kml/admin',
           publicUrl: publicUrl,
           publicUrlRegexp: new RegExp(cfg['public_url_regexp']),
+          qrcodeUrl: qrcodeUrl,
+          qrcodePath: qrcodePath,
           adminUrlRegexp: adminUrlRegexp,
           hrefRegexp: new RegExp(cfg['href_regexp']),
-          cachedApiUrl: apiUrl + cacheAdd,
           cachedAltiUrl: altiUrl + cacheAdd,
           imageryMetadataUrl: terrainUrl + '/imagery/',
           cachedPrintUrl: printUrl + cacheAdd,

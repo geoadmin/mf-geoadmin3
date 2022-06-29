@@ -6,6 +6,8 @@ describe('ga_filestorage_service', function() {
       adminId = 'aaaaaaaaaaaaaaaaaaaaa', // length must > 20
       fileId = 'fffffffffffffffffffff', // length must > 20
       fileContent = '<kml></kml>',
+      blob = new Blob([fileContent]),
+      form = new FormData(),
       fileInfo = {
         adminId: adminId,
         fileId: fileId,
@@ -16,14 +18,15 @@ describe('ga_filestorage_service', function() {
         fileId: fileId,
         fileUrl: 'https://public.geo.admin.ch/' + fileId
       },
-      serviceUrl, publicUrl;
+      serviceUrl;
+    form.append('kml', blob)
+    form.append('author', 'toto')
 
     beforeEach(function() {
       inject(function($injector, gaGlobalOptions) {
         gaFileStorage = $injector.get('gaFileStorage');
         $httpBackend = $injector.get('$httpBackend');
-        serviceUrl = gaGlobalOptions.apiUrl + '/files';
-        publicUrl = gaGlobalOptions.publicUrl;
+        serviceUrl = gaGlobalOptions.storageUrl;
       });
     });
 
@@ -43,7 +46,7 @@ describe('ga_filestorage_service', function() {
 
     describe('#get()', function() {
       it('gets a file', function() {
-        var expectedUrl = publicUrl + '/' + fileId;
+        var expectedUrl = serviceUrl + '/kml/files/' + fileId;
         $httpBackend.expectGET(expectedUrl).respond(fileContent);
         gaFileStorage.get(fileId);
         $httpBackend.flush();
@@ -52,24 +55,22 @@ describe('ga_filestorage_service', function() {
 
     describe('#save()', function() {
       it('creates a file', inject(function($timeout, gaGlobalOptions) {
-        $httpBackend.expectPOST(serviceUrl, fileContent).respond(fileInfo);
-        gaFileStorage.save(null, fileContent);
+        $httpBackend.expectPOST(serviceUrl + '/api/kml/admin', form).respond(fileInfo);
+        gaFileStorage.save(undefined, undefined, fileContent);
         $httpBackend.flush();
       }));
 
       it('updates a file', inject(function($timeout) {
-        var expectedUrl = serviceUrl + '/' + adminId;
-        $httpBackend.expectPOST(expectedUrl, fileContent, function(headers) {
-          return headers['Content-Type'] === 'application/vnd.google-earth.kml+xml';
-        }).respond(fileInfo);
-        gaFileStorage.save(adminId, fileContent);
+        var expectedUrl = serviceUrl + '/api/kml/admin/' + fileId;
+        $httpBackend.expectPUT(expectedUrl, form).respond(fileInfo);
+        gaFileStorage.save(fileId, adminId, fileContent);
         $httpBackend.flush();
       }));
     });
 
     describe('#del()', function() {
       it('deletes a file', inject(function($timeout) {
-        var expectedUrl = serviceUrl + '/' + adminId;
+        var expectedUrl = serviceUrl + '/api/kml/admin/' + adminId;
         $httpBackend.expectDELETE(expectedUrl).respond({success: true});
         gaFileStorage.del(adminId);
         $httpBackend.flush();

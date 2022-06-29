@@ -10,9 +10,14 @@ beforeEach(function() {
     var configUrl = '//map.geo.admin.ch';
     var altiUrl = '//api3.geo.admin.ch';
     var publicUrl = '//public.geo.admin.ch';
+    var feedbackUrl = '//sys-map.prod.bgdi.ch';
     var printUrl = '//print.geo.admin.ch';
     var proxyUrl = '//proxy.geo.admin.ch';
+    var qrcodeUrl = '//sys-map.prod.bgdi.ch';
+    var qrcodePath = '/api/qrcode/generate';
     var shopUrl = '//shop.bgdi.ch';
+    var shortenUrl = '//s.geo.admin.ch';
+    var storageUrl = '//sys-public.prod.bgdi.ch';
     var wmsUrl = '//wms.geo.admin.ch';
     var wmtsUrl = '//tod{s}.bgdi.ch';
     var terrainUrl = '//terrain100.geo.admin.ch';
@@ -39,11 +44,15 @@ beforeEach(function() {
       configUrl: location.protocol + configUrl,
       altiUrl: location.protocol + altiUrl,
       printUrl: location.protocol + printUrl,
+      feedbackUrl: location.protocol + feedbackUrl,
+      qrcodeUrl: location.protocol + qrcodeUrl,
+      qrcodePath: qrcodePath,
       shopUrl: location.protocol + shopUrl,
+      shortenUrl: location.protocol + shortenUrl,
+      storageUrl: location.protocol + storageUrl,
       publicUrl: location.protocol + publicUrl,
       publicUrlRegexp: /^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*/,
       adminUrlRegexp: /^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)/,
-      cachedApiUrl: location.protocol + apiUrl + cacheAdd,
       cachedPrintUrl: location.protocol + printUrl + cacheAdd,
       resourceUrl: location.origin + pathname + versionSlashed,
       proxyUrl: location.protocol + proxyUrl + '/',
@@ -118,7 +127,7 @@ beforeEach(function() {
 
   module(function(gaPreviewFeaturesProvider, gaGlobalOptions) {
     gaPreviewFeaturesProvider.url =
-        gaGlobalOptions.cachedApiUrl + '/rest/services/all/MapServer/';
+        gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/';
   });
 
   module(function(gaProfileProvider, gaGlobalOptions) {
@@ -128,7 +137,7 @@ beforeEach(function() {
 
   module(function(gaUrlUtilsProvider, gaGlobalOptions) {
     gaUrlUtilsProvider.shortenUrl =
-        gaGlobalOptions.apiUrl + '/shorten.json';
+        gaGlobalOptions.shortenUrl + '/';
   });
 
   module(function(gaQueryProvider, gaGlobalOptions) {
