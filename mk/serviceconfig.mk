@@ -23,7 +23,7 @@ configs/: .build-artefacts/last-version \
           .build-artefacts/last-config-url \
           guard-LAYERSCONFIG_VERSION
 	mkdir -p $@
-curl -L -s -q -o configs/services.json http:$(API_URL)/rest/services
+	curl -L -s -q -o configs/services.json http:$(API_URL)/rest/services
 	$(foreach lang, $(LANGS), mkdir -p $@$(lang) && curl -L -s --retry 3 --fail -o configs/$(lang)/layersConfig.json http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang) && jq . configs/$(lang)/layersConfig.json 1> /dev/null;)
 	$(foreach topic, $(TOPICS), $(foreach lang, $(LANGS),curl -L -s --retry 3 --fail -o configs/${lang}/catalog.${topic}.json http:$(API_URL)/rest/services/$(topic)/CatalogServer?lang=$(lang) && jq . configs/${lang}/catalog.${topic}.json 1> /dev/null; ))
 
