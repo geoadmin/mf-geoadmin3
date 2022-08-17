@@ -742,7 +742,13 @@ itemscope itemtype="http://schema.org/WebApplication"
           if (env && env != 'prod' && supportedEnv.indexOf(env) !== -1) {
               url = techUrl + env + cfg['tech_suffix'];
           }
-          var overwrite = prtl + getParam(overwriteParam);
+          var overwrite = ''
+          // localhost:port goes with http
+          if (/^\/\/localhost\:.*$/.test(getParam(overwriteParam))) {
+              overwrite = 'http:' + getParam(overwriteParam);
+          } else {
+              overwrite = prtl + getParam(overwriteParam);
+          }
           url = adminUrlRegexp.test(overwrite) ? overwrite : url;
           return url;
         }
