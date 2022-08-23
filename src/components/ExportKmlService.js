@@ -19,12 +19,7 @@ goog.require('ga_browsersniffer_service');
       var downloadUrl = this.downloadKmlUrl;
 
       var useDownloadService = function() {
-        if (gaBrowserSniffer.msie === 9 ||
-            gaBrowserSniffer.safari ||
-            !gaBrowserSniffer.blob) {
-          return true;
-        }
-        return false;
+        return gaBrowserSniffer.msie === 9;
       };
 
       var ExportKml = function() {
