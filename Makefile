@@ -7,7 +7,7 @@
 -include mk/help.mk
 
 .PHONY: all
-all: showVariables lint debug release dist apache fixrights
+all: showVariables lint debug release dist apache testdebug testrelease fixrights
 
 .PHONY: ci
 ci: showVariables lint debug release dist
