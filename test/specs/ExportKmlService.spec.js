@@ -235,7 +235,7 @@ describe('ga_exportkml_service', function() {
           expectations($window.location);
         });
 
-        it('on Safari', function() {
+        it.skip('on Safari', function() {
           gaBrowserSniffer.msie = false;
           gaBrowserSniffer.safari = true;
           gaBrowserSniffer.blob = true;
