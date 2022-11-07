@@ -29,6 +29,7 @@ phases:
         else
             LATEST=latest
         fi
+      - export STAGING=dev
       - echo "=========== VERSIONS ============="
       - python --version
       - python2 --version
@@ -45,18 +46,25 @@ phases:
       - echo COMMIT_HASH=${COMMIT_HASH}
       - echo PULL_REQUEST=${PULL_REQUEST}
       - echo GITHUB_BRANCH=${GITHUB_BRANCH}
+      - echo STAGING=${STAGING}
       - echo "==================================="
       - make env
       - npm install
+      - echo "=== Install dependencies =========="
+      - make ci
+
   build:
     commands:
-      - echo Build started on `date`
-      - make cleanall ci
-      # Suppress status outputs
-      - make testdebug | grep -vE 'Executed [0-9]* of [0-9]*'
-      - make testrelease | grep -vE 'Executed [0-9]* of [0-9]*'
+      - echo "=== Build started on `date` ======="
+      - make ${STAGING}
+      - echo Build completed on `date`
+
 
   post_build:
     commands:
-      - echo Build completed on `date`
+      # Suppress status outputs
+      - echo "=== Test started on `date` ========"
+      - make testdebug | grep -vE 'Executed [0-9]* of [0-9]*'
+      - make testrelease | grep -vE 'Executed [0-9]* of [0-9]*'
+      - echo Test completed on `date`
 
