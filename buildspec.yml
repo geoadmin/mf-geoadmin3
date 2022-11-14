@@ -29,7 +29,10 @@ phases:
         else
             LATEST=latest
         fi
-      - export STAGING=dev
+      - export BUILD_TYPE=dev
+      - if [ "${GIT_BRANCH}" = "master" ] ; then
+          export BUILD_TYPE=prod;
+        fi
       - echo "=========== VERSIONS ============="
       - python --version
       - python2 --version
@@ -47,6 +50,7 @@ phases:
       - echo PULL_REQUEST=${PULL_REQUEST}
       - echo GITHUB_BRANCH=${GITHUB_BRANCH}
       - echo STAGING=${STAGING}
+      - echo BUILD_TYPE=${BUILD_TYPE}
       - echo "==================================="
       - make env
       - npm install
@@ -58,6 +62,9 @@ phases:
       - echo "=== Build started on `date` ======="
       - make ${STAGING}
       - echo Build completed on `date`
+      - |
+        echo Get application version
+        export APP_VERSION=$(cat .build-artefacts/last-version)
 
 
   post_build:
@@ -68,3 +75,10 @@ phases:
       - make testrelease | grep -vE 'Executed [0-9]* of [0-9]*'
       - echo Test completed on `date`
 
+
+artifacts:
+  # The name below is only used for manual build (not by build started by the webhook)
+  name: ${BUILD_TYPE}/mf-geoadmin3/${APP_VERSION}
+  files:
+    - '**/*'
+  base-directory: dist
