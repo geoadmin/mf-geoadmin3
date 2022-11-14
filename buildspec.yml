@@ -7,17 +7,20 @@ env:
 phases:
   install:
     runtime-versions:
-      python: 3.7
+      nodejs: 14
     commands:
       - echo "Installing python 2.7"
       - apt-get update && apt-get install -y python2.7 python2.7-dev virtualenv build-essential
+      - n 10
 
   pre_build:
     commands:
       - echo "Configuring stuff..."
       - aws --version
+      - export NODE_VERSION=$(node --version | cut -c2-)
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - GITHUB_BRANCH=${CODEBUILD_WEBHOOK_HEAD_REF#refs/heads/*}
+      - GIT_BRANCH=${CODEBUILD_WEBHOOK_HEAD_REF#refs/heads/*}
+      - export DEPLOY_GIT_BRANCH=${GIT_BRANCH}
       - TODAY=$(date '+%Y%m%d')
       - |-
         if [ "${CODEBUILD_WEBHOOK_TRIGGER}" = pr/* ]; then
@@ -25,7 +28,7 @@ phases:
         fi
       - |-
         if [ "${GIT_BRANCH}" != master  ]; then
-            LATEST=${GITHUB_BRANCH:-staging}
+            LATEST=${GIT_BRANCH:-staging}
         else
             LATEST=latest
         fi
@@ -48,7 +51,7 @@ phases:
       - echo CODEBUILD_SOURCE_REPO_URL=${CODEBUILD_SOURCE_REPO_URL}
       - echo COMMIT_HASH=${COMMIT_HASH}
       - echo PULL_REQUEST=${PULL_REQUEST}
-      - echo GITHUB_BRANCH=${GITHUB_BRANCH}
+      - echo GIT_BRANCH=${GIT_BRANCH}
       - echo STAGING=${STAGING}
       - echo BUILD_TYPE=${BUILD_TYPE}
       - echo "==================================="
@@ -74,6 +77,13 @@ phases:
       - make testdebug | grep -vE 'Executed [0-9]* of [0-9]*'
       - make testrelease | grep -vE 'Executed [0-9]* of [0-9]*'
       - echo Test completed on `date`
+
+      # Deploy it to dev if not on master branch
+      # - |
+      #   if [ "${GIT_BRANCH}" != master  ]; then
+      #     make s3deploydev
+      #     make s3activatedev VERSION=${APP_VERSION}
+      #   fi
 
 
 artifacts:
