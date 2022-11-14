@@ -1,7 +1,7 @@
 SHELL = /bin/bash
 
 # Macro functions
-lastvalue = $(shell if [ -f .build-artefacts/last-$1 ]; then cat .build-artefacts/last-$1 2> /dev/null; else echo '-none-'; fi;)
+lastvalue = $(shell if [ -f ".build-artefacts/last-$1" ]; then cat .build-artefacts/last-$1 2> /dev/null; else echo '-none-'; fi;)
 
 # Move a set of files ($1) to a target folder ($2) changing the file extension($3) to another($4)
 define moveto
