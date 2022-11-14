@@ -74,8 +74,8 @@ phases:
     commands:
       # Suppress status outputs
       - echo "=== Test started on `date` ========"
-      - make testdebug | grep -vE 'Executed [0-9]* of [0-9]*'
-      - make testrelease | grep -vE 'Executed [0-9]* of [0-9]*'
+      - make testdebug
+      - make testrelease
       - echo Test completed on `date`
 
       # Deploy it to dev if not on master branch
