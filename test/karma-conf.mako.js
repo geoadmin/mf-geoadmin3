@@ -103,8 +103,11 @@ module.exports = function(config) {
 
 // test results reporter to use
 // possible values: 'dots', 'progress', 'junit'
+% if ci == "1":
+  reporters: ['junit', 'dots'],
+% else:
   reporters: ['junit', 'progress'],
-
+% endif
   // web server port
   port: 8081,
 

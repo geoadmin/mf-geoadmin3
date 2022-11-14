@@ -56,7 +56,7 @@ prod:
 # backend services (aka layerConfig)
 -include mk/serviceconfig.mk
 
-# Include targets used to get a working application in 
+# Include targets used to get a working application in
 # src/
 -include mk/debug.mk
 
@@ -73,7 +73,7 @@ prod:
 # and moving around stuff in s3, with the help of s3manage.py)
 -include mk/deploy.mk
 
-# Everything concerning installation and update of 
+# Everything concerning installation and update of
 # external libraries
 -include mk/libs.mk
 
@@ -139,12 +139,15 @@ define compilejs
 		--js_output_file  src/lib/$1.min.js;
 endef
 
+$(CI_CONF_TIMESTAMP): $(CI_CONF_TIMESTAMP)
+	rm -f $(CI_CONF_FILE_TEMPLATE)*
+	touch $(CI_CONF_TIMESTAMP)
 
-test/karma-conf-debug.js: test/karma-conf.mako.js ${MAKO_CMD}
-	${PYTHON_CMD} ${MAKO_CMD} --var "mode=debug" $< > $@
+test/karma-conf-debug.js: test/karma-conf.mako.js ${MAKO_CMD} $(CI_CONF_TIMESTAMP)
+	${PYTHON_CMD} ${MAKO_CMD} --var "mode=debug" --var "ci=${CI}" $< > $@
 
-test/karma-conf-release.js: test/karma-conf.mako.js ${MAKO_CMD}
-	${PYTHON_CMD} ${MAKO_CMD} --var "mode=release" $< > $@
+test/karma-conf-release.js: test/karma-conf.mako.js ${MAKO_CMD} $(CI_CONF_TIMESTAMP)
+	${PYTHON_CMD} ${MAKO_CMD} --var "mode=release" --var "ci=${CI}" $< > $@
 
 test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.js externs/jquery.js: package.json
 	npm install;
