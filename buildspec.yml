@@ -86,6 +86,13 @@ phases:
       #   fi
 
 
+reports:
+  tests:
+    files:
+      - "junit-reports/**/*"
+    file-format: JunitXml
+
+
 artifacts:
   # The name below is only used for manual build (not by build started by the webhook)
   name: ${BUILD_TYPE}/mf-geoadmin3/${APP_VERSION}
