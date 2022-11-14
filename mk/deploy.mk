@@ -12,7 +12,7 @@ CODE_DIR ?= .
 S3_BASE_PATH ?=
 S3_SRC_BASE_PATH ?=
 
-IS_MASTER_BRANCH = $(shell if [ ${DEPLOY_GIT_BRANCH} = "master" ] || [ ${DEPLOY_GIT_BRANCH} = "mvt_clean"]; then echo "true"; else echo "false"; fi)
+IS_MASTER_BRANCH = $(shell if [ "${DEPLOY_GIT_BRANCH}" = "master" ] || [ "${DEPLOY_GIT_BRANCH}" = "mvt_clean" ]; then echo "true"; else echo "false"; fi)
 ifeq (IS_MASTER_BRANCH, true)
 	SHA := $(shell git rev-parse HEAD | cut -c1-7)
 	S3_BASE = /$(DEPLOY_GIT_BRANCH)/$(SHA)/$(VERSION)
