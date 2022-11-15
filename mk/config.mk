@@ -1,7 +1,7 @@
 SHELL = /bin/bash
 
 # Macro functions
-lastvalue = $(shell if [ -f .build-artefacts/last-$1 ]; then cat .build-artefacts/last-$1 2> /dev/null; else echo '-none-'; fi;)
+lastvalue = $(shell if [ -f ".build-artefacts/last-$1" ]; then cat .build-artefacts/last-$1 2> /dev/null; else echo '-none-'; fi;)
 
 # Move a set of files ($1) to a target folder ($2) changing the file extension($3) to another($4)
 define moveto
@@ -219,4 +219,6 @@ MAKO_LAST_VARIABLES = .build-artefacts/last-api-url \
 MAKO_LAST_VARIABLES_PROD = ${MAKO_LAST_VARIABLES} \
 	    .build-artefacts/last-version
 
-
+CI ?= 0
+CI_CONF_FILE_TEMPLATE := .build-artefacts/ci_conf_timestamp
+CI_CONF_TIMESTAMP := $(CI_CONF_FILE_TEMPLATE)_$(CI)

@@ -2,7 +2,7 @@ autopep8==1.2.4
 awscli==1.16.100
 boto3==1.9.90
 botocore==1.12.90
-click==7.0.0
+Click==7.0
 docutils==0.12
 flake8==2.6.2
 futures==3.0.5
@@ -21,4 +21,13 @@ s3transfer==0.2.0
 sauceclient==1.0.0
 selenium==3.4.3
 six==1.10.0
-https://github.com/google/closure-linter/archive/v2.3.19.tar.gz
+closure-linter==2.3.19
+## The following requirements were added by pip freeze:
+certifi==2021.10.8
+chardet==3.0.4
+colorama==0.3.9
+idna==2.7
+pyasn1==0.4.8
+PyYAML==3.13
+rsa==3.4.2
+urllib3==1.24.3

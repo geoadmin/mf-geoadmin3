@@ -88,18 +88,6 @@ module.exports = function(config) {
   exclude: [
   ],
 
-
-% if mode == 'debug':
-  coverageReporter: {
-    dir: '.build-artefacts/coverage',
-    includeAllSources: true,
-    reporters: [
-      { type: 'text-summary', subdir: '.', file: 'coverage.txt' },
-      { type: 'html', subdir: '.'}
-    ]
-  },
-% endif
-
   // create output in a format than can be consumed by AWS code build
   junitReporter: {
       outputDir: 'junit-reports', // results will be saved as $outputDir/$browserName.xml
@@ -115,12 +103,11 @@ module.exports = function(config) {
 
 // test results reporter to use
 // possible values: 'dots', 'progress', 'junit'
-% if mode == 'release':
-  reporters: ['junit', 'progress'],
+% if ci == "1":
+  reporters: ['junit', 'dots'],
 % else:
-  reporters: ['coverage','junit', 'progress'],
+  reporters: ['junit', 'progress'],
 % endif
-
   // web server port
   port: 8081,
 

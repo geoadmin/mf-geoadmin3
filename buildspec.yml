@@ -3,21 +3,25 @@ version: 0.2
 env:
   variables:
     AWS_DEFAULT_REGION: eu-central-1
+    CI: 1
 
 phases:
   install:
     runtime-versions:
-      python: 3.7
+      nodejs: 14
     commands:
       - echo "Installing python 2.7"
       - apt-get update && apt-get install -y python2.7 python2.7-dev virtualenv build-essential
+      - n 10
 
   pre_build:
     commands:
       - echo "Configuring stuff..."
       - aws --version
+      - export NODE_VERSION=$(node --version | cut -c2-)
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - GITHUB_BRANCH=${CODEBUILD_WEBHOOK_HEAD_REF#refs/heads/*}
+      - GIT_BRANCH=${CODEBUILD_WEBHOOK_HEAD_REF#refs/heads/*}
+      - export DEPLOY_GIT_BRANCH=${GIT_BRANCH}
       - TODAY=$(date '+%Y%m%d')
       - |-
         if [ "${CODEBUILD_WEBHOOK_TRIGGER}" = pr/* ]; then
@@ -25,9 +29,13 @@ phases:
         fi
       - |-
         if [ "${GIT_BRANCH}" != master  ]; then
-            LATEST=${GITHUB_BRANCH:-staging}
+            LATEST=${GIT_BRANCH:-staging}
         else
             LATEST=latest
+        fi
+      - export BUILD_TYPE=dev
+      - if [ "${GIT_BRANCH}" = "master" ] ; then
+          export BUILD_TYPE=prod;
         fi
       - echo "=========== VERSIONS ============="
       - python --version
@@ -44,19 +52,51 @@ phases:
       - echo CODEBUILD_SOURCE_REPO_URL=${CODEBUILD_SOURCE_REPO_URL}
       - echo COMMIT_HASH=${COMMIT_HASH}
       - echo PULL_REQUEST=${PULL_REQUEST}
-      - echo GITHUB_BRANCH=${GITHUB_BRANCH}
+      - echo GIT_BRANCH=${GIT_BRANCH}
+      - echo STAGING=${STAGING}
+      - echo BUILD_TYPE=${BUILD_TYPE}
       - echo "==================================="
       - make env
       - npm install
+      - echo "=== Install dependencies =========="
+      - make ci
+
   build:
     commands:
-      - echo Build started on `date`
-      - make cleanall ci
-      # Suppress status outputs
-      - make testdebug | grep -vE 'Executed [0-9]* of [0-9]*'
-      - make testrelease | grep -vE 'Executed [0-9]* of [0-9]*'
+      - echo "=== Build started on `date` ======="
+      - make ${STAGING}
+      - echo Build completed on `date`
+      - |
+        echo Get application version
+        export APP_VERSION=$(cat .build-artefacts/last-version)
+
 
   post_build:
     commands:
-      - echo Build completed on `date`
+      # Suppress status outputs
+      - echo "=== Test started on `date` ========"
+      - make testdebug
+      - make testrelease
+      - echo Test completed on `date`
 
+      # Deploy it to dev if not on master branch
+      # - |
+      #   if [ "${GIT_BRANCH}" != master  ]; then
+      #     make s3deploydev
+      #     make s3activatedev VERSION=${APP_VERSION}
+      #   fi
+
+
+reports:
+  tests:
+    files:
+      - "junit-reports/**/*"
+    file-format: JunitXml
+
+
+artifacts:
+  # The name below is only used for manual build (not by build started by the webhook)
+  name: ${BUILD_TYPE}/mf-geoadmin3/${APP_VERSION}
+  files:
+    - '**/*'
+  base-directory: dist
