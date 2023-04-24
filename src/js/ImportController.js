@@ -350,6 +350,7 @@ goog.require('ga_wmts_service');
       'https://geo.so.ch/api/wmts/1.0.0/WMTSCapabilities.xml',
       'https://wmts.geo.ti.ch/wmts/1.0.0/WMTSCapabilities.xml',
       'https://www.mapant.ch/WMTSCapabilities.xml',
+      'https://www.opensnowmap.org/OSnM_GetCapabilities.xml',
       'https://p20.cosmos-project.ch/sd20alps_map/wmts?request=getcapabilities',
       'https://services.geo.sg.ch/wss/service/SG00002_WMTS/guest?',
       'https://services.geo.sg.ch/wss/service/SG00135_WMTS/guest?',
