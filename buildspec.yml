@@ -11,7 +11,8 @@ phases:
       nodejs: 14
     commands:
       - echo "Installing python 2.7"
-      - apt-get update && apt-get install -y python2.7 python2.7-dev virtualenv build-essential
+      - apt-get update && apt-get install -y python2.7 python2.7-dev build-essential
+      - pip install virtualenv==20.21.1        
       - n 10
 
   pre_build:
@@ -40,6 +41,8 @@ phases:
       - echo "=========== VERSIONS ============="
       - python --version
       - python2 --version
+      - pip --version
+      - virtualenv --version
       - bash --version
       - echo "=========== VARIABLES ============="
       - echo CODEBUILD_RESOLVED_SOURCE_VERSION=${CODEBUILD_RESOLVED_SOURCE_VERSION}
