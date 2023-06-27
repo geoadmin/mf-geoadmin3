@@ -11,7 +11,6 @@ phases:
       nodejs: 14
     commands:
       - echo "Installing python 2.7"
-      - apt-get remove virtualenv
       - add-apt-repository universe
       - apt-get update && apt-get install -y python2.7 python2.7-dev build-essential curl
       - curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
