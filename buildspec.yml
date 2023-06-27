@@ -13,7 +13,10 @@ phases:
       - echo "Installing python 2.7"
       - apt-get remove python3-venv
       - add-apt-repository universe
-      - apt-get update && apt-get install -y python2.7 python2.7-dev virtualenv python-pip build-essential
+      - apt-get update && apt-get install -y python2.7 python2.7-dev virtualenv build-essential curl
+      - curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
+      - python2 get-pip.py
+      - pip2 --version
       - n 10
 
 
