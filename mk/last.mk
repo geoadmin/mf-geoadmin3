@@ -9,7 +9,7 @@ endef
 
 ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 	mkdir -p .build-artefacts
-	virtualenv -p /usr/bin/python2.7 $@
+	virtualenv --python=$(which python2) $@
 	${PIP_CMD} install --index-url ${PYPI_URL} -U pip==19.2.3 setuptools==44.0.0
 	$(MAKE) .build-artefacts/requirements.timestamp
 
