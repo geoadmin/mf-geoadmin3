@@ -387,7 +387,7 @@
 "send": "Senden",
 "settings": "Konfiguration",
 "share": "Teilen",
-"share_disclaimer": "Sie können die Karte in Ihre Website oder einen Blog einbetten. <a href='https://www.geo.admin.ch/de/about-swiss-geoportal/impressum.html#iframe' target='_blank'>Nutzungsbedingungen</a>",
+"share_disclaimer": "Sie können die Karte in Ihre Website oder einen Blog einbetten. <a href='https://www.geo.admin.ch/de/web-integration-iframe/' target='_blank'>Nutzungsbedingungen</a>",
 "share_file_disclaimer": "Ihre Zeichnung wird automatisch ein Jahr lang gespeichert. Durch  die Nutzung  dieses Dienstes stimmen Sie den  <a href='https://www.geo.admin.ch/de/allgemeine-nutzungsbedingungen-bgdi/' target='_blank'>Nutzungsbedingungen</a> zu.",
 "share_file_link_title_admin": "Sie können Ihre Zeichnung später über folgenden Link editieren: ",
 "share_less": "Einbetten:",
