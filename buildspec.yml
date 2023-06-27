@@ -8,13 +8,11 @@ env:
 phases:
   install:
     runtime-versions:
-      nodejs: 14
+      nodejs: 10
     commands:
       - echo "Installing python 2.7"
       - add-apt-repository universe
       - apt-get update && apt-get install -y python2.7 python2.7-dev virtualenv build-essential
-      - n 10
-
 
   pre_build:
     commands:
