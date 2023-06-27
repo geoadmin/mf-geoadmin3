@@ -11,7 +11,7 @@ phases:
       nodejs: 14
     commands:
       - echo "Installing python 2.7"
-      - apt-get update && apt-get install -y python2.7 python2.7-dev python-pip build-essential
+      - apt-get update && apt-get install -y python2.7 python2.7-dev virtualenv build-essential
       - pip2 install virtualenv
       - n 10
 
