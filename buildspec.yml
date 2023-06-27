@@ -40,6 +40,8 @@ phases:
       - echo "=========== VERSIONS ============="
       - python --version
       - python2 --version
+      - which python2
+      - which virtualenv
       - bash --version
       - echo "=========== VARIABLES ============="
       - echo CODEBUILD_RESOLVED_SOURCE_VERSION=${CODEBUILD_RESOLVED_SOURCE_VERSION}
