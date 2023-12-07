@@ -25,7 +25,12 @@ goog.require('ga_window_service');
    * Filter to display a correct time label in all possible situations
    */
   module.filter('gaTimeLabel', function($translate) {
-    var maxYear = (new Date()).getFullYear();
+    // this is a ugly hack, but it gives us the possibility to go live with
+    // data lying one year in the future. F.ex. for the last deploy in Dez
+    // having data for the next year.
+    // can be removed again for deploy 31st January 2024
+    //var maxYear = (new Date()).getFullYear();
+    var maxYear = (new Date()).getFullYear() + 1;
     return function(input, layer) {
       // input values possible: 1978, '1978', '19783112', '99993112', undefined
       // if layer is WMTS:
