@@ -26,10 +26,8 @@ goog.require('ga_urlutils_service');
           transclude: true,
           templateUrl: 'components/vectortile/partials/testlink.html',
           link: function(scope, element, attrs) {
-            scope.url = generateTestLinkUrl();
             scope.openTestViewerWithSamePermalink = function(e) {
-              var url = generateTestLinkUrl();
-              $window.open(url, '_blank');
+              $window.open(generateTestLinkUrl(), '_blank');
               e.preventDefault();
             };
           }
