@@ -1826,6 +1826,30 @@ body:not(.embed) {
   }
 }
 
+.warning-web-mapviewer-go-live {
+  position: absolute;
+  z-index: 1000;
+  top: unit(@small-header-height, px);
+  right: calc(2 * unit(@control-btns-right, px) + unit(@control-btn-size, px));
+  width: 100%;
+  max-width: calc(100% - 2 * unit(@control-btns-right, px) - unit(@control-btn-size, px));
+  background: rgba(255, 255, 255, 0.7);
+  overflow: hidden;
+  font-weight: bold;
+  text-align: center;
+  padding: 5px;
+  color: @red;
+  a {
+    text-decoration: underline;
+  }
+  @media (min-width: @screen-phone) {
+    max-width: calc(100% - unit(@pulldown-width, px) - 2 * unit(@control-btns-right, px) - unit(@control-btn-size, px));
+  }
+  @media (min-width: @screen-tablet) {
+    top: unit(@header-height, px);
+  }
+}
+
 /* Waring test link */
 
 .warning-not-prod {
