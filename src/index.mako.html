@@ -178,7 +178,9 @@ itemscope itemtype="http://schema.org/WebApplication"
 % endif
     <div id="loader"></div>
     <div tabindex="1" ga-map ga-map-map="map" ga-map-ol3d="::ol3d">
+  % if device != 'embed':
       <div class="warning-web-mapviewer-go-live" translate>webmapviewer_live_disclaimer</div>
+  % endif
   % if device == 'embed':
       <a ng-cloak translate-cloak id="bigMapLink" target="_blank" href="{{toMainHref}}">
         <div>
