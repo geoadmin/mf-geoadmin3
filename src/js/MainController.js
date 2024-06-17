@@ -271,7 +271,8 @@ goog.require('ga_window_service');
       isSwipeActive: false,
       is3dActive: startWith3D,
       isFpsActive: false,
-      hostIsProd: gaGlobalOptions.hostIsProd
+      hostIsProd: gaGlobalOptions.hostIsProd,
+      hostIsRusty: gaGlobalOptions.hostIsRusty
     };
 
     // gaWindow is efficient only after the dom is ready
