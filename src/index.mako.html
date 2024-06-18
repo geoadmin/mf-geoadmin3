@@ -183,7 +183,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div class="corner-ribbon" ng-if="globals.hostIsRusty">LEGACY</div>
 
   % if device != 'embed':
-      <div class="warning-web-mapviewer-go-live" translate>webmapviewer_live_disclaimer</div>
+      <div class="warning-web-mapviewer-go-live" ng-if="!globals.hostIsRusty" translate>webmapviewer_live_disclaimer</div>
   % endif
   % if device == 'embed':
       <a ng-cloak translate-cloak id="bigMapLink" target="_blank" href="{{toMainHref}}">
