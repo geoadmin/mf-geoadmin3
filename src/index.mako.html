@@ -178,8 +178,12 @@ itemscope itemtype="http://schema.org/WebApplication"
 % endif
     <div id="loader"></div>
     <div tabindex="1" ga-map ga-map-map="map" ga-map-ol3d="::ol3d">
+
+    <!-- RUSTY Ribbon -->
+    <div class="corner-ribbon" ng-if="globals.hostIsRusty">LEGACY</div>
+
   % if device != 'embed':
-      <div class="warning-web-mapviewer-go-live" translate>webmapviewer_live_disclaimer</div>
+      <div class="warning-web-mapviewer-go-live" ng-if="!globals.hostIsRusty" translate>webmapviewer_live_disclaimer</div>
   % endif
   % if device == 'embed':
       <a ng-cloak translate-cloak id="bigMapLink" target="_blank" href="{{toMainHref}}">
@@ -731,9 +735,14 @@ itemscope itemtype="http://schema.org/WebApplication"
         var s3pathname = cfg['s3basepath'] == '' ? pathname : cfg['s3basepath'];
         var prtl = location.protocol;
         var hostIsProd = true;
+        var hostIsRusty = false;
 
         if (/.*\.(dev|int|ci|infra|prod)\.bgdi\.ch$/.test(location.hostname)) {
           hostIsProd = false;
+        }
+
+        if (/^rusty.map.geo.admin.ch$/.test(location.hostname)) {
+          hostIsRusty = true
         }
 
         // Determines if one is using custom prodUrl (for user env)
@@ -838,6 +847,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           translationFallbackCode: '${translation_fallback_code}',
           languages: JSON.parse(${languages}),
           hostIsProd: hostIsProd,
+          hostIsRusty: hostIsRusty,
           staging: staging,
           apiOverwrite: apiOverwrite,
           configOverwrite: configOverwrite,
