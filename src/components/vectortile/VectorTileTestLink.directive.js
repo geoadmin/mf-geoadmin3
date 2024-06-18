@@ -13,12 +13,17 @@ goog.require('ga_urlutils_service');
   ]).
 
       directive('gaVectorTileTestLink', function($window, gaLang, gaPermalink,
-          gaUrlUtils) {
+          gaUrlUtils, gaGlobalOptions) {
 
         function generateTestLinkUrl() {
           var params = gaUrlUtils.toKeyValue(gaPermalink.getParams()) || '';
-          return '//test.map.geo.admin.ch?lang=' + gaLang.get() +
-        (params.length > 0 ? '&' + params : '');
+          var baseUrl = '//'
+          if (!gaGlobalOptions.hostIsRusty) {
+            baseUrl += 'test.'
+          }
+          baseUrl += 'map.geo.admin.ch?lang='
+          return baseUrl + gaLang.get() +
+          (params.length > 0 ? '&' + params : '');
         }
 
         return {
@@ -26,6 +31,11 @@ goog.require('ga_urlutils_service');
           transclude: true,
           templateUrl: 'components/vectortile/partials/testlink.html',
           link: function(scope, element, attrs) {
+            if (gaGlobalOptions.hostIsRusty) {
+              scope.linkText = 'try_non_rusty_viewer'
+            } else {
+              scope.linkText = 'try_test_viewer'
+            }
             scope.openTestViewerWithSamePermalink = function(e) {
               $window.open(generateTestLinkUrl(), '_blank');
               e.preventDefault();
