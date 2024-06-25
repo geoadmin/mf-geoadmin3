@@ -5,9 +5,9 @@ mf-geoadmin3
 [![Greenkeeper badge](https://badges.greenkeeper.io/geoadmin/mf-geoadmin3.svg)](https://greenkeeper.io/)
 
 ___
-**Freezed version map.geo.admin.ch**
+:warning:**This repository is legacy**:warning:
 
-*mf-geoadmin-3 will not be developed further (bug fix only). map.geo.admin.ch will only be developed  in the new experience [web-mapviewer](https://github.com/geoadmin/web-mapviewer). Follow our transition in 2021 either on the [forum](https://groups.google.com/g/geoadmin-api) or in [web-mapviewer](https://github.com/geoadmin/web-mapviewer)*
+*The new version of the mapviewer used by swisstopo is in this [repository](https://github.com/geoadmin/web-mapviewer). The repository you are currently viewing is that of the legacy version of the mapviewer, which is no longer used by swisstopo. Hence, this repository might be archived at any time soon!*
 ___
 
 # Getting started
